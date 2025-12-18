@@ -5,7 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/files_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
@@ -124,7 +124,7 @@ class _PrintInventoryTabState extends ConsumerState<PrintInventoryTab>
             duration: const Duration(milliseconds: 600),
             columnCount: 2,
             child: SlideAnimation(
-              verticalOffset: 50.0,
+              verticalOffset: 50,
               child: FadeInAnimation(
                 child: _buildPrintCard(file, headers, isDarkMode),
               ),
@@ -157,7 +157,7 @@ class _PrintInventoryTabState extends ConsumerState<PrintInventoryTab>
           Stack(
             children: [
               AspectRatio(
-                aspectRatio: 1.0,
+                aspectRatio: 1,
                 child: GestureDetector(
                   onTap: () => _showFullScreenPrint(file, headers),
                   child: CachedNetworkImage(
@@ -231,7 +231,7 @@ class _PrintInventoryTabState extends ConsumerState<PrintInventoryTab>
           return FadeTransition(
             opacity: animation,
             child: ScaleTransition(
-              scale: Tween<double>(begin: 0.8, end: 1.0).animate(
+              scale: Tween<double>(begin: 0.8, end: 1).animate(
                 CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
               ),
               child: child,
@@ -358,7 +358,7 @@ class _FullScreenPrintViewerState extends State<_FullScreenPrintViewer>
               child: InteractiveViewer(
                 transformationController: _transformationController,
                 minScale: 0.5,
-                maxScale: 4.0,
+                maxScale: 4,
                 child: CachedNetworkImage(
                   imageUrl: widget.file.versions.last.file!.url.toString(),
                   httpHeaders: widget.headers,

@@ -3,7 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
 
 class CreditsPage extends StatelessWidget {
   const CreditsPage({super.key});
@@ -71,9 +72,7 @@ class CreditsPage extends StatelessWidget {
                     CreditItem(
                       name: 'null_base',
                       role: 'じゃあね黙って',
-                      icon: const CircleAvatar(
-                        backgroundImage: AssetImage('assets/icons/default.png'),
-                      ),
+                      icon: Assets.icons.vrcn.image(),
                       onTap: () {
                         context.push(
                           '/user/usr_1d67de93-8afb-48dc-af7d-da7a33834f52',
@@ -94,7 +93,7 @@ class CreditsPage extends StatelessWidget {
                       role: '君が代',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/annobu@3x.png'),
+                        child: Assets.icons.annobu.image(),
                       ),
                     ),
                     CreditItem(
@@ -102,7 +101,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'キチ顔',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/kazkiller@3x.png'),
+                        child: Assets.icons.kazkiller.image(),
                       ),
                     ),
                     CreditItem(
@@ -110,7 +109,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'オービスフラッシャー',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/miyamoto@3x.png'),
+                        child: Assets.icons.miyamoto.image(),
                       ),
                     ),
                     CreditItem(
@@ -118,7 +117,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'ピアス',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/le0yuki@3x.png'),
+                        child: Assets.icons.le0yuki.image(),
                       ),
                     ),
                     CreditItem(
@@ -126,7 +125,7 @@ class CreditsPage extends StatelessWidget {
                       role: '能面',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/ray@3x.png'),
+                        child: Assets.icons.ray.image(),
                       ),
                     ),
                     CreditItem(
@@ -134,7 +133,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'Abysswalker',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/hare@3x.png'),
+                        child: Assets.icons.hare.image(),
                       ),
                     ),
                     CreditItem(
@@ -142,7 +141,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'ペアマッチング公式',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/aihuru@3x.png'),
+                        child: Assets.icons.aihuru.image(),
                       ),
                     ),
                     CreditItem(
@@ -150,7 +149,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'ここはひとつ',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/rea@3x.png'),
+                        child: Assets.icons.rea.image(),
                       ),
                     ),
                     CreditItem(
@@ -158,7 +157,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'おみごと！',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/masukawa@3x.png'),
+                        child: Assets.icons.masukawa.image(),
                       ),
                     ),
                     CreditItem(
@@ -166,7 +165,7 @@ class CreditsPage extends StatelessWidget {
                       role: '人生あるある「死ぬ」',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/abuki@3x.png'),
+                        child: Assets.icons.abuki.image(),
                       ),
                     ),
                     CreditItem(
@@ -174,7 +173,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'valorant',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/enadori@3x.png'),
+                        child: Assets.icons.enadori.image(),
                       ),
                     ),
                     CreditItem(
@@ -182,7 +181,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'いいね',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/roize@3x.png'),
+                        child: Assets.icons.roize.image(),
                       ),
                     ),
                     CreditItem(
@@ -190,7 +189,7 @@ class CreditsPage extends StatelessWidget {
                       role: '私が1番可愛いからね〜',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/r4in@3x.png'),
+                        child: Assets.icons.r4in.image(),
                       ),
                     ),
                     CreditItem(
@@ -198,7 +197,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'めっちゃかわいい',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/etoeto@3x.png'),
+                        child: Assets.icons.etoeto.image(),
                       ),
                     ),
                     CreditItem(
@@ -206,7 +205,7 @@ class CreditsPage extends StatelessWidget {
                       role: '俺可愛くね！？',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/pampy@3x.png'),
+                        child: Assets.icons.pampy.image(),
                       ),
                     ),
                     CreditItem(
@@ -214,7 +213,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'ベルヌーイEXマニほしい',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/yume@3x.png'),
+                        child: Assets.icons.yume.image(),
                       ),
                     ),
                     CreditItem(
@@ -222,7 +221,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'VRChatやめたい',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/kabi_lun@3x.png'),
+                        child: Assets.icons.kabiLun.image(),
                       ),
                     ),
                     CreditItem(
@@ -230,7 +229,7 @@ class CreditsPage extends StatelessWidget {
                       role: 'フランクみすとはここにいる！',
                       icon: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/icons/sasami_st@3x.png'),
+                        child: Assets.icons.sasamiSt.image(),
                       ),
                     ),
                   ],

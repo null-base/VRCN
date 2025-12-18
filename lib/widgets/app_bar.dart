@@ -2,7 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
@@ -64,9 +65,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     ),
                   )
                   : CircleAvatar(
-                    backgroundImage: const AssetImage(
-                      'assets/icons/default.png',
-                    ),
+                    backgroundImage: AssetImage(Assets.icons.vrcn.path),
                     backgroundColor: Theme.of(context).colorScheme.surface,
                   )),
       iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSurface),
@@ -75,7 +74,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
       leading:
           showAvatar
               ? Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8),
                 child: currentUserAsync.when(
                   data:
                       (currentUser) => GestureDetector(
@@ -98,9 +97,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                                     headers: headers,
                                     cacheManager: JsonCacheManager(),
                                   )
-                                  : const AssetImage(
-                                    'assets/icons/default.png',
-                                  ),
+                                  : AssetImage(Assets.icons.vrcn.path),
                         ),
                       ),
                   loading:
@@ -120,12 +117,10 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   error:
                       (_, _) => GestureDetector(
                         onTap: onAvatarPressed ?? openDrawer,
-                        child: const CircleAvatar(
+                        child: CircleAvatar(
                           radius: 16,
                           backgroundColor: Colors.grey,
-                          backgroundImage: AssetImage(
-                            'assets/icons/default.png',
-                          ),
+                          backgroundImage: AssetImage(Assets.icons.vrcn.path),
                         ),
                       ),
                 ),
@@ -147,7 +142,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   // 検索フィールドを構築するメソッド
   Widget _buildSearchField(BuildContext context, bool isDarkMode) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       child: TextField(
         controller: searchController,
         decoration: InputDecoration(

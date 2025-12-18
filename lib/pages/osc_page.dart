@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:osc/osc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -695,8 +696,8 @@ class _OscPageState extends ConsumerState<OscPage> {
             ),
             Slider(
               value: _currentValues[index] ?? 0.0,
-              min: 0.0,
-              max: 1.0,
+              min: 0,
+              max: 1,
               divisions: 100,
               label: (_currentValues[index] ?? 0.0).toStringAsFixed(2),
               activeColor: AppTheme.primaryColor,
@@ -714,11 +715,11 @@ class _OscPageState extends ConsumerState<OscPage> {
               spacing: 8,
               runSpacing: 8,
               children: [
-                _buildPresetButton('0', 0.0, index, param),
+                _buildPresetButton('0', 0, index, param),
                 _buildPresetButton('0.25', 0.25, index, param),
                 _buildPresetButton('0.5', 0.5, index, param),
                 _buildPresetButton('0.75', 0.75, index, param),
-                _buildPresetButton('1.0', 1.0, index, param),
+                _buildPresetButton('1.0', 1, index, param),
               ],
             ),
           ],

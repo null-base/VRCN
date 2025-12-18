@@ -16,6 +16,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,7 +24,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:vrchat/analytics_repository.dart';
 import 'package:vrchat/config/app_config.dart';
 import 'package:vrchat/firebase_options.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
 import 'package:vrchat/provider/settings_provider.dart';
 import 'package:vrchat/provider/streaming_provider.dart';
@@ -87,6 +88,9 @@ Future<void> main() async {
   // スプラッシュ画面
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  // Google Fontsの設定
+  GoogleFonts.config.allowRuntimeFetching = kDebugMode;
 
   // Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -539,7 +543,7 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
       return MediaQuery(
         data: MediaQuery.of(
           context,
-        ).copyWith(textScaler: const TextScaler.linear(1.0)),
+        ).copyWith(textScaler: const TextScaler.linear(1)),
         child: child!,
       );
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:vrchat/provider/favorite_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/router/app_router.dart';
@@ -63,18 +64,18 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
 
           // offsetを使ってすべてのオンラインフレンドを取得
           while (hasMore) {
-            final response =
+            final (friendsSuccess, friendsFailure) =
                 await rawApi
                     .getFriendsApi()
                     .getFriends(offline: false, n: 100, offset: offset)
                     .validateVrc();
 
-            if (response.success == null) {
-              debugPrint('オンラインフレンド取得でnull結果: $response');
+            if (friendsSuccess == null) {
+              debugPrint('オンラインフレンド取得でnull結果: $friendsFailure');
               break;
             }
 
-            final batch = response.success!.data;
+            final batch = friendsSuccess.data;
             // LimitedUserFriend から LimitedUser に変換
             final convertedBatch = batch.map(_convertToLimitedUser).toList();
             onlineFriends.addAll(convertedBatch);
@@ -103,18 +104,18 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
 
           // offsetを使ってすべてのオフラインフレンドを取得
           while (hasMore) {
-            final response =
+            final (friendsSuccess, friendsFailure) =
                 await rawApi
                     .getFriendsApi()
                     .getFriends(offline: true, n: 100, offset: offset)
                     .validateVrc();
 
-            if (response.success == null) {
-              debugPrint('オフラインフレンド取得でnull結果: $response');
+            if (friendsSuccess == null) {
+              debugPrint('オフラインフレンド取得でnull結果: $friendsFailure');
               break;
             }
 
-            final batch = response.success!.data;
+            final batch = friendsSuccess.data;
             // LimitedUserFriend から LimitedUser に変換
             final convertedBatch = batch.map(_convertToLimitedUser).toList();
             offlineFriends.addAll(convertedBatch);
@@ -145,13 +146,13 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
           var offset = 0;
           var hasMore = true;
           while (hasMore) {
-            final response =
+            final (friendsSuccess, friendsFailure) =
                 await rawApi
                     .getFriendsApi()
                     .getFriends(offline: false, n: 100, offset: offset)
                     .validateVrc();
-            if (response.success == null) break;
-            final batch = response.success!.data;
+            if (friendsSuccess == null) break;
+            final batch = friendsSuccess.data;
             onlineFriends.addAll(batch.map(_convertToLimitedUser));
             if (batch.length < 100) {
               hasMore = false;
@@ -168,13 +169,13 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
           var offset = 0;
           var hasMore = true;
           while (hasMore) {
-            final response =
+            final (friendsSuccess, friendsFailure) =
                 await rawApi
                     .getFriendsApi()
                     .getFriends(offline: true, n: 100, offset: offset)
                     .validateVrc();
-            if (response.success == null) break;
-            final batch = response.success!.data;
+            if (friendsSuccess == null) break;
+            final batch = friendsSuccess.data;
             offlineFriends.addAll(batch.map(_convertToLimitedUser));
             if (batch.length < 100) {
               hasMore = false;
@@ -212,7 +213,7 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
   LimitedUser _convertToLimitedUser(LimitedUserFriend friend) {
     return LimitedUser(
       bio: friend.bio,
-      currentAvatarImageUrl: friend.currentAvatarImageUrl,
+      currentAvatarImageUrl: friend.currentAvatarImageUrl!,
       currentAvatarThumbnailImageUrl: friend.currentAvatarThumbnailImageUrl,
       developerType: friend.developerType,
       displayName: friend.displayName,

@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/models/vrcnsync_models.dart';
 import 'package:vrchat/provider/vrcnsync_provider.dart';
 import 'package:vrchat/services/photo_save_service.dart';
@@ -189,7 +189,7 @@ class _VrcnSyncPageState extends ConsumerState<VrcnSyncPage>
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

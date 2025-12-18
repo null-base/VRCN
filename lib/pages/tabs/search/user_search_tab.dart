@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/search_providers.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
@@ -134,7 +134,7 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
       itemBuilder: (context, index) {
         if (index == cachedResults.length) {
           return Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Center(
               child:
                   searchState.isLoading
@@ -162,7 +162,7 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
         borderRadius: BorderRadius.circular(16),
         onTap: () => context.push('/user/${user.id}'),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -181,9 +181,9 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
                 ),
                 child: CircleAvatar(
                   backgroundImage:
-                      user.userIcon.isNotEmpty
+                      user.userIcon != null && user.userIcon!.isNotEmpty
                           ? CachedNetworkImageProvider(
-                            user.userIcon,
+                            user.userIcon!,
                             headers: headers,
                             cacheManager: JsonCacheManager(),
                           )
@@ -195,12 +195,12 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
                               )
                               : null),
                   backgroundColor:
-                      (user.userIcon.isEmpty) &&
+                      (user.userIcon == null || user.userIcon!.isEmpty) &&
                               user.currentAvatarThumbnailImageUrl == null
                           ? Colors.grey[300]
                           : null,
                   child:
-                      (user.userIcon.isEmpty) &&
+                      (user.userIcon == null || user.userIcon!.isEmpty) &&
                               user.currentAvatarThumbnailImageUrl == null
                           ? const Icon(Icons.person, color: Colors.grey)
                           : null,

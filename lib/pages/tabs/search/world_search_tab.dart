@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/search_providers.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/provider/world_provider.dart';
@@ -272,7 +272,7 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
       itemBuilder: (context, index) {
         if (index == worlds.length) {
           return Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Center(
               child:
                   isLoading
@@ -286,10 +286,10 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
           position: index,
           duration: const Duration(milliseconds: 375),
           child: SlideAnimation(
-            verticalOffset: 50.0,
+            verticalOffset: 50,
             child: FadeInAnimation(
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
+                padding: const EdgeInsets.only(bottom: 16),
                 child: _buildWorldCard(worlds[index], isDarkMode, false),
               ),
             ),
@@ -429,7 +429,7 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
             ),
             // ワールド情報
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

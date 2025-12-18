@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/avatar_provider.dart';
 import 'package:vrchat/provider/favorite_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
@@ -20,7 +21,7 @@ import 'package:vrchat_dart/vrchat_dart.dart' hide FavoriteType;
 // お気に入り削除用のStateNotifierプロバイダー
 final favoriteActionProvider =
     StateNotifierProvider<FavoriteActionNotifier, AsyncValue<void>>((ref) {
-      final favoriteApi = ref.watch(vrchatFavoriteProvider).valueOrNull;
+      final favoriteApi = ref.watch(vrchatFavoriteProvider).value;
       return FavoriteActionNotifier(favoriteApi);
     });
 
@@ -91,7 +92,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
         headerSliverBuilder:
             (context, innerBoxIsScrolled) => [
               SliverAppBar(
-                expandedHeight: 100.0,
+                expandedHeight: 100,
                 pinned: true,
                 floating: true,
                 forceElevated: innerBoxIsScrolled,
@@ -251,7 +252,7 @@ class _FavoriteFriendsTab extends ConsumerWidget {
                     position: index,
                     duration: const Duration(milliseconds: 375),
                     child: SlideAnimation(
-                      verticalOffset: 50.0,
+                      verticalOffset: 50,
                       child: FadeInAnimation(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,7 +288,7 @@ class _FavoriteFriendsTab extends ConsumerWidget {
                                     duration: const Duration(milliseconds: 250),
                                     delay: const Duration(milliseconds: 50),
                                     child: SlideAnimation(
-                                      horizontalOffset: 50.0,
+                                      horizontalOffset: 50,
                                       child: FadeInAnimation(
                                         child: userAsync.when(
                                           data:
@@ -396,7 +397,7 @@ class _FavoriteWorldsTab extends ConsumerWidget {
                     position: index,
                     duration: const Duration(milliseconds: 375),
                     child: SlideAnimation(
-                      verticalOffset: 50.0,
+                      verticalOffset: 50,
                       child: FadeInAnimation(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -419,7 +420,7 @@ class _FavoriteWorldsTab extends ConsumerWidget {
                             else
                               Padding(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 4.0,
+                                  horizontal: 4,
                                 ),
                                 child: StaggeredGrid.count(
                                   crossAxisCount: 2,
@@ -444,7 +445,7 @@ class _FavoriteWorldsTab extends ConsumerWidget {
                                             milliseconds: 250,
                                           ),
                                           child: SlideAnimation(
-                                            verticalOffset: 50.0,
+                                            verticalOffset: 50,
                                             child: FadeInAnimation(
                                               child: worldAsync.when(
                                                 data:
@@ -557,7 +558,7 @@ class _FavoriteAvatarsTab extends ConsumerWidget {
                     position: index,
                     duration: const Duration(milliseconds: 375),
                     child: SlideAnimation(
-                      verticalOffset: 50.0,
+                      verticalOffset: 50,
                       child: FadeInAnimation(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -580,7 +581,7 @@ class _FavoriteAvatarsTab extends ConsumerWidget {
                             else
                               Padding(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 4.0,
+                                  horizontal: 4,
                                 ),
                                 child: StaggeredGrid.count(
                                   crossAxisCount: 2,
@@ -602,7 +603,7 @@ class _FavoriteAvatarsTab extends ConsumerWidget {
                                           milliseconds: 250,
                                         ),
                                         child: SlideAnimation(
-                                          verticalOffset: 50.0,
+                                          verticalOffset: 50,
                                           child: FadeInAnimation(
                                             child: avatarAsync.when(
                                               data:
@@ -1032,7 +1033,7 @@ Widget _buildEnhancedWorldItem(
 
           // ワールド情報
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(12),
             child: Row(
               children: [
                 Expanded(
@@ -1113,7 +1114,7 @@ Widget _buildEnhancedAvatarItem(
           Stack(
             children: [
               AspectRatio(
-                aspectRatio: 1.0,
+                aspectRatio: 1,
                 child: CachedNetworkImage(
                   imageUrl: avatar.imageUrl,
                   fit: BoxFit.cover,
@@ -1205,7 +1206,7 @@ Widget _buildEnhancedAvatarItem(
 
           // アバター情報
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1463,7 +1464,7 @@ Widget _buildWorldLoadingItem(bool isDarkMode) {
 
         // テキストプレースホルダー
         Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12),
           child: Row(
             children: [
               CircleAvatar(
@@ -1501,7 +1502,7 @@ Widget _buildAvatarLoadingItem(bool isDarkMode) {
       children: [
         // 画像プレースホルダー
         AspectRatio(
-          aspectRatio: 1.0,
+          aspectRatio: 1,
           child: Container(
             color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
             child: const Center(
@@ -1512,7 +1513,7 @@ Widget _buildAvatarLoadingItem(bool isDarkMode) {
 
         // テキストプレースホルダー
         Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1577,7 +1578,7 @@ Widget _buildWorldErrorItem(String favoriteId, bool isDarkMode) {
 
         // エラーテキスト
         Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12),
           child: Row(
             children: [
               Expanded(
@@ -1609,7 +1610,7 @@ Widget _buildAvatarErrorItem(String favoriteId, bool isDarkMode) {
       children: [
         // エラー画像プレースホルダー
         AspectRatio(
-          aspectRatio: 1.0,
+          aspectRatio: 1,
           child: Container(
             color: isDarkMode ? Colors.red[900]!.withAlpha(51) : Colors.red[50],
             child: Center(
@@ -1634,7 +1635,7 @@ Widget _buildAvatarErrorItem(String favoriteId, bool isDarkMode) {
 
         // エラーテキスト
         Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12),
           child: Row(
             children: [
               Expanded(

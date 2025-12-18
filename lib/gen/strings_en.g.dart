@@ -3,6 +3,7 @@
 ///
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
+// dart format off
 
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +11,7 @@ import 'package:slang/generated.dart';
 import 'strings.g.dart';
 
 // Path: <root>
-class TranslationsEn implements Translations {
+class TranslationsEn with BaseTranslations<AppLocale, Translations> implements Translations {
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
 	TranslationsEn({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver, TranslationMetadata<AppLocale, Translations>? meta})
@@ -1152,623 +1153,627 @@ class _TranslationsInventoryTabsStickerInventoryEn implements TranslationsInvent
 	@override String get zoomHint => 'Double-tap to zoom';
 }
 
-/// Flat map(s) containing all translations.
+/// The flat map containing all translations for locale <en>.
 /// Only for edge cases! For simple maps, use the map function of this library.
+///
+/// The Dart AOT compiler has issues with very large switch statements,
+/// so the map is split into smaller functions (512 entries each).
 extension on TranslationsEn {
 	dynamic _flatMapFunction(String path) {
-		switch (path) {
-			case 'common.title': return 'VRCN';
-			case 'common.ok': return 'OK';
-			case 'common.cancel': return 'Cancel';
-			case 'common.close': return 'Close';
-			case 'common.save': return 'Save';
-			case 'common.edit': return 'Edit';
-			case 'common.delete': return 'Delete';
-			case 'common.yes': return 'Yes';
-			case 'common.no': return 'No';
-			case 'common.loading': return 'Loading...';
-			case 'common.error': return ({required Object error}) => 'An error occurred: ${error}';
-			case 'common.errorNomessage': return 'An error occurred';
-			case 'common.retry': return 'Retry';
-			case 'common.search': return 'Search';
-			case 'common.settings': return 'Settings';
-			case 'common.confirm': return 'Confirm';
-			case 'common.agree': return 'Agree';
-			case 'common.decline': return 'Decline';
-			case 'common.username': return 'Username';
-			case 'common.password': return 'Password';
-			case 'common.login': return 'Login';
-			case 'common.logout': return 'Logout';
-			case 'common.share': return 'Share';
-			case 'termsAgreement.welcomeTitle': return 'Welcome to VRCN';
-			case 'termsAgreement.welcomeMessage': return 'Before using the app,\nplease review the Terms of Service and Privacy Policy.';
-			case 'termsAgreement.termsTitle': return 'Terms of Service';
-			case 'termsAgreement.termsSubtitle': return 'About the conditions for using the app';
-			case 'termsAgreement.privacyTitle': return 'Privacy Policy';
-			case 'termsAgreement.privacySubtitle': return 'About the handling of personal information';
-			case 'termsAgreement.agreeTerms': return ({required Object title}) => 'I agree to the "${title}"';
-			case 'termsAgreement.checkContent': return 'Check Content';
-			case 'termsAgreement.notice': return 'This is an unofficial app for VRChat Inc.\nIt is not affiliated with VRChat Inc. in any way.';
-			case 'drawer.home': return 'Home';
-			case 'drawer.profile': return 'Profile';
-			case 'drawer.favorite': return 'Favorites';
-			case 'drawer.eventCalendar': return 'Event Calendar';
-			case 'drawer.avatar': return 'Avatars';
-			case 'drawer.group': return 'Groups';
-			case 'drawer.inventory': return 'Inventory';
-			case 'drawer.vrcnsync': return 'VRCNSync (β)';
-			case 'drawer.review': return 'Review';
-			case 'drawer.feedback': return 'Feedback';
-			case 'drawer.settings': return 'Settings';
-			case 'drawer.userLoading': return 'Loading user information...';
-			case 'drawer.userError': return 'Failed to load user information';
-			case 'drawer.retry': return 'Retry';
-			case 'drawer.section.content': return 'Content';
-			case 'drawer.section.other': return 'Other';
-			case 'login.forgotPassword': return 'Forgot your password?';
-			case 'login.createAccount': return 'Sign up';
-			case 'login.subtitle': return 'Login with your VRChat account';
-			case 'login.email': return 'Email Address';
-			case 'login.emailHint': return 'Enter email or username';
-			case 'login.passwordHint': return 'Enter password';
-			case 'login.rememberMe': return 'Remember me';
-			case 'login.loggingIn': return 'Logging in...';
-			case 'login.errorEmptyEmail': return 'Please enter your username or email address.';
-			case 'login.errorEmptyPassword': return 'Please enter your password.';
-			case 'login.errorLoginFailed': return 'Login failed. Please check your email and password.';
-			case 'login.twoFactorTitle': return 'Two-Factor Authentication';
-			case 'login.twoFactorSubtitle': return 'Please enter the authentication code.';
-			case 'login.twoFactorInstruction': return 'Enter the 6-digit code from\nyour authenticator app.';
-			case 'login.twoFactorCodeHint': return 'Authentication code';
-			case 'login.verify': return 'Verify';
-			case 'login.verifying': return 'Verifying...';
-			case 'login.errorEmpty2fa': return 'Please enter the authentication code.';
-			case 'login.error2faFailed': return 'Two-factor authentication failed. Please check if the code is correct.';
-			case 'login.backToLogin': return 'Back to login';
-			case 'login.paste': return 'Paste';
-			case 'friends.loading': return 'Loading friends list...';
-			case 'friends.error': return ({required Object error}) => 'Failed to load friends list: ${error}';
-			case 'friends.notFound': return 'No friends found.';
-			case 'friends.private': return 'Private';
-			case 'friends.active': return 'Active';
-			case 'friends.offline': return 'Offline';
-			case 'friends.online': return 'Online';
-			case 'friends.groupTitle': return 'Group by World';
-			case 'friends.refresh': return 'Refresh';
-			case 'friends.searchHint': return 'Search by friend\'s name';
-			case 'friends.noResult': return 'No matching friends found.';
-			case 'friendDetail.loading': return 'Loading user information...';
-			case 'friendDetail.error': return ({required Object error}) => 'Failed to load user information: ${error}';
-			case 'friendDetail.currentLocation': return 'Current Location';
-			case 'friendDetail.basicInfo': return 'Basic Info';
-			case 'friendDetail.userId': return 'User ID';
-			case 'friendDetail.dateJoined': return 'Date Joined';
-			case 'friendDetail.lastLogin': return 'Last Login';
-			case 'friendDetail.bio': return 'Bio';
-			case 'friendDetail.links': return 'Links';
-			case 'friendDetail.loadingLinks': return 'Loading links...';
-			case 'friendDetail.group': return 'Groups';
-			case 'friendDetail.groupDetail': return 'View Group Details';
-			case 'friendDetail.groupCode': return ({required Object code}) => 'Group Code: ${code}';
-			case 'friendDetail.memberCount': return ({required Object count}) => 'Members: ${count}';
-			case 'friendDetail.unknownGroup': return 'Unknown Group';
-			case 'friendDetail.block': return 'Block';
-			case 'friendDetail.mute': return 'Mute';
-			case 'friendDetail.openWebsite': return 'Open on Website';
-			case 'friendDetail.shareProfile': return 'Share Profile';
-			case 'friendDetail.confirmBlockTitle': return ({required Object name}) => 'Block ${name}?';
-			case 'friendDetail.confirmBlockMessage': return 'If you block this user, you will no longer receive friend requests or messages from them.';
-			case 'friendDetail.confirmMuteTitle': return ({required Object name}) => 'Mute ${name}?';
-			case 'friendDetail.confirmMuteMessage': return 'If you mute this user, you will no longer hear their voice.';
-			case 'friendDetail.blockSuccess': return 'Blocked';
-			case 'friendDetail.muteSuccess': return 'Muted';
-			case 'friendDetail.operationFailed': return ({required Object error}) => 'Operation failed: ${error}';
-			case 'search.userTab': return 'Users';
-			case 'search.worldTab': return 'Worlds';
-			case 'search.avatarTab': return 'Avatars';
-			case 'search.groupTab': return 'Groups';
-			case 'search.tabs.userSearch.emptyTitle': return 'User Search';
-			case 'search.tabs.userSearch.emptyDescription': return 'You can search by username or ID.';
-			case 'search.tabs.userSearch.searching': return 'Searching...';
-			case 'search.tabs.userSearch.noResults': return 'No matching users found.';
-			case 'search.tabs.userSearch.error': return ({required Object error}) => 'An error occurred during user search: ${error}';
-			case 'search.tabs.userSearch.inputPlaceholder': return 'Enter username or ID';
-			case 'search.tabs.worldSearch.emptyTitle': return 'Explore Worlds';
-			case 'search.tabs.worldSearch.emptyDescription': return 'Please enter a keyword to search.';
-			case 'search.tabs.worldSearch.searching': return 'Searching...';
-			case 'search.tabs.worldSearch.noResults': return 'No matching worlds found.';
-			case 'search.tabs.worldSearch.noResultsWithQuery': return ({required Object query}) => 'No worlds found matching "${query}"';
-			case 'search.tabs.worldSearch.noResultsHint': return 'Try changing your search keywords.';
-			case 'search.tabs.worldSearch.error': return ({required Object error}) => 'An error occurred during world search: ${error}';
-			case 'search.tabs.worldSearch.resultCount': return ({required Object count}) => '${count} worlds found';
-			case 'search.tabs.worldSearch.authorPrefix': return ({required Object authorName}) => 'by ${authorName}';
-			case 'search.tabs.worldSearch.listView': return 'List View';
-			case 'search.tabs.worldSearch.gridView': return 'Grid View';
-			case 'search.tabs.groupSearch.emptyTitle': return 'Search Groups';
-			case 'search.tabs.groupSearch.emptyDescription': return 'Please enter a keyword to search.';
-			case 'search.tabs.groupSearch.searching': return 'Searching...';
-			case 'search.tabs.groupSearch.noResults': return 'No matching groups found.';
-			case 'search.tabs.groupSearch.noResultsWithQuery': return ({required Object query}) => 'No groups found matching "${query}"';
-			case 'search.tabs.groupSearch.noResultsHint': return 'Try changing your search keywords.';
-			case 'search.tabs.groupSearch.error': return ({required Object error}) => 'An error occurred during group search: ${error}';
-			case 'search.tabs.groupSearch.resultCount': return ({required Object count}) => '${count} groups found';
-			case 'search.tabs.groupSearch.listView': return 'List View';
-			case 'search.tabs.groupSearch.gridView': return 'Grid View';
-			case 'search.tabs.groupSearch.memberCount': return ({required Object count}) => '${count} members';
-			case 'search.tabs.avatarSearch.avatar': return 'Avatar';
-			case 'search.tabs.avatarSearch.emptyTitle': return 'Search Avatars';
-			case 'search.tabs.avatarSearch.emptyDescription': return 'Please enter a keyword to search.';
-			case 'search.tabs.avatarSearch.searching': return 'Searching for avatars...';
-			case 'search.tabs.avatarSearch.noResults': return 'No search results found.';
-			case 'search.tabs.avatarSearch.noResultsHint': return 'Try another keyword.';
-			case 'search.tabs.avatarSearch.error': return ({required Object error}) => 'An error occurred during avatar search: ${error}';
-			case 'profile.title': return 'Profile';
-			case 'profile.edit': return 'Edit';
-			case 'profile.refresh': return 'Refresh';
-			case 'profile.loading': return 'Loading profile information...';
-			case 'profile.error': return 'Failed to load profile information: {error}';
-			case 'profile.displayName': return 'Display Name';
-			case 'profile.username': return 'Username';
-			case 'profile.userId': return 'User ID';
-			case 'profile.engageCard': return 'Engage Card';
-			case 'profile.frined': return 'Friend';
-			case 'profile.dateJoined': return 'Date Joined';
-			case 'profile.userType': return 'User Type';
-			case 'profile.status': return 'Status';
-			case 'profile.statusMessage': return 'Status Message';
-			case 'profile.bio': return 'Bio';
-			case 'profile.links': return 'Links';
-			case 'profile.group': return 'Groups';
-			case 'profile.groupDetail': return 'View Group Details';
-			case 'profile.avatar': return 'Current Avatar';
-			case 'profile.avatarDetail': return 'View Avatar Details';
-			case 'profile.public': return 'Public';
-			case 'profile.private': return 'Private';
-			case 'profile.hidden': return 'Hidden';
-			case 'profile.unknown': return 'Unknown';
-			case 'profile.friends': return 'Friends';
-			case 'profile.loadingLinks': return 'Loading links...';
-			case 'profile.noGroup': return 'Not in any groups';
-			case 'profile.noBio': return 'No bio available';
-			case 'profile.noLinks': return 'No links available';
-			case 'profile.save': return 'Save Changes';
-			case 'profile.saved': return 'Profile updated successfully.';
-			case 'profile.saveFailed': return 'Failed to update: {error}';
-			case 'profile.discardTitle': return 'Discard changes?';
-			case 'profile.discardContent': return 'Changes made to your profile will not be saved.';
-			case 'profile.discardCancel': return 'Cancel';
-			case 'profile.discardOk': return 'Discard';
-			case 'profile.basic': return 'Basic Info';
-			case 'profile.pronouns': return 'Pronouns';
-			case 'profile.addLink': return 'Add';
-			case 'profile.removeLink': return 'Remove';
-			case 'profile.linkHint': return 'Enter link (e.g., https://twitter.com/username)';
-			case 'profile.linksHint': return 'Links will be displayed on your profile and can be opened by tapping.';
-			case 'profile.statusMessageHint': return 'Enter your current situation or a message.';
-			case 'profile.bioHint': return 'Write something about yourself.';
-			case 'engageCard.pickBackground': return 'Select Background Image';
-			case 'engageCard.removeBackground': return 'Remove Background Image';
-			case 'engageCard.scanQr': return 'Scan QR Code';
-			case 'engageCard.showAvatar': return 'Show Avatar';
-			case 'engageCard.hideAvatar': return 'Hide Avatar';
-			case 'engageCard.noBackground': return 'No background image selected.\nYou can set one from the top right button.';
-			case 'engageCard.loading': return 'Loading...';
-			case 'engageCard.error': return ({required Object error}) => 'Failed to load engage card information: ${error}';
-			case 'engageCard.copyUserId': return 'Copy User ID';
-			case 'engageCard.copied': return 'Copied';
-			case 'qrScanner.title': return 'QR Code Scan';
-			case 'qrScanner.guide': return 'Align the QR code within the frame.';
-			case 'qrScanner.loading': return 'Initializing camera...';
-			case 'qrScanner.error': return ({required Object error}) => 'Failed to read QR code: ${error}';
-			case 'qrScanner.notFound': return 'No valid user QR code found.';
-			case 'favorites.title': return 'Favorites';
-			case 'favorites.frined': return 'Friend';
-			case 'favorites.friendsTab': return 'Friends';
-			case 'favorites.worldsTab': return 'Worlds';
-			case 'favorites.avatarsTab': return 'Avatars';
-			case 'favorites.emptyFolderTitle': return 'No favorite folders';
-			case 'favorites.emptyFolderDescription': return 'Please create a favorite folder in VRChat.';
-			case 'favorites.emptyFriends': return 'No friends in this folder.';
-			case 'favorites.emptyWorlds': return 'No worlds in this folder.';
-			case 'favorites.emptyAvatars': return 'No avatars in this folder.';
-			case 'favorites.emptyWorldsTabTitle': return 'No favorite worlds';
-			case 'favorites.emptyWorldsTabDescription': return 'You can add worlds to favorites from the world details screen.';
-			case 'favorites.emptyAvatarsTabTitle': return 'No favorite avatars';
-			case 'favorites.emptyAvatarsTabDescription': return 'You can add avatars to favorites from the avatar details screen.';
-			case 'favorites.loading': return 'Loading favorites...';
-			case 'favorites.loadingFolder': return 'Loading folder information...';
-			case 'favorites.error': return ({required Object error}) => 'Failed to load favorites: ${error}';
-			case 'favorites.errorFolder': return 'Failed to get information.';
-			case 'favorites.remove': return 'Remove from Favorites';
-			case 'favorites.removeSuccess': return ({required Object name}) => 'Removed ${name} from favorites.';
-			case 'favorites.removeFailed': return ({required Object error}) => 'Failed to remove: ${error}';
-			case 'favorites.itemsCount': return ({required Object count}) => '${count} items';
-			case 'favorites.public': return 'Public';
-			case 'favorites.private': return 'Private';
-			case 'favorites.hidden': return 'Hidden';
-			case 'favorites.unknown': return 'Unknown';
-			case 'favorites.loadingError': return 'Loading Error';
-			case 'notifications.emptyTitle': return 'No Notifications';
-			case 'notifications.emptyDescription': return 'New notifications, like friend requests and invites,\nwill appear here.';
-			case 'notifications.friendRequest': return ({required Object userName}) => 'You have a friend request from ${userName}.';
-			case 'notifications.invite': return ({required Object worldName, required Object userName}) => 'You have an invite to ${worldName} from ${userName}.';
-			case 'notifications.friendOnline': return ({required Object userName}) => '${userName} is now online.';
-			case 'notifications.friendOffline': return ({required Object userName}) => '${userName} is now offline.';
-			case 'notifications.friendActive': return ({required Object userName}) => '${userName} is now active.';
-			case 'notifications.friendAdd': return ({required Object userName}) => '${userName} has been added to your friends.';
-			case 'notifications.friendRemove': return ({required Object userName}) => '${userName} has been removed from your friends.';
-			case 'notifications.statusUpdate': return ({required Object userName, required Object status, required Object world}) => '${userName}\'s status updated: ${status}${world}';
-			case 'notifications.locationChange': return ({required Object userName, required Object worldName}) => '${userName} moved to ${worldName}.';
-			case 'notifications.userUpdate': return ({required Object world}) => 'Your information has been updated${world}.';
-			case 'notifications.myLocationChange': return ({required Object worldName}) => 'You moved to: ${worldName}';
-			case 'notifications.requestInvite': return ({required Object userName}) => 'You have a request to join from ${userName}.';
-			case 'notifications.votekick': return ({required Object userName}) => 'There was a votekick from ${userName}.';
-			case 'notifications.responseReceived': return ({required Object userName}) => 'Received response for notification ID: ${userName}';
-			case 'notifications.error': return ({required Object worldName}) => 'Error: ${worldName}';
-			case 'notifications.system': return ({required Object extraData}) => 'System notification: ${extraData}';
-			case 'notifications.secondsAgo': return ({required Object seconds}) => '${seconds}s ago';
-			case 'notifications.minutesAgo': return ({required Object minutes}) => '${minutes}m ago';
-			case 'notifications.hoursAgo': return ({required Object hours}) => '${hours}h ago';
-			case 'eventCalendar.title': return 'Event Calendar';
-			case 'eventCalendar.filter': return 'Filter Events';
-			case 'eventCalendar.refresh': return 'Refresh Events';
-			case 'eventCalendar.loading': return 'Loading events...';
-			case 'eventCalendar.error': return ({required Object error}) => 'Failed to load events: ${error}';
-			case 'eventCalendar.filterActive': return ({required Object count}) => 'Filter applied (${count} results)';
-			case 'eventCalendar.clear': return 'Clear';
-			case 'eventCalendar.noEvents': return 'No events match the criteria.';
-			case 'eventCalendar.clearFilter': return 'Clear Filter';
-			case 'eventCalendar.today': return 'Today';
-			case 'eventCalendar.reminderSet': return 'Set Reminder';
-			case 'eventCalendar.reminderSetDone': return 'Reminder Set';
-			case 'eventCalendar.reminderDeleted': return 'Reminder deleted.';
-			case 'eventCalendar.eventName': return 'Event Name';
-			case 'eventCalendar.organizer': return 'Organizer';
-			case 'eventCalendar.description': return 'Description';
-			case 'eventCalendar.genre': return 'Genre';
-			case 'eventCalendar.condition': return 'Participation Conditions';
-			case 'eventCalendar.way': return 'How to Join';
-			case 'eventCalendar.note': return 'Notes';
-			case 'eventCalendar.quest': return 'Quest Compatible';
-			case 'eventCalendar.reminderCount': return ({required Object count}) => '${count}';
-			case 'eventCalendar.startToEnd': return ({required Object start, required Object end}) => '${start} - ${end}';
-			case 'avatars.title': return 'Avatars';
-			case 'avatars.searchHint': return 'Search by avatar name, etc.';
-			case 'avatars.searchTooltip': return 'Search';
-			case 'avatars.searchEmptyTitle': return 'No search results found.';
-			case 'avatars.searchEmptyDescription': return 'Please try a different search term.';
-			case 'avatars.emptyTitle': return 'No avatars';
-			case 'avatars.emptyDescription': return 'Please add an avatar or try again later.';
-			case 'avatars.refresh': return 'Refresh';
-			case 'avatars.loading': return 'Loading avatars...';
-			case 'avatars.error': return ({required Object error}) => 'Failed to load avatars: ${error}';
-			case 'avatars.current': return 'In Use';
-			case 'avatars.public': return 'Public';
-			case 'avatars.private': return 'Private';
-			case 'avatars.hidden': return 'Hidden';
-			case 'avatars.author': return 'Author';
-			case 'avatars.sortUpdated': return 'By Update Date';
-			case 'avatars.sortName': return 'By Name';
-			case 'avatars.sortTooltip': return 'Sort';
-			case 'avatars.viewModeTooltip': return 'Toggle View Mode';
-			case 'worldDetail.loading': return 'Loading world information...';
-			case 'worldDetail.error': return ({required Object error}) => 'Failed to load world information: ${error}';
-			case 'worldDetail.share': return 'Share This World';
-			case 'worldDetail.openInVRChat': return 'Open on VRChat Official Website';
-			case 'worldDetail.report': return 'Report This World';
-			case 'worldDetail.creator': return 'Creator';
-			case 'worldDetail.created': return 'Created';
-			case 'worldDetail.updated': return 'Updated';
-			case 'worldDetail.favorites': return 'Favorites';
-			case 'worldDetail.visits': return 'Visits';
-			case 'worldDetail.occupants': return 'Current Occupants';
-			case 'worldDetail.popularity': return 'Popularity';
-			case 'worldDetail.description': return 'Description';
-			case 'worldDetail.noDescription': return 'No description available.';
-			case 'worldDetail.tags': return 'Tags';
-			case 'worldDetail.joinPublic': return 'Send Invite to Public Instance';
-			case 'worldDetail.favoriteAdded': return 'Added to favorites.';
-			case 'worldDetail.favoriteRemoved': return 'Removed from favorites.';
-			case 'worldDetail.unknown': return 'Unknown';
-			case 'avatarDetail.changeSuccess': return ({required Object name}) => 'Changed to avatar "${name}".';
-			case 'avatarDetail.changeFailed': return ({required Object error}) => 'Failed to change avatar: ${error}';
-			case 'avatarDetail.changing': return 'Changing...';
-			case 'avatarDetail.useThisAvatar': return 'Use This Avatar';
-			case 'avatarDetail.creator': return 'Creator';
-			case 'avatarDetail.created': return 'Created';
-			case 'avatarDetail.updated': return 'Updated';
-			case 'avatarDetail.description': return 'Description';
-			case 'avatarDetail.noDescription': return 'No description available.';
-			case 'avatarDetail.tags': return 'Tags';
-			case 'avatarDetail.addToFavorites': return 'Add to Favorites';
-			case 'avatarDetail.public': return 'Public';
-			case 'avatarDetail.private': return 'Private';
-			case 'avatarDetail.hidden': return 'Hidden';
-			case 'avatarDetail.unknown': return 'Unknown';
-			case 'avatarDetail.share': return 'Share';
-			case 'avatarDetail.loading': return 'Loading avatar information...';
-			case 'avatarDetail.error': return ({required Object error}) => 'Failed to load avatar information: ${error}';
-			case 'groups.title': return 'Groups';
-			case 'groups.loadingUser': return 'Loading user information...';
-			case 'groups.errorUser': return ({required Object error}) => 'Failed to load user information: ${error}';
-			case 'groups.loadingGroups': return 'Loading group information...';
-			case 'groups.errorGroups': return ({required Object error}) => 'Failed to load group information: ${error}';
-			case 'groups.emptyTitle': return 'You are not in any groups.';
-			case 'groups.emptyDescription': return 'You can join groups from the VRChat app or website.';
-			case 'groups.searchGroups': return 'Find Groups';
-			case 'groups.members': return ({required Object count}) => '${count} members';
-			case 'groups.showDetails': return 'Show Details';
-			case 'groups.unknownName': return 'Unknown Name';
-			case 'groupDetail.loading': return 'Loading group information...';
-			case 'groupDetail.error': return ({required Object error}) => 'Failed to load group information: ${error}';
-			case 'groupDetail.share': return 'Share Group Info';
-			case 'groupDetail.description': return 'Description';
-			case 'groupDetail.roles': return 'Roles';
-			case 'groupDetail.basicInfo': return 'Basic Info';
-			case 'groupDetail.createdAt': return 'Created At';
-			case 'groupDetail.owner': return 'Owner';
-			case 'groupDetail.rules': return 'Rules';
-			case 'groupDetail.languages': return 'Languages';
-			case 'groupDetail.memberCount': return ({required Object count}) => '${count} Members';
-			case 'groupDetail.privacy.public': return 'Public';
-			case 'groupDetail.privacy.private': return 'Private';
-			case 'groupDetail.privacy.friends': return 'Friends';
-			case 'groupDetail.privacy.invite': return 'Invite';
-			case 'groupDetail.privacy.unknown': return 'Unknown';
-			case 'groupDetail.role.admin': return 'Admin';
-			case 'groupDetail.role.moderator': return 'Moderator';
-			case 'groupDetail.role.member': return 'Member';
-			case 'groupDetail.role.unknown': return 'Unknown';
-			case 'inventory.title': return 'Inventory';
-			case 'inventory.gallery': return 'Gallery';
-			case 'inventory.icon': return 'Icon';
-			case 'inventory.emoji': return 'Emoji';
-			case 'inventory.sticker': return 'Sticker';
-			case 'inventory.print': return 'Print';
-			case 'inventory.upload': return 'Upload File';
-			case 'inventory.uploadGallery': return 'Uploading gallery image...';
-			case 'inventory.uploadIcon': return 'Uploading icon...';
-			case 'inventory.uploadEmoji': return 'Uploading emoji...';
-			case 'inventory.uploadSticker': return 'Uploading sticker...';
-			case 'inventory.uploadPrint': return 'Uploading print image...';
-			case 'inventory.selectImage': return 'Select Image';
-			case 'inventory.selectFromGallery': return 'Select from Gallery';
-			case 'inventory.takePhoto': return 'Take Photo with Camera';
-			case 'inventory.uploadSuccess': return 'Upload complete.';
-			case 'inventory.uploadFailed': return 'Upload failed.';
-			case 'inventory.uploadFailedFormat': return 'There is a problem with the file format or size. Please select a PNG image under 1MB.';
-			case 'inventory.uploadFailedAuth': return 'Authentication failed. Please log in again.';
-			case 'inventory.uploadFailedSize': return 'File size is too large. Please select a smaller image.';
-			case 'inventory.uploadFailedServer': return ({required Object code}) => 'Server error occurred (${code})';
-			case 'inventory.pickImageFailed': return ({required Object error}) => 'Failed to select image: ${error}';
-			case 'inventory.tabs.emojiInventory.loading': return 'Loading emojis...';
-			case 'inventory.tabs.emojiInventory.error': return ({required Object error}) => 'Failed to load emojis: ${error}';
-			case 'inventory.tabs.emojiInventory.emptyTitle': return 'No emojis';
-			case 'inventory.tabs.emojiInventory.emptyDescription': return 'Emojis you upload in VRChat will appear here.';
-			case 'inventory.tabs.emojiInventory.zoomHint': return 'Double-tap to zoom';
-			case 'inventory.tabs.galleryInventory.loading': return 'Loading gallery...';
-			case 'inventory.tabs.galleryInventory.error': return ({required Object error}) => 'Failed to load gallery: ${error}';
-			case 'inventory.tabs.galleryInventory.emptyTitle': return 'No gallery';
-			case 'inventory.tabs.galleryInventory.emptyDescription': return 'Galleries you upload in VRChat will appear here.';
-			case 'inventory.tabs.galleryInventory.zoomHint': return 'Double-tap to zoom';
-			case 'inventory.tabs.iconInventory.loading': return 'Loading icons...';
-			case 'inventory.tabs.iconInventory.error': return ({required Object error}) => 'Failed to load icons: ${error}';
-			case 'inventory.tabs.iconInventory.emptyTitle': return 'No icons';
-			case 'inventory.tabs.iconInventory.emptyDescription': return 'Icons you upload in VRChat will appear here.';
-			case 'inventory.tabs.iconInventory.zoomHint': return 'Double-tap to zoom';
-			case 'inventory.tabs.printInventory.loading': return 'Loading prints...';
-			case 'inventory.tabs.printInventory.error': return ({required Object error}) => 'Failed to load prints: ${error}';
-			case 'inventory.tabs.printInventory.emptyTitle': return 'No prints';
-			case 'inventory.tabs.printInventory.emptyDescription': return 'Prints you upload in VRChat will appear here.';
-			case 'inventory.tabs.printInventory.zoomHint': return 'Double-tap to zoom';
-			case 'inventory.tabs.stickerInventory.loading': return 'Loading stickers...';
-			case 'inventory.tabs.stickerInventory.error': return ({required Object error}) => 'Failed to load stickers: ${error}';
-			case 'inventory.tabs.stickerInventory.emptyTitle': return 'No stickers';
-			case 'inventory.tabs.stickerInventory.emptyDescription': return 'Stickers you upload in VRChat will appear here.';
-			case 'inventory.tabs.stickerInventory.zoomHint': return 'Double-tap to zoom';
-			case 'vrcnsync.title': return 'VRCNSync (β)';
-			case 'vrcnsync.betaTitle': return 'Beta Feature';
-			case 'vrcnsync.betaDescription': return 'This feature is a beta version under development. Unexpected issues may occur.\nCurrently, it is only implemented locally, but a cloud version will be implemented if there is demand.';
-			case 'vrcnsync.githubLink': return 'VRCNSync GitHub Page';
-			case 'vrcnsync.openGithub': return 'Open GitHub Page';
-			case 'vrcnsync.serverRunning': return 'Server Running';
-			case 'vrcnsync.serverStopped': return 'Server Stopped';
-			case 'vrcnsync.serverRunningDesc': return 'Saves photos from your PC to the VRCN album.';
-			case 'vrcnsync.serverStoppedDesc': return 'The server is stopped.';
-			case 'vrcnsync.photoSaved': return 'Photo saved to VRCN album.';
-			case 'vrcnsync.photoReceived': return 'Photo received (failed to save to album).';
-			case 'vrcnsync.openAlbum': return 'Open Album';
-			case 'vrcnsync.permissionErrorIos': return 'Access to the photo library is required.';
-			case 'vrcnsync.permissionErrorAndroid': return 'Access to storage is required.';
-			case 'vrcnsync.openSettings': return 'Open Settings';
-			case 'vrcnsync.initError': return ({required Object error}) => 'Initialization failed: ${error}';
-			case 'vrcnsync.openPhotoAppError': return 'Could not open the photo app.';
-			case 'vrcnsync.serverInfo': return 'Server Information';
-			case 'vrcnsync.ip': return ({required Object ip}) => 'IP: ${ip}';
-			case 'vrcnsync.port': return ({required Object port}) => 'Port: ${port}';
-			case 'vrcnsync.address': return ({required Object ip, required Object port}) => '${ip}:${port}';
-			case 'vrcnsync.autoSave': return 'Received photos are automatically saved to the "VRCN" album.';
-			case 'vrcnsync.usage': return 'How to Use';
-			case 'vrcnsync.usageSteps.0.title': return 'Launch the VRCNSync app on your PC';
-			case 'vrcnsync.usageSteps.0.desc': return 'Please launch the VRCNSync app on your PC.';
-			case 'vrcnsync.usageSteps.1.title': return 'Connect to the same WiFi network';
-			case 'vrcnsync.usageSteps.1.desc': return 'Please connect your PC and mobile device to the same WiFi network.';
-			case 'vrcnsync.usageSteps.2.title': return 'Specify the mobile device as the destination';
-			case 'vrcnsync.usageSteps.2.desc': return 'Please specify the IP address and port above in the PC app.';
-			case 'vrcnsync.usageSteps.3.title': return 'Send photos';
-			case 'vrcnsync.usageSteps.3.desc': return 'When you send photos from your PC, they will be automatically saved to the VRCN album.';
-			case 'vrcnsync.stats': return 'Connection Status';
-			case 'vrcnsync.statServer': return 'Server Status';
-			case 'vrcnsync.statServerRunning': return 'Running';
-			case 'vrcnsync.statServerStopped': return 'Stopped';
-			case 'vrcnsync.statNetwork': return 'Network';
-			case 'vrcnsync.statNetworkConnected': return 'Connected';
-			case 'vrcnsync.statNetworkDisconnected': return 'Disconnected';
-			case 'feedback.title': return 'Feedback';
-			case 'feedback.type': return 'Feedback Type';
-			case 'feedback.types.bug': return 'Bug Report';
-			case 'feedback.types.feature': return 'Feature Request';
-			case 'feedback.types.improvement': return 'Suggestion for Improvement';
-			case 'feedback.types.other': return 'Other';
-			case 'feedback.inputTitle': return 'Title *';
-			case 'feedback.inputTitleHint': return 'Please be concise.';
-			case 'feedback.inputDescription': return 'Description *';
-			case 'feedback.inputDescriptionHint': return 'Please provide a detailed description...';
-			case 'feedback.cancel': return 'Cancel';
-			case 'feedback.send': return 'Send';
-			case 'feedback.sending': return 'Sending...';
-			case 'feedback.required': return 'Title and description are required.';
-			case 'feedback.success': return 'Feedback sent. Thank you!';
-			case 'feedback.fail': return 'Failed to send feedback.';
-			case 'settings.appearance': return 'Appearance';
-			case 'settings.language': return 'Language';
-			case 'settings.languageDescription': return 'You can select the display language for the app.';
-			case 'settings.appIcon': return 'App Icon';
-			case 'settings.appIconDescription': return 'Change the app icon displayed on the home screen.';
-			case 'settings.contentSettings': return 'Content Settings';
-			case 'settings.searchEnabled': return 'Search feature enabled.';
-			case 'settings.searchDisabled': return 'Search feature disabled.';
-			case 'settings.enableSearch': return 'Enable Search';
-			case 'settings.enableSearchDescription': return 'Search results may include sexual or violent content.';
-			case 'settings.apiSetting': return 'Avatar Search API';
-			case 'settings.apiSettingDescription': return 'Set the API for the avatar search feature.';
-			case 'settings.apiSettingSaveUrl': return 'URL saved.';
-			case 'settings.notSet': return 'Not set (Avatar search feature cannot be used).';
-			case 'settings.notifications': return 'Notification Settings';
-			case 'settings.eventReminder': return 'Event Reminders';
-			case 'settings.eventReminderDescription': return 'Receive notifications before your scheduled events start.';
-			case 'settings.manageReminders': return 'Manage Set Reminders';
-			case 'settings.manageRemindersDescription': return 'Cancel or check your notifications.';
-			case 'settings.dataStorage': return 'Data and Storage';
-			case 'settings.clearCache': return 'Clear Cache';
-			case 'settings.clearCacheSuccess': return 'Cache cleared.';
-			case 'settings.clearCacheError': return 'An error occurred while clearing the cache.';
-			case 'settings.cacheSize': return ({required Object size}) => 'Cache size: ${size}';
-			case 'settings.calculatingCache': return 'Calculating cache size...';
-			case 'settings.cacheError': return 'Could not get cache size.';
-			case 'settings.confirmClearCache': return 'Clearing the cache will delete temporarily saved images and data.\n\nYour account information and app settings will not be deleted.';
-			case 'settings.appInfo': return 'App Information';
-			case 'settings.version': return 'Version';
-			case 'settings.packageName': return 'Package Name';
-			case 'settings.credit': return 'Credits';
-			case 'settings.creditDescription': return 'Developer and contributor information.';
-			case 'settings.contact': return 'Contact';
-			case 'settings.contactDescription': return 'For bug reports and suggestions.';
-			case 'settings.privacyPolicy': return 'Privacy Policy';
-			case 'settings.privacyPolicyDescription': return 'About the handling of personal information.';
-			case 'settings.termsOfService': return 'Terms of Service';
-			case 'settings.termsOfServiceDescription': return 'Conditions for using the app.';
-			case 'settings.openSource': return 'Open Source Information';
-			case 'settings.openSourceDescription': return 'Licenses for libraries used.';
-			case 'settings.github': return 'GitHub Repository';
-			case 'settings.githubDescription': return 'View source code.';
-			case 'settings.logoutConfirm': return 'Are you sure you want to log out?';
-			case 'settings.logoutError': return ({required Object error}) => 'An error occurred during logout: ${error}';
-			case 'settings.iconChangeNotSupported': return 'Changing the app icon is not supported on your device.';
-			case 'settings.iconChangeFailed': return 'Failed to change icon.';
-			case 'settings.themeMode': return 'Theme Mode';
-			case 'settings.themeModeDescription': return 'You can select the display theme of the app.';
-			case 'settings.themeLight': return 'Light';
-			case 'settings.themeSystem': return 'System';
-			case 'settings.themeDark': return 'Dark';
-			case 'settings.appIconDefault': return 'Default';
-			case 'settings.appIconIcon': return 'Icon';
-			case 'settings.appIconLogo': return 'Logo';
-			case 'settings.delete': return 'Delete';
-			case 'credits.title': return 'Credits';
-			case 'credits.section.development': return 'Development';
-			case 'credits.section.iconPeople': return 'The Fun Icon People';
-			case 'credits.section.testFeedback': return 'Testing & Feedback';
-			case 'credits.section.specialThanks': return 'Special Thanks';
-			case 'download.success': return 'Download complete.';
-			case 'download.failure': return ({required Object error}) => 'Download failed: ${error}';
-			case 'download.shareFailure': return ({required Object error}) => 'Sharing failed: ${error}';
-			case 'download.permissionTitle': return 'Permission Required';
-			case 'download.permissionDenied': return ({required Object permissionType}) => 'Permission to save to ${permissionType} has been denied.\nPlease enable the permission from the settings app.';
-			case 'download.permissionCancel': return 'Cancel';
-			case 'download.permissionOpenSettings': return 'Open Settings';
-			case 'download.permissionPhoto': return 'Photos';
-			case 'download.permissionPhotoLibrary': return 'Photo Library';
-			case 'download.permissionStorage': return 'Storage';
-			case 'download.permissionPhotoRequired': return 'Permission to save to photos is required.';
-			case 'download.permissionPhotoLibraryRequired': return 'Permission to save to photo library is required.';
-			case 'download.permissionStorageRequired': return 'Permission to access storage is required.';
-			case 'download.permissionError': return ({required Object error}) => 'An error occurred while checking permissions: ${error}';
-			case 'download.downloading': return ({required Object fileName}) => 'Downloading ${fileName}...';
-			case 'download.sharing': return ({required Object fileName}) => 'Preparing to share ${fileName}...';
-			case 'instance.type.public': return 'Public';
-			case 'instance.type.hidden': return 'Friend+';
-			case 'instance.type.friends': return 'Friends';
-			case 'instance.type.private': return 'Invite+';
-			case 'instance.type.unknown': return 'Unknown';
-			case 'status.active': return 'Online';
-			case 'status.joinMe': return 'Join Me';
-			case 'status.askMe': return 'Ask Me';
-			case 'status.busy': return 'Busy';
-			case 'status.offline': return 'Offline';
-			case 'status.unknown': return 'Unknown Status';
-			case 'location.private': return 'Private';
-			case 'location.playerCount': return ({required Object userCount, required Object capacity}) => 'Players: ${userCount} / ${capacity}';
-			case 'location.instanceType': return ({required Object type}) => 'Instance Type: ${type}';
-			case 'location.noInfo': return 'No location information available.';
-			case 'location.fetchError': return 'Failed to get location information.';
-			case 'location.privateLocation': return 'You are in a private location.';
-			case 'location.inviteSending': return 'Sending invite...';
-			case 'location.inviteSent': return 'Invite sent. You can join from your notifications.';
-			case 'location.inviteFailed': return ({required Object error}) => 'Failed to send invite: ${error}';
-			case 'location.inviteButton': return 'Send Invite to Myself';
-			case 'location.isPrivate': return ({required Object number}) => '${number} in private';
-			case 'location.isActive': return ({required Object number}) => '${number} active';
-			case 'location.isOffline': return ({required Object number}) => '${number} offline';
-			case 'location.isTraveling': return ({required Object number}) => '${number} traveling';
-			case 'location.isStaying': return ({required Object number}) => '${number} staying';
-			case 'reminder.dialogTitle': return 'Set Reminder';
-			case 'reminder.alreadySet': return 'Already Set';
-			case 'reminder.set': return 'Set';
-			case 'reminder.cancel': return 'Cancel';
-			case 'reminder.delete': return 'Delete';
-			case 'reminder.deleteAll': return 'Delete All Reminders';
-			case 'reminder.deleteAllConfirm': return 'This will delete all set event reminders. This action cannot be undone.';
-			case 'reminder.deleted': return 'Reminder deleted.';
-			case 'reminder.deletedAll': return 'All reminders deleted.';
-			case 'reminder.noReminders': return 'No reminders set.';
-			case 'reminder.setFromEvent': return 'You can set notifications from the event page.';
-			case 'reminder.eventStart': return ({required Object time}) => 'Starts at ${time}';
-			case 'reminder.notifyAt': return ({required Object time, required Object label}) => '${time} (${label})';
-			case 'reminder.receiveNotification': return 'When do you want to be notified?';
-			case 'friend.sortFilter': return 'Sort & Filter';
-			case 'friend.filter': return 'Filter';
-			case 'friend.filterAll': return 'Show All';
-			case 'friend.filterOnline': return 'Online Only';
-			case 'friend.filterOffline': return 'Offline Only';
-			case 'friend.filterFavorite': return 'Favorites Only';
-			case 'friend.sort': return 'Sort';
-			case 'friend.sortStatus': return 'By Status';
-			case 'friend.sortName': return 'By Name';
-			case 'friend.sortLastLogin': return 'By Last Login';
-			case 'friend.sortAsc': return 'Ascending';
-			case 'friend.sortDesc': return 'Descending';
-			case 'friend.close': return 'Close';
-			case 'eventCalendarFilter.filterTitle': return 'Filter Events';
-			case 'eventCalendarFilter.clear': return 'Clear';
-			case 'eventCalendarFilter.keyword': return 'Keyword Search';
-			case 'eventCalendarFilter.keywordHint': return 'Event name, description, organizer, etc.';
-			case 'eventCalendarFilter.date': return 'Filter by Date';
-			case 'eventCalendarFilter.dateHint': return 'You can display events for a specific date range.';
-			case 'eventCalendarFilter.startDate': return 'Start Date';
-			case 'eventCalendarFilter.endDate': return 'End Date';
-			case 'eventCalendarFilter.select': return 'Please select';
-			case 'eventCalendarFilter.time': return 'Filter by Time';
-			case 'eventCalendarFilter.timeHint': return 'You can display events held during a specific time frame.';
-			case 'eventCalendarFilter.startTime': return 'Start Time';
-			case 'eventCalendarFilter.endTime': return 'End Time';
-			case 'eventCalendarFilter.genre': return 'Filter by Genre';
-			case 'eventCalendarFilter.genreSelected': return ({required Object count}) => '${count} genres selected';
-			case 'eventCalendarFilter.apply': return 'Apply';
-			case 'eventCalendarFilter.filterSummary': return 'Filters';
-			case 'eventCalendarFilter.filterNone': return 'No filters are set.';
-			default: return null;
-		}
+		return switch (path) {
+			'common.title' => 'VRCN',
+			'common.ok' => 'OK',
+			'common.cancel' => 'Cancel',
+			'common.close' => 'Close',
+			'common.save' => 'Save',
+			'common.edit' => 'Edit',
+			'common.delete' => 'Delete',
+			'common.yes' => 'Yes',
+			'common.no' => 'No',
+			'common.loading' => 'Loading...',
+			'common.error' => ({required Object error}) => 'An error occurred: ${error}',
+			'common.errorNomessage' => 'An error occurred',
+			'common.retry' => 'Retry',
+			'common.search' => 'Search',
+			'common.settings' => 'Settings',
+			'common.confirm' => 'Confirm',
+			'common.agree' => 'Agree',
+			'common.decline' => 'Decline',
+			'common.username' => 'Username',
+			'common.password' => 'Password',
+			'common.login' => 'Login',
+			'common.logout' => 'Logout',
+			'common.share' => 'Share',
+			'termsAgreement.welcomeTitle' => 'Welcome to VRCN',
+			'termsAgreement.welcomeMessage' => 'Before using the app,\nplease review the Terms of Service and Privacy Policy.',
+			'termsAgreement.termsTitle' => 'Terms of Service',
+			'termsAgreement.termsSubtitle' => 'About the conditions for using the app',
+			'termsAgreement.privacyTitle' => 'Privacy Policy',
+			'termsAgreement.privacySubtitle' => 'About the handling of personal information',
+			'termsAgreement.agreeTerms' => ({required Object title}) => 'I agree to the "${title}"',
+			'termsAgreement.checkContent' => 'Check Content',
+			'termsAgreement.notice' => 'This is an unofficial app for VRChat Inc.\nIt is not affiliated with VRChat Inc. in any way.',
+			'drawer.home' => 'Home',
+			'drawer.profile' => 'Profile',
+			'drawer.favorite' => 'Favorites',
+			'drawer.eventCalendar' => 'Event Calendar',
+			'drawer.avatar' => 'Avatars',
+			'drawer.group' => 'Groups',
+			'drawer.inventory' => 'Inventory',
+			'drawer.vrcnsync' => 'VRCNSync (β)',
+			'drawer.review' => 'Review',
+			'drawer.feedback' => 'Feedback',
+			'drawer.settings' => 'Settings',
+			'drawer.userLoading' => 'Loading user information...',
+			'drawer.userError' => 'Failed to load user information',
+			'drawer.retry' => 'Retry',
+			'drawer.section.content' => 'Content',
+			'drawer.section.other' => 'Other',
+			'login.forgotPassword' => 'Forgot your password?',
+			'login.createAccount' => 'Sign up',
+			'login.subtitle' => 'Login with your VRChat account',
+			'login.email' => 'Email Address',
+			'login.emailHint' => 'Enter email or username',
+			'login.passwordHint' => 'Enter password',
+			'login.rememberMe' => 'Remember me',
+			'login.loggingIn' => 'Logging in...',
+			'login.errorEmptyEmail' => 'Please enter your username or email address.',
+			'login.errorEmptyPassword' => 'Please enter your password.',
+			'login.errorLoginFailed' => 'Login failed. Please check your email and password.',
+			'login.twoFactorTitle' => 'Two-Factor Authentication',
+			'login.twoFactorSubtitle' => 'Please enter the authentication code.',
+			'login.twoFactorInstruction' => 'Enter the 6-digit code from\nyour authenticator app.',
+			'login.twoFactorCodeHint' => 'Authentication code',
+			'login.verify' => 'Verify',
+			'login.verifying' => 'Verifying...',
+			'login.errorEmpty2fa' => 'Please enter the authentication code.',
+			'login.error2faFailed' => 'Two-factor authentication failed. Please check if the code is correct.',
+			'login.backToLogin' => 'Back to login',
+			'login.paste' => 'Paste',
+			'friends.loading' => 'Loading friends list...',
+			'friends.error' => ({required Object error}) => 'Failed to load friends list: ${error}',
+			'friends.notFound' => 'No friends found.',
+			'friends.private' => 'Private',
+			'friends.active' => 'Active',
+			'friends.offline' => 'Offline',
+			'friends.online' => 'Online',
+			'friends.groupTitle' => 'Group by World',
+			'friends.refresh' => 'Refresh',
+			'friends.searchHint' => 'Search by friend\'s name',
+			'friends.noResult' => 'No matching friends found.',
+			'friendDetail.loading' => 'Loading user information...',
+			'friendDetail.error' => ({required Object error}) => 'Failed to load user information: ${error}',
+			'friendDetail.currentLocation' => 'Current Location',
+			'friendDetail.basicInfo' => 'Basic Info',
+			'friendDetail.userId' => 'User ID',
+			'friendDetail.dateJoined' => 'Date Joined',
+			'friendDetail.lastLogin' => 'Last Login',
+			'friendDetail.bio' => 'Bio',
+			'friendDetail.links' => 'Links',
+			'friendDetail.loadingLinks' => 'Loading links...',
+			'friendDetail.group' => 'Groups',
+			'friendDetail.groupDetail' => 'View Group Details',
+			'friendDetail.groupCode' => ({required Object code}) => 'Group Code: ${code}',
+			'friendDetail.memberCount' => ({required Object count}) => 'Members: ${count}',
+			'friendDetail.unknownGroup' => 'Unknown Group',
+			'friendDetail.block' => 'Block',
+			'friendDetail.mute' => 'Mute',
+			'friendDetail.openWebsite' => 'Open on Website',
+			'friendDetail.shareProfile' => 'Share Profile',
+			'friendDetail.confirmBlockTitle' => ({required Object name}) => 'Block ${name}?',
+			'friendDetail.confirmBlockMessage' => 'If you block this user, you will no longer receive friend requests or messages from them.',
+			'friendDetail.confirmMuteTitle' => ({required Object name}) => 'Mute ${name}?',
+			'friendDetail.confirmMuteMessage' => 'If you mute this user, you will no longer hear their voice.',
+			'friendDetail.blockSuccess' => 'Blocked',
+			'friendDetail.muteSuccess' => 'Muted',
+			'friendDetail.operationFailed' => ({required Object error}) => 'Operation failed: ${error}',
+			'search.userTab' => 'Users',
+			'search.worldTab' => 'Worlds',
+			'search.avatarTab' => 'Avatars',
+			'search.groupTab' => 'Groups',
+			'search.tabs.userSearch.emptyTitle' => 'User Search',
+			'search.tabs.userSearch.emptyDescription' => 'You can search by username or ID.',
+			'search.tabs.userSearch.searching' => 'Searching...',
+			'search.tabs.userSearch.noResults' => 'No matching users found.',
+			'search.tabs.userSearch.error' => ({required Object error}) => 'An error occurred during user search: ${error}',
+			'search.tabs.userSearch.inputPlaceholder' => 'Enter username or ID',
+			'search.tabs.worldSearch.emptyTitle' => 'Explore Worlds',
+			'search.tabs.worldSearch.emptyDescription' => 'Please enter a keyword to search.',
+			'search.tabs.worldSearch.searching' => 'Searching...',
+			'search.tabs.worldSearch.noResults' => 'No matching worlds found.',
+			'search.tabs.worldSearch.noResultsWithQuery' => ({required Object query}) => 'No worlds found matching "${query}"',
+			'search.tabs.worldSearch.noResultsHint' => 'Try changing your search keywords.',
+			'search.tabs.worldSearch.error' => ({required Object error}) => 'An error occurred during world search: ${error}',
+			'search.tabs.worldSearch.resultCount' => ({required Object count}) => '${count} worlds found',
+			'search.tabs.worldSearch.authorPrefix' => ({required Object authorName}) => 'by ${authorName}',
+			'search.tabs.worldSearch.listView' => 'List View',
+			'search.tabs.worldSearch.gridView' => 'Grid View',
+			'search.tabs.groupSearch.emptyTitle' => 'Search Groups',
+			'search.tabs.groupSearch.emptyDescription' => 'Please enter a keyword to search.',
+			'search.tabs.groupSearch.searching' => 'Searching...',
+			'search.tabs.groupSearch.noResults' => 'No matching groups found.',
+			'search.tabs.groupSearch.noResultsWithQuery' => ({required Object query}) => 'No groups found matching "${query}"',
+			'search.tabs.groupSearch.noResultsHint' => 'Try changing your search keywords.',
+			'search.tabs.groupSearch.error' => ({required Object error}) => 'An error occurred during group search: ${error}',
+			'search.tabs.groupSearch.resultCount' => ({required Object count}) => '${count} groups found',
+			'search.tabs.groupSearch.listView' => 'List View',
+			'search.tabs.groupSearch.gridView' => 'Grid View',
+			'search.tabs.groupSearch.memberCount' => ({required Object count}) => '${count} members',
+			'search.tabs.avatarSearch.avatar' => 'Avatar',
+			'search.tabs.avatarSearch.emptyTitle' => 'Search Avatars',
+			'search.tabs.avatarSearch.emptyDescription' => 'Please enter a keyword to search.',
+			'search.tabs.avatarSearch.searching' => 'Searching for avatars...',
+			'search.tabs.avatarSearch.noResults' => 'No search results found.',
+			'search.tabs.avatarSearch.noResultsHint' => 'Try another keyword.',
+			'search.tabs.avatarSearch.error' => ({required Object error}) => 'An error occurred during avatar search: ${error}',
+			'profile.title' => 'Profile',
+			'profile.edit' => 'Edit',
+			'profile.refresh' => 'Refresh',
+			'profile.loading' => 'Loading profile information...',
+			'profile.error' => 'Failed to load profile information: {error}',
+			'profile.displayName' => 'Display Name',
+			'profile.username' => 'Username',
+			'profile.userId' => 'User ID',
+			'profile.engageCard' => 'Engage Card',
+			'profile.frined' => 'Friend',
+			'profile.dateJoined' => 'Date Joined',
+			'profile.userType' => 'User Type',
+			'profile.status' => 'Status',
+			'profile.statusMessage' => 'Status Message',
+			'profile.bio' => 'Bio',
+			'profile.links' => 'Links',
+			'profile.group' => 'Groups',
+			'profile.groupDetail' => 'View Group Details',
+			'profile.avatar' => 'Current Avatar',
+			'profile.avatarDetail' => 'View Avatar Details',
+			'profile.public' => 'Public',
+			'profile.private' => 'Private',
+			'profile.hidden' => 'Hidden',
+			'profile.unknown' => 'Unknown',
+			'profile.friends' => 'Friends',
+			'profile.loadingLinks' => 'Loading links...',
+			'profile.noGroup' => 'Not in any groups',
+			'profile.noBio' => 'No bio available',
+			'profile.noLinks' => 'No links available',
+			'profile.save' => 'Save Changes',
+			'profile.saved' => 'Profile updated successfully.',
+			'profile.saveFailed' => 'Failed to update: {error}',
+			'profile.discardTitle' => 'Discard changes?',
+			'profile.discardContent' => 'Changes made to your profile will not be saved.',
+			'profile.discardCancel' => 'Cancel',
+			'profile.discardOk' => 'Discard',
+			'profile.basic' => 'Basic Info',
+			'profile.pronouns' => 'Pronouns',
+			'profile.addLink' => 'Add',
+			'profile.removeLink' => 'Remove',
+			'profile.linkHint' => 'Enter link (e.g., https://twitter.com/username)',
+			'profile.linksHint' => 'Links will be displayed on your profile and can be opened by tapping.',
+			'profile.statusMessageHint' => 'Enter your current situation or a message.',
+			'profile.bioHint' => 'Write something about yourself.',
+			'engageCard.pickBackground' => 'Select Background Image',
+			'engageCard.removeBackground' => 'Remove Background Image',
+			'engageCard.scanQr' => 'Scan QR Code',
+			'engageCard.showAvatar' => 'Show Avatar',
+			'engageCard.hideAvatar' => 'Hide Avatar',
+			'engageCard.noBackground' => 'No background image selected.\nYou can set one from the top right button.',
+			'engageCard.loading' => 'Loading...',
+			'engageCard.error' => ({required Object error}) => 'Failed to load engage card information: ${error}',
+			'engageCard.copyUserId' => 'Copy User ID',
+			'engageCard.copied' => 'Copied',
+			'qrScanner.title' => 'QR Code Scan',
+			'qrScanner.guide' => 'Align the QR code within the frame.',
+			'qrScanner.loading' => 'Initializing camera...',
+			'qrScanner.error' => ({required Object error}) => 'Failed to read QR code: ${error}',
+			'qrScanner.notFound' => 'No valid user QR code found.',
+			'favorites.title' => 'Favorites',
+			'favorites.frined' => 'Friend',
+			'favorites.friendsTab' => 'Friends',
+			'favorites.worldsTab' => 'Worlds',
+			'favorites.avatarsTab' => 'Avatars',
+			'favorites.emptyFolderTitle' => 'No favorite folders',
+			'favorites.emptyFolderDescription' => 'Please create a favorite folder in VRChat.',
+			'favorites.emptyFriends' => 'No friends in this folder.',
+			'favorites.emptyWorlds' => 'No worlds in this folder.',
+			'favorites.emptyAvatars' => 'No avatars in this folder.',
+			'favorites.emptyWorldsTabTitle' => 'No favorite worlds',
+			'favorites.emptyWorldsTabDescription' => 'You can add worlds to favorites from the world details screen.',
+			'favorites.emptyAvatarsTabTitle' => 'No favorite avatars',
+			'favorites.emptyAvatarsTabDescription' => 'You can add avatars to favorites from the avatar details screen.',
+			'favorites.loading' => 'Loading favorites...',
+			'favorites.loadingFolder' => 'Loading folder information...',
+			'favorites.error' => ({required Object error}) => 'Failed to load favorites: ${error}',
+			'favorites.errorFolder' => 'Failed to get information.',
+			'favorites.remove' => 'Remove from Favorites',
+			'favorites.removeSuccess' => ({required Object name}) => 'Removed ${name} from favorites.',
+			'favorites.removeFailed' => ({required Object error}) => 'Failed to remove: ${error}',
+			'favorites.itemsCount' => ({required Object count}) => '${count} items',
+			'favorites.public' => 'Public',
+			'favorites.private' => 'Private',
+			'favorites.hidden' => 'Hidden',
+			'favorites.unknown' => 'Unknown',
+			'favorites.loadingError' => 'Loading Error',
+			'notifications.emptyTitle' => 'No Notifications',
+			'notifications.emptyDescription' => 'New notifications, like friend requests and invites,\nwill appear here.',
+			'notifications.friendRequest' => ({required Object userName}) => 'You have a friend request from ${userName}.',
+			'notifications.invite' => ({required Object worldName, required Object userName}) => 'You have an invite to ${worldName} from ${userName}.',
+			'notifications.friendOnline' => ({required Object userName}) => '${userName} is now online.',
+			'notifications.friendOffline' => ({required Object userName}) => '${userName} is now offline.',
+			'notifications.friendActive' => ({required Object userName}) => '${userName} is now active.',
+			'notifications.friendAdd' => ({required Object userName}) => '${userName} has been added to your friends.',
+			'notifications.friendRemove' => ({required Object userName}) => '${userName} has been removed from your friends.',
+			'notifications.statusUpdate' => ({required Object userName, required Object status, required Object world}) => '${userName}\'s status updated: ${status}${world}',
+			'notifications.locationChange' => ({required Object userName, required Object worldName}) => '${userName} moved to ${worldName}.',
+			'notifications.userUpdate' => ({required Object world}) => 'Your information has been updated${world}.',
+			'notifications.myLocationChange' => ({required Object worldName}) => 'You moved to: ${worldName}',
+			'notifications.requestInvite' => ({required Object userName}) => 'You have a request to join from ${userName}.',
+			'notifications.votekick' => ({required Object userName}) => 'There was a votekick from ${userName}.',
+			'notifications.responseReceived' => ({required Object userName}) => 'Received response for notification ID: ${userName}',
+			'notifications.error' => ({required Object worldName}) => 'Error: ${worldName}',
+			'notifications.system' => ({required Object extraData}) => 'System notification: ${extraData}',
+			'notifications.secondsAgo' => ({required Object seconds}) => '${seconds}s ago',
+			'notifications.minutesAgo' => ({required Object minutes}) => '${minutes}m ago',
+			'notifications.hoursAgo' => ({required Object hours}) => '${hours}h ago',
+			'eventCalendar.title' => 'Event Calendar',
+			'eventCalendar.filter' => 'Filter Events',
+			'eventCalendar.refresh' => 'Refresh Events',
+			'eventCalendar.loading' => 'Loading events...',
+			'eventCalendar.error' => ({required Object error}) => 'Failed to load events: ${error}',
+			'eventCalendar.filterActive' => ({required Object count}) => 'Filter applied (${count} results)',
+			'eventCalendar.clear' => 'Clear',
+			'eventCalendar.noEvents' => 'No events match the criteria.',
+			'eventCalendar.clearFilter' => 'Clear Filter',
+			'eventCalendar.today' => 'Today',
+			'eventCalendar.reminderSet' => 'Set Reminder',
+			'eventCalendar.reminderSetDone' => 'Reminder Set',
+			'eventCalendar.reminderDeleted' => 'Reminder deleted.',
+			'eventCalendar.eventName' => 'Event Name',
+			'eventCalendar.organizer' => 'Organizer',
+			'eventCalendar.description' => 'Description',
+			'eventCalendar.genre' => 'Genre',
+			'eventCalendar.condition' => 'Participation Conditions',
+			'eventCalendar.way' => 'How to Join',
+			'eventCalendar.note' => 'Notes',
+			'eventCalendar.quest' => 'Quest Compatible',
+			'eventCalendar.reminderCount' => ({required Object count}) => '${count}',
+			'eventCalendar.startToEnd' => ({required Object start, required Object end}) => '${start} - ${end}',
+			'avatars.title' => 'Avatars',
+			'avatars.searchHint' => 'Search by avatar name, etc.',
+			'avatars.searchTooltip' => 'Search',
+			'avatars.searchEmptyTitle' => 'No search results found.',
+			'avatars.searchEmptyDescription' => 'Please try a different search term.',
+			'avatars.emptyTitle' => 'No avatars',
+			'avatars.emptyDescription' => 'Please add an avatar or try again later.',
+			'avatars.refresh' => 'Refresh',
+			'avatars.loading' => 'Loading avatars...',
+			'avatars.error' => ({required Object error}) => 'Failed to load avatars: ${error}',
+			'avatars.current' => 'In Use',
+			'avatars.public' => 'Public',
+			'avatars.private' => 'Private',
+			'avatars.hidden' => 'Hidden',
+			'avatars.author' => 'Author',
+			'avatars.sortUpdated' => 'By Update Date',
+			'avatars.sortName' => 'By Name',
+			'avatars.sortTooltip' => 'Sort',
+			'avatars.viewModeTooltip' => 'Toggle View Mode',
+			'worldDetail.loading' => 'Loading world information...',
+			'worldDetail.error' => ({required Object error}) => 'Failed to load world information: ${error}',
+			'worldDetail.share' => 'Share This World',
+			'worldDetail.openInVRChat' => 'Open on VRChat Official Website',
+			'worldDetail.report' => 'Report This World',
+			'worldDetail.creator' => 'Creator',
+			'worldDetail.created' => 'Created',
+			'worldDetail.updated' => 'Updated',
+			'worldDetail.favorites' => 'Favorites',
+			'worldDetail.visits' => 'Visits',
+			'worldDetail.occupants' => 'Current Occupants',
+			'worldDetail.popularity' => 'Popularity',
+			'worldDetail.description' => 'Description',
+			'worldDetail.noDescription' => 'No description available.',
+			'worldDetail.tags' => 'Tags',
+			'worldDetail.joinPublic' => 'Send Invite to Public Instance',
+			'worldDetail.favoriteAdded' => 'Added to favorites.',
+			'worldDetail.favoriteRemoved' => 'Removed from favorites.',
+			'worldDetail.unknown' => 'Unknown',
+			'avatarDetail.changeSuccess' => ({required Object name}) => 'Changed to avatar "${name}".',
+			'avatarDetail.changeFailed' => ({required Object error}) => 'Failed to change avatar: ${error}',
+			'avatarDetail.changing' => 'Changing...',
+			'avatarDetail.useThisAvatar' => 'Use This Avatar',
+			'avatarDetail.creator' => 'Creator',
+			'avatarDetail.created' => 'Created',
+			'avatarDetail.updated' => 'Updated',
+			'avatarDetail.description' => 'Description',
+			'avatarDetail.noDescription' => 'No description available.',
+			'avatarDetail.tags' => 'Tags',
+			'avatarDetail.addToFavorites' => 'Add to Favorites',
+			'avatarDetail.public' => 'Public',
+			'avatarDetail.private' => 'Private',
+			'avatarDetail.hidden' => 'Hidden',
+			'avatarDetail.unknown' => 'Unknown',
+			'avatarDetail.share' => 'Share',
+			'avatarDetail.loading' => 'Loading avatar information...',
+			'avatarDetail.error' => ({required Object error}) => 'Failed to load avatar information: ${error}',
+			'groups.title' => 'Groups',
+			'groups.loadingUser' => 'Loading user information...',
+			'groups.errorUser' => ({required Object error}) => 'Failed to load user information: ${error}',
+			'groups.loadingGroups' => 'Loading group information...',
+			'groups.errorGroups' => ({required Object error}) => 'Failed to load group information: ${error}',
+			'groups.emptyTitle' => 'You are not in any groups.',
+			'groups.emptyDescription' => 'You can join groups from the VRChat app or website.',
+			'groups.searchGroups' => 'Find Groups',
+			'groups.members' => ({required Object count}) => '${count} members',
+			'groups.showDetails' => 'Show Details',
+			'groups.unknownName' => 'Unknown Name',
+			'groupDetail.loading' => 'Loading group information...',
+			'groupDetail.error' => ({required Object error}) => 'Failed to load group information: ${error}',
+			'groupDetail.share' => 'Share Group Info',
+			'groupDetail.description' => 'Description',
+			'groupDetail.roles' => 'Roles',
+			'groupDetail.basicInfo' => 'Basic Info',
+			'groupDetail.createdAt' => 'Created At',
+			'groupDetail.owner' => 'Owner',
+			'groupDetail.rules' => 'Rules',
+			'groupDetail.languages' => 'Languages',
+			'groupDetail.memberCount' => ({required Object count}) => '${count} Members',
+			'groupDetail.privacy.public' => 'Public',
+			'groupDetail.privacy.private' => 'Private',
+			'groupDetail.privacy.friends' => 'Friends',
+			'groupDetail.privacy.invite' => 'Invite',
+			'groupDetail.privacy.unknown' => 'Unknown',
+			'groupDetail.role.admin' => 'Admin',
+			'groupDetail.role.moderator' => 'Moderator',
+			'groupDetail.role.member' => 'Member',
+			'groupDetail.role.unknown' => 'Unknown',
+			'inventory.title' => 'Inventory',
+			'inventory.gallery' => 'Gallery',
+			'inventory.icon' => 'Icon',
+			'inventory.emoji' => 'Emoji',
+			'inventory.sticker' => 'Sticker',
+			'inventory.print' => 'Print',
+			'inventory.upload' => 'Upload File',
+			'inventory.uploadGallery' => 'Uploading gallery image...',
+			'inventory.uploadIcon' => 'Uploading icon...',
+			'inventory.uploadEmoji' => 'Uploading emoji...',
+			'inventory.uploadSticker' => 'Uploading sticker...',
+			'inventory.uploadPrint' => 'Uploading print image...',
+			'inventory.selectImage' => 'Select Image',
+			'inventory.selectFromGallery' => 'Select from Gallery',
+			'inventory.takePhoto' => 'Take Photo with Camera',
+			'inventory.uploadSuccess' => 'Upload complete.',
+			'inventory.uploadFailed' => 'Upload failed.',
+			'inventory.uploadFailedFormat' => 'There is a problem with the file format or size. Please select a PNG image under 1MB.',
+			'inventory.uploadFailedAuth' => 'Authentication failed. Please log in again.',
+			'inventory.uploadFailedSize' => 'File size is too large. Please select a smaller image.',
+			'inventory.uploadFailedServer' => ({required Object code}) => 'Server error occurred (${code})',
+			'inventory.pickImageFailed' => ({required Object error}) => 'Failed to select image: ${error}',
+			'inventory.tabs.emojiInventory.loading' => 'Loading emojis...',
+			'inventory.tabs.emojiInventory.error' => ({required Object error}) => 'Failed to load emojis: ${error}',
+			'inventory.tabs.emojiInventory.emptyTitle' => 'No emojis',
+			'inventory.tabs.emojiInventory.emptyDescription' => 'Emojis you upload in VRChat will appear here.',
+			'inventory.tabs.emojiInventory.zoomHint' => 'Double-tap to zoom',
+			'inventory.tabs.galleryInventory.loading' => 'Loading gallery...',
+			'inventory.tabs.galleryInventory.error' => ({required Object error}) => 'Failed to load gallery: ${error}',
+			'inventory.tabs.galleryInventory.emptyTitle' => 'No gallery',
+			'inventory.tabs.galleryInventory.emptyDescription' => 'Galleries you upload in VRChat will appear here.',
+			'inventory.tabs.galleryInventory.zoomHint' => 'Double-tap to zoom',
+			'inventory.tabs.iconInventory.loading' => 'Loading icons...',
+			'inventory.tabs.iconInventory.error' => ({required Object error}) => 'Failed to load icons: ${error}',
+			'inventory.tabs.iconInventory.emptyTitle' => 'No icons',
+			'inventory.tabs.iconInventory.emptyDescription' => 'Icons you upload in VRChat will appear here.',
+			'inventory.tabs.iconInventory.zoomHint' => 'Double-tap to zoom',
+			'inventory.tabs.printInventory.loading' => 'Loading prints...',
+			'inventory.tabs.printInventory.error' => ({required Object error}) => 'Failed to load prints: ${error}',
+			'inventory.tabs.printInventory.emptyTitle' => 'No prints',
+			'inventory.tabs.printInventory.emptyDescription' => 'Prints you upload in VRChat will appear here.',
+			'inventory.tabs.printInventory.zoomHint' => 'Double-tap to zoom',
+			'inventory.tabs.stickerInventory.loading' => 'Loading stickers...',
+			'inventory.tabs.stickerInventory.error' => ({required Object error}) => 'Failed to load stickers: ${error}',
+			'inventory.tabs.stickerInventory.emptyTitle' => 'No stickers',
+			'inventory.tabs.stickerInventory.emptyDescription' => 'Stickers you upload in VRChat will appear here.',
+			'inventory.tabs.stickerInventory.zoomHint' => 'Double-tap to zoom',
+			'vrcnsync.title' => 'VRCNSync (β)',
+			'vrcnsync.betaTitle' => 'Beta Feature',
+			'vrcnsync.betaDescription' => 'This feature is a beta version under development. Unexpected issues may occur.\nCurrently, it is only implemented locally, but a cloud version will be implemented if there is demand.',
+			'vrcnsync.githubLink' => 'VRCNSync GitHub Page',
+			'vrcnsync.openGithub' => 'Open GitHub Page',
+			'vrcnsync.serverRunning' => 'Server Running',
+			'vrcnsync.serverStopped' => 'Server Stopped',
+			'vrcnsync.serverRunningDesc' => 'Saves photos from your PC to the VRCN album.',
+			'vrcnsync.serverStoppedDesc' => 'The server is stopped.',
+			'vrcnsync.photoSaved' => 'Photo saved to VRCN album.',
+			'vrcnsync.photoReceived' => 'Photo received (failed to save to album).',
+			'vrcnsync.openAlbum' => 'Open Album',
+			'vrcnsync.permissionErrorIos' => 'Access to the photo library is required.',
+			'vrcnsync.permissionErrorAndroid' => 'Access to storage is required.',
+			'vrcnsync.openSettings' => 'Open Settings',
+			'vrcnsync.initError' => ({required Object error}) => 'Initialization failed: ${error}',
+			'vrcnsync.openPhotoAppError' => 'Could not open the photo app.',
+			'vrcnsync.serverInfo' => 'Server Information',
+			'vrcnsync.ip' => ({required Object ip}) => 'IP: ${ip}',
+			'vrcnsync.port' => ({required Object port}) => 'Port: ${port}',
+			'vrcnsync.address' => ({required Object ip, required Object port}) => '${ip}:${port}',
+			'vrcnsync.autoSave' => 'Received photos are automatically saved to the "VRCN" album.',
+			'vrcnsync.usage' => 'How to Use',
+			'vrcnsync.usageSteps.0.title' => 'Launch the VRCNSync app on your PC',
+			'vrcnsync.usageSteps.0.desc' => 'Please launch the VRCNSync app on your PC.',
+			'vrcnsync.usageSteps.1.title' => 'Connect to the same WiFi network',
+			'vrcnsync.usageSteps.1.desc' => 'Please connect your PC and mobile device to the same WiFi network.',
+			'vrcnsync.usageSteps.2.title' => 'Specify the mobile device as the destination',
+			'vrcnsync.usageSteps.2.desc' => 'Please specify the IP address and port above in the PC app.',
+			'vrcnsync.usageSteps.3.title' => 'Send photos',
+			'vrcnsync.usageSteps.3.desc' => 'When you send photos from your PC, they will be automatically saved to the VRCN album.',
+			'vrcnsync.stats' => 'Connection Status',
+			'vrcnsync.statServer' => 'Server Status',
+			'vrcnsync.statServerRunning' => 'Running',
+			'vrcnsync.statServerStopped' => 'Stopped',
+			'vrcnsync.statNetwork' => 'Network',
+			'vrcnsync.statNetworkConnected' => 'Connected',
+			'vrcnsync.statNetworkDisconnected' => 'Disconnected',
+			'feedback.title' => 'Feedback',
+			'feedback.type' => 'Feedback Type',
+			'feedback.types.bug' => 'Bug Report',
+			'feedback.types.feature' => 'Feature Request',
+			'feedback.types.improvement' => 'Suggestion for Improvement',
+			'feedback.types.other' => 'Other',
+			'feedback.inputTitle' => 'Title *',
+			'feedback.inputTitleHint' => 'Please be concise.',
+			'feedback.inputDescription' => 'Description *',
+			'feedback.inputDescriptionHint' => 'Please provide a detailed description...',
+			'feedback.cancel' => 'Cancel',
+			'feedback.send' => 'Send',
+			'feedback.sending' => 'Sending...',
+			'feedback.required' => 'Title and description are required.',
+			'feedback.success' => 'Feedback sent. Thank you!',
+			'feedback.fail' => 'Failed to send feedback.',
+			'settings.appearance' => 'Appearance',
+			'settings.language' => 'Language',
+			'settings.languageDescription' => 'You can select the display language for the app.',
+			'settings.appIcon' => 'App Icon',
+			'settings.appIconDescription' => 'Change the app icon displayed on the home screen.',
+			'settings.contentSettings' => 'Content Settings',
+			'settings.searchEnabled' => 'Search feature enabled.',
+			'settings.searchDisabled' => 'Search feature disabled.',
+			'settings.enableSearch' => 'Enable Search',
+			'settings.enableSearchDescription' => 'Search results may include sexual or violent content.',
+			'settings.apiSetting' => 'Avatar Search API',
+			'settings.apiSettingDescription' => 'Set the API for the avatar search feature.',
+			'settings.apiSettingSaveUrl' => 'URL saved.',
+			'settings.notSet' => 'Not set (Avatar search feature cannot be used).',
+			'settings.notifications' => 'Notification Settings',
+			'settings.eventReminder' => 'Event Reminders',
+			'settings.eventReminderDescription' => 'Receive notifications before your scheduled events start.',
+			'settings.manageReminders' => 'Manage Set Reminders',
+			'settings.manageRemindersDescription' => 'Cancel or check your notifications.',
+			'settings.dataStorage' => 'Data and Storage',
+			'settings.clearCache' => 'Clear Cache',
+			'settings.clearCacheSuccess' => 'Cache cleared.',
+			'settings.clearCacheError' => 'An error occurred while clearing the cache.',
+			'settings.cacheSize' => ({required Object size}) => 'Cache size: ${size}',
+			'settings.calculatingCache' => 'Calculating cache size...',
+			'settings.cacheError' => 'Could not get cache size.',
+			'settings.confirmClearCache' => 'Clearing the cache will delete temporarily saved images and data.\n\nYour account information and app settings will not be deleted.',
+			'settings.appInfo' => 'App Information',
+			'settings.version' => 'Version',
+			'settings.packageName' => 'Package Name',
+			'settings.credit' => 'Credits',
+			'settings.creditDescription' => 'Developer and contributor information.',
+			'settings.contact' => 'Contact',
+			'settings.contactDescription' => 'For bug reports and suggestions.',
+			'settings.privacyPolicy' => 'Privacy Policy',
+			'settings.privacyPolicyDescription' => 'About the handling of personal information.',
+			'settings.termsOfService' => 'Terms of Service',
+			'settings.termsOfServiceDescription' => 'Conditions for using the app.',
+			'settings.openSource' => 'Open Source Information',
+			'settings.openSourceDescription' => 'Licenses for libraries used.',
+			'settings.github' => 'GitHub Repository',
+			'settings.githubDescription' => 'View source code.',
+			'settings.logoutConfirm' => 'Are you sure you want to log out?',
+			'settings.logoutError' => ({required Object error}) => 'An error occurred during logout: ${error}',
+			'settings.iconChangeNotSupported' => 'Changing the app icon is not supported on your device.',
+			'settings.iconChangeFailed' => 'Failed to change icon.',
+			'settings.themeMode' => 'Theme Mode',
+			'settings.themeModeDescription' => 'You can select the display theme of the app.',
+			'settings.themeLight' => 'Light',
+			_ => null,
+		} ?? switch (path) {
+			'settings.themeSystem' => 'System',
+			'settings.themeDark' => 'Dark',
+			'settings.appIconDefault' => 'Default',
+			'settings.appIconIcon' => 'Icon',
+			'settings.appIconLogo' => 'Logo',
+			'settings.delete' => 'Delete',
+			'credits.title' => 'Credits',
+			'credits.section.development' => 'Development',
+			'credits.section.iconPeople' => 'The Fun Icon People',
+			'credits.section.testFeedback' => 'Testing & Feedback',
+			'credits.section.specialThanks' => 'Special Thanks',
+			'download.success' => 'Download complete.',
+			'download.failure' => ({required Object error}) => 'Download failed: ${error}',
+			'download.shareFailure' => ({required Object error}) => 'Sharing failed: ${error}',
+			'download.permissionTitle' => 'Permission Required',
+			'download.permissionDenied' => ({required Object permissionType}) => 'Permission to save to ${permissionType} has been denied.\nPlease enable the permission from the settings app.',
+			'download.permissionCancel' => 'Cancel',
+			'download.permissionOpenSettings' => 'Open Settings',
+			'download.permissionPhoto' => 'Photos',
+			'download.permissionPhotoLibrary' => 'Photo Library',
+			'download.permissionStorage' => 'Storage',
+			'download.permissionPhotoRequired' => 'Permission to save to photos is required.',
+			'download.permissionPhotoLibraryRequired' => 'Permission to save to photo library is required.',
+			'download.permissionStorageRequired' => 'Permission to access storage is required.',
+			'download.permissionError' => ({required Object error}) => 'An error occurred while checking permissions: ${error}',
+			'download.downloading' => ({required Object fileName}) => 'Downloading ${fileName}...',
+			'download.sharing' => ({required Object fileName}) => 'Preparing to share ${fileName}...',
+			'instance.type.public' => 'Public',
+			'instance.type.hidden' => 'Friend+',
+			'instance.type.friends' => 'Friends',
+			'instance.type.private' => 'Invite+',
+			'instance.type.unknown' => 'Unknown',
+			'status.active' => 'Online',
+			'status.joinMe' => 'Join Me',
+			'status.askMe' => 'Ask Me',
+			'status.busy' => 'Busy',
+			'status.offline' => 'Offline',
+			'status.unknown' => 'Unknown Status',
+			'location.private' => 'Private',
+			'location.playerCount' => ({required Object userCount, required Object capacity}) => 'Players: ${userCount} / ${capacity}',
+			'location.instanceType' => ({required Object type}) => 'Instance Type: ${type}',
+			'location.noInfo' => 'No location information available.',
+			'location.fetchError' => 'Failed to get location information.',
+			'location.privateLocation' => 'You are in a private location.',
+			'location.inviteSending' => 'Sending invite...',
+			'location.inviteSent' => 'Invite sent. You can join from your notifications.',
+			'location.inviteFailed' => ({required Object error}) => 'Failed to send invite: ${error}',
+			'location.inviteButton' => 'Send Invite to Myself',
+			'location.isPrivate' => ({required Object number}) => '${number} in private',
+			'location.isActive' => ({required Object number}) => '${number} active',
+			'location.isOffline' => ({required Object number}) => '${number} offline',
+			'location.isTraveling' => ({required Object number}) => '${number} traveling',
+			'location.isStaying' => ({required Object number}) => '${number} staying',
+			'reminder.dialogTitle' => 'Set Reminder',
+			'reminder.alreadySet' => 'Already Set',
+			'reminder.set' => 'Set',
+			'reminder.cancel' => 'Cancel',
+			'reminder.delete' => 'Delete',
+			'reminder.deleteAll' => 'Delete All Reminders',
+			'reminder.deleteAllConfirm' => 'This will delete all set event reminders. This action cannot be undone.',
+			'reminder.deleted' => 'Reminder deleted.',
+			'reminder.deletedAll' => 'All reminders deleted.',
+			'reminder.noReminders' => 'No reminders set.',
+			'reminder.setFromEvent' => 'You can set notifications from the event page.',
+			'reminder.eventStart' => ({required Object time}) => 'Starts at ${time}',
+			'reminder.notifyAt' => ({required Object time, required Object label}) => '${time} (${label})',
+			'reminder.receiveNotification' => 'When do you want to be notified?',
+			'friend.sortFilter' => 'Sort & Filter',
+			'friend.filter' => 'Filter',
+			'friend.filterAll' => 'Show All',
+			'friend.filterOnline' => 'Online Only',
+			'friend.filterOffline' => 'Offline Only',
+			'friend.filterFavorite' => 'Favorites Only',
+			'friend.sort' => 'Sort',
+			'friend.sortStatus' => 'By Status',
+			'friend.sortName' => 'By Name',
+			'friend.sortLastLogin' => 'By Last Login',
+			'friend.sortAsc' => 'Ascending',
+			'friend.sortDesc' => 'Descending',
+			'friend.close' => 'Close',
+			'eventCalendarFilter.filterTitle' => 'Filter Events',
+			'eventCalendarFilter.clear' => 'Clear',
+			'eventCalendarFilter.keyword' => 'Keyword Search',
+			'eventCalendarFilter.keywordHint' => 'Event name, description, organizer, etc.',
+			'eventCalendarFilter.date' => 'Filter by Date',
+			'eventCalendarFilter.dateHint' => 'You can display events for a specific date range.',
+			'eventCalendarFilter.startDate' => 'Start Date',
+			'eventCalendarFilter.endDate' => 'End Date',
+			'eventCalendarFilter.select' => 'Please select',
+			'eventCalendarFilter.time' => 'Filter by Time',
+			'eventCalendarFilter.timeHint' => 'You can display events held during a specific time frame.',
+			'eventCalendarFilter.startTime' => 'Start Time',
+			'eventCalendarFilter.endTime' => 'End Time',
+			'eventCalendarFilter.genre' => 'Filter by Genre',
+			'eventCalendarFilter.genreSelected' => ({required Object count}) => '${count} genres selected',
+			'eventCalendarFilter.apply' => 'Apply',
+			'eventCalendarFilter.filterSummary' => 'Filters',
+			'eventCalendarFilter.filterNone' => 'No filters are set.',
+			_ => null,
+		};
 	}
 }
-

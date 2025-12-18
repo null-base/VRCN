@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_icon_plus/flutter_dynamic_icon_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrchat/analytics_repository.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 
 enum AppThemeMode {
   light, // ライトテーマ
@@ -75,7 +76,7 @@ class AppSettings {
   final String avatarSearchApiUrl;
   final bool allowNsfw;
   final bool enableEventReminders;
-  final AppLocale locale; // 追加
+  final AppLocale locale;
 
   const AppSettings({
     this.themeMode = AppThemeMode.system,
@@ -87,7 +88,7 @@ class AppSettings {
     this.avatarSearchApiUrl = '',
     this.allowNsfw = false,
     this.enableEventReminders = true,
-    this.locale = AppLocale.ja, // デフォルトは日本語
+    this.locale = AppLocale.ja,
   });
 
   // コピーと一部更新のためのメソッド
@@ -101,7 +102,7 @@ class AppSettings {
     String? avatarSearchApiUrl,
     bool? allowNsfw,
     bool? enableEventReminders,
-    AppLocale? locale, // 追加
+    AppLocale? locale,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -114,7 +115,7 @@ class AppSettings {
       avatarSearchApiUrl: avatarSearchApiUrl ?? this.avatarSearchApiUrl,
       allowNsfw: allowNsfw ?? this.allowNsfw,
       enableEventReminders: enableEventReminders ?? this.enableEventReminders,
-      locale: locale ?? this.locale, // 追加
+      locale: locale ?? this.locale,
     );
   }
 
@@ -130,7 +131,7 @@ class AppSettings {
       'avatarSearchApiUrl': avatarSearchApiUrl,
       'allowNsfw': allowNsfw,
       'enableEventReminders': enableEventReminders,
-      'locale': locale.languageCode, // 追加
+      'locale': locale.languageCode,
     };
   }
 
@@ -141,7 +142,6 @@ class AppSettings {
 
     if (localeString != null) {
       try {
-        // AppLocaleUtils.supportedLocalesではなく、直接比較
         for (final supportedLocale in AppLocale.values) {
           if (supportedLocale.languageCode == localeString) {
             locale = supportedLocale;
@@ -152,7 +152,6 @@ class AppSettings {
         locale = AppSettings._getDeviceLocale();
       }
     } else {
-      // 設定がない場合は端末の言語を使用
       locale = AppSettings._getDeviceLocale();
     }
 
@@ -179,7 +178,7 @@ class AppSettings {
       final deviceLocale = AppLocaleUtils.findDeviceLocale();
       return deviceLocale;
     } catch (_) {
-      return AppLocale.ja; // フォールバック
+      return AppLocale.ja;
     }
   }
 }
@@ -201,21 +200,13 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
           prefs.getBool('notifyNewFriendRequests') ?? true;
       final notifyFriendOnline = prefs.getBool('notifyFriendOnline') ?? true;
       final maxFriendCache = prefs.getInt('maxFriendCache') ?? 500;
-
-      // アバター検索APIのURLを取得
       final avatarSearchApiUrl = prefs.getString('avatarSearchApiUrl') ?? '';
-
-      // 現在のアプリアイコン名を取得
       final appIconIndex = prefs.getInt('appIcon') ?? 0;
       final appIcon =
           appIconIndex < AppIconType.values.length
               ? AppIconType.values[appIconIndex]
               : AppIconType.nullbase;
-
-      // 不快なコンテンツ表示の同意を取得
       final allowNsfw = prefs.getBool('allowNsfw') ?? false;
-
-      // イベント通知設定
       final enableEventReminders =
           prefs.getBool('enableEventReminders') ?? true;
 
@@ -225,7 +216,6 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
 
       if (localeString != null) {
         try {
-          // AppLocale.valuesから直接検索
           locale = AppLocale.values.firstWhere(
             (l) => l.languageCode == localeString,
             orElse: _getDeviceLocale,
@@ -253,19 +243,18 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
         locale: locale,
       );
     } catch (e) {
-      // エラー時は端末の言語を使用したデフォルト設定
       final deviceLocale = _getDeviceLocale();
       state = AppSettings(locale: deviceLocale);
     }
   }
 
-  // 端末の言語を取得するヘルパーメソッド（SettingsNotifier内）
+  // 端末の言語を取得するヘルパーメソッド
   static AppLocale _getDeviceLocale() {
     try {
       final deviceLocale = AppLocaleUtils.findDeviceLocale();
       return deviceLocale;
     } catch (_) {
-      return AppLocale.ja; // フォールバック
+      return AppLocale.ja;
     }
   }
 
@@ -302,28 +291,23 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   // アプリアイコン変更
   Future<bool> setAppIcon(AppIconType iconType) async {
     try {
-      // アイコン変更がサポートされているか確認
       final isSupported = await FlutterDynamicIconPlus.supportsAlternateIcons;
       if (!isSupported) {
         return false;
       }
 
-      // デフォルトアイコンの場合は元に戻す
       if (iconType == AppIconType.nullbase) {
         await FlutterDynamicIconPlus.setAlternateIconName(
           iconName: null,
-          // Android用
           blacklistBrands: ['Redmi'],
           blacklistManufactures: ['Xiaomi'],
           blacklistModels: ['Redmi 200A'],
         );
       } else {
-        // 指定されたアイコンに変更
         final iconName = appIconNameMap[iconType];
         if (iconName != null) {
           await FlutterDynamicIconPlus.setAlternateIconName(
             iconName: iconName,
-            // Android用
             blacklistBrands: ['Redmi'],
             blacklistManufactures: ['Xiaomi'],
             blacklistModels: ['Redmi 200A'],
@@ -331,11 +315,9 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
         }
       }
 
-      // 状態を更新
       await prefs.setInt('appIcon', iconType.index);
       state = state.copyWith(appIcon: iconType);
 
-      // アナリティクスにログを記録
       final iconName = appIconNameMap[iconType] ?? 'default';
       final analytics = AnalyticsService();
       await analytics.logEvent(
@@ -345,7 +327,6 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
 
       return true;
     } catch (e) {
-      // エラー発生時
       return false;
     }
   }
@@ -368,7 +349,7 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
     state = state.copyWith(enableEventReminders: value);
   }
 
-  // 言語変更メソッドを追加
+  // 言語変更メソッド
   Future<void> setLocale(AppLocale locale) async {
     await prefs.setString('locale', locale.languageCode);
     state = state.copyWith(locale: locale);
@@ -379,10 +360,10 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   Future<bool> isAppIconChangeSupported() async {
     try {
       final isSupported = await FlutterDynamicIconPlus.supportsAlternateIcons;
-      debugPrint('アイコン変更サポート状態: $isSupported'); // デバッグ用
+      debugPrint('アイコン変更サポート状態: $isSupported');
       return isSupported;
     } catch (e) {
-      debugPrint('アイコン変更サポート確認中にエラー: $e'); // デバッグ用
+      debugPrint('アイコン変更サポート確認中にエラー: $e');
       return false;
     }
   }
@@ -401,7 +382,7 @@ final settingsProvider = StateNotifierProvider<SettingsNotifier, AppSettings>((
   return SettingsNotifier(prefs);
 });
 
-// ThemeModeプロバイダー（Flutterのテーマ設定に使用）
+// ThemeModeプロバイダー
 final themeModeProvider = Provider<ThemeMode>((ref) {
   final settings = ref.watch(settingsProvider);
   switch (settings.themeMode) {

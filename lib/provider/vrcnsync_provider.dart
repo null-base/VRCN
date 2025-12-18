@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:vrchat/models/vrcnsync_models.dart';
 import 'package:vrchat/services/vrcnsync_service.dart';
 

@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
@@ -61,7 +61,7 @@ class FriendListItem extends ConsumerWidget {
             offset: const Offset(0, 2),
           ),
         ],
-        border: Border.all(color: statusColor.withAlpha(77), width: 1.0),
+        border: Border.all(color: statusColor.withAlpha(77), width: 1),
       ),
       child: Material(
         color: Colors.transparent,
@@ -97,9 +97,9 @@ class FriendListItem extends ConsumerWidget {
                       child: CircleAvatar(
                         radius: compact ? 16 : 22,
                         backgroundImage:
-                            friend.userIcon.isNotEmpty
+                            friend.userIcon!.isNotEmpty
                                 ? CachedNetworkImageProvider(
-                                  friend.userIcon,
+                                  friend.userIcon!,
                                   headers: headers,
                                   cacheManager: JsonCacheManager(),
                                 )
@@ -111,13 +111,13 @@ class FriendListItem extends ConsumerWidget {
                                     )
                                     : null),
                         backgroundColor:
-                            (friend.userIcon.isEmpty) &&
+                            friend.userIcon!.isEmpty &&
                                     friend.currentAvatarThumbnailImageUrl ==
                                         null
                                 ? Colors.grey[300]
                                 : null,
                         child:
-                            (friend.userIcon.isEmpty) &&
+                            friend.userIcon!.isEmpty &&
                                     friend.currentAvatarThumbnailImageUrl ==
                                         null
                                 ? Icon(

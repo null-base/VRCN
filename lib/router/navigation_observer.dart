@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 // ナビゲーションインデックス管理用プロバイダー（まだ定義されていない場合）
 final navigationIndexProvider = StateProvider<int>((ref) => 0);

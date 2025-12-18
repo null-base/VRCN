@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 
 class InstanceHelper {
   static IconData getInstanceTypeIcon(String? type) {

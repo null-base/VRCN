@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 

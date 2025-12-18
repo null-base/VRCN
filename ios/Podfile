@@ -46,7 +46,7 @@ target 'Runner' do
   pod 'Firebase/Storage', :modular_headers => true
 
   # ビルド時間を短縮するための設定コード
-  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '12.2.0'
+  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '12.6.0'
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 

@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:vrchat/pages/notifications_page.dart';
 import 'package:vrchat/provider/friends_provider.dart';
 import 'package:vrchat/provider/instance_provider.dart';
@@ -34,7 +35,7 @@ class StreamingController {
     final vrchatAsync = ref.read(vrchatProvider);
 
     // AsyncValueから安全に値を取得
-    final api = vrchatAsync.valueOrNull;
+    final api = vrchatAsync.value;
     if (api == null) {
       debugPrint('API接続が初期化されていないため、ストリーミングを開始できません');
       return;
@@ -65,7 +66,7 @@ class StreamingController {
   // 接続を停止するメソッド
   void stopConnection() {
     final vrchatAsync = ref.read(vrchatProvider);
-    final api = vrchatAsync.valueOrNull;
+    final api = vrchatAsync.value;
     if (api != null) {
       try {
         api.streaming.stop();

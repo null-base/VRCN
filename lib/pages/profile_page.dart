@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/avatar_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
@@ -189,7 +190,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 height: 260,
                 decoration: BoxDecoration(
                   gradient:
-                      userRepresentedGroupAsync.valueOrNull?.bannerUrl == null
+                      userRepresentedGroupAsync.value?.bannerUrl == null
                           ? LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -199,12 +200,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 ),
                 child: Stack(
                   children: [
-                    if (userRepresentedGroupAsync.valueOrNull?.bannerUrl !=
-                        null)
+                    if (userRepresentedGroupAsync.value?.bannerUrl != null)
                       Positioned.fill(
                         child: CachedNetworkImage(
-                          imageUrl:
-                              userRepresentedGroupAsync.valueOrNull!.bannerUrl!,
+                          imageUrl: userRepresentedGroupAsync.value!.bannerUrl!,
                           httpHeaders: headers,
                           cacheManager: JsonCacheManager(),
                           fit: BoxFit.cover,
@@ -383,7 +382,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 left: 40,
                 child: TweenAnimationBuilder<double>(
                   duration: const Duration(milliseconds: 600),
-                  tween: Tween<double>(begin: 0.8, end: 1.0),
+                  tween: Tween<double>(begin: 0.8, end: 1),
                   curve: Curves.easeOutBack,
                   builder: (context, value, child) {
                     return Transform.scale(
@@ -433,9 +432,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                                             headers: headers,
                                             cacheManager: JsonCacheManager(),
                                           )
-                                          : const AssetImage(
-                                                'assets/icons/default.png',
-                                              )
+                                          : AssetImage(Assets.icons.vrcn.path)
                                               as ImageProvider,
                                   child:
                                       user
@@ -474,9 +471,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                                           headers: headers,
                                           cacheManager: JsonCacheManager(),
                                         )
-                                        : const AssetImage(
-                                              'assets/icons/default.png',
-                                            )
+                                        : AssetImage(Assets.icons.vrcn.path)
                                             as ImageProvider,
                                 child:
                                     user.currentAvatarThumbnailImageUrl.isEmpty
@@ -568,7 +563,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                   loading:
                       () => const Center(
                         child: Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: EdgeInsets.all(16),
                           child: CircularProgressIndicator(strokeWidth: 2),
                         ),
                       ),
@@ -704,7 +699,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                   loading:
                       () => const Center(
                         child: Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: EdgeInsets.all(16),
                           child: CircularProgressIndicator(strokeWidth: 2),
                         ),
                       ),
@@ -1209,7 +1204,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
   ) {
     return TweenAnimationBuilder<double>(
       duration: const Duration(milliseconds: 800),
-      tween: Tween<double>(begin: 0.95, end: 1.0),
+      tween: Tween<double>(begin: 0.95, end: 1),
       curve: Curves.elasticOut,
       builder: (context, value, child) {
         return Transform.scale(
@@ -1653,7 +1648,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
       ),
     );
   }
-
 
   String _ensureHttpPrefix(String url) {
     if (url.startsWith('http://') || url.startsWith('https://')) {

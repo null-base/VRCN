@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/friend_sort_provider.dart';
 import 'package:vrchat/provider/friends_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
@@ -25,7 +25,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
                       Text(

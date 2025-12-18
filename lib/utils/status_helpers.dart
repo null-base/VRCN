@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 /// VRChatのユーザーステータスに関するヘルパー関数を提供するクラス

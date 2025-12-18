@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/provider/world_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
@@ -51,7 +51,7 @@ class WorldDetailPage extends ConsumerWidget {
         _buildAppBar(context, world, isDarkMode, headers),
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:vrchat/api/vrc_api_container.dart';
 import 'package:vrchat/provider/auth_storage_provider.dart';
 import 'package:vrchat/router/app_router.dart';
@@ -49,10 +50,12 @@ final autoLoginProvider = FutureProvider<bool>((ref) async {
     }
 
     // 保存されたセッションを使ってログインを試みる
-    var result = await api.login();
+    final (loginSuccess, loginFailure) = await api.login();
+
+    final authResponse = loginSuccess?.data;
 
     // セッションが有効ならログイン成功
-    if (result.success != null) {
+    if (loginSuccess != null && !authResponse!.requiresTwoFactorAuth) {
       // 認証状態更新
       ref.read(authRefreshProvider.notifier).state++;
       return true;
@@ -72,12 +75,12 @@ final autoLoginProvider = FutureProvider<bool>((ref) async {
         debugPrint('保存された認証情報でログインを試みます');
 
         // 保存された認証情報でログイン試行
-        result = await api.login(
+        final (loginSuccess, loginFailure) = await api.login(
           username: credentials.username!,
           password: credentials.password!,
         );
 
-        if (result.success != null) {
+        if (loginSuccess != null && !authResponse!.requiresTwoFactorAuth) {
           // 認証状態更新
           ref.read(authRefreshProvider.notifier).state++;
           return true;
@@ -95,9 +98,12 @@ final autoLoginProvider = FutureProvider<bool>((ref) async {
           username.isNotEmpty &&
           password.isNotEmpty) {
         // .envの認証情報でログイン試行
-        result = await api.login(username: username, password: password);
+        final (loginSuccess, loginFailure) = await api.login(
+          username: username,
+          password: password,
+        );
 
-        if (result.success != null) {
+        if (loginSuccess != null) {
           // 認証状態更新
           ref.read(authRefreshProvider.notifier).state++;
           return true;

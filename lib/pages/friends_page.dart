@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/friend_sort_provider.dart';
 import 'package:vrchat/provider/friends_provider.dart';
 import 'package:vrchat/provider/instance_provider.dart';
@@ -9,7 +10,6 @@ import 'package:vrchat/widgets/app_drawer.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/friend_location_group.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class FriendsPage extends ConsumerWidget {
@@ -28,10 +28,11 @@ class FriendsPage extends ConsumerWidget {
           return _buildFriendsList(context, sortedFriends, ref);
         },
         loading: () => LoadingIndicator(message: t.friends.loading),
-        error: (error, stackTrace) => ErrorContainer(
-          message: t.friends.error(error: error.toString()),
-          onRetry: () => ref.refresh(friendsProvider),
-        ),
+        error:
+            (error, stackTrace) => ErrorContainer(
+              message: t.friends.error(error: error.toString()),
+              onRetry: () => ref.refresh(friendsProvider),
+            ),
       ),
     );
   }

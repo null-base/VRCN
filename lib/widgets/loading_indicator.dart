@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
 
 class LoadingIndicator extends StatefulWidget {
   final String message;
@@ -34,7 +35,7 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
         _controller.forward();
       }
     });
-    
+
     // アニメーションを開始
     _controller.forward();
   }
@@ -65,8 +66,8 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
 
                 child: Image.asset(
                   _showFirstImage
-                      ? 'assets/images/anomea_walk.png'
-                      : 'assets/images/anomea_walk2.png',
+                      ? Assets.images.anomeaWalk.path
+                      : Assets.images.anomeaWalk2.path,
                   fit: BoxFit.contain,
                 ),
               ),

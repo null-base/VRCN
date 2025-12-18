@@ -5,7 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/models/avtrdb_search_result.dart';
 import 'package:vrchat/provider/avtrdb_provider.dart';
 import 'package:vrchat/provider/search_providers.dart';
@@ -56,7 +56,7 @@ class AvatarSearchTab extends ConsumerWidget {
         position: 0,
         duration: const Duration(milliseconds: 500),
         child: SlideAnimation(
-          verticalOffset: 50.0,
+          verticalOffset: 50,
           child: FadeInAnimation(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -113,7 +113,7 @@ class AvatarSearchTab extends ConsumerWidget {
         Expanded(
           child: AnimationLimiter(
             child: MasonryGridView.count(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(12),
               crossAxisCount: 2,
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
@@ -125,7 +125,7 @@ class AvatarSearchTab extends ConsumerWidget {
                   duration: const Duration(milliseconds: 375),
                   columnCount: 2,
                   child: SlideAnimation(
-                    verticalOffset: 50.0,
+                    verticalOffset: 50,
                     child: FadeInAnimation(
                       child: _buildAvatarItem(context, avatar, isDarkMode),
                     ),
@@ -144,7 +144,6 @@ class AvatarSearchTab extends ConsumerWidget {
     AvtrDbSearchResult avatar,
     bool isDarkMode,
   ) {
-
     // ランダムな要素を追加してデザインのバリエーションを増やす
     final cardHeight = 240.0 + (avatar.name.length % 3) * 10;
 
@@ -221,7 +220,7 @@ class AvatarSearchTab extends ConsumerWidget {
 
               // アバター情報
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

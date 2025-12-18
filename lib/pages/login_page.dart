@@ -8,7 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/auth_storage_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
@@ -54,7 +55,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
       duration: const Duration(milliseconds: 800),
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
 
@@ -109,8 +110,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
   }
 
   Future<void> _login() async {
-    final auth = ref.watch(vrchatAuthProvider).value!;
-    if (!_formKey.currentState!.validate()) return;
+    final auth = ref.watch(vrchatAuthProvider).value;
+    if (auth == null || !(_formKey.currentState?.validate() ?? false)) return;
 
     setState(() {
       _isLoading = true;
@@ -118,18 +119,19 @@ class _LoginPageState extends ConsumerState<LoginPage>
     });
 
     try {
-      final result = await auth.login(
+      final (loginSuccess, loginFailure) = await auth.login(
         username: _usernameController.text,
         password: _passwordController.text,
       );
 
       if (!mounted) return;
 
-      if (result.failure != null) {
+      if (loginSuccess == null) {
+        // ログイン失敗
         setState(() {
           _errorMessage = t.login.errorLoginFailed;
         });
-      } else if (result.success?.data.requiresTwoFactorAuth == true) {
+      } else if (loginSuccess.data.requiresTwoFactorAuth) {
         // 二段階認証が必要な場合
         setState(() {
           _showTwoFactorAuth = true;
@@ -142,7 +144,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
         // _tryAutoOtpInput();
       } else {
         if (_rememberLogin) {
-          // ログイン情報を安全に保存
+          // ログイン情報を保存
           final authStorage = ref.read(authStorageProvider);
           await authStorage.saveCredentials(
             _usernameController.text,
@@ -179,17 +181,22 @@ class _LoginPageState extends ConsumerState<LoginPage>
     });
 
     try {
-      final auth = ref.watch(vrchatAuthProvider).value!;
-      final result = await auth.verify2fa(_twoFactorCodeController.text);
+      final auth = ref.watch(vrchatAuthProvider).value;
+      if (auth == null) return;
+      final (twoFactorSuccess, twoFactorFailure) = await auth.verify2fa(
+        _twoFactorCodeController.text,
+      );
 
       if (!mounted) return;
 
-      if (result.failure != null) {
+      if (twoFactorFailure == null) {
+        // ログイン成功
+        await _handleLoginSuccess();
+      } else {
+        // ログイン失敗
         setState(() {
           _errorMessage = t.login.error2faFailed;
         });
-      } else {
-        await _handleLoginSuccess();
       }
     } catch (e) {
       if (!mounted) return;
@@ -258,7 +265,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
           // あのめあ
           Center(
             child: Image.asset(
-              'assets/images/立ち絵.png',
+              Assets.images.standing.path,
               height: size.height * 0.85,
               fit: BoxFit.contain,
             ),
@@ -267,11 +274,11 @@ class _LoginPageState extends ConsumerState<LoginPage>
           // ログインフォーム
           SafeArea(
             child: Align(
-              alignment: const Alignment(0.0, 0.3),
+              alignment: const Alignment(0, 0.3),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 32.0,
-                  vertical: 24.0,
+                  horizontal: 32,
+                  vertical: 24,
                 ),
                 child: FadeTransition(
                   opacity: _fadeAnimation,
@@ -690,7 +697,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
         ),
 
         Padding(
-          padding: const EdgeInsets.only(top: 20.0),
+          padding: const EdgeInsets.only(top: 20),
           child: Center(
             child: TextButton.icon(
               onPressed: _pasteFromClipboard,
@@ -815,7 +822,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   height: 24,
                   width: 24,
                   child: CircularProgressIndicator(
-                    strokeWidth: 2.0,
+                    strokeWidth: 2,
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                 )
@@ -881,21 +888,21 @@ class _LoginPageState extends ConsumerState<LoginPage>
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: isDarkMode ? Colors.grey[600]! : Colors.grey.withAlpha(75),
-              width: 1.0,
+              width: 1,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: Theme.of(context).colorScheme.primary,
-              width: 2.0,
+              width: 2,
             ),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: isDarkMode ? Colors.redAccent : Colors.red,
-              width: 1.0,
+              width: 1,
             ),
           ),
           contentPadding: const EdgeInsets.symmetric(

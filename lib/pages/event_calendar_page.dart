@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vrchat/config/app_config.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/event_filter_provider.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
 import 'package:vrchat/provider/settings_provider.dart';

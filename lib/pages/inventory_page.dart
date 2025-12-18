@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/pages/tabs/inventory/emoji_inventory_tab.dart';
 import 'package:vrchat/pages/tabs/inventory/gallery_inventory_tab.dart';
 import 'package:vrchat/pages/tabs/inventory/icon_inventory_tab.dart';
@@ -307,7 +307,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
         headerSliverBuilder:
             (context, innerBoxIsScrolled) => [
               SliverAppBar(
-                expandedHeight: 100.0,
+                expandedHeight: 100,
                 pinned: true,
                 floating: true,
                 forceElevated: innerBoxIsScrolled,

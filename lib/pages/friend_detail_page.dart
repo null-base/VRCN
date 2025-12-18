@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/instance_provider.dart';
 import 'package:vrchat/provider/playermoderation_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
@@ -693,7 +693,6 @@ class FriendDetailPage extends ConsumerWidget {
     );
   }
 
-
   String _ensureHttpPrefix(String url) {
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return url;
@@ -857,7 +856,7 @@ class FriendDetailPage extends ConsumerWidget {
       loading:
           () => const Center(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16),
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
           ),

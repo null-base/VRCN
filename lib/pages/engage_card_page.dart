@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,7 +15,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
@@ -83,7 +85,7 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
   Future<void> _setMaxBrightness() async {
     try {
       _oldBrightness = await ScreenBrightness.instance.system;
-      await ScreenBrightness().setApplicationScreenBrightness(1.0);
+      await ScreenBrightness().setApplicationScreenBrightness(1);
     } catch (_) {}
   }
 
@@ -197,7 +199,7 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
               children: [
                 // 背景
                 if (backgroundImage != null)
-                  Container(
+                  DecoratedBox(
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: FileImage(backgroundImage),
@@ -277,21 +279,19 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: LiquidGlass(
+        child: LiquidGlass.withOwnLayer(
           settings: const LiquidGlassSettings(
             thickness: 12,
             glassColor: Color(0x22FFFFFF),
-            lightIntensity: 2.0,
-            blend: 60,
+            lightIntensity: 2,
+            blur: 60,
           ),
-          shape: const LiquidRoundedSuperellipse(
-            borderRadius: Radius.circular(30),
-          ),
+          shape: const LiquidRoundedSuperellipse(borderRadius: 30),
           child: Stack(
             children: [
               // グラデーションオーバーレイ
               Positioned.fill(
-                child: Container(
+                child: DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -308,7 +308,7 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16),
                   child: Row(
                     mainAxisAlignment:
                         _showAvatar
@@ -334,7 +334,7 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
                                     headers: headers,
                                     cacheManager: JsonCacheManager(),
                                   )
-                                  : const AssetImage('assets/icons/default.png')
+                                  : AssetImage(Assets.icons.vrcn.path)
                                       as ImageProvider,
                           backgroundColor: Colors.white24,
                         ),
@@ -356,7 +356,9 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
                                   color: Colors.white,
                                   shadows: [
                                     Shadow(
-                                      color: Colors.black.withValues(alpha: .3),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.3,
+                                      ),
                                       blurRadius: 8,
                                     ),
                                   ],
@@ -375,11 +377,9 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
                         foregroundColor: Colors.white,
                         version: QrVersions.auto,
                         size: 90,
-                        embeddedImage: const AssetImage(
-                          'assets/images/logo.png',
-                        ),
+                        embeddedImage: AssetImage(Assets.images.logo.path),
                         embeddedImageStyle: const QrEmbeddedImageStyle(
-                          size: Size(20, 20)
+                          size: Size(20, 20),
                         ),
                       ),
                     ],

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/first_launch_utils.dart';
 import 'package:vrchat/utils/url_launcher_utils.dart';
@@ -33,7 +34,7 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
       duration: const Duration(milliseconds: 1000),
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
 
@@ -79,7 +80,7 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
             child: SlideTransition(
               position: _slideAnimation,
               child: Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(24),
                 child: Column(
                   children: [
                     Expanded(
@@ -110,7 +111,7 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(20),
                                       child: Image.asset(
-                                        'assets/icons/default.png',
+                                        Assets.icons.vrcn.path,
                                         fit: BoxFit.cover,
                                         errorBuilder: (
                                           context,

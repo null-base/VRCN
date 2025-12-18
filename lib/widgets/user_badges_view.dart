@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
+
 class UserBadgesView extends ConsumerWidget {
   final User user;
   final bool isDarkMode;
@@ -29,7 +30,7 @@ class UserBadgesView extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: .3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -80,14 +81,9 @@ class UserBadgesView extends ConsumerWidget {
           httpHeaders: headers,
           cacheManager: JsonCacheManager(),
           placeholder:
-              (context, url) => Container(
-                color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-                  ),
-                ),
+              (context, url) => const CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
               ),
           errorWidget:
               (context, url, error) => Container(

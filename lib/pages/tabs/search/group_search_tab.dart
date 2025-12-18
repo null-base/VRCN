@@ -5,7 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/group_provider.dart' as gp;
 import 'package:vrchat/provider/search_providers.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
@@ -213,7 +213,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
   ) {
     return MasonryGridView.count(
       controller: _scrollController,
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(12),
       crossAxisCount: 2,
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
@@ -222,7 +222,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
         if (index == groups.length) {
           // 最後の項目の場合、ローディングインジケータを表示
           return Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Center(
               child:
                   isLoading
@@ -238,7 +238,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
           duration: const Duration(milliseconds: 375),
           columnCount: 2,
           child: SlideAnimation(
-            verticalOffset: 50.0,
+            verticalOffset: 50,
             child: FadeInAnimation(
               child: _buildGroupGridItem(context, group, isDarkMode),
             ),
@@ -256,13 +256,13 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
   ) {
     return ListView.builder(
       controller: _scrollController,
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(12),
       itemCount: groups.length + 1,
       itemBuilder: (context, index) {
         if (index == groups.length) {
           // 最後の項目の場合、ローディングインジケータを表示
           return Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Center(
               child:
                   isLoading
@@ -277,7 +277,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
           position: index,
           duration: const Duration(milliseconds: 375),
           child: SlideAnimation(
-            horizontalOffset: 50.0,
+            horizontalOffset: 50,
             child: FadeInAnimation(
               child: _buildGroupListItem(group, isDarkMode),
             ),
@@ -426,7 +426,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
 
               // グループ情報
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -491,7 +491,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
         borderRadius: BorderRadius.circular(16),
         onTap: () => context.push('/group/${group.id}'),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

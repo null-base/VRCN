@@ -3,6 +3,7 @@
 ///
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
+// dart format off
 
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +11,7 @@ import 'package:slang/generated.dart';
 import 'strings.g.dart';
 
 // Path: <root>
-class TranslationsZhCn implements Translations {
+class TranslationsZhCn with BaseTranslations<AppLocale, Translations> implements Translations {
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
 	TranslationsZhCn({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver, TranslationMetadata<AppLocale, Translations>? meta})
@@ -1152,623 +1153,627 @@ class _TranslationsInventoryTabsStickerInventoryZhCn implements TranslationsInve
 	@override String get zoomHint => '双击缩放';
 }
 
-/// Flat map(s) containing all translations.
+/// The flat map containing all translations for locale <zh-CN>.
 /// Only for edge cases! For simple maps, use the map function of this library.
+///
+/// The Dart AOT compiler has issues with very large switch statements,
+/// so the map is split into smaller functions (512 entries each).
 extension on TranslationsZhCn {
 	dynamic _flatMapFunction(String path) {
-		switch (path) {
-			case 'common.title': return 'VRCN';
-			case 'common.ok': return '确定';
-			case 'common.cancel': return '取消';
-			case 'common.close': return '关闭';
-			case 'common.save': return '保存';
-			case 'common.edit': return '编辑';
-			case 'common.delete': return '删除';
-			case 'common.yes': return '是';
-			case 'common.no': return '否';
-			case 'common.loading': return '加载中...';
-			case 'common.error': return ({required Object error}) => '发生错误：${error}';
-			case 'common.errorNomessage': return '发生错误';
-			case 'common.retry': return '重试';
-			case 'common.search': return '搜索';
-			case 'common.settings': return '设置';
-			case 'common.confirm': return '确认';
-			case 'common.agree': return '同意';
-			case 'common.decline': return '不同意';
-			case 'common.username': return '用户名';
-			case 'common.password': return '密码';
-			case 'common.login': return '登录';
-			case 'common.logout': return '登出';
-			case 'common.share': return '分享';
-			case 'termsAgreement.welcomeTitle': return '欢迎来到 VRCN';
-			case 'termsAgreement.welcomeMessage': return '在使用本应用前，\n请阅读服务条款和隐私政策。';
-			case 'termsAgreement.termsTitle': return '服务条款';
-			case 'termsAgreement.termsSubtitle': return '关于应用的使用条件';
-			case 'termsAgreement.privacyTitle': return '隐私政策';
-			case 'termsAgreement.privacySubtitle': return '关于个人信息的处理';
-			case 'termsAgreement.agreeTerms': return ({required Object title}) => '我同意“${title}”';
-			case 'termsAgreement.checkContent': return '查看内容';
-			case 'termsAgreement.notice': return '本应用是 VRChat Inc. 的非官方应用。\n与 VRChat Inc. 没有任何关系。';
-			case 'drawer.home': return '主页';
-			case 'drawer.profile': return '个人资料';
-			case 'drawer.favorite': return '收藏';
-			case 'drawer.eventCalendar': return '活动日历';
-			case 'drawer.avatar': return '虚拟形象';
-			case 'drawer.group': return '群组';
-			case 'drawer.inventory': return '物品栏';
-			case 'drawer.vrcnsync': return 'VRCNSync (β)';
-			case 'drawer.review': return '评价';
-			case 'drawer.feedback': return '反馈';
-			case 'drawer.settings': return '设置';
-			case 'drawer.userLoading': return '正在加载用户信息...';
-			case 'drawer.userError': return '加载用户信息失败';
-			case 'drawer.retry': return '重试';
-			case 'drawer.section.content': return '内容';
-			case 'drawer.section.other': return '其他';
-			case 'login.forgotPassword': return '忘记密码？';
-			case 'login.createAccount': return '注册';
-			case 'login.subtitle': return '使用您的 VRChat 账户登录';
-			case 'login.email': return '邮箱地址';
-			case 'login.emailHint': return '输入邮箱或用户名';
-			case 'login.passwordHint': return '输入密码';
-			case 'login.rememberMe': return '记住登录状态';
-			case 'login.loggingIn': return '登录中...';
-			case 'login.errorEmptyEmail': return '请输入用户名或邮箱地址';
-			case 'login.errorEmptyPassword': return '请输入密码';
-			case 'login.errorLoginFailed': return '登录失败。请检查您的邮箱和密码。';
-			case 'login.twoFactorTitle': return '两步验证';
-			case 'login.twoFactorSubtitle': return '请输入验证码';
-			case 'login.twoFactorInstruction': return '请输入您的验证器应用中显示的\n6位数验证码';
-			case 'login.twoFactorCodeHint': return '验证码';
-			case 'login.verify': return '验证';
-			case 'login.verifying': return '验证中...';
-			case 'login.errorEmpty2fa': return '请输入验证码';
-			case 'login.error2faFailed': return '两步验证失败。请检查验证码是否正确。';
-			case 'login.backToLogin': return '返回登录页面';
-			case 'login.paste': return '粘贴';
-			case 'friends.loading': return '正在加载好友信息...';
-			case 'friends.error': return ({required Object error}) => '获取好友信息失败：${error}';
-			case 'friends.notFound': return '未找到好友';
-			case 'friends.private': return '私密';
-			case 'friends.active': return '活跃';
-			case 'friends.offline': return '离线';
-			case 'friends.online': return '在线';
-			case 'friends.groupTitle': return '按世界分组';
-			case 'friends.refresh': return '刷新';
-			case 'friends.searchHint': return '按好友名称搜索';
-			case 'friends.noResult': return '没有找到相关的好友';
-			case 'friendDetail.loading': return '正在加载用户信息...';
-			case 'friendDetail.error': return ({required Object error}) => '获取用户信息失败：${error}';
-			case 'friendDetail.currentLocation': return '当前位置';
-			case 'friendDetail.basicInfo': return '基本信息';
-			case 'friendDetail.userId': return '用户ID';
-			case 'friendDetail.dateJoined': return '注册日期';
-			case 'friendDetail.lastLogin': return '最后登录';
-			case 'friendDetail.bio': return '个人简介';
-			case 'friendDetail.links': return '链接';
-			case 'friendDetail.loadingLinks': return '正在加载链接信息...';
-			case 'friendDetail.group': return '所属群组';
-			case 'friendDetail.groupDetail': return '显示群组详情';
-			case 'friendDetail.groupCode': return ({required Object code}) => '群组代码：${code}';
-			case 'friendDetail.memberCount': return ({required Object count}) => '成员数：${count}人';
-			case 'friendDetail.unknownGroup': return '未知群组';
-			case 'friendDetail.block': return '屏蔽';
-			case 'friendDetail.mute': return '静音';
-			case 'friendDetail.openWebsite': return '在网站上打开';
-			case 'friendDetail.shareProfile': return '分享个人资料';
-			case 'friendDetail.confirmBlockTitle': return ({required Object name}) => '要屏蔽 ${name} 吗？';
-			case 'friendDetail.confirmBlockMessage': return '屏蔽后，您将不会再收到该用户的好友请求和消息。';
-			case 'friendDetail.confirmMuteTitle': return ({required Object name}) => '要将 ${name} 静音吗？';
-			case 'friendDetail.confirmMuteMessage': return '静音后，您将听不到该用户的声音。';
-			case 'friendDetail.blockSuccess': return '已屏蔽';
-			case 'friendDetail.muteSuccess': return '已静音';
-			case 'friendDetail.operationFailed': return ({required Object error}) => '操作失败：${error}';
-			case 'search.userTab': return '用户';
-			case 'search.worldTab': return '世界';
-			case 'search.avatarTab': return '虚拟形象';
-			case 'search.groupTab': return '群组';
-			case 'search.tabs.userSearch.emptyTitle': return '用户搜索';
-			case 'search.tabs.userSearch.emptyDescription': return '您可以通过用户名或ID进行搜索';
-			case 'search.tabs.userSearch.searching': return '搜索中...';
-			case 'search.tabs.userSearch.noResults': return '未找到相关用户';
-			case 'search.tabs.userSearch.error': return ({required Object error}) => '用户搜索时发生错误：${error}';
-			case 'search.tabs.userSearch.inputPlaceholder': return '输入用户名或ID';
-			case 'search.tabs.worldSearch.emptyTitle': return '探索世界';
-			case 'search.tabs.worldSearch.emptyDescription': return '请输入关键词进行搜索';
-			case 'search.tabs.worldSearch.searching': return '搜索中...';
-			case 'search.tabs.worldSearch.noResults': return '未找到相关世界';
-			case 'search.tabs.worldSearch.noResultsWithQuery': return ({required Object query}) => '未找到与“${query}”匹配的世界';
-			case 'search.tabs.worldSearch.noResultsHint': return '尝试更换搜索关键词吧';
-			case 'search.tabs.worldSearch.error': return ({required Object error}) => '世界搜索时发生错误：${error}';
-			case 'search.tabs.worldSearch.resultCount': return ({required Object count}) => '找到了 ${count} 个世界';
-			case 'search.tabs.worldSearch.authorPrefix': return ({required Object authorName}) => 'by ${authorName}';
-			case 'search.tabs.worldSearch.listView': return '列表视图';
-			case 'search.tabs.worldSearch.gridView': return '网格视图';
-			case 'search.tabs.groupSearch.emptyTitle': return '搜索群组';
-			case 'search.tabs.groupSearch.emptyDescription': return '请输入关键词进行搜索';
-			case 'search.tabs.groupSearch.searching': return '搜索中...';
-			case 'search.tabs.groupSearch.noResults': return '未找到相关群组';
-			case 'search.tabs.groupSearch.noResultsWithQuery': return ({required Object query}) => '未找到与“${query}”匹配的群组';
-			case 'search.tabs.groupSearch.noResultsHint': return '尝试更换搜索关键词吧';
-			case 'search.tabs.groupSearch.error': return ({required Object error}) => '群组搜索时发生错误：${error}';
-			case 'search.tabs.groupSearch.resultCount': return ({required Object count}) => '找到了 ${count} 个群组';
-			case 'search.tabs.groupSearch.listView': return '列表视图';
-			case 'search.tabs.groupSearch.gridView': return '网格视图';
-			case 'search.tabs.groupSearch.memberCount': return ({required Object count}) => '${count} 成员';
-			case 'search.tabs.avatarSearch.avatar': return '虚拟形象';
-			case 'search.tabs.avatarSearch.emptyTitle': return '搜索虚拟形象';
-			case 'search.tabs.avatarSearch.emptyDescription': return '请输入关键词进行搜索';
-			case 'search.tabs.avatarSearch.searching': return '正在搜索虚拟形象...';
-			case 'search.tabs.avatarSearch.noResults': return '未找到搜索结果';
-			case 'search.tabs.avatarSearch.noResultsHint': return '试试其他关键词吧';
-			case 'search.tabs.avatarSearch.error': return ({required Object error}) => '虚拟形象搜索时发生错误：${error}';
-			case 'profile.title': return '个人资料';
-			case 'profile.edit': return '编辑';
-			case 'profile.refresh': return '刷新';
-			case 'profile.loading': return '正在加载个人资料信息...';
-			case 'profile.error': return '获取个人资料信息失败：{error}';
-			case 'profile.displayName': return '显示名称';
-			case 'profile.username': return '用户名';
-			case 'profile.userId': return '用户ID';
-			case 'profile.engageCard': return '互动卡片';
-			case 'profile.frined': return '好友';
-			case 'profile.dateJoined': return '注册日期';
-			case 'profile.userType': return '用户类型';
-			case 'profile.status': return '状态';
-			case 'profile.statusMessage': return '状态消息';
-			case 'profile.bio': return '个人简介';
-			case 'profile.links': return '链接';
-			case 'profile.group': return '所属群组';
-			case 'profile.groupDetail': return '显示群组详情';
-			case 'profile.avatar': return '当前虚拟形象';
-			case 'profile.avatarDetail': return '显示虚拟形象详情';
-			case 'profile.public': return '公开';
-			case 'profile.private': return '私密';
-			case 'profile.hidden': return '隐藏';
-			case 'profile.unknown': return '未知';
-			case 'profile.friends': return '好友';
-			case 'profile.loadingLinks': return '正在加载链接信息...';
-			case 'profile.noGroup': return '未加入任何群组';
-			case 'profile.noBio': return '无个人简介';
-			case 'profile.noLinks': return '无链接';
-			case 'profile.save': return '保存更改';
-			case 'profile.saved': return '个人资料已更新';
-			case 'profile.saveFailed': return '更新失败：{error}';
-			case 'profile.discardTitle': return '要放弃更改吗？';
-			case 'profile.discardContent': return '您对个人资料所做的更改将不会被保存。';
-			case 'profile.discardCancel': return '取消';
-			case 'profile.discardOk': return '放弃';
-			case 'profile.basic': return '基本信息';
-			case 'profile.pronouns': return '代词';
-			case 'profile.addLink': return '添加';
-			case 'profile.removeLink': return '移除';
-			case 'profile.linkHint': return '输入链接（例如：https://twitter.com/username）';
-			case 'profile.linksHint': return '链接将显示在您的个人资料上，点击即可打开';
-			case 'profile.statusMessageHint': return '输入您当前的状态或消息';
-			case 'profile.bioHint': return '写一些关于您自己的介绍吧';
-			case 'engageCard.pickBackground': return '选择背景图片';
-			case 'engageCard.removeBackground': return '移除背景图片';
-			case 'engageCard.scanQr': return '扫描二维码';
-			case 'engageCard.showAvatar': return '显示虚拟形象';
-			case 'engageCard.hideAvatar': return '隐藏虚拟形象';
-			case 'engageCard.noBackground': return '未选择背景图片\n您可以通过右上角的按钮进行设置';
-			case 'engageCard.loading': return '加载中...';
-			case 'engageCard.error': return ({required Object error}) => '获取互动卡片信息失败：${error}';
-			case 'engageCard.copyUserId': return '复制用户ID';
-			case 'engageCard.copied': return '已复制';
-			case 'qrScanner.title': return '扫描二维码';
-			case 'qrScanner.guide': return '请将二维码对准框内';
-			case 'qrScanner.loading': return '正在初始化相机...';
-			case 'qrScanner.error': return ({required Object error}) => '读取二维码失败：${error}';
-			case 'qrScanner.notFound': return '未找到有效的用户二维码';
-			case 'favorites.title': return '收藏';
-			case 'favorites.frined': return '好友';
-			case 'favorites.friendsTab': return '好友';
-			case 'favorites.worldsTab': return '世界';
-			case 'favorites.avatarsTab': return '虚拟形象';
-			case 'favorites.emptyFolderTitle': return '没有收藏文件夹';
-			case 'favorites.emptyFolderDescription': return '请在VRChat内创建收藏文件夹';
-			case 'favorites.emptyFriends': return '此文件夹中没有好友';
-			case 'favorites.emptyWorlds': return '此文件夹中没有世界';
-			case 'favorites.emptyAvatars': return '此文件夹中没有虚拟形象';
-			case 'favorites.emptyWorldsTabTitle': return '没有收藏的世界';
-			case 'favorites.emptyWorldsTabDescription': return '您可以从世界详情页面将世界添加到收藏';
-			case 'favorites.emptyAvatarsTabTitle': return '没有收藏的虚拟形象';
-			case 'favorites.emptyAvatarsTabDescription': return '您可以从虚拟形象详情页面将形象添加到收藏';
-			case 'favorites.loading': return '正在加载收藏...';
-			case 'favorites.loadingFolder': return '正在加载文件夹信息...';
-			case 'favorites.error': return ({required Object error}) => '加载收藏失败：${error}';
-			case 'favorites.errorFolder': return '获取信息失败';
-			case 'favorites.remove': return '从收藏中移除';
-			case 'favorites.removeSuccess': return ({required Object name}) => '已将 ${name} 从收藏中移除';
-			case 'favorites.removeFailed': return ({required Object error}) => '移除失败：${error}';
-			case 'favorites.itemsCount': return ({required Object count}) => '${count} 个项目';
-			case 'favorites.public': return '公开';
-			case 'favorites.private': return '私密';
-			case 'favorites.hidden': return '隐藏';
-			case 'favorites.unknown': return '未知';
-			case 'favorites.loadingError': return '加载错误';
-			case 'notifications.emptyTitle': return '没有通知';
-			case 'notifications.emptyDescription': return '好友请求、邀请等新通知\n将会显示在这里';
-			case 'notifications.friendRequest': return ({required Object userName}) => '您收到了来自 ${userName} 的好友请求';
-			case 'notifications.invite': return ({required Object userName, required Object worldName}) => '您收到了来自 ${userName} 前往 ${worldName} 的邀请';
-			case 'notifications.friendOnline': return ({required Object userName}) => '${userName} 已上线';
-			case 'notifications.friendOffline': return ({required Object userName}) => '${userName} 已离线';
-			case 'notifications.friendActive': return ({required Object userName}) => '${userName} 变为活跃状态';
-			case 'notifications.friendAdd': return ({required Object userName}) => '${userName} 已被添加为好友';
-			case 'notifications.friendRemove': return ({required Object userName}) => '${userName} 已从好友中移除';
-			case 'notifications.statusUpdate': return ({required Object userName, required Object status, required Object world}) => '${userName} 的状态已更新：${status}${world}';
-			case 'notifications.locationChange': return ({required Object userName, required Object worldName}) => '${userName} 已移动到 ${worldName}';
-			case 'notifications.userUpdate': return ({required Object world}) => '您的信息已更新${world}';
-			case 'notifications.myLocationChange': return ({required Object worldName}) => '您的移动：${worldName}';
-			case 'notifications.requestInvite': return ({required Object userName}) => '您收到了来自 ${userName} 的加入请求';
-			case 'notifications.votekick': return ({required Object userName}) => '收到了来自 ${userName} 的投票踢出';
-			case 'notifications.responseReceived': return ({required Object userName}) => '已收到通知ID:${userName}的响应';
-			case 'notifications.error': return ({required Object worldName}) => '错误：${worldName}';
-			case 'notifications.system': return ({required Object extraData}) => '系统通知：${extraData}';
-			case 'notifications.secondsAgo': return ({required Object seconds}) => '${seconds}秒前';
-			case 'notifications.minutesAgo': return ({required Object minutes}) => '${minutes}分钟前';
-			case 'notifications.hoursAgo': return ({required Object hours}) => '${hours}小时前';
-			case 'eventCalendar.title': return '活动日历';
-			case 'eventCalendar.filter': return '筛选活动';
-			case 'eventCalendar.refresh': return '刷新活动信息';
-			case 'eventCalendar.loading': return '正在获取活动信息...';
-			case 'eventCalendar.error': return ({required Object error}) => '获取活动信息失败：${error}';
-			case 'eventCalendar.filterActive': return ({required Object count}) => '筛选已应用（${count}条）';
-			case 'eventCalendar.clear': return '清除';
-			case 'eventCalendar.noEvents': return '没有符合条件的活动';
-			case 'eventCalendar.clearFilter': return '清除筛选';
-			case 'eventCalendar.today': return '今天';
-			case 'eventCalendar.reminderSet': return '设置提醒';
-			case 'eventCalendar.reminderSetDone': return '已设置提醒';
-			case 'eventCalendar.reminderDeleted': return '已删除提醒';
-			case 'eventCalendar.eventName': return '活动名称';
-			case 'eventCalendar.organizer': return '主办方';
-			case 'eventCalendar.description': return '说明';
-			case 'eventCalendar.genre': return '类型';
-			case 'eventCalendar.condition': return '参加条件';
-			case 'eventCalendar.way': return '参加方法';
-			case 'eventCalendar.note': return '备注';
-			case 'eventCalendar.quest': return '支持Quest';
-			case 'eventCalendar.reminderCount': return ({required Object count}) => '${count}条';
-			case 'eventCalendar.startToEnd': return ({required Object start, required Object end}) => '${start} ~ ${end}';
-			case 'avatars.title': return '虚拟形象';
-			case 'avatars.searchHint': return '按虚拟形象名称等搜索';
-			case 'avatars.searchTooltip': return '搜索';
-			case 'avatars.searchEmptyTitle': return '未找到搜索结果';
-			case 'avatars.searchEmptyDescription': return '请尝试其他搜索词';
-			case 'avatars.emptyTitle': return '没有虚拟形象';
-			case 'avatars.emptyDescription': return '请添加虚拟形象或稍后重试';
-			case 'avatars.refresh': return '刷新';
-			case 'avatars.loading': return '正在加载虚拟形象...';
-			case 'avatars.error': return ({required Object error}) => '获取虚拟形象信息失败：${error}';
-			case 'avatars.current': return '使用中';
-			case 'avatars.public': return '公开';
-			case 'avatars.private': return '私密';
-			case 'avatars.hidden': return '隐藏';
-			case 'avatars.author': return '作者';
-			case 'avatars.sortUpdated': return '按更新时间';
-			case 'avatars.sortName': return '按名称';
-			case 'avatars.sortTooltip': return '排序';
-			case 'avatars.viewModeTooltip': return '切换视图模式';
-			case 'worldDetail.loading': return '正在加载世界信息...';
-			case 'worldDetail.error': return ({required Object error}) => '获取世界信息失败：${error}';
-			case 'worldDetail.share': return '分享这个世界';
-			case 'worldDetail.openInVRChat': return '在VRChat官网打开';
-			case 'worldDetail.report': return '举报这个世界';
-			case 'worldDetail.creator': return '创建者';
-			case 'worldDetail.created': return '创建于';
-			case 'worldDetail.updated': return '更新于';
-			case 'worldDetail.favorites': return '收藏数';
-			case 'worldDetail.visits': return '访问数';
-			case 'worldDetail.occupants': return '当前人数';
-			case 'worldDetail.popularity': return '评价';
-			case 'worldDetail.description': return '说明';
-			case 'worldDetail.noDescription': return '没有说明';
-			case 'worldDetail.tags': return '标签';
-			case 'worldDetail.joinPublic': return '发送公开邀请';
-			case 'worldDetail.favoriteAdded': return '已添加到收藏';
-			case 'worldDetail.favoriteRemoved': return '已从收藏中移除';
-			case 'worldDetail.unknown': return '未知';
-			case 'avatarDetail.changeSuccess': return ({required Object name}) => '已更换为虚拟形象“${name}”';
-			case 'avatarDetail.changeFailed': return ({required Object error}) => '更换虚拟形象失败：${error}';
-			case 'avatarDetail.changing': return '更换中...';
-			case 'avatarDetail.useThisAvatar': return '使用此虚拟形象';
-			case 'avatarDetail.creator': return '创建者';
-			case 'avatarDetail.created': return '创建于';
-			case 'avatarDetail.updated': return '更新于';
-			case 'avatarDetail.description': return '说明';
-			case 'avatarDetail.noDescription': return '没有说明';
-			case 'avatarDetail.tags': return '标签';
-			case 'avatarDetail.addToFavorites': return '添加到收藏';
-			case 'avatarDetail.public': return '公开';
-			case 'avatarDetail.private': return '私密';
-			case 'avatarDetail.hidden': return '隐藏';
-			case 'avatarDetail.unknown': return '未知';
-			case 'avatarDetail.share': return '分享';
-			case 'avatarDetail.loading': return '正在加载虚拟形象信息...';
-			case 'avatarDetail.error': return ({required Object error}) => '获取虚拟形象信息失败：${error}';
-			case 'groups.title': return '群组';
-			case 'groups.loadingUser': return '正在加载用户信息...';
-			case 'groups.errorUser': return ({required Object error}) => '获取用户信息失败：${error}';
-			case 'groups.loadingGroups': return '正在加载群组信息...';
-			case 'groups.errorGroups': return ({required Object error}) => '获取群组信息失败：${error}';
-			case 'groups.emptyTitle': return '您尚未加入任何群组';
-			case 'groups.emptyDescription': return '您可以从VRChat应用或网站加入群组';
-			case 'groups.searchGroups': return '查找群组';
-			case 'groups.members': return ({required Object count}) => '${count}名成员';
-			case 'groups.showDetails': return '显示详情';
-			case 'groups.unknownName': return '名称未知';
-			case 'groupDetail.loading': return '正在加载群组信息...';
-			case 'groupDetail.error': return ({required Object error}) => '获取群组信息失败：${error}';
-			case 'groupDetail.share': return '分享群组信息';
-			case 'groupDetail.description': return '说明';
-			case 'groupDetail.roles': return '角色';
-			case 'groupDetail.basicInfo': return '基本信息';
-			case 'groupDetail.createdAt': return '创建日期';
-			case 'groupDetail.owner': return '所有者';
-			case 'groupDetail.rules': return '规则';
-			case 'groupDetail.languages': return '语言';
-			case 'groupDetail.memberCount': return ({required Object count}) => '${count} 成员';
-			case 'groupDetail.privacy.public': return '公开';
-			case 'groupDetail.privacy.private': return '私密';
-			case 'groupDetail.privacy.friends': return '好友';
-			case 'groupDetail.privacy.invite': return '邀请制';
-			case 'groupDetail.privacy.unknown': return '未知';
-			case 'groupDetail.role.admin': return '管理员';
-			case 'groupDetail.role.moderator': return '版主';
-			case 'groupDetail.role.member': return '成员';
-			case 'groupDetail.role.unknown': return '未知';
-			case 'inventory.title': return '物品栏';
-			case 'inventory.gallery': return '画廊';
-			case 'inventory.icon': return '图标';
-			case 'inventory.emoji': return '表情';
-			case 'inventory.sticker': return '贴纸';
-			case 'inventory.print': return '打印图';
-			case 'inventory.upload': return '上传文件';
-			case 'inventory.uploadGallery': return '正在上传画廊图片...';
-			case 'inventory.uploadIcon': return '正在上传图标...';
-			case 'inventory.uploadEmoji': return '正在上传表情...';
-			case 'inventory.uploadSticker': return '正在上传贴纸...';
-			case 'inventory.uploadPrint': return '正在上传打印图...';
-			case 'inventory.selectImage': return '选择图片';
-			case 'inventory.selectFromGallery': return '从相册选择';
-			case 'inventory.takePhoto': return '使用相机拍摄';
-			case 'inventory.uploadSuccess': return '上传成功';
-			case 'inventory.uploadFailed': return '上传失败';
-			case 'inventory.uploadFailedFormat': return '文件格式或大小有问题。请选择小于1MB的PNG格式图片。';
-			case 'inventory.uploadFailedAuth': return '认证失败。请重新登录。';
-			case 'inventory.uploadFailedSize': return '文件太大。请选择更小的图片。';
-			case 'inventory.uploadFailedServer': return ({required Object code}) => '发生服务器错误 (${code})';
-			case 'inventory.pickImageFailed': return ({required Object error}) => '选择图片失败：${error}';
-			case 'inventory.tabs.emojiInventory.loading': return '正在加载表情...';
-			case 'inventory.tabs.emojiInventory.error': return ({required Object error}) => '获取表情失败：${error}';
-			case 'inventory.tabs.emojiInventory.emptyTitle': return '没有表情';
-			case 'inventory.tabs.emojiInventory.emptyDescription': return '您在VRChat中上传的表情将显示在这里';
-			case 'inventory.tabs.emojiInventory.zoomHint': return '双击缩放';
-			case 'inventory.tabs.galleryInventory.loading': return '正在加载画廊...';
-			case 'inventory.tabs.galleryInventory.error': return ({required Object error}) => '获取画廊失败：${error}';
-			case 'inventory.tabs.galleryInventory.emptyTitle': return '没有画廊';
-			case 'inventory.tabs.galleryInventory.emptyDescription': return '您在VRChat中上传的画廊将显示在这里';
-			case 'inventory.tabs.galleryInventory.zoomHint': return '双击缩放';
-			case 'inventory.tabs.iconInventory.loading': return '正在加载图标...';
-			case 'inventory.tabs.iconInventory.error': return ({required Object error}) => '获取图标失败：${error}';
-			case 'inventory.tabs.iconInventory.emptyTitle': return '没有图标';
-			case 'inventory.tabs.iconInventory.emptyDescription': return '您在VRChat中上传的图标将显示在这里';
-			case 'inventory.tabs.iconInventory.zoomHint': return '双击缩放';
-			case 'inventory.tabs.printInventory.loading': return '正在加载打印图...';
-			case 'inventory.tabs.printInventory.error': return ({required Object error}) => '获取打印图失败：${error}';
-			case 'inventory.tabs.printInventory.emptyTitle': return '没有打印图';
-			case 'inventory.tabs.printInventory.emptyDescription': return '您在VRChat中上传的打印图将显示在这里';
-			case 'inventory.tabs.printInventory.zoomHint': return '双击缩放';
-			case 'inventory.tabs.stickerInventory.loading': return '正在加载贴纸...';
-			case 'inventory.tabs.stickerInventory.error': return ({required Object error}) => '获取贴纸失败：${error}';
-			case 'inventory.tabs.stickerInventory.emptyTitle': return '没有贴纸';
-			case 'inventory.tabs.stickerInventory.emptyDescription': return '您在VRChat中上传的贴纸将显示在这里';
-			case 'inventory.tabs.stickerInventory.zoomHint': return '双击缩放';
-			case 'vrcnsync.title': return 'VRCNSync (β)';
-			case 'vrcnsync.betaTitle': return '测试版功能';
-			case 'vrcnsync.betaDescription': return '此功能为开发中的测试版，可能会出现意外问题。\n目前仅为本地实现，如果需求量大，将会实现云端版本。';
-			case 'vrcnsync.githubLink': return 'VRCNSync的GitHub页面';
-			case 'vrcnsync.openGithub': return '打开GitHub页面';
-			case 'vrcnsync.serverRunning': return '服务器运行中';
-			case 'vrcnsync.serverStopped': return '服务器已停止';
-			case 'vrcnsync.serverRunningDesc': return '将PC上的照片保存到VRCN相册';
-			case 'vrcnsync.serverStoppedDesc': return '服务器已停止';
-			case 'vrcnsync.photoSaved': return '照片已保存到VRCN相册';
-			case 'vrcnsync.photoReceived': return '已接收照片（保存到相册失败）';
-			case 'vrcnsync.openAlbum': return '打开相册';
-			case 'vrcnsync.permissionErrorIos': return '需要照片库的访问权限';
-			case 'vrcnsync.permissionErrorAndroid': return '需要存储空间的访问权限';
-			case 'vrcnsync.openSettings': return '打开设置';
-			case 'vrcnsync.initError': return ({required Object error}) => '初始化失败：${error}';
-			case 'vrcnsync.openPhotoAppError': return '无法打开照片应用';
-			case 'vrcnsync.serverInfo': return '服务器信息';
-			case 'vrcnsync.ip': return ({required Object ip}) => 'IP: ${ip}';
-			case 'vrcnsync.port': return ({required Object port}) => '端口: ${port}';
-			case 'vrcnsync.address': return ({required Object ip, required Object port}) => '${ip}:${port}';
-			case 'vrcnsync.autoSave': return '接收到的照片将自动保存到“VRCN”相册';
-			case 'vrcnsync.usage': return '使用方法';
-			case 'vrcnsync.usageSteps.0.title': return '在PC上启动VRCNSync应用';
-			case 'vrcnsync.usageSteps.0.desc': return '请在您的PC上启动VRCNSync应用';
-			case 'vrcnsync.usageSteps.1.title': return '连接到同一WiFi网络';
-			case 'vrcnsync.usageSteps.1.desc': return '请将您的PC和移动设备连接到同一个WiFi网络';
-			case 'vrcnsync.usageSteps.2.title': return '将移动设备指定为连接目标';
-			case 'vrcnsync.usageSteps.2.desc': return '请在PC应用中指定上述IP地址和端口';
-			case 'vrcnsync.usageSteps.3.title': return '发送照片';
-			case 'vrcnsync.usageSteps.3.desc': return '从PC发送照片后，将自动保存到VRCN相册';
-			case 'vrcnsync.stats': return '连接状态';
-			case 'vrcnsync.statServer': return '服务器状态';
-			case 'vrcnsync.statServerRunning': return '运行中';
-			case 'vrcnsync.statServerStopped': return '已停止';
-			case 'vrcnsync.statNetwork': return '网络';
-			case 'vrcnsync.statNetworkConnected': return '已连接';
-			case 'vrcnsync.statNetworkDisconnected': return '未连接';
-			case 'feedback.title': return '反馈';
-			case 'feedback.type': return '反馈类型';
-			case 'feedback.types.bug': return '错误报告';
-			case 'feedback.types.feature': return '功能请求';
-			case 'feedback.types.improvement': return '改进建议';
-			case 'feedback.types.other': return '其他';
-			case 'feedback.inputTitle': return '标题 *';
-			case 'feedback.inputTitleHint': return '请简要说明';
-			case 'feedback.inputDescription': return '详细说明 *';
-			case 'feedback.inputDescriptionHint': return '请提供详细说明...';
-			case 'feedback.cancel': return '取消';
-			case 'feedback.send': return '发送';
-			case 'feedback.sending': return '发送中...';
-			case 'feedback.required': return '标题和详细说明为必填项';
-			case 'feedback.success': return '反馈已发送。谢谢！';
-			case 'feedback.fail': return '反馈发送失败';
-			case 'settings.appearance': return '外观';
-			case 'settings.language': return '语言';
-			case 'settings.languageDescription': return '您可以选择应用程序的显示语言';
-			case 'settings.appIcon': return '应用图标';
-			case 'settings.appIconDescription': return '更改主屏幕上显示的应用图标';
-			case 'settings.contentSettings': return '内容设置';
-			case 'settings.searchEnabled': return '搜索功能已启用';
-			case 'settings.searchDisabled': return '搜索功能已禁用';
-			case 'settings.enableSearch': return '启用搜索功能';
-			case 'settings.enableSearchDescription': return '搜索结果可能包含成人或暴力内容。';
-			case 'settings.apiSetting': return '虚拟形象搜索API';
-			case 'settings.apiSettingDescription': return '设置虚拟形象搜索功能的API';
-			case 'settings.apiSettingSaveUrl': return 'URL已保存';
-			case 'settings.notSet': return '未设置（虚拟形象搜索功能无法使用）';
-			case 'settings.notifications': return '通知设置';
-			case 'settings.eventReminder': return '活动提醒';
-			case 'settings.eventReminderDescription': return '在您设定的活动开始前接收通知';
-			case 'settings.manageReminders': return '管理已设置的提醒';
-			case 'settings.manageRemindersDescription': return '可以取消或确认通知';
-			case 'settings.dataStorage': return '数据与存储';
-			case 'settings.clearCache': return '清除缓存';
-			case 'settings.clearCacheSuccess': return '缓存已清除';
-			case 'settings.clearCacheError': return '清除缓存时发生错误';
-			case 'settings.cacheSize': return ({required Object size}) => '缓存大小: ${size}';
-			case 'settings.calculatingCache': return '正在计算缓存大小...';
-			case 'settings.cacheError': return '无法获取缓存大小';
-			case 'settings.confirmClearCache': return '清除缓存将删除临时保存的图片和数据。\n\n您的账户信息和应用设置不会被删除。';
-			case 'settings.appInfo': return '应用信息';
-			case 'settings.version': return '版本';
-			case 'settings.packageName': return '包名';
-			case 'settings.credit': return '鸣谢';
-			case 'settings.creditDescription': return '开发者和贡献者信息';
-			case 'settings.contact': return '联系我们';
-			case 'settings.contactDescription': return 'BUG报告和建议请点此';
-			case 'settings.privacyPolicy': return '隐私政策';
-			case 'settings.privacyPolicyDescription': return '关于个人信息的处理';
-			case 'settings.termsOfService': return '服务条款';
-			case 'settings.termsOfServiceDescription': return '应用使用条件';
-			case 'settings.openSource': return '开源信息';
-			case 'settings.openSourceDescription': return '所使用的库等许可证信息';
-			case 'settings.github': return 'GitHub仓库';
-			case 'settings.githubDescription': return '查看源代码';
-			case 'settings.logoutConfirm': return '确定要登出吗？';
-			case 'settings.logoutError': return ({required Object error}) => '登出时发生错误：${error}';
-			case 'settings.iconChangeNotSupported': return '您的设备不支持更改应用图标';
-			case 'settings.iconChangeFailed': return '更改图标失败';
-			case 'settings.themeMode': return '主题模式';
-			case 'settings.themeModeDescription': return '您可以选择应用的显示主题';
-			case 'settings.themeLight': return '浅色';
-			case 'settings.themeSystem': return '系统';
-			case 'settings.themeDark': return '深色';
-			case 'settings.appIconDefault': return '默认';
-			case 'settings.appIconIcon': return '图标';
-			case 'settings.appIconLogo': return '标志';
-			case 'settings.delete': return '删除';
-			case 'credits.title': return '鸣谢';
-			case 'credits.section.development': return '开发';
-			case 'credits.section.iconPeople': return '有趣的图标制作者们';
-			case 'credits.section.testFeedback': return '测试与反馈';
-			case 'credits.section.specialThanks': return '特别感谢';
-			case 'download.success': return '下载完成';
-			case 'download.failure': return ({required Object error}) => '下载失败：${error}';
-			case 'download.shareFailure': return ({required Object error}) => '分享失败：${error}';
-			case 'download.permissionTitle': return '需要权限';
-			case 'download.permissionDenied': return ({required Object permissionType}) => '保存到${permissionType}的权限已被拒绝。\n请从设置应用中启用权限。';
-			case 'download.permissionCancel': return '取消';
-			case 'download.permissionOpenSettings': return '打开设置';
-			case 'download.permissionPhoto': return '照片';
-			case 'download.permissionPhotoLibrary': return '照片库';
-			case 'download.permissionStorage': return '存储';
-			case 'download.permissionPhotoRequired': return '需要保存到照片的权限';
-			case 'download.permissionPhotoLibraryRequired': return '需要保存到照片库的权限';
-			case 'download.permissionStorageRequired': return '需要访问存储空间的权限';
-			case 'download.permissionError': return ({required Object error}) => '检查权限时发生错误：${error}';
-			case 'download.downloading': return ({required Object fileName}) => '正在下载 ${fileName}...';
-			case 'download.sharing': return ({required Object fileName}) => '正在准备分享 ${fileName}...';
-			case 'instance.type.public': return '公开';
-			case 'instance.type.hidden': return '好友+';
-			case 'instance.type.friends': return '好友';
-			case 'instance.type.private': return '邀请+';
-			case 'instance.type.unknown': return '未知';
-			case 'status.active': return '在线';
-			case 'status.joinMe': return '欢迎加入';
-			case 'status.askMe': return '请问我';
-			case 'status.busy': return '忙碌';
-			case 'status.offline': return '离线';
-			case 'status.unknown': return '状态未知';
-			case 'location.private': return '私密';
-			case 'location.playerCount': return ({required Object userCount, required Object capacity}) => '玩家数：${userCount} / ${capacity}';
-			case 'location.instanceType': return ({required Object type}) => '实例类型：${type}';
-			case 'location.noInfo': return '没有位置信息';
-			case 'location.fetchError': return '获取位置信息失败';
-			case 'location.privateLocation': return '您在一个私密地点';
-			case 'location.inviteSending': return '发送邀请中...';
-			case 'location.inviteSent': return '邀请已发送。您可以从通知中加入';
-			case 'location.inviteFailed': return ({required Object error}) => '发送邀请失败：${error}';
-			case 'location.inviteButton': return '向自己发送邀请';
-			case 'location.isPrivate': return ({required Object number}) => '${number}人私密';
-			case 'location.isActive': return ({required Object number}) => '${number}人在线';
-			case 'location.isOffline': return ({required Object number}) => '${number}人离线';
-			case 'location.isTraveling': return ({required Object number}) => '${number}人移动中';
-			case 'location.isStaying': return ({required Object number}) => '${number}人停留中';
-			case 'reminder.dialogTitle': return '设置提醒';
-			case 'reminder.alreadySet': return '已设置';
-			case 'reminder.set': return '设置';
-			case 'reminder.cancel': return '取消';
-			case 'reminder.delete': return '删除';
-			case 'reminder.deleteAll': return '删除所有提醒';
-			case 'reminder.deleteAllConfirm': return '这将删除所有已设置的活动提醒。此操作无法撤销。';
-			case 'reminder.deleted': return '提醒已删除';
-			case 'reminder.deletedAll': return '所有提醒已删除';
-			case 'reminder.noReminders': return '没有已设置的提醒';
-			case 'reminder.setFromEvent': return '您可以从活动页面设置通知';
-			case 'reminder.eventStart': return ({required Object time}) => '${time} 开始';
-			case 'reminder.notifyAt': return ({required Object time, required Object label}) => '${time} (${label})';
-			case 'reminder.receiveNotification': return '您想在何时收到通知？';
-			case 'friend.sortFilter': return '排序和筛选';
-			case 'friend.filter': return '筛选';
-			case 'friend.filterAll': return '显示全部';
-			case 'friend.filterOnline': return '仅在线';
-			case 'friend.filterOffline': return '仅离线';
-			case 'friend.filterFavorite': return '仅收藏';
-			case 'friend.sort': return '排序';
-			case 'friend.sortStatus': return '按在线状态';
-			case 'friend.sortName': return '按名称';
-			case 'friend.sortLastLogin': return '按最后登录时间';
-			case 'friend.sortAsc': return '升序';
-			case 'friend.sortDesc': return '降序';
-			case 'friend.close': return '关闭';
-			case 'eventCalendarFilter.filterTitle': return '筛选活动';
-			case 'eventCalendarFilter.clear': return '清除';
-			case 'eventCalendarFilter.keyword': return '关键词搜索';
-			case 'eventCalendarFilter.keywordHint': return '活动名称、说明、主办方等';
-			case 'eventCalendarFilter.date': return '按日期筛选';
-			case 'eventCalendarFilter.dateHint': return '可以显示特定日期范围的活动';
-			case 'eventCalendarFilter.startDate': return '开始日期';
-			case 'eventCalendarFilter.endDate': return '结束日期';
-			case 'eventCalendarFilter.select': return '请选择';
-			case 'eventCalendarFilter.time': return '按时间段筛选';
-			case 'eventCalendarFilter.timeHint': return '可以显示特定时间段举办的活动';
-			case 'eventCalendarFilter.startTime': return '开始时间';
-			case 'eventCalendarFilter.endTime': return '结束时间';
-			case 'eventCalendarFilter.genre': return '按类型筛选';
-			case 'eventCalendarFilter.genreSelected': return ({required Object count}) => '已选择 ${count} 个类型';
-			case 'eventCalendarFilter.apply': return '应用';
-			case 'eventCalendarFilter.filterSummary': return '筛选器';
-			case 'eventCalendarFilter.filterNone': return '未设置筛选器';
-			default: return null;
-		}
+		return switch (path) {
+			'common.title' => 'VRCN',
+			'common.ok' => '确定',
+			'common.cancel' => '取消',
+			'common.close' => '关闭',
+			'common.save' => '保存',
+			'common.edit' => '编辑',
+			'common.delete' => '删除',
+			'common.yes' => '是',
+			'common.no' => '否',
+			'common.loading' => '加载中...',
+			'common.error' => ({required Object error}) => '发生错误：${error}',
+			'common.errorNomessage' => '发生错误',
+			'common.retry' => '重试',
+			'common.search' => '搜索',
+			'common.settings' => '设置',
+			'common.confirm' => '确认',
+			'common.agree' => '同意',
+			'common.decline' => '不同意',
+			'common.username' => '用户名',
+			'common.password' => '密码',
+			'common.login' => '登录',
+			'common.logout' => '登出',
+			'common.share' => '分享',
+			'termsAgreement.welcomeTitle' => '欢迎来到 VRCN',
+			'termsAgreement.welcomeMessage' => '在使用本应用前，\n请阅读服务条款和隐私政策。',
+			'termsAgreement.termsTitle' => '服务条款',
+			'termsAgreement.termsSubtitle' => '关于应用的使用条件',
+			'termsAgreement.privacyTitle' => '隐私政策',
+			'termsAgreement.privacySubtitle' => '关于个人信息的处理',
+			'termsAgreement.agreeTerms' => ({required Object title}) => '我同意“${title}”',
+			'termsAgreement.checkContent' => '查看内容',
+			'termsAgreement.notice' => '本应用是 VRChat Inc. 的非官方应用。\n与 VRChat Inc. 没有任何关系。',
+			'drawer.home' => '主页',
+			'drawer.profile' => '个人资料',
+			'drawer.favorite' => '收藏',
+			'drawer.eventCalendar' => '活动日历',
+			'drawer.avatar' => '虚拟形象',
+			'drawer.group' => '群组',
+			'drawer.inventory' => '物品栏',
+			'drawer.vrcnsync' => 'VRCNSync (β)',
+			'drawer.review' => '评价',
+			'drawer.feedback' => '反馈',
+			'drawer.settings' => '设置',
+			'drawer.userLoading' => '正在加载用户信息...',
+			'drawer.userError' => '加载用户信息失败',
+			'drawer.retry' => '重试',
+			'drawer.section.content' => '内容',
+			'drawer.section.other' => '其他',
+			'login.forgotPassword' => '忘记密码？',
+			'login.createAccount' => '注册',
+			'login.subtitle' => '使用您的 VRChat 账户登录',
+			'login.email' => '邮箱地址',
+			'login.emailHint' => '输入邮箱或用户名',
+			'login.passwordHint' => '输入密码',
+			'login.rememberMe' => '记住登录状态',
+			'login.loggingIn' => '登录中...',
+			'login.errorEmptyEmail' => '请输入用户名或邮箱地址',
+			'login.errorEmptyPassword' => '请输入密码',
+			'login.errorLoginFailed' => '登录失败。请检查您的邮箱和密码。',
+			'login.twoFactorTitle' => '两步验证',
+			'login.twoFactorSubtitle' => '请输入验证码',
+			'login.twoFactorInstruction' => '请输入您的验证器应用中显示的\n6位数验证码',
+			'login.twoFactorCodeHint' => '验证码',
+			'login.verify' => '验证',
+			'login.verifying' => '验证中...',
+			'login.errorEmpty2fa' => '请输入验证码',
+			'login.error2faFailed' => '两步验证失败。请检查验证码是否正确。',
+			'login.backToLogin' => '返回登录页面',
+			'login.paste' => '粘贴',
+			'friends.loading' => '正在加载好友信息...',
+			'friends.error' => ({required Object error}) => '获取好友信息失败：${error}',
+			'friends.notFound' => '未找到好友',
+			'friends.private' => '私密',
+			'friends.active' => '活跃',
+			'friends.offline' => '离线',
+			'friends.online' => '在线',
+			'friends.groupTitle' => '按世界分组',
+			'friends.refresh' => '刷新',
+			'friends.searchHint' => '按好友名称搜索',
+			'friends.noResult' => '没有找到相关的好友',
+			'friendDetail.loading' => '正在加载用户信息...',
+			'friendDetail.error' => ({required Object error}) => '获取用户信息失败：${error}',
+			'friendDetail.currentLocation' => '当前位置',
+			'friendDetail.basicInfo' => '基本信息',
+			'friendDetail.userId' => '用户ID',
+			'friendDetail.dateJoined' => '注册日期',
+			'friendDetail.lastLogin' => '最后登录',
+			'friendDetail.bio' => '个人简介',
+			'friendDetail.links' => '链接',
+			'friendDetail.loadingLinks' => '正在加载链接信息...',
+			'friendDetail.group' => '所属群组',
+			'friendDetail.groupDetail' => '显示群组详情',
+			'friendDetail.groupCode' => ({required Object code}) => '群组代码：${code}',
+			'friendDetail.memberCount' => ({required Object count}) => '成员数：${count}人',
+			'friendDetail.unknownGroup' => '未知群组',
+			'friendDetail.block' => '屏蔽',
+			'friendDetail.mute' => '静音',
+			'friendDetail.openWebsite' => '在网站上打开',
+			'friendDetail.shareProfile' => '分享个人资料',
+			'friendDetail.confirmBlockTitle' => ({required Object name}) => '要屏蔽 ${name} 吗？',
+			'friendDetail.confirmBlockMessage' => '屏蔽后，您将不会再收到该用户的好友请求和消息。',
+			'friendDetail.confirmMuteTitle' => ({required Object name}) => '要将 ${name} 静音吗？',
+			'friendDetail.confirmMuteMessage' => '静音后，您将听不到该用户的声音。',
+			'friendDetail.blockSuccess' => '已屏蔽',
+			'friendDetail.muteSuccess' => '已静音',
+			'friendDetail.operationFailed' => ({required Object error}) => '操作失败：${error}',
+			'search.userTab' => '用户',
+			'search.worldTab' => '世界',
+			'search.avatarTab' => '虚拟形象',
+			'search.groupTab' => '群组',
+			'search.tabs.userSearch.emptyTitle' => '用户搜索',
+			'search.tabs.userSearch.emptyDescription' => '您可以通过用户名或ID进行搜索',
+			'search.tabs.userSearch.searching' => '搜索中...',
+			'search.tabs.userSearch.noResults' => '未找到相关用户',
+			'search.tabs.userSearch.error' => ({required Object error}) => '用户搜索时发生错误：${error}',
+			'search.tabs.userSearch.inputPlaceholder' => '输入用户名或ID',
+			'search.tabs.worldSearch.emptyTitle' => '探索世界',
+			'search.tabs.worldSearch.emptyDescription' => '请输入关键词进行搜索',
+			'search.tabs.worldSearch.searching' => '搜索中...',
+			'search.tabs.worldSearch.noResults' => '未找到相关世界',
+			'search.tabs.worldSearch.noResultsWithQuery' => ({required Object query}) => '未找到与“${query}”匹配的世界',
+			'search.tabs.worldSearch.noResultsHint' => '尝试更换搜索关键词吧',
+			'search.tabs.worldSearch.error' => ({required Object error}) => '世界搜索时发生错误：${error}',
+			'search.tabs.worldSearch.resultCount' => ({required Object count}) => '找到了 ${count} 个世界',
+			'search.tabs.worldSearch.authorPrefix' => ({required Object authorName}) => 'by ${authorName}',
+			'search.tabs.worldSearch.listView' => '列表视图',
+			'search.tabs.worldSearch.gridView' => '网格视图',
+			'search.tabs.groupSearch.emptyTitle' => '搜索群组',
+			'search.tabs.groupSearch.emptyDescription' => '请输入关键词进行搜索',
+			'search.tabs.groupSearch.searching' => '搜索中...',
+			'search.tabs.groupSearch.noResults' => '未找到相关群组',
+			'search.tabs.groupSearch.noResultsWithQuery' => ({required Object query}) => '未找到与“${query}”匹配的群组',
+			'search.tabs.groupSearch.noResultsHint' => '尝试更换搜索关键词吧',
+			'search.tabs.groupSearch.error' => ({required Object error}) => '群组搜索时发生错误：${error}',
+			'search.tabs.groupSearch.resultCount' => ({required Object count}) => '找到了 ${count} 个群组',
+			'search.tabs.groupSearch.listView' => '列表视图',
+			'search.tabs.groupSearch.gridView' => '网格视图',
+			'search.tabs.groupSearch.memberCount' => ({required Object count}) => '${count} 成员',
+			'search.tabs.avatarSearch.avatar' => '虚拟形象',
+			'search.tabs.avatarSearch.emptyTitle' => '搜索虚拟形象',
+			'search.tabs.avatarSearch.emptyDescription' => '请输入关键词进行搜索',
+			'search.tabs.avatarSearch.searching' => '正在搜索虚拟形象...',
+			'search.tabs.avatarSearch.noResults' => '未找到搜索结果',
+			'search.tabs.avatarSearch.noResultsHint' => '试试其他关键词吧',
+			'search.tabs.avatarSearch.error' => ({required Object error}) => '虚拟形象搜索时发生错误：${error}',
+			'profile.title' => '个人资料',
+			'profile.edit' => '编辑',
+			'profile.refresh' => '刷新',
+			'profile.loading' => '正在加载个人资料信息...',
+			'profile.error' => '获取个人资料信息失败：{error}',
+			'profile.displayName' => '显示名称',
+			'profile.username' => '用户名',
+			'profile.userId' => '用户ID',
+			'profile.engageCard' => '互动卡片',
+			'profile.frined' => '好友',
+			'profile.dateJoined' => '注册日期',
+			'profile.userType' => '用户类型',
+			'profile.status' => '状态',
+			'profile.statusMessage' => '状态消息',
+			'profile.bio' => '个人简介',
+			'profile.links' => '链接',
+			'profile.group' => '所属群组',
+			'profile.groupDetail' => '显示群组详情',
+			'profile.avatar' => '当前虚拟形象',
+			'profile.avatarDetail' => '显示虚拟形象详情',
+			'profile.public' => '公开',
+			'profile.private' => '私密',
+			'profile.hidden' => '隐藏',
+			'profile.unknown' => '未知',
+			'profile.friends' => '好友',
+			'profile.loadingLinks' => '正在加载链接信息...',
+			'profile.noGroup' => '未加入任何群组',
+			'profile.noBio' => '无个人简介',
+			'profile.noLinks' => '无链接',
+			'profile.save' => '保存更改',
+			'profile.saved' => '个人资料已更新',
+			'profile.saveFailed' => '更新失败：{error}',
+			'profile.discardTitle' => '要放弃更改吗？',
+			'profile.discardContent' => '您对个人资料所做的更改将不会被保存。',
+			'profile.discardCancel' => '取消',
+			'profile.discardOk' => '放弃',
+			'profile.basic' => '基本信息',
+			'profile.pronouns' => '代词',
+			'profile.addLink' => '添加',
+			'profile.removeLink' => '移除',
+			'profile.linkHint' => '输入链接（例如：https://twitter.com/username）',
+			'profile.linksHint' => '链接将显示在您的个人资料上，点击即可打开',
+			'profile.statusMessageHint' => '输入您当前的状态或消息',
+			'profile.bioHint' => '写一些关于您自己的介绍吧',
+			'engageCard.pickBackground' => '选择背景图片',
+			'engageCard.removeBackground' => '移除背景图片',
+			'engageCard.scanQr' => '扫描二维码',
+			'engageCard.showAvatar' => '显示虚拟形象',
+			'engageCard.hideAvatar' => '隐藏虚拟形象',
+			'engageCard.noBackground' => '未选择背景图片\n您可以通过右上角的按钮进行设置',
+			'engageCard.loading' => '加载中...',
+			'engageCard.error' => ({required Object error}) => '获取互动卡片信息失败：${error}',
+			'engageCard.copyUserId' => '复制用户ID',
+			'engageCard.copied' => '已复制',
+			'qrScanner.title' => '扫描二维码',
+			'qrScanner.guide' => '请将二维码对准框内',
+			'qrScanner.loading' => '正在初始化相机...',
+			'qrScanner.error' => ({required Object error}) => '读取二维码失败：${error}',
+			'qrScanner.notFound' => '未找到有效的用户二维码',
+			'favorites.title' => '收藏',
+			'favorites.frined' => '好友',
+			'favorites.friendsTab' => '好友',
+			'favorites.worldsTab' => '世界',
+			'favorites.avatarsTab' => '虚拟形象',
+			'favorites.emptyFolderTitle' => '没有收藏文件夹',
+			'favorites.emptyFolderDescription' => '请在VRChat内创建收藏文件夹',
+			'favorites.emptyFriends' => '此文件夹中没有好友',
+			'favorites.emptyWorlds' => '此文件夹中没有世界',
+			'favorites.emptyAvatars' => '此文件夹中没有虚拟形象',
+			'favorites.emptyWorldsTabTitle' => '没有收藏的世界',
+			'favorites.emptyWorldsTabDescription' => '您可以从世界详情页面将世界添加到收藏',
+			'favorites.emptyAvatarsTabTitle' => '没有收藏的虚拟形象',
+			'favorites.emptyAvatarsTabDescription' => '您可以从虚拟形象详情页面将形象添加到收藏',
+			'favorites.loading' => '正在加载收藏...',
+			'favorites.loadingFolder' => '正在加载文件夹信息...',
+			'favorites.error' => ({required Object error}) => '加载收藏失败：${error}',
+			'favorites.errorFolder' => '获取信息失败',
+			'favorites.remove' => '从收藏中移除',
+			'favorites.removeSuccess' => ({required Object name}) => '已将 ${name} 从收藏中移除',
+			'favorites.removeFailed' => ({required Object error}) => '移除失败：${error}',
+			'favorites.itemsCount' => ({required Object count}) => '${count} 个项目',
+			'favorites.public' => '公开',
+			'favorites.private' => '私密',
+			'favorites.hidden' => '隐藏',
+			'favorites.unknown' => '未知',
+			'favorites.loadingError' => '加载错误',
+			'notifications.emptyTitle' => '没有通知',
+			'notifications.emptyDescription' => '好友请求、邀请等新通知\n将会显示在这里',
+			'notifications.friendRequest' => ({required Object userName}) => '您收到了来自 ${userName} 的好友请求',
+			'notifications.invite' => ({required Object userName, required Object worldName}) => '您收到了来自 ${userName} 前往 ${worldName} 的邀请',
+			'notifications.friendOnline' => ({required Object userName}) => '${userName} 已上线',
+			'notifications.friendOffline' => ({required Object userName}) => '${userName} 已离线',
+			'notifications.friendActive' => ({required Object userName}) => '${userName} 变为活跃状态',
+			'notifications.friendAdd' => ({required Object userName}) => '${userName} 已被添加为好友',
+			'notifications.friendRemove' => ({required Object userName}) => '${userName} 已从好友中移除',
+			'notifications.statusUpdate' => ({required Object userName, required Object status, required Object world}) => '${userName} 的状态已更新：${status}${world}',
+			'notifications.locationChange' => ({required Object userName, required Object worldName}) => '${userName} 已移动到 ${worldName}',
+			'notifications.userUpdate' => ({required Object world}) => '您的信息已更新${world}',
+			'notifications.myLocationChange' => ({required Object worldName}) => '您的移动：${worldName}',
+			'notifications.requestInvite' => ({required Object userName}) => '您收到了来自 ${userName} 的加入请求',
+			'notifications.votekick' => ({required Object userName}) => '收到了来自 ${userName} 的投票踢出',
+			'notifications.responseReceived' => ({required Object userName}) => '已收到通知ID:${userName}的响应',
+			'notifications.error' => ({required Object worldName}) => '错误：${worldName}',
+			'notifications.system' => ({required Object extraData}) => '系统通知：${extraData}',
+			'notifications.secondsAgo' => ({required Object seconds}) => '${seconds}秒前',
+			'notifications.minutesAgo' => ({required Object minutes}) => '${minutes}分钟前',
+			'notifications.hoursAgo' => ({required Object hours}) => '${hours}小时前',
+			'eventCalendar.title' => '活动日历',
+			'eventCalendar.filter' => '筛选活动',
+			'eventCalendar.refresh' => '刷新活动信息',
+			'eventCalendar.loading' => '正在获取活动信息...',
+			'eventCalendar.error' => ({required Object error}) => '获取活动信息失败：${error}',
+			'eventCalendar.filterActive' => ({required Object count}) => '筛选已应用（${count}条）',
+			'eventCalendar.clear' => '清除',
+			'eventCalendar.noEvents' => '没有符合条件的活动',
+			'eventCalendar.clearFilter' => '清除筛选',
+			'eventCalendar.today' => '今天',
+			'eventCalendar.reminderSet' => '设置提醒',
+			'eventCalendar.reminderSetDone' => '已设置提醒',
+			'eventCalendar.reminderDeleted' => '已删除提醒',
+			'eventCalendar.eventName' => '活动名称',
+			'eventCalendar.organizer' => '主办方',
+			'eventCalendar.description' => '说明',
+			'eventCalendar.genre' => '类型',
+			'eventCalendar.condition' => '参加条件',
+			'eventCalendar.way' => '参加方法',
+			'eventCalendar.note' => '备注',
+			'eventCalendar.quest' => '支持Quest',
+			'eventCalendar.reminderCount' => ({required Object count}) => '${count}条',
+			'eventCalendar.startToEnd' => ({required Object start, required Object end}) => '${start} ~ ${end}',
+			'avatars.title' => '虚拟形象',
+			'avatars.searchHint' => '按虚拟形象名称等搜索',
+			'avatars.searchTooltip' => '搜索',
+			'avatars.searchEmptyTitle' => '未找到搜索结果',
+			'avatars.searchEmptyDescription' => '请尝试其他搜索词',
+			'avatars.emptyTitle' => '没有虚拟形象',
+			'avatars.emptyDescription' => '请添加虚拟形象或稍后重试',
+			'avatars.refresh' => '刷新',
+			'avatars.loading' => '正在加载虚拟形象...',
+			'avatars.error' => ({required Object error}) => '获取虚拟形象信息失败：${error}',
+			'avatars.current' => '使用中',
+			'avatars.public' => '公开',
+			'avatars.private' => '私密',
+			'avatars.hidden' => '隐藏',
+			'avatars.author' => '作者',
+			'avatars.sortUpdated' => '按更新时间',
+			'avatars.sortName' => '按名称',
+			'avatars.sortTooltip' => '排序',
+			'avatars.viewModeTooltip' => '切换视图模式',
+			'worldDetail.loading' => '正在加载世界信息...',
+			'worldDetail.error' => ({required Object error}) => '获取世界信息失败：${error}',
+			'worldDetail.share' => '分享这个世界',
+			'worldDetail.openInVRChat' => '在VRChat官网打开',
+			'worldDetail.report' => '举报这个世界',
+			'worldDetail.creator' => '创建者',
+			'worldDetail.created' => '创建于',
+			'worldDetail.updated' => '更新于',
+			'worldDetail.favorites' => '收藏数',
+			'worldDetail.visits' => '访问数',
+			'worldDetail.occupants' => '当前人数',
+			'worldDetail.popularity' => '评价',
+			'worldDetail.description' => '说明',
+			'worldDetail.noDescription' => '没有说明',
+			'worldDetail.tags' => '标签',
+			'worldDetail.joinPublic' => '发送公开邀请',
+			'worldDetail.favoriteAdded' => '已添加到收藏',
+			'worldDetail.favoriteRemoved' => '已从收藏中移除',
+			'worldDetail.unknown' => '未知',
+			'avatarDetail.changeSuccess' => ({required Object name}) => '已更换为虚拟形象“${name}”',
+			'avatarDetail.changeFailed' => ({required Object error}) => '更换虚拟形象失败：${error}',
+			'avatarDetail.changing' => '更换中...',
+			'avatarDetail.useThisAvatar' => '使用此虚拟形象',
+			'avatarDetail.creator' => '创建者',
+			'avatarDetail.created' => '创建于',
+			'avatarDetail.updated' => '更新于',
+			'avatarDetail.description' => '说明',
+			'avatarDetail.noDescription' => '没有说明',
+			'avatarDetail.tags' => '标签',
+			'avatarDetail.addToFavorites' => '添加到收藏',
+			'avatarDetail.public' => '公开',
+			'avatarDetail.private' => '私密',
+			'avatarDetail.hidden' => '隐藏',
+			'avatarDetail.unknown' => '未知',
+			'avatarDetail.share' => '分享',
+			'avatarDetail.loading' => '正在加载虚拟形象信息...',
+			'avatarDetail.error' => ({required Object error}) => '获取虚拟形象信息失败：${error}',
+			'groups.title' => '群组',
+			'groups.loadingUser' => '正在加载用户信息...',
+			'groups.errorUser' => ({required Object error}) => '获取用户信息失败：${error}',
+			'groups.loadingGroups' => '正在加载群组信息...',
+			'groups.errorGroups' => ({required Object error}) => '获取群组信息失败：${error}',
+			'groups.emptyTitle' => '您尚未加入任何群组',
+			'groups.emptyDescription' => '您可以从VRChat应用或网站加入群组',
+			'groups.searchGroups' => '查找群组',
+			'groups.members' => ({required Object count}) => '${count}名成员',
+			'groups.showDetails' => '显示详情',
+			'groups.unknownName' => '名称未知',
+			'groupDetail.loading' => '正在加载群组信息...',
+			'groupDetail.error' => ({required Object error}) => '获取群组信息失败：${error}',
+			'groupDetail.share' => '分享群组信息',
+			'groupDetail.description' => '说明',
+			'groupDetail.roles' => '角色',
+			'groupDetail.basicInfo' => '基本信息',
+			'groupDetail.createdAt' => '创建日期',
+			'groupDetail.owner' => '所有者',
+			'groupDetail.rules' => '规则',
+			'groupDetail.languages' => '语言',
+			'groupDetail.memberCount' => ({required Object count}) => '${count} 成员',
+			'groupDetail.privacy.public' => '公开',
+			'groupDetail.privacy.private' => '私密',
+			'groupDetail.privacy.friends' => '好友',
+			'groupDetail.privacy.invite' => '邀请制',
+			'groupDetail.privacy.unknown' => '未知',
+			'groupDetail.role.admin' => '管理员',
+			'groupDetail.role.moderator' => '版主',
+			'groupDetail.role.member' => '成员',
+			'groupDetail.role.unknown' => '未知',
+			'inventory.title' => '物品栏',
+			'inventory.gallery' => '画廊',
+			'inventory.icon' => '图标',
+			'inventory.emoji' => '表情',
+			'inventory.sticker' => '贴纸',
+			'inventory.print' => '打印图',
+			'inventory.upload' => '上传文件',
+			'inventory.uploadGallery' => '正在上传画廊图片...',
+			'inventory.uploadIcon' => '正在上传图标...',
+			'inventory.uploadEmoji' => '正在上传表情...',
+			'inventory.uploadSticker' => '正在上传贴纸...',
+			'inventory.uploadPrint' => '正在上传打印图...',
+			'inventory.selectImage' => '选择图片',
+			'inventory.selectFromGallery' => '从相册选择',
+			'inventory.takePhoto' => '使用相机拍摄',
+			'inventory.uploadSuccess' => '上传成功',
+			'inventory.uploadFailed' => '上传失败',
+			'inventory.uploadFailedFormat' => '文件格式或大小有问题。请选择小于1MB的PNG格式图片。',
+			'inventory.uploadFailedAuth' => '认证失败。请重新登录。',
+			'inventory.uploadFailedSize' => '文件太大。请选择更小的图片。',
+			'inventory.uploadFailedServer' => ({required Object code}) => '发生服务器错误 (${code})',
+			'inventory.pickImageFailed' => ({required Object error}) => '选择图片失败：${error}',
+			'inventory.tabs.emojiInventory.loading' => '正在加载表情...',
+			'inventory.tabs.emojiInventory.error' => ({required Object error}) => '获取表情失败：${error}',
+			'inventory.tabs.emojiInventory.emptyTitle' => '没有表情',
+			'inventory.tabs.emojiInventory.emptyDescription' => '您在VRChat中上传的表情将显示在这里',
+			'inventory.tabs.emojiInventory.zoomHint' => '双击缩放',
+			'inventory.tabs.galleryInventory.loading' => '正在加载画廊...',
+			'inventory.tabs.galleryInventory.error' => ({required Object error}) => '获取画廊失败：${error}',
+			'inventory.tabs.galleryInventory.emptyTitle' => '没有画廊',
+			'inventory.tabs.galleryInventory.emptyDescription' => '您在VRChat中上传的画廊将显示在这里',
+			'inventory.tabs.galleryInventory.zoomHint' => '双击缩放',
+			'inventory.tabs.iconInventory.loading' => '正在加载图标...',
+			'inventory.tabs.iconInventory.error' => ({required Object error}) => '获取图标失败：${error}',
+			'inventory.tabs.iconInventory.emptyTitle' => '没有图标',
+			'inventory.tabs.iconInventory.emptyDescription' => '您在VRChat中上传的图标将显示在这里',
+			'inventory.tabs.iconInventory.zoomHint' => '双击缩放',
+			'inventory.tabs.printInventory.loading' => '正在加载打印图...',
+			'inventory.tabs.printInventory.error' => ({required Object error}) => '获取打印图失败：${error}',
+			'inventory.tabs.printInventory.emptyTitle' => '没有打印图',
+			'inventory.tabs.printInventory.emptyDescription' => '您在VRChat中上传的打印图将显示在这里',
+			'inventory.tabs.printInventory.zoomHint' => '双击缩放',
+			'inventory.tabs.stickerInventory.loading' => '正在加载贴纸...',
+			'inventory.tabs.stickerInventory.error' => ({required Object error}) => '获取贴纸失败：${error}',
+			'inventory.tabs.stickerInventory.emptyTitle' => '没有贴纸',
+			'inventory.tabs.stickerInventory.emptyDescription' => '您在VRChat中上传的贴纸将显示在这里',
+			'inventory.tabs.stickerInventory.zoomHint' => '双击缩放',
+			'vrcnsync.title' => 'VRCNSync (β)',
+			'vrcnsync.betaTitle' => '测试版功能',
+			'vrcnsync.betaDescription' => '此功能为开发中的测试版，可能会出现意外问题。\n目前仅为本地实现，如果需求量大，将会实现云端版本。',
+			'vrcnsync.githubLink' => 'VRCNSync的GitHub页面',
+			'vrcnsync.openGithub' => '打开GitHub页面',
+			'vrcnsync.serverRunning' => '服务器运行中',
+			'vrcnsync.serverStopped' => '服务器已停止',
+			'vrcnsync.serverRunningDesc' => '将PC上的照片保存到VRCN相册',
+			'vrcnsync.serverStoppedDesc' => '服务器已停止',
+			'vrcnsync.photoSaved' => '照片已保存到VRCN相册',
+			'vrcnsync.photoReceived' => '已接收照片（保存到相册失败）',
+			'vrcnsync.openAlbum' => '打开相册',
+			'vrcnsync.permissionErrorIos' => '需要照片库的访问权限',
+			'vrcnsync.permissionErrorAndroid' => '需要存储空间的访问权限',
+			'vrcnsync.openSettings' => '打开设置',
+			'vrcnsync.initError' => ({required Object error}) => '初始化失败：${error}',
+			'vrcnsync.openPhotoAppError' => '无法打开照片应用',
+			'vrcnsync.serverInfo' => '服务器信息',
+			'vrcnsync.ip' => ({required Object ip}) => 'IP: ${ip}',
+			'vrcnsync.port' => ({required Object port}) => '端口: ${port}',
+			'vrcnsync.address' => ({required Object ip, required Object port}) => '${ip}:${port}',
+			'vrcnsync.autoSave' => '接收到的照片将自动保存到“VRCN”相册',
+			'vrcnsync.usage' => '使用方法',
+			'vrcnsync.usageSteps.0.title' => '在PC上启动VRCNSync应用',
+			'vrcnsync.usageSteps.0.desc' => '请在您的PC上启动VRCNSync应用',
+			'vrcnsync.usageSteps.1.title' => '连接到同一WiFi网络',
+			'vrcnsync.usageSteps.1.desc' => '请将您的PC和移动设备连接到同一个WiFi网络',
+			'vrcnsync.usageSteps.2.title' => '将移动设备指定为连接目标',
+			'vrcnsync.usageSteps.2.desc' => '请在PC应用中指定上述IP地址和端口',
+			'vrcnsync.usageSteps.3.title' => '发送照片',
+			'vrcnsync.usageSteps.3.desc' => '从PC发送照片后，将自动保存到VRCN相册',
+			'vrcnsync.stats' => '连接状态',
+			'vrcnsync.statServer' => '服务器状态',
+			'vrcnsync.statServerRunning' => '运行中',
+			'vrcnsync.statServerStopped' => '已停止',
+			'vrcnsync.statNetwork' => '网络',
+			'vrcnsync.statNetworkConnected' => '已连接',
+			'vrcnsync.statNetworkDisconnected' => '未连接',
+			'feedback.title' => '反馈',
+			'feedback.type' => '反馈类型',
+			'feedback.types.bug' => '错误报告',
+			'feedback.types.feature' => '功能请求',
+			'feedback.types.improvement' => '改进建议',
+			'feedback.types.other' => '其他',
+			'feedback.inputTitle' => '标题 *',
+			'feedback.inputTitleHint' => '请简要说明',
+			'feedback.inputDescription' => '详细说明 *',
+			'feedback.inputDescriptionHint' => '请提供详细说明...',
+			'feedback.cancel' => '取消',
+			'feedback.send' => '发送',
+			'feedback.sending' => '发送中...',
+			'feedback.required' => '标题和详细说明为必填项',
+			'feedback.success' => '反馈已发送。谢谢！',
+			'feedback.fail' => '反馈发送失败',
+			'settings.appearance' => '外观',
+			'settings.language' => '语言',
+			'settings.languageDescription' => '您可以选择应用程序的显示语言',
+			'settings.appIcon' => '应用图标',
+			'settings.appIconDescription' => '更改主屏幕上显示的应用图标',
+			'settings.contentSettings' => '内容设置',
+			'settings.searchEnabled' => '搜索功能已启用',
+			'settings.searchDisabled' => '搜索功能已禁用',
+			'settings.enableSearch' => '启用搜索功能',
+			'settings.enableSearchDescription' => '搜索结果可能包含成人或暴力内容。',
+			'settings.apiSetting' => '虚拟形象搜索API',
+			'settings.apiSettingDescription' => '设置虚拟形象搜索功能的API',
+			'settings.apiSettingSaveUrl' => 'URL已保存',
+			'settings.notSet' => '未设置（虚拟形象搜索功能无法使用）',
+			'settings.notifications' => '通知设置',
+			'settings.eventReminder' => '活动提醒',
+			'settings.eventReminderDescription' => '在您设定的活动开始前接收通知',
+			'settings.manageReminders' => '管理已设置的提醒',
+			'settings.manageRemindersDescription' => '可以取消或确认通知',
+			'settings.dataStorage' => '数据与存储',
+			'settings.clearCache' => '清除缓存',
+			'settings.clearCacheSuccess' => '缓存已清除',
+			'settings.clearCacheError' => '清除缓存时发生错误',
+			'settings.cacheSize' => ({required Object size}) => '缓存大小: ${size}',
+			'settings.calculatingCache' => '正在计算缓存大小...',
+			'settings.cacheError' => '无法获取缓存大小',
+			'settings.confirmClearCache' => '清除缓存将删除临时保存的图片和数据。\n\n您的账户信息和应用设置不会被删除。',
+			'settings.appInfo' => '应用信息',
+			'settings.version' => '版本',
+			'settings.packageName' => '包名',
+			'settings.credit' => '鸣谢',
+			'settings.creditDescription' => '开发者和贡献者信息',
+			'settings.contact' => '联系我们',
+			'settings.contactDescription' => 'BUG报告和建议请点此',
+			'settings.privacyPolicy' => '隐私政策',
+			'settings.privacyPolicyDescription' => '关于个人信息的处理',
+			'settings.termsOfService' => '服务条款',
+			'settings.termsOfServiceDescription' => '应用使用条件',
+			'settings.openSource' => '开源信息',
+			'settings.openSourceDescription' => '所使用的库等许可证信息',
+			'settings.github' => 'GitHub仓库',
+			'settings.githubDescription' => '查看源代码',
+			'settings.logoutConfirm' => '确定要登出吗？',
+			'settings.logoutError' => ({required Object error}) => '登出时发生错误：${error}',
+			'settings.iconChangeNotSupported' => '您的设备不支持更改应用图标',
+			'settings.iconChangeFailed' => '更改图标失败',
+			'settings.themeMode' => '主题模式',
+			'settings.themeModeDescription' => '您可以选择应用的显示主题',
+			'settings.themeLight' => '浅色',
+			_ => null,
+		} ?? switch (path) {
+			'settings.themeSystem' => '系统',
+			'settings.themeDark' => '深色',
+			'settings.appIconDefault' => '默认',
+			'settings.appIconIcon' => '图标',
+			'settings.appIconLogo' => '标志',
+			'settings.delete' => '删除',
+			'credits.title' => '鸣谢',
+			'credits.section.development' => '开发',
+			'credits.section.iconPeople' => '有趣的图标制作者们',
+			'credits.section.testFeedback' => '测试与反馈',
+			'credits.section.specialThanks' => '特别感谢',
+			'download.success' => '下载完成',
+			'download.failure' => ({required Object error}) => '下载失败：${error}',
+			'download.shareFailure' => ({required Object error}) => '分享失败：${error}',
+			'download.permissionTitle' => '需要权限',
+			'download.permissionDenied' => ({required Object permissionType}) => '保存到${permissionType}的权限已被拒绝。\n请从设置应用中启用权限。',
+			'download.permissionCancel' => '取消',
+			'download.permissionOpenSettings' => '打开设置',
+			'download.permissionPhoto' => '照片',
+			'download.permissionPhotoLibrary' => '照片库',
+			'download.permissionStorage' => '存储',
+			'download.permissionPhotoRequired' => '需要保存到照片的权限',
+			'download.permissionPhotoLibraryRequired' => '需要保存到照片库的权限',
+			'download.permissionStorageRequired' => '需要访问存储空间的权限',
+			'download.permissionError' => ({required Object error}) => '检查权限时发生错误：${error}',
+			'download.downloading' => ({required Object fileName}) => '正在下载 ${fileName}...',
+			'download.sharing' => ({required Object fileName}) => '正在准备分享 ${fileName}...',
+			'instance.type.public' => '公开',
+			'instance.type.hidden' => '好友+',
+			'instance.type.friends' => '好友',
+			'instance.type.private' => '邀请+',
+			'instance.type.unknown' => '未知',
+			'status.active' => '在线',
+			'status.joinMe' => '欢迎加入',
+			'status.askMe' => '请问我',
+			'status.busy' => '忙碌',
+			'status.offline' => '离线',
+			'status.unknown' => '状态未知',
+			'location.private' => '私密',
+			'location.playerCount' => ({required Object userCount, required Object capacity}) => '玩家数：${userCount} / ${capacity}',
+			'location.instanceType' => ({required Object type}) => '实例类型：${type}',
+			'location.noInfo' => '没有位置信息',
+			'location.fetchError' => '获取位置信息失败',
+			'location.privateLocation' => '您在一个私密地点',
+			'location.inviteSending' => '发送邀请中...',
+			'location.inviteSent' => '邀请已发送。您可以从通知中加入',
+			'location.inviteFailed' => ({required Object error}) => '发送邀请失败：${error}',
+			'location.inviteButton' => '向自己发送邀请',
+			'location.isPrivate' => ({required Object number}) => '${number}人私密',
+			'location.isActive' => ({required Object number}) => '${number}人在线',
+			'location.isOffline' => ({required Object number}) => '${number}人离线',
+			'location.isTraveling' => ({required Object number}) => '${number}人移动中',
+			'location.isStaying' => ({required Object number}) => '${number}人停留中',
+			'reminder.dialogTitle' => '设置提醒',
+			'reminder.alreadySet' => '已设置',
+			'reminder.set' => '设置',
+			'reminder.cancel' => '取消',
+			'reminder.delete' => '删除',
+			'reminder.deleteAll' => '删除所有提醒',
+			'reminder.deleteAllConfirm' => '这将删除所有已设置的活动提醒。此操作无法撤销。',
+			'reminder.deleted' => '提醒已删除',
+			'reminder.deletedAll' => '所有提醒已删除',
+			'reminder.noReminders' => '没有已设置的提醒',
+			'reminder.setFromEvent' => '您可以从活动页面设置通知',
+			'reminder.eventStart' => ({required Object time}) => '${time} 开始',
+			'reminder.notifyAt' => ({required Object time, required Object label}) => '${time} (${label})',
+			'reminder.receiveNotification' => '您想在何时收到通知？',
+			'friend.sortFilter' => '排序和筛选',
+			'friend.filter' => '筛选',
+			'friend.filterAll' => '显示全部',
+			'friend.filterOnline' => '仅在线',
+			'friend.filterOffline' => '仅离线',
+			'friend.filterFavorite' => '仅收藏',
+			'friend.sort' => '排序',
+			'friend.sortStatus' => '按在线状态',
+			'friend.sortName' => '按名称',
+			'friend.sortLastLogin' => '按最后登录时间',
+			'friend.sortAsc' => '升序',
+			'friend.sortDesc' => '降序',
+			'friend.close' => '关闭',
+			'eventCalendarFilter.filterTitle' => '筛选活动',
+			'eventCalendarFilter.clear' => '清除',
+			'eventCalendarFilter.keyword' => '关键词搜索',
+			'eventCalendarFilter.keywordHint' => '活动名称、说明、主办方等',
+			'eventCalendarFilter.date' => '按日期筛选',
+			'eventCalendarFilter.dateHint' => '可以显示特定日期范围的活动',
+			'eventCalendarFilter.startDate' => '开始日期',
+			'eventCalendarFilter.endDate' => '结束日期',
+			'eventCalendarFilter.select' => '请选择',
+			'eventCalendarFilter.time' => '按时间段筛选',
+			'eventCalendarFilter.timeHint' => '可以显示特定时间段举办的活动',
+			'eventCalendarFilter.startTime' => '开始时间',
+			'eventCalendarFilter.endTime' => '结束时间',
+			'eventCalendarFilter.genre' => '按类型筛选',
+			'eventCalendarFilter.genreSelected' => ({required Object count}) => '已选择 ${count} 个类型',
+			'eventCalendarFilter.apply' => '应用',
+			'eventCalendarFilter.filterSummary' => '筛选器',
+			'eventCalendarFilter.filterNone' => '未设置筛选器',
+			_ => null,
+		};
 	}
 }
-

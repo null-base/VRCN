@@ -9,7 +9,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/instance_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
@@ -204,7 +204,7 @@ class FriendLocationGroup extends ConsumerWidget {
     return AnimationConfiguration.synchronized(
       duration: const Duration(milliseconds: 800),
       child: SlideAnimation(
-        horizontalOffset: 50.0,
+        horizontalOffset: 50,
         child: FadeInAnimation(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 400),
@@ -436,7 +436,7 @@ class FriendLocationGroup extends ConsumerWidget {
         opacity: 0.2,
         child: TweenAnimationBuilder<double>(
           duration: const Duration(seconds: 20),
-          tween: Tween<double>(begin: 1.0, end: 1.05),
+          tween: Tween<double>(begin: 1, end: 1.05),
           builder: (context, value, child) {
             return Transform.scale(
               scale: value,
@@ -551,7 +551,7 @@ class FriendLocationGroup extends ConsumerWidget {
           if (effectiveWorldId != null && !isPrivate && !isOffline)
             TweenAnimationBuilder<double>(
               duration: const Duration(milliseconds: 1000),
-              tween: Tween<double>(begin: 0.0, end: 1.0),
+              tween: Tween<double>(begin: 0, end: 1),
               curve: Curves.elasticOut,
               builder: (context, value, child) {
                 return Transform.scale(
@@ -599,7 +599,7 @@ class FriendLocationGroup extends ConsumerWidget {
 
     return TweenAnimationBuilder<double>(
       duration: const Duration(milliseconds: 600),
-      tween: Tween<double>(begin: 0.0, end: 1.0),
+      tween: Tween<double>(begin: 0, end: 1),
       curve: Curves.elasticOut,
       builder: (context, value, child) {
         return Transform.scale(
@@ -657,7 +657,7 @@ class FriendLocationGroup extends ConsumerWidget {
 
     return TweenAnimationBuilder<double>(
       duration: const Duration(milliseconds: 800),
-      tween: Tween<double>(begin: 0.0, end: 1.0),
+      tween: Tween<double>(begin: 0, end: 1),
       curve: Curves.elasticOut,
       builder: (context, value, child) {
         return Transform.scale(
@@ -804,7 +804,7 @@ class FriendLocationGroup extends ConsumerWidget {
                 blendMode: BlendMode.srcATop,
                 child: TweenAnimationBuilder<double>(
                   duration: const Duration(seconds: 10),
-                  tween: Tween<double>(begin: 1.0, end: 1.05),
+                  tween: Tween<double>(begin: 1, end: 1.05),
                   builder: (context, value, child) {
                     return Transform.scale(
                       scale: value,
@@ -838,7 +838,7 @@ class FriendLocationGroup extends ConsumerWidget {
       // アイコン表示部分は変更なし
       return TweenAnimationBuilder<double>(
         duration: const Duration(milliseconds: 1500),
-        tween: Tween<double>(begin: 0.5, end: 1.0),
+        tween: Tween<double>(begin: 0.5, end: 1),
         curve: Curves.elasticOut,
         builder: (context, value, child) {
           return Transform.scale(

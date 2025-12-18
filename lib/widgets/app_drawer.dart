@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart'; // 多言語化パッケージ
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart'; // 多言語化パッケージ
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
@@ -210,7 +211,7 @@ class AppDrawer extends ConsumerWidget {
                                 isDarkMode: isDarkMode,
                                 items: [
                                   _MenuItem(
-                                    imagePath: 'assets/images/logo.png',
+                                    imagePath: Assets.images.logo.path,
                                     title: t.drawer.vrcnsync,
                                     isSelected:
                                         GoRouterState.of(context).uri.path ==
@@ -513,7 +514,7 @@ class AppDrawer extends ConsumerWidget {
                                 headers: headers,
                                 cacheManager: JsonCacheManager(),
                               )
-                              : const AssetImage('assets/images/default.png')
+                              : AssetImage(Assets.icons.vrcn.path)
                                   as ImageProvider,
                       child:
                           user.currentAvatarThumbnailImageUrl.isEmpty &&
@@ -820,7 +821,7 @@ class AppDrawer extends ConsumerWidget {
               Container(
                 margin: const EdgeInsets.only(bottom: 16),
                 child: Image.asset(
-                  'assets/images/She_is_watching_you.png',
+                  Assets.images.sheIsWatchingYou.path,
                   width: 75,
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
@@ -857,7 +858,7 @@ class AppDrawer extends ConsumerWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.asset(
-                          'assets/images/icon.png',
+                          Assets.images.icon.path,
                           width: 64,
                           height: 64,
                           fit: BoxFit.cover,

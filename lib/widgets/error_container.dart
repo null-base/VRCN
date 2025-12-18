@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 
 class ErrorContainer extends StatelessWidget {
   final String message;
@@ -12,7 +12,7 @@ class ErrorContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -34,7 +34,7 @@ class ErrorContainer extends StatelessWidget {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: onRetry,
-                child: Text(t.common.retry,style: GoogleFonts.notoSans()),
+                child: Text(t.common.retry, style: GoogleFonts.notoSans()),
               ),
             ],
           ],
