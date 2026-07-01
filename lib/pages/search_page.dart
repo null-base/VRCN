@@ -28,76 +28,73 @@ class SearchPage extends ConsumerStatefulWidget {
 
 @immutable
 class SearchPageController {
-  final TextEditingController searchController;
-  final void Function(String) onSearchChanged;
-
   const SearchPageController({
     required this.searchController,
     required this.onSearchChanged,
   });
+  final TextEditingController searchController;
+  final void Function(String) onSearchChanged;
 }
 
 class SearchPageState extends ConsumerState<SearchPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final _searchController = TextEditingController();
+  var _tabCount = 0;
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(
-      () => _onSearchChanged(_searchController.text),
+    _searchController.addListener(_handleSearchControllerChanged);
+    _configureTabController(
+      hasAvatarApiUrl: ref.read(settingsProvider).avatarSearchApiUrl.isNotEmpty,
     );
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _initTabController();
-  }
-
-  void _initTabController() {
-    // avatarSearchApiUrlが設定されているかチェック
-    final hasAvatarApiUrl =
-        ref.read(settingsProvider).avatarSearchApiUrl.isNotEmpty;
+  void _configureTabController({
+    required bool hasAvatarApiUrl,
+    bool notify = false,
+  }) {
     final tabCount = hasAvatarApiUrl ? 4 : 3; // APIが設定されていない場合は3タブのみ
+    if (_tabCount == tabCount) return;
 
-    try {
+    if (_tabCount != 0) {
       _tabController.removeListener(_onTabChanged);
       _tabController.dispose();
-    } catch (e) {
-      debugPrint('TabController未初期化: $e');
     }
 
-    // 新しいコントローラーを作成
     _tabController = TabController(length: tabCount, vsync: this);
     _tabController.addListener(_onTabChanged);
+    _tabCount = tabCount;
+
+    if (notify && mounted) {
+      setState(() {});
+    }
   }
 
   @override
   void dispose() {
     _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
-    _searchController.removeListener(
-      () => _onSearchChanged(_searchController.text),
-    );
+    _searchController.removeListener(_handleSearchControllerChanged);
     _searchController.dispose();
     super.dispose();
   }
 
   void _onTabChanged() {
+    if (!_tabController.indexIsChanging) return;
     setState(() {});
   }
 
-  void _onSearchChanged(String query) {
-    // デバッグ出力を追加
-    debugPrint('検索クエリ変更: "$query"');
+  void _handleSearchControllerChanged() {
+    _onSearchChanged(_searchController.text);
+  }
 
+  void _onSearchChanged(String query) {
     // 検索クエリが変わったら各タブのオフセットをリセットし、キャッシュをクリア
     if (query != ref.read(searchQueryProvider)) {
       ref.read(userSearchOffsetProvider.notifier).state = 0;
       ref.read(worldSearchOffsetProvider.notifier).state = 0;
-      ref.read(avatarSearchOffsetProvider.notifier).state = 0;
       ref.read(groupSearchOffsetProvider.notifier).state = 0;
 
       // 結果キャッシュもクリア
@@ -107,7 +104,6 @@ class SearchPageState extends ConsumerState<SearchPage>
     }
 
     ref.read(searchQueryProvider.notifier).state = query;
-    setState(() {});
   }
 
   @override
@@ -120,7 +116,10 @@ class SearchPageState extends ConsumerState<SearchPage>
     ref.listen<AppSettings>(settingsProvider, (previous, next) {
       if (previous?.avatarSearchApiUrl.isEmpty !=
           next.avatarSearchApiUrl.isEmpty) {
-        _initTabController();
+        _configureTabController(
+          hasAvatarApiUrl: next.avatarSearchApiUrl.isNotEmpty,
+          notify: true,
+        );
       }
     });
 
@@ -133,8 +132,9 @@ class SearchPageState extends ConsumerState<SearchPage>
             child: TabBar(
               controller: _tabController,
               labelColor: primaryColor,
-              unselectedLabelColor:
-                  isDarkMode ? Colors.grey[400] : Colors.grey[600],
+              unselectedLabelColor: isDarkMode
+                  ? Colors.grey[400]
+                  : Colors.grey[600],
               indicatorColor: primaryColor,
               labelStyle: GoogleFonts.notoSans(
                 fontSize: 14,

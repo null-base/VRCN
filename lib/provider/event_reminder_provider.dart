@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:vrchat/provider/settings_provider.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 // リマインダーの時間オプション
 enum ReminderTime {
@@ -25,12 +26,6 @@ enum ReminderTime {
 // イベントリマインダーモデル
 @immutable
 class EventReminder {
-  final String eventId;
-  final String eventTitle;
-  final DateTime eventTime;
-  final ReminderTime reminderTime;
-  final int notificationId;
-
   const EventReminder({
     required this.eventId,
     required this.eventTitle,
@@ -38,6 +33,24 @@ class EventReminder {
     required this.reminderTime,
     required this.notificationId,
   });
+
+  factory EventReminder.fromJson(Map<String, dynamic> json) {
+    final eventTime = json['eventTime'] as int? ?? 0;
+    final reminderTime = json['reminderTime'] as int? ?? 0;
+
+    return EventReminder(
+      eventId: json['eventId'] as String? ?? '',
+      eventTitle: json['eventTitle'] as String? ?? '',
+      eventTime: DateTime.fromMillisecondsSinceEpoch(eventTime),
+      reminderTime: ReminderTime.values[reminderTime],
+      notificationId: json['notificationId'] as int? ?? 0,
+    );
+  }
+  final String eventId;
+  final String eventTitle;
+  final DateTime eventTime;
+  final ReminderTime reminderTime;
+  final int notificationId;
 
   DateTime get notificationTime {
     return eventTime.subtract(Duration(minutes: reminderTime.minutes));
@@ -52,55 +65,48 @@ class EventReminder {
       'notificationId': notificationId,
     };
   }
-
-  factory EventReminder.fromJson(Map<String, dynamic> json) {
-    return EventReminder(
-      eventId: json['eventId'],
-      eventTitle: json['eventTitle'],
-      eventTime: DateTime.fromMillisecondsSinceEpoch(json['eventTime']),
-      reminderTime: ReminderTime.values[json['reminderTime']],
-      notificationId: json['notificationId'],
-    );
-  }
 }
 
 // イベントリマインダー管理クラス
 class EventReminderNotifier extends StateNotifier<List<EventReminder>> {
-  final SharedPreferences prefs;
-  final FlutterLocalNotificationsPlugin notifications;
-
   EventReminderNotifier(this.prefs, this.notifications) : super([]) {
     _loadReminders();
   }
-
-
+  final SharedPreferences prefs;
+  final FlutterLocalNotificationsPlugin notifications;
 
   // リマインダーをロード
   Future<void> _loadReminders() async {
     final reminderJson = prefs.getStringList('event_reminders') ?? [];
-    final reminders =
-        reminderJson
-            .map((json) => EventReminder.fromJson(jsonDecode(json)))
-            .toList();
+    final reminders = reminderJson
+        .map((json) {
+          final decoded = jsonDecode(json);
+          return decoded is Map<String, dynamic>
+              ? EventReminder.fromJson(decoded)
+              : null;
+        })
+        .whereType<EventReminder>()
+        .toList();
 
     // 過去の通知をフィルタリング
     final now = DateTime.timestamp();
-    final validReminders =
-        reminders.where((reminder) => reminder.eventTime.isAfter(now)).toList();
+    final validReminders = reminders
+        .where((reminder) => reminder.eventTime.isAfter(now))
+        .toList();
 
     // 過去の通知（すでに表示された通知）は削除
     for (final reminder in reminders) {
       if (reminder.notificationTime.isBefore(now)) {
-        debugPrint(
+        appLogger.d(
           '過去の通知を削除: 「${reminder.eventTitle}」${reminder.reminderTime.label}',
         );
-        await notifications.cancel(reminder.notificationId);
+        await notifications.cancel(id: reminder.notificationId);
       }
     }
 
     // 無効になった通知を削除
     if (validReminders.length != reminders.length) {
-      debugPrint(
+      appLogger.d(
         '${reminders.length - validReminders.length}件の過去のリマインダーを削除しました',
       );
       await _saveReminders(validReminders);
@@ -111,8 +117,9 @@ class EventReminderNotifier extends StateNotifier<List<EventReminder>> {
 
   // リマインダーを保存
   Future<void> _saveReminders(List<EventReminder> reminders) async {
-    final reminderJson =
-        reminders.map((reminder) => jsonEncode(reminder.toJson())).toList();
+    final reminderJson = reminders
+        .map((reminder) => jsonEncode(reminder.toJson()))
+        .toList();
     await prefs.setStringList('event_reminders', reminderJson);
   }
 
@@ -141,29 +148,27 @@ class EventReminderNotifier extends StateNotifier<List<EventReminder>> {
     String eventId,
     ReminderTime? reminderTime,
   ) async {
-    final remindersToRemove =
-        state
-            .where(
-              (r) =>
-                  r.eventId == eventId &&
-                  (reminderTime == null || r.reminderTime == reminderTime),
-            )
-            .toList();
+    final remindersToRemove = state
+        .where(
+          (r) =>
+              r.eventId == eventId &&
+              (reminderTime == null || r.reminderTime == reminderTime),
+        )
+        .toList();
 
     // 通知をキャンセル
     for (final reminder in remindersToRemove) {
-      await notifications.cancel(reminder.notificationId);
+      await notifications.cancel(id: reminder.notificationId);
     }
 
     // 状態を更新
-    final newState =
-        state
-            .where(
-              (r) =>
-                  !(r.eventId == eventId &&
-                      (reminderTime == null || r.reminderTime == reminderTime)),
-            )
-            .toList();
+    final newState = state
+        .where(
+          (r) =>
+              !(r.eventId == eventId &&
+                  (reminderTime == null || r.reminderTime == reminderTime)),
+        )
+        .toList();
 
     state = newState;
     await _saveReminders(newState);
@@ -171,23 +176,23 @@ class EventReminderNotifier extends StateNotifier<List<EventReminder>> {
 
   // 通知IDからリマインダーを削除するメソッド
   Future<void> removeReminderByNotificationId(int notificationId) async {
-    final reminderToRemove =
-        state
-            .where((reminder) => reminder.notificationId == notificationId)
-            .toList();
+    final reminderToRemove = state
+        .where((reminder) => reminder.notificationId == notificationId)
+        .toList();
 
     if (reminderToRemove.isEmpty) {
-      debugPrint('通知ID $notificationId に対応するリマインダーが見つかりませんでした');
+      appLogger.d('通知ID $notificationId に対応するリマインダーが見つかりませんでした');
       return;
     }
 
     for (final reminder in reminderToRemove) {
-      debugPrint('通知表示: 「${reminder.eventTitle}」のリマインダーを削除します');
+      appLogger.d('通知表示: 「${reminder.eventTitle}」のリマインダーを削除します');
       // 通知のキャンセルは不要（すでに表示されているため）
 
       // 状態を更新
-      final newState =
-          state.where((r) => r.notificationId != notificationId).toList();
+      final newState = state
+          .where((r) => r.notificationId != notificationId)
+          .toList();
 
       state = newState;
       await _saveReminders(newState);
@@ -200,7 +205,7 @@ class EventReminderNotifier extends StateNotifier<List<EventReminder>> {
 
     // 過去の時間の場合はスケジュールしない
     if (notificationTime.isBefore(DateTime.timestamp())) {
-      debugPrint('通知をスキップ: 過去の時間のため - ${reminder.eventTitle}');
+      appLogger.d('通知をスキップ: 過去の時間のため - ${reminder.eventTitle}');
       return;
     }
 
@@ -215,7 +220,6 @@ class EventReminderNotifier extends StateNotifier<List<EventReminder>> {
         ticker: 'イベントリマインダー',
         color: Colors.purple,
         sound: RawResourceAndroidNotificationSound('notification_sound'),
-        enableVibration: true,
         enableLights: true,
         visibility: NotificationVisibility.public,
       );
@@ -238,11 +242,11 @@ class EventReminderNotifier extends StateNotifier<List<EventReminder>> {
         notificationTime,
       );
 
-      debugPrint(
+      appLogger.d(
         '通知をスケジュール: 「${reminder.eventTitle}」${reminder.reminderTime.label}',
       );
-      debugPrint('設定時間: ${notificationTime.toString()}');
-      debugPrint('スケジュール時間: ${scheduledDate.toString()}');
+      appLogger.d('設定時間: ${notificationTime}');
+      appLogger.d('スケジュール時間: ${scheduledDate}');
 
       // ここを修正：「〇〇前に始まります」→「〇〇後に始まります」
       final timeLabel = _formatTimeToFutureLabel(reminder.reminderTime.minutes);
@@ -260,18 +264,18 @@ class EventReminderNotifier extends StateNotifier<List<EventReminder>> {
       }
 
       await notifications.zonedSchedule(
-        reminder.notificationId,
-        notificationTitle,
-        notificationBody,
-        scheduledDate,
-        notificationDetails,
+        id: reminder.notificationId,
+        title: notificationTitle,
+        body: notificationBody,
+        scheduledDate: scheduledDate,
+        notificationDetails: notificationDetails,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         payload: reminder.eventId,
       );
 
-      debugPrint('通知スケジュール成功: ID=${reminder.notificationId}');
+      appLogger.d('通知スケジュール成功: ID=${reminder.notificationId}');
     } catch (e) {
-      debugPrint('通知スケジュールエラー: $e');
+      appLogger.d('通知スケジュールエラー: $e');
     }
   }
 
@@ -311,33 +315,31 @@ class EventReminderNotifier extends StateNotifier<List<EventReminder>> {
   Future<void> cancelAllNotifications() async {
     try {
       await notifications.cancelAll();
-      debugPrint('すべての通知をキャンセルしました');
+      appLogger.d('すべての通知をキャンセルしました');
     } catch (e) {
-      debugPrint('通知キャンセルエラー: $e');
+      appLogger.d('通知キャンセルエラー: $e');
     }
   }
 
   Future<void> cleanupOldReminders() async {
     // 過去の通知を全てチェック
     final now = DateTime.timestamp();
-    final oldReminders =
-        state
-            .where((reminder) => reminder.notificationTime.isBefore(now))
-            .toList();
+    final oldReminders = state
+        .where((reminder) => reminder.notificationTime.isBefore(now))
+        .toList();
 
     if (oldReminders.isNotEmpty) {
-      debugPrint('${oldReminders.length}件の過去のリマインダーをクリーンアップします');
+      appLogger.d('${oldReminders.length}件の過去のリマインダーをクリーンアップします');
 
       // 通知をキャンセル
       for (final reminder in oldReminders) {
-        await notifications.cancel(reminder.notificationId);
+        await notifications.cancel(id: reminder.notificationId);
       }
 
       // 状態を更新
-      final newState =
-          state
-              .where((reminder) => reminder.notificationTime.isAfter(now))
-              .toList();
+      final newState = state
+          .where((reminder) => reminder.notificationTime.isAfter(now))
+          .toList();
 
       state = newState;
       await _saveReminders(newState);

@@ -3,12 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vrchat/theme/app_theme.dart';
 
 class InfoCard extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final List<Widget> children;
-  final bool isDarkMode;
-  final Color? customColor;
-
   const InfoCard({
     super.key,
     required this.title,
@@ -17,6 +11,11 @@ class InfoCard extends StatelessWidget {
     required this.isDarkMode,
     this.customColor,
   });
+  final String title;
+  final IconData icon;
+  final List<Widget> children;
+  final bool isDarkMode;
+  final Color? customColor;
 
   @override
   Widget build(BuildContext context) {
@@ -26,18 +25,9 @@ class InfoCard extends StatelessWidget {
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isDarkMode ? Colors.grey[900] : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(
-          color: isDarkMode ? Colors.grey[800]! : Colors.grey[200]!,
-        ),
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,12 +35,12 @@ class InfoCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
+              color: color.withValues(alpha: isDarkMode ? 0.16 : 0.08),
               borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
+                top: Radius.circular(8),
               ),
               border: Border(
-                bottom: BorderSide(color: color.withValues(alpha: 0.2)),
+                bottom: BorderSide(color: color.withValues(alpha: 0.18)),
               ),
             ),
             child: Row(
@@ -61,7 +51,7 @@ class InfoCard extends StatelessWidget {
                   title,
                   style: GoogleFonts.notoSans(
                     fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w800,
                     color: color,
                   ),
                 ),

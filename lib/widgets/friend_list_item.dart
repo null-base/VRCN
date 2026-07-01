@@ -11,16 +11,15 @@ import 'package:vrchat/utils/user_type_helpers.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class FriendListItem extends ConsumerWidget {
-  final LimitedUser friend;
-  final VoidCallback onTap;
-  final bool compact;
-
   const FriendListItem({
     super.key,
     required this.friend,
     required this.onTap,
     this.compact = false,
   });
+  final LimitedUser friend;
+  final VoidCallback onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,10 +33,10 @@ class FriendListItem extends ConsumerWidget {
     // friend.idを使ってUserの詳細情報を取得（オンラインの場合のみ、かつコンパクトモードでない場合）
     final userDetailAsync =
         (!compact &&
-                friend.location != 'offline' &&
-                friend.location != 'private')
-            ? ref.watch(userDetailProvider(friend.id))
-            : null;
+            friend.location != 'offline' &&
+            friend.location != 'private')
+        ? ref.watch(userDetailProvider(friend.id))
+        : null;
 
     return Container(
       margin: EdgeInsets.symmetric(
@@ -48,10 +47,8 @@ class FriendListItem extends ConsumerWidget {
         gradient: LinearGradient(
           colors: [
             statusColor.withAlpha(13),
-            isDarkMode ? Colors.black12 : Colors.white,
+            if (isDarkMode) Colors.black12 else Colors.white,
           ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
         ),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
@@ -61,7 +58,7 @@ class FriendListItem extends ConsumerWidget {
             offset: const Offset(0, 2),
           ),
         ],
-        border: Border.all(color: statusColor.withAlpha(77), width: 1),
+        border: Border.all(color: statusColor.withAlpha(77)),
       ),
       child: Material(
         color: Colors.transparent,
@@ -96,36 +93,33 @@ class FriendListItem extends ConsumerWidget {
                       ),
                       child: CircleAvatar(
                         radius: compact ? 16 : 22,
-                        backgroundImage:
-                            friend.userIcon!.isNotEmpty
-                                ? CachedNetworkImageProvider(
-                                  friend.userIcon!,
-                                  headers: headers,
-                                  cacheManager: JsonCacheManager(),
-                                )
-                                : (friend.currentAvatarThumbnailImageUrl != null
-                                    ? CachedNetworkImageProvider(
+                        backgroundImage: friend.userIcon!.isNotEmpty
+                            ? CachedNetworkImageProvider(
+                                friend.userIcon!,
+                                headers: headers,
+                                cacheManager: JsonCacheManager(),
+                              )
+                            : (friend.currentAvatarThumbnailImageUrl != null
+                                  ? CachedNetworkImageProvider(
                                       friend.currentAvatarThumbnailImageUrl!,
                                       headers: headers,
                                       cacheManager: JsonCacheManager(),
                                     )
-                                    : null),
+                                  : null),
                         backgroundColor:
                             friend.userIcon!.isEmpty &&
-                                    friend.currentAvatarThumbnailImageUrl ==
-                                        null
-                                ? Colors.grey[300]
-                                : null,
+                                friend.currentAvatarThumbnailImageUrl == null
+                            ? Colors.grey[300]
+                            : null,
                         child:
                             friend.userIcon!.isEmpty &&
-                                    friend.currentAvatarThumbnailImageUrl ==
-                                        null
-                                ? Icon(
-                                  Icons.person,
-                                  size: compact ? 16 : 20,
-                                  color: Colors.grey,
-                                )
-                                : null,
+                                friend.currentAvatarThumbnailImageUrl == null
+                            ? Icon(
+                                Icons.person,
+                                size: compact ? 16 : 20,
+                                color: Colors.grey,
+                              )
+                            : null,
                       ),
                     ),
                     Positioned(
@@ -172,16 +166,15 @@ class FriendListItem extends ConsumerWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (friend.statusDescription.isNotEmpty == true) ...[
+                      if (friend.statusDescription.isNotEmpty) ...[
                         const SizedBox(height: 2),
                         Text(
                           friend.statusDescription,
                           style: GoogleFonts.notoSans(
                             fontSize: compact ? 11 : 12,
-                            color:
-                                isDarkMode
-                                    ? Colors.grey[400]
-                                    : Colors.grey[600],
+                            color: isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -200,20 +193,18 @@ class FriendListItem extends ConsumerWidget {
                               Icon(
                                 Icons.lock_outline,
                                 size: 12,
-                                color:
-                                    isDarkMode
-                                        ? Colors.red[300]
-                                        : Colors.red[700],
+                                color: isDarkMode
+                                    ? Colors.red[300]
+                                    : Colors.red[700],
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 t.friends.private,
                                 style: GoogleFonts.notoSans(
                                   fontSize: 12,
-                                  color:
-                                      isDarkMode
-                                          ? Colors.red[300]
-                                          : Colors.red[700],
+                                  color: isDarkMode
+                                      ? Colors.red[300]
+                                      : Colors.red[700],
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,

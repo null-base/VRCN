@@ -5,16 +5,20 @@
 // ignore_for_file: type=lint, unused_import
 // dart format off
 
-import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
-import 'package:slang/generated.dart';
-import 'strings.g.dart';
+part of 'strings.g.dart';
 
 // Path: <root>
-class TranslationsEn with BaseTranslations<AppLocale, Translations> implements Translations {
+typedef TranslationsEn = Translations; // ignore: unused_element
+class Translations with BaseTranslations<AppLocale, Translations> {
+	/// Returns the current translations of the given [context].
+	///
+	/// Usage:
+	/// final t = Translations.of(context);
+	static Translations of(BuildContext context) => InheritedLocaleData.of<AppLocale, Translations>(context).translations;
+
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
-	TranslationsEn({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver, TranslationMetadata<AppLocale, Translations>? meta})
+	Translations({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver, TranslationMetadata<AppLocale, Translations>? meta})
 		: assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
 		  $meta = meta ?? TranslationMetadata(
 		    locale: AppLocale.en,
@@ -29,1128 +33,2207 @@ class TranslationsEn with BaseTranslations<AppLocale, Translations> implements T
 	@override final TranslationMetadata<AppLocale, Translations> $meta;
 
 	/// Access flat map
-	@override dynamic operator[](String key) => $meta.getTranslation(key);
+	dynamic operator[](String key) => $meta.getTranslation(key);
 
-	late final TranslationsEn _root = this; // ignore: unused_field
+	late final Translations _root = this; // ignore: unused_field
 
-	@override 
-	TranslationsEn $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsEn(meta: meta ?? this.$meta);
+	Translations $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => Translations(meta: meta ?? this.$meta);
 
 	// Translations
-	@override late final _TranslationsCommonEn common = _TranslationsCommonEn._(_root);
-	@override late final _TranslationsTermsAgreementEn termsAgreement = _TranslationsTermsAgreementEn._(_root);
-	@override late final _TranslationsDrawerEn drawer = _TranslationsDrawerEn._(_root);
-	@override late final _TranslationsLoginEn login = _TranslationsLoginEn._(_root);
-	@override late final _TranslationsFriendsEn friends = _TranslationsFriendsEn._(_root);
-	@override late final _TranslationsFriendDetailEn friendDetail = _TranslationsFriendDetailEn._(_root);
-	@override late final _TranslationsSearchEn search = _TranslationsSearchEn._(_root);
-	@override late final _TranslationsProfileEn profile = _TranslationsProfileEn._(_root);
-	@override late final _TranslationsEngageCardEn engageCard = _TranslationsEngageCardEn._(_root);
-	@override late final _TranslationsQrScannerEn qrScanner = _TranslationsQrScannerEn._(_root);
-	@override late final _TranslationsFavoritesEn favorites = _TranslationsFavoritesEn._(_root);
-	@override late final _TranslationsNotificationsEn notifications = _TranslationsNotificationsEn._(_root);
-	@override late final _TranslationsEventCalendarEn eventCalendar = _TranslationsEventCalendarEn._(_root);
-	@override late final _TranslationsAvatarsEn avatars = _TranslationsAvatarsEn._(_root);
-	@override late final _TranslationsWorldDetailEn worldDetail = _TranslationsWorldDetailEn._(_root);
-	@override late final _TranslationsAvatarDetailEn avatarDetail = _TranslationsAvatarDetailEn._(_root);
-	@override late final _TranslationsGroupsEn groups = _TranslationsGroupsEn._(_root);
-	@override late final _TranslationsGroupDetailEn groupDetail = _TranslationsGroupDetailEn._(_root);
-	@override late final _TranslationsInventoryEn inventory = _TranslationsInventoryEn._(_root);
-	@override late final _TranslationsVrcnsyncEn vrcnsync = _TranslationsVrcnsyncEn._(_root);
-	@override late final _TranslationsFeedbackEn feedback = _TranslationsFeedbackEn._(_root);
-	@override late final _TranslationsSettingsEn settings = _TranslationsSettingsEn._(_root);
-	@override late final _TranslationsCreditsEn credits = _TranslationsCreditsEn._(_root);
-	@override late final _TranslationsDownloadEn download = _TranslationsDownloadEn._(_root);
-	@override late final _TranslationsInstanceEn instance = _TranslationsInstanceEn._(_root);
-	@override late final _TranslationsStatusEn status = _TranslationsStatusEn._(_root);
-	@override late final _TranslationsLocationEn location = _TranslationsLocationEn._(_root);
-	@override late final _TranslationsReminderEn reminder = _TranslationsReminderEn._(_root);
-	@override late final _TranslationsFriendEn friend = _TranslationsFriendEn._(_root);
-	@override late final _TranslationsEventCalendarFilterEn eventCalendarFilter = _TranslationsEventCalendarFilterEn._(_root);
+	late final Translations$common$en common = Translations$common$en._(_root);
+	late final Translations$termsAgreement$en termsAgreement = Translations$termsAgreement$en._(_root);
+	late final Translations$drawer$en drawer = Translations$drawer$en._(_root);
+	late final Translations$login$en login = Translations$login$en._(_root);
+	late final Translations$friends$en friends = Translations$friends$en._(_root);
+	late final Translations$friendDetail$en friendDetail = Translations$friendDetail$en._(_root);
+	late final Translations$search$en search = Translations$search$en._(_root);
+	late final Translations$profile$en profile = Translations$profile$en._(_root);
+	late final Translations$engageCard$en engageCard = Translations$engageCard$en._(_root);
+	late final Translations$qrScanner$en qrScanner = Translations$qrScanner$en._(_root);
+	late final Translations$favorites$en favorites = Translations$favorites$en._(_root);
+	late final Translations$notifications$en notifications = Translations$notifications$en._(_root);
+	late final Translations$eventCalendar$en eventCalendar = Translations$eventCalendar$en._(_root);
+	late final Translations$avatars$en avatars = Translations$avatars$en._(_root);
+	late final Translations$worldDetail$en worldDetail = Translations$worldDetail$en._(_root);
+	late final Translations$avatarDetail$en avatarDetail = Translations$avatarDetail$en._(_root);
+	late final Translations$groups$en groups = Translations$groups$en._(_root);
+	late final Translations$groupDetail$en groupDetail = Translations$groupDetail$en._(_root);
+	late final Translations$inventory$en inventory = Translations$inventory$en._(_root);
+	late final Translations$feedback$en feedback = Translations$feedback$en._(_root);
+	late final Translations$settings$en settings = Translations$settings$en._(_root);
+	late final Translations$credits$en credits = Translations$credits$en._(_root);
+	late final Translations$download$en download = Translations$download$en._(_root);
+	late final Translations$instance$en instance = Translations$instance$en._(_root);
+	late final Translations$status$en status = Translations$status$en._(_root);
+	late final Translations$location$en location = Translations$location$en._(_root);
+	late final Translations$reminder$en reminder = Translations$reminder$en._(_root);
+	late final Translations$friend$en friend = Translations$friend$en._(_root);
+	late final Translations$eventCalendarFilter$en eventCalendarFilter = Translations$eventCalendarFilter$en._(_root);
 }
 
 // Path: common
-class _TranslationsCommonEn implements TranslationsCommonJa {
-	_TranslationsCommonEn._(this._root);
+class Translations$common$en {
+	Translations$common$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'VRCN';
-	@override String get ok => 'OK';
-	@override String get cancel => 'Cancel';
-	@override String get close => 'Close';
-	@override String get save => 'Save';
-	@override String get edit => 'Edit';
-	@override String get delete => 'Delete';
-	@override String get yes => 'Yes';
-	@override String get no => 'No';
-	@override String get loading => 'Loading...';
-	@override String error({required Object error}) => 'An error occurred: ${error}';
-	@override String get errorNomessage => 'An error occurred';
-	@override String get retry => 'Retry';
-	@override String get search => 'Search';
-	@override String get settings => 'Settings';
-	@override String get confirm => 'Confirm';
-	@override String get agree => 'Agree';
-	@override String get decline => 'Decline';
-	@override String get username => 'Username';
-	@override String get password => 'Password';
-	@override String get login => 'Login';
-	@override String get logout => 'Logout';
-	@override String get share => 'Share';
+
+	/// en: 'VRCN'
+	String get title => 'VRCN';
+
+	/// en: 'OK'
+	String get ok => 'OK';
+
+	/// en: 'Cancel'
+	String get cancel => 'Cancel';
+
+	/// en: 'Close'
+	String get close => 'Close';
+
+	/// en: 'Save'
+	String get save => 'Save';
+
+	/// en: 'Edit'
+	String get edit => 'Edit';
+
+	/// en: 'Delete'
+	String get delete => 'Delete';
+
+	/// en: 'Yes'
+	String get yes => 'Yes';
+
+	/// en: 'No'
+	String get no => 'No';
+
+	/// en: 'Loading...'
+	String get loading => 'Loading...';
+
+	/// en: 'An error occurred: ${error}'
+	String error({required Object error}) => 'An error occurred: ${error}';
+
+	/// en: 'An error occurred'
+	String get errorNomessage => 'An error occurred';
+
+	/// en: 'Retry'
+	String get retry => 'Retry';
+
+	/// en: 'Search'
+	String get search => 'Search';
+
+	/// en: 'Settings'
+	String get settings => 'Settings';
+
+	/// en: 'Confirm'
+	String get confirm => 'Confirm';
+
+	/// en: 'Agree'
+	String get agree => 'Agree';
+
+	/// en: 'Decline'
+	String get decline => 'Decline';
+
+	/// en: 'Username'
+	String get username => 'Username';
+
+	/// en: 'Password'
+	String get password => 'Password';
+
+	/// en: 'Login'
+	String get login => 'Login';
+
+	/// en: 'Logout'
+	String get logout => 'Logout';
+
+	/// en: 'Share'
+	String get share => 'Share';
 }
 
 // Path: termsAgreement
-class _TranslationsTermsAgreementEn implements TranslationsTermsAgreementJa {
-	_TranslationsTermsAgreementEn._(this._root);
+class Translations$termsAgreement$en {
+	Translations$termsAgreement$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get welcomeTitle => 'Welcome to VRCN';
-	@override String get welcomeMessage => 'Before using the app,\nplease review the Terms of Service and Privacy Policy.';
-	@override String get termsTitle => 'Terms of Service';
-	@override String get termsSubtitle => 'About the conditions for using the app';
-	@override String get privacyTitle => 'Privacy Policy';
-	@override String get privacySubtitle => 'About the handling of personal information';
-	@override String agreeTerms({required Object title}) => 'I agree to the "${title}"';
-	@override String get checkContent => 'Check Content';
-	@override String get notice => 'This is an unofficial app for VRChat Inc.\nIt is not affiliated with VRChat Inc. in any way.';
+
+	/// en: 'Welcome to VRCN'
+	String get welcomeTitle => 'Welcome to VRCN';
+
+	/// en: 'Before using the app, please review the Terms of Service and Privacy Policy.'
+	String get welcomeMessage => 'Before using the app,\nplease review the Terms of Service and Privacy Policy.';
+
+	/// en: 'Terms of Service'
+	String get termsTitle => 'Terms of Service';
+
+	/// en: 'About the conditions for using the app'
+	String get termsSubtitle => 'About the conditions for using the app';
+
+	/// en: 'Privacy Policy'
+	String get privacyTitle => 'Privacy Policy';
+
+	/// en: 'About the handling of personal information'
+	String get privacySubtitle => 'About the handling of personal information';
+
+	/// en: 'I agree to the "${title}"'
+	String agreeTerms({required Object title}) => 'I agree to the "${title}"';
+
+	/// en: 'Check Content'
+	String get checkContent => 'Check Content';
+
+	/// en: 'This is an unofficial app for VRChat Inc. It is not affiliated with VRChat Inc. in any way.'
+	String get notice => 'This is an unofficial app for VRChat Inc.\nIt is not affiliated with VRChat Inc. in any way.';
 }
 
 // Path: drawer
-class _TranslationsDrawerEn implements TranslationsDrawerJa {
-	_TranslationsDrawerEn._(this._root);
+class Translations$drawer$en {
+	Translations$drawer$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get home => 'Home';
-	@override String get profile => 'Profile';
-	@override String get favorite => 'Favorites';
-	@override String get eventCalendar => 'Event Calendar';
-	@override String get avatar => 'Avatars';
-	@override String get group => 'Groups';
-	@override String get inventory => 'Inventory';
-	@override String get vrcnsync => 'VRCNSync (β)';
-	@override String get review => 'Review';
-	@override String get feedback => 'Feedback';
-	@override String get settings => 'Settings';
-	@override String get userLoading => 'Loading user information...';
-	@override String get userError => 'Failed to load user information';
-	@override String get retry => 'Retry';
-	@override late final _TranslationsDrawerSectionEn section = _TranslationsDrawerSectionEn._(_root);
+
+	/// en: 'Home'
+	String get home => 'Home';
+
+	/// en: 'Profile'
+	String get profile => 'Profile';
+
+	/// en: 'Favorites'
+	String get favorite => 'Favorites';
+
+	/// en: 'Event Calendar'
+	String get eventCalendar => 'Event Calendar';
+
+	/// en: 'Avatars'
+	String get avatar => 'Avatars';
+
+	/// en: 'Groups'
+	String get group => 'Groups';
+
+	/// en: 'Inventory'
+	String get inventory => 'Inventory';
+
+	/// en: 'Review'
+	String get review => 'Review';
+
+	/// en: 'Feedback'
+	String get feedback => 'Feedback';
+
+	/// en: 'Settings'
+	String get settings => 'Settings';
+
+	/// en: 'Loading user information...'
+	String get userLoading => 'Loading user information...';
+
+	/// en: 'Failed to load user information'
+	String get userError => 'Failed to load user information';
+
+	/// en: 'Retry'
+	String get retry => 'Retry';
+
+	late final Translations$drawer$section$en section = Translations$drawer$section$en._(_root);
 }
 
 // Path: login
-class _TranslationsLoginEn implements TranslationsLoginJa {
-	_TranslationsLoginEn._(this._root);
+class Translations$login$en {
+	Translations$login$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get forgotPassword => 'Forgot your password?';
-	@override String get createAccount => 'Sign up';
-	@override String get subtitle => 'Login with your VRChat account';
-	@override String get email => 'Email Address';
-	@override String get emailHint => 'Enter email or username';
-	@override String get passwordHint => 'Enter password';
-	@override String get rememberMe => 'Remember me';
-	@override String get loggingIn => 'Logging in...';
-	@override String get errorEmptyEmail => 'Please enter your username or email address.';
-	@override String get errorEmptyPassword => 'Please enter your password.';
-	@override String get errorLoginFailed => 'Login failed. Please check your email and password.';
-	@override String get twoFactorTitle => 'Two-Factor Authentication';
-	@override String get twoFactorSubtitle => 'Please enter the authentication code.';
-	@override String get twoFactorInstruction => 'Enter the 6-digit code from\nyour authenticator app.';
-	@override String get twoFactorCodeHint => 'Authentication code';
-	@override String get verify => 'Verify';
-	@override String get verifying => 'Verifying...';
-	@override String get errorEmpty2fa => 'Please enter the authentication code.';
-	@override String get error2faFailed => 'Two-factor authentication failed. Please check if the code is correct.';
-	@override String get backToLogin => 'Back to login';
-	@override String get paste => 'Paste';
+
+	/// en: 'Forgot your password?'
+	String get forgotPassword => 'Forgot your password?';
+
+	/// en: 'Sign up'
+	String get createAccount => 'Sign up';
+
+	/// en: 'Login with your VRChat account'
+	String get subtitle => 'Login with your VRChat account';
+
+	/// en: 'Email Address'
+	String get email => 'Email Address';
+
+	/// en: 'Enter email or username'
+	String get emailHint => 'Enter email or username';
+
+	/// en: 'Enter password'
+	String get passwordHint => 'Enter password';
+
+	/// en: 'Remember me'
+	String get rememberMe => 'Remember me';
+
+	/// en: 'Logging in...'
+	String get loggingIn => 'Logging in...';
+
+	/// en: 'Please enter your username or email address.'
+	String get errorEmptyEmail => 'Please enter your username or email address.';
+
+	/// en: 'Please enter your password.'
+	String get errorEmptyPassword => 'Please enter your password.';
+
+	/// en: 'Login failed. Please check your email and password.'
+	String get errorLoginFailed => 'Login failed. Please check your email and password.';
+
+	/// en: 'Two-Factor Authentication'
+	String get twoFactorTitle => 'Two-Factor Authentication';
+
+	/// en: 'Please enter the authentication code.'
+	String get twoFactorSubtitle => 'Please enter the authentication code.';
+
+	/// en: 'Enter the 6-digit code from your authenticator app.'
+	String get twoFactorInstruction => 'Enter the 6-digit code from\nyour authenticator app.';
+
+	/// en: 'Authentication code'
+	String get twoFactorCodeHint => 'Authentication code';
+
+	/// en: 'Verify'
+	String get verify => 'Verify';
+
+	/// en: 'Verifying...'
+	String get verifying => 'Verifying...';
+
+	/// en: 'Please enter the authentication code.'
+	String get errorEmpty2fa => 'Please enter the authentication code.';
+
+	/// en: 'Two-factor authentication failed. Please check if the code is correct.'
+	String get error2faFailed => 'Two-factor authentication failed. Please check if the code is correct.';
+
+	/// en: 'Back to login'
+	String get backToLogin => 'Back to login';
+
+	/// en: 'Paste'
+	String get paste => 'Paste';
 }
 
 // Path: friends
-class _TranslationsFriendsEn implements TranslationsFriendsJa {
-	_TranslationsFriendsEn._(this._root);
+class Translations$friends$en {
+	Translations$friends$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get loading => 'Loading friends list...';
-	@override String error({required Object error}) => 'Failed to load friends list: ${error}';
-	@override String get notFound => 'No friends found.';
-	@override String get private => 'Private';
-	@override String get active => 'Active';
-	@override String get offline => 'Offline';
-	@override String get online => 'Online';
-	@override String get groupTitle => 'Group by World';
-	@override String get refresh => 'Refresh';
-	@override String get searchHint => 'Search by friend\'s name';
-	@override String get noResult => 'No matching friends found.';
+
+	/// en: 'Loading friends list...'
+	String get loading => 'Loading friends list...';
+
+	/// en: 'Failed to load friends list: ${error}'
+	String error({required Object error}) => 'Failed to load friends list: ${error}';
+
+	/// en: 'No friends found.'
+	String get notFound => 'No friends found.';
+
+	/// en: 'Private'
+	String get private => 'Private';
+
+	/// en: 'Active'
+	String get active => 'Active';
+
+	/// en: 'Offline'
+	String get offline => 'Offline';
+
+	/// en: 'Online'
+	String get online => 'Online';
+
+	/// en: 'Group by World'
+	String get groupTitle => 'Group by World';
+
+	/// en: 'Refresh'
+	String get refresh => 'Refresh';
+
+	/// en: 'Search by friend's name'
+	String get searchHint => 'Search by friend\'s name';
+
+	/// en: 'No matching friends found.'
+	String get noResult => 'No matching friends found.';
 }
 
 // Path: friendDetail
-class _TranslationsFriendDetailEn implements TranslationsFriendDetailJa {
-	_TranslationsFriendDetailEn._(this._root);
+class Translations$friendDetail$en {
+	Translations$friendDetail$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get loading => 'Loading user information...';
-	@override String error({required Object error}) => 'Failed to load user information: ${error}';
-	@override String get currentLocation => 'Current Location';
-	@override String get basicInfo => 'Basic Info';
-	@override String get userId => 'User ID';
-	@override String get dateJoined => 'Date Joined';
-	@override String get lastLogin => 'Last Login';
-	@override String get bio => 'Bio';
-	@override String get links => 'Links';
-	@override String get loadingLinks => 'Loading links...';
-	@override String get group => 'Groups';
-	@override String get groupDetail => 'View Group Details';
-	@override String groupCode({required Object code}) => 'Group Code: ${code}';
-	@override String memberCount({required Object count}) => 'Members: ${count}';
-	@override String get unknownGroup => 'Unknown Group';
-	@override String get block => 'Block';
-	@override String get mute => 'Mute';
-	@override String get openWebsite => 'Open on Website';
-	@override String get shareProfile => 'Share Profile';
-	@override String confirmBlockTitle({required Object name}) => 'Block ${name}?';
-	@override String get confirmBlockMessage => 'If you block this user, you will no longer receive friend requests or messages from them.';
-	@override String confirmMuteTitle({required Object name}) => 'Mute ${name}?';
-	@override String get confirmMuteMessage => 'If you mute this user, you will no longer hear their voice.';
-	@override String get blockSuccess => 'Blocked';
-	@override String get muteSuccess => 'Muted';
-	@override String operationFailed({required Object error}) => 'Operation failed: ${error}';
+
+	/// en: 'Loading user information...'
+	String get loading => 'Loading user information...';
+
+	/// en: 'Failed to load user information: ${error}'
+	String error({required Object error}) => 'Failed to load user information: ${error}';
+
+	/// en: 'Current Location'
+	String get currentLocation => 'Current Location';
+
+	/// en: 'Basic Info'
+	String get basicInfo => 'Basic Info';
+
+	/// en: 'User ID'
+	String get userId => 'User ID';
+
+	/// en: 'Date Joined'
+	String get dateJoined => 'Date Joined';
+
+	/// en: 'Last Login'
+	String get lastLogin => 'Last Login';
+
+	/// en: 'Bio'
+	String get bio => 'Bio';
+
+	/// en: 'Links'
+	String get links => 'Links';
+
+	/// en: 'Loading links...'
+	String get loadingLinks => 'Loading links...';
+
+	/// en: 'Groups'
+	String get group => 'Groups';
+
+	/// en: 'View Group Details'
+	String get groupDetail => 'View Group Details';
+
+	/// en: 'Group Code: ${code}'
+	String groupCode({required Object code}) => 'Group Code: ${code}';
+
+	/// en: 'Members: ${count}'
+	String memberCount({required Object count}) => 'Members: ${count}';
+
+	/// en: 'Unknown Group'
+	String get unknownGroup => 'Unknown Group';
+
+	/// en: 'Block'
+	String get block => 'Block';
+
+	/// en: 'Mute'
+	String get mute => 'Mute';
+
+	/// en: 'Open on Website'
+	String get openWebsite => 'Open on Website';
+
+	/// en: 'Share Profile'
+	String get shareProfile => 'Share Profile';
+
+	/// en: 'Block ${name}?'
+	String confirmBlockTitle({required Object name}) => 'Block ${name}?';
+
+	/// en: 'If you block this user, you will no longer receive friend requests or messages from them.'
+	String get confirmBlockMessage => 'If you block this user, you will no longer receive friend requests or messages from them.';
+
+	/// en: 'Mute ${name}?'
+	String confirmMuteTitle({required Object name}) => 'Mute ${name}?';
+
+	/// en: 'If you mute this user, you will no longer hear their voice.'
+	String get confirmMuteMessage => 'If you mute this user, you will no longer hear their voice.';
+
+	/// en: 'Blocked'
+	String get blockSuccess => 'Blocked';
+
+	/// en: 'Muted'
+	String get muteSuccess => 'Muted';
+
+	/// en: 'Operation failed: ${error}'
+	String operationFailed({required Object error}) => 'Operation failed: ${error}';
 }
 
 // Path: search
-class _TranslationsSearchEn implements TranslationsSearchJa {
-	_TranslationsSearchEn._(this._root);
+class Translations$search$en {
+	Translations$search$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get userTab => 'Users';
-	@override String get worldTab => 'Worlds';
-	@override String get avatarTab => 'Avatars';
-	@override String get groupTab => 'Groups';
-	@override late final _TranslationsSearchTabsEn tabs = _TranslationsSearchTabsEn._(_root);
+
+	/// en: 'Users'
+	String get userTab => 'Users';
+
+	/// en: 'Worlds'
+	String get worldTab => 'Worlds';
+
+	/// en: 'Avatars'
+	String get avatarTab => 'Avatars';
+
+	/// en: 'Groups'
+	String get groupTab => 'Groups';
+
+	late final Translations$search$tabs$en tabs = Translations$search$tabs$en._(_root);
 }
 
 // Path: profile
-class _TranslationsProfileEn implements TranslationsProfileJa {
-	_TranslationsProfileEn._(this._root);
+class Translations$profile$en {
+	Translations$profile$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Profile';
-	@override String get edit => 'Edit';
-	@override String get refresh => 'Refresh';
-	@override String get loading => 'Loading profile information...';
-	@override String get error => 'Failed to load profile information: {error}';
-	@override String get displayName => 'Display Name';
-	@override String get username => 'Username';
-	@override String get userId => 'User ID';
-	@override String get engageCard => 'Engage Card';
-	@override String get frined => 'Friend';
-	@override String get dateJoined => 'Date Joined';
-	@override String get userType => 'User Type';
-	@override String get status => 'Status';
-	@override String get statusMessage => 'Status Message';
-	@override String get bio => 'Bio';
-	@override String get links => 'Links';
-	@override String get group => 'Groups';
-	@override String get groupDetail => 'View Group Details';
-	@override String get avatar => 'Current Avatar';
-	@override String get avatarDetail => 'View Avatar Details';
-	@override String get public => 'Public';
-	@override String get private => 'Private';
-	@override String get hidden => 'Hidden';
-	@override String get unknown => 'Unknown';
-	@override String get friends => 'Friends';
-	@override String get loadingLinks => 'Loading links...';
-	@override String get noGroup => 'Not in any groups';
-	@override String get noBio => 'No bio available';
-	@override String get noLinks => 'No links available';
-	@override String get save => 'Save Changes';
-	@override String get saved => 'Profile updated successfully.';
-	@override String get saveFailed => 'Failed to update: {error}';
-	@override String get discardTitle => 'Discard changes?';
-	@override String get discardContent => 'Changes made to your profile will not be saved.';
-	@override String get discardCancel => 'Cancel';
-	@override String get discardOk => 'Discard';
-	@override String get basic => 'Basic Info';
-	@override String get pronouns => 'Pronouns';
-	@override String get addLink => 'Add';
-	@override String get removeLink => 'Remove';
-	@override String get linkHint => 'Enter link (e.g., https://twitter.com/username)';
-	@override String get linksHint => 'Links will be displayed on your profile and can be opened by tapping.';
-	@override String get statusMessageHint => 'Enter your current situation or a message.';
-	@override String get bioHint => 'Write something about yourself.';
+
+	/// en: 'Profile'
+	String get title => 'Profile';
+
+	/// en: 'Edit'
+	String get edit => 'Edit';
+
+	/// en: 'Refresh'
+	String get refresh => 'Refresh';
+
+	/// en: 'Loading profile information...'
+	String get loading => 'Loading profile information...';
+
+	/// en: 'Failed to load profile information: {error}'
+	String get error => 'Failed to load profile information: {error}';
+
+	/// en: 'Display Name'
+	String get displayName => 'Display Name';
+
+	/// en: 'Username'
+	String get username => 'Username';
+
+	/// en: 'User ID'
+	String get userId => 'User ID';
+
+	/// en: 'Engage Card'
+	String get engageCard => 'Engage Card';
+
+	/// en: 'Friend'
+	String get frined => 'Friend';
+
+	/// en: 'Date Joined'
+	String get dateJoined => 'Date Joined';
+
+	/// en: 'User Type'
+	String get userType => 'User Type';
+
+	/// en: 'Status'
+	String get status => 'Status';
+
+	/// en: 'Status Message'
+	String get statusMessage => 'Status Message';
+
+	/// en: 'Bio'
+	String get bio => 'Bio';
+
+	/// en: 'Links'
+	String get links => 'Links';
+
+	/// en: 'Groups'
+	String get group => 'Groups';
+
+	/// en: 'View Group Details'
+	String get groupDetail => 'View Group Details';
+
+	/// en: 'Current Avatar'
+	String get avatar => 'Current Avatar';
+
+	/// en: 'View Avatar Details'
+	String get avatarDetail => 'View Avatar Details';
+
+	/// en: 'Public'
+	String get public => 'Public';
+
+	/// en: 'Private'
+	String get private => 'Private';
+
+	/// en: 'Hidden'
+	String get hidden => 'Hidden';
+
+	/// en: 'Unknown'
+	String get unknown => 'Unknown';
+
+	/// en: 'Friends'
+	String get friends => 'Friends';
+
+	/// en: 'Loading links...'
+	String get loadingLinks => 'Loading links...';
+
+	/// en: 'Not in any groups'
+	String get noGroup => 'Not in any groups';
+
+	/// en: 'No bio available'
+	String get noBio => 'No bio available';
+
+	/// en: 'No links available'
+	String get noLinks => 'No links available';
+
+	/// en: 'Save Changes'
+	String get save => 'Save Changes';
+
+	/// en: 'Profile updated successfully.'
+	String get saved => 'Profile updated successfully.';
+
+	/// en: 'Failed to update: {error}'
+	String get saveFailed => 'Failed to update: {error}';
+
+	/// en: 'Discard changes?'
+	String get discardTitle => 'Discard changes?';
+
+	/// en: 'Changes made to your profile will not be saved.'
+	String get discardContent => 'Changes made to your profile will not be saved.';
+
+	/// en: 'Cancel'
+	String get discardCancel => 'Cancel';
+
+	/// en: 'Discard'
+	String get discardOk => 'Discard';
+
+	/// en: 'Basic Info'
+	String get basic => 'Basic Info';
+
+	/// en: 'Pronouns'
+	String get pronouns => 'Pronouns';
+
+	/// en: 'Add'
+	String get addLink => 'Add';
+
+	/// en: 'Remove'
+	String get removeLink => 'Remove';
+
+	/// en: 'Enter link (e.g., https://twitter.com/username)'
+	String get linkHint => 'Enter link (e.g., https://twitter.com/username)';
+
+	/// en: 'Links will be displayed on your profile and can be opened by tapping.'
+	String get linksHint => 'Links will be displayed on your profile and can be opened by tapping.';
+
+	/// en: 'Enter your current situation or a message.'
+	String get statusMessageHint => 'Enter your current situation or a message.';
+
+	/// en: 'Write something about yourself.'
+	String get bioHint => 'Write something about yourself.';
 }
 
 // Path: engageCard
-class _TranslationsEngageCardEn implements TranslationsEngageCardJa {
-	_TranslationsEngageCardEn._(this._root);
+class Translations$engageCard$en {
+	Translations$engageCard$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get pickBackground => 'Select Background Image';
-	@override String get removeBackground => 'Remove Background Image';
-	@override String get scanQr => 'Scan QR Code';
-	@override String get showAvatar => 'Show Avatar';
-	@override String get hideAvatar => 'Hide Avatar';
-	@override String get noBackground => 'No background image selected.\nYou can set one from the top right button.';
-	@override String get loading => 'Loading...';
-	@override String error({required Object error}) => 'Failed to load engage card information: ${error}';
-	@override String get copyUserId => 'Copy User ID';
-	@override String get copied => 'Copied';
+
+	/// en: 'Select Background Image'
+	String get pickBackground => 'Select Background Image';
+
+	/// en: 'Remove Background Image'
+	String get removeBackground => 'Remove Background Image';
+
+	/// en: 'Scan QR Code'
+	String get scanQr => 'Scan QR Code';
+
+	/// en: 'Show Avatar'
+	String get showAvatar => 'Show Avatar';
+
+	/// en: 'Hide Avatar'
+	String get hideAvatar => 'Hide Avatar';
+
+	/// en: 'No background image selected. You can set one from the top right button.'
+	String get noBackground => 'No background image selected.\nYou can set one from the top right button.';
+
+	/// en: 'Loading...'
+	String get loading => 'Loading...';
+
+	/// en: 'Failed to load engage card information: ${error}'
+	String error({required Object error}) => 'Failed to load engage card information: ${error}';
+
+	/// en: 'Copy User ID'
+	String get copyUserId => 'Copy User ID';
+
+	/// en: 'Copied'
+	String get copied => 'Copied';
 }
 
 // Path: qrScanner
-class _TranslationsQrScannerEn implements TranslationsQrScannerJa {
-	_TranslationsQrScannerEn._(this._root);
+class Translations$qrScanner$en {
+	Translations$qrScanner$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'QR Code Scan';
-	@override String get guide => 'Align the QR code within the frame.';
-	@override String get loading => 'Initializing camera...';
-	@override String error({required Object error}) => 'Failed to read QR code: ${error}';
-	@override String get notFound => 'No valid user QR code found.';
+
+	/// en: 'QR Code Scan'
+	String get title => 'QR Code Scan';
+
+	/// en: 'Align the QR code within the frame.'
+	String get guide => 'Align the QR code within the frame.';
+
+	/// en: 'Initializing camera...'
+	String get loading => 'Initializing camera...';
+
+	/// en: 'Failed to read QR code: ${error}'
+	String error({required Object error}) => 'Failed to read QR code: ${error}';
+
+	/// en: 'No valid user QR code found.'
+	String get notFound => 'No valid user QR code found.';
 }
 
 // Path: favorites
-class _TranslationsFavoritesEn implements TranslationsFavoritesJa {
-	_TranslationsFavoritesEn._(this._root);
+class Translations$favorites$en {
+	Translations$favorites$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Favorites';
-	@override String get frined => 'Friend';
-	@override String get friendsTab => 'Friends';
-	@override String get worldsTab => 'Worlds';
-	@override String get avatarsTab => 'Avatars';
-	@override String get emptyFolderTitle => 'No favorite folders';
-	@override String get emptyFolderDescription => 'Please create a favorite folder in VRChat.';
-	@override String get emptyFriends => 'No friends in this folder.';
-	@override String get emptyWorlds => 'No worlds in this folder.';
-	@override String get emptyAvatars => 'No avatars in this folder.';
-	@override String get emptyWorldsTabTitle => 'No favorite worlds';
-	@override String get emptyWorldsTabDescription => 'You can add worlds to favorites from the world details screen.';
-	@override String get emptyAvatarsTabTitle => 'No favorite avatars';
-	@override String get emptyAvatarsTabDescription => 'You can add avatars to favorites from the avatar details screen.';
-	@override String get loading => 'Loading favorites...';
-	@override String get loadingFolder => 'Loading folder information...';
-	@override String error({required Object error}) => 'Failed to load favorites: ${error}';
-	@override String get errorFolder => 'Failed to get information.';
-	@override String get remove => 'Remove from Favorites';
-	@override String removeSuccess({required Object name}) => 'Removed ${name} from favorites.';
-	@override String removeFailed({required Object error}) => 'Failed to remove: ${error}';
-	@override String itemsCount({required Object count}) => '${count} items';
-	@override String get public => 'Public';
-	@override String get private => 'Private';
-	@override String get hidden => 'Hidden';
-	@override String get unknown => 'Unknown';
-	@override String get loadingError => 'Loading Error';
+
+	/// en: 'Favorites'
+	String get title => 'Favorites';
+
+	/// en: 'Friend'
+	String get frined => 'Friend';
+
+	/// en: 'Friends'
+	String get friendsTab => 'Friends';
+
+	/// en: 'Worlds'
+	String get worldsTab => 'Worlds';
+
+	/// en: 'Avatars'
+	String get avatarsTab => 'Avatars';
+
+	/// en: 'No favorite folders'
+	String get emptyFolderTitle => 'No favorite folders';
+
+	/// en: 'Please create a favorite folder in VRChat.'
+	String get emptyFolderDescription => 'Please create a favorite folder in VRChat.';
+
+	/// en: 'No friends in this folder.'
+	String get emptyFriends => 'No friends in this folder.';
+
+	/// en: 'No worlds in this folder.'
+	String get emptyWorlds => 'No worlds in this folder.';
+
+	/// en: 'No avatars in this folder.'
+	String get emptyAvatars => 'No avatars in this folder.';
+
+	/// en: 'No favorite worlds'
+	String get emptyWorldsTabTitle => 'No favorite worlds';
+
+	/// en: 'You can add worlds to favorites from the world details screen.'
+	String get emptyWorldsTabDescription => 'You can add worlds to favorites from the world details screen.';
+
+	/// en: 'No favorite avatars'
+	String get emptyAvatarsTabTitle => 'No favorite avatars';
+
+	/// en: 'You can add avatars to favorites from the avatar details screen.'
+	String get emptyAvatarsTabDescription => 'You can add avatars to favorites from the avatar details screen.';
+
+	/// en: 'Loading favorites...'
+	String get loading => 'Loading favorites...';
+
+	/// en: 'Loading folder information...'
+	String get loadingFolder => 'Loading folder information...';
+
+	/// en: 'Failed to load favorites: ${error}'
+	String error({required Object error}) => 'Failed to load favorites: ${error}';
+
+	/// en: 'Failed to get information.'
+	String get errorFolder => 'Failed to get information.';
+
+	/// en: 'Remove from Favorites'
+	String get remove => 'Remove from Favorites';
+
+	/// en: 'Removed ${name} from favorites.'
+	String removeSuccess({required Object name}) => 'Removed ${name} from favorites.';
+
+	/// en: 'Failed to remove: ${error}'
+	String removeFailed({required Object error}) => 'Failed to remove: ${error}';
+
+	/// en: '${count} items'
+	String itemsCount({required Object count}) => '${count} items';
+
+	/// en: 'Public'
+	String get public => 'Public';
+
+	/// en: 'Private'
+	String get private => 'Private';
+
+	/// en: 'Hidden'
+	String get hidden => 'Hidden';
+
+	/// en: 'Unknown'
+	String get unknown => 'Unknown';
+
+	/// en: 'Loading Error'
+	String get loadingError => 'Loading Error';
 }
 
 // Path: notifications
-class _TranslationsNotificationsEn implements TranslationsNotificationsJa {
-	_TranslationsNotificationsEn._(this._root);
+class Translations$notifications$en {
+	Translations$notifications$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get emptyTitle => 'No Notifications';
-	@override String get emptyDescription => 'New notifications, like friend requests and invites,\nwill appear here.';
-	@override String friendRequest({required Object userName}) => 'You have a friend request from ${userName}.';
-	@override String invite({required Object worldName, required Object userName}) => 'You have an invite to ${worldName} from ${userName}.';
-	@override String friendOnline({required Object userName}) => '${userName} is now online.';
-	@override String friendOffline({required Object userName}) => '${userName} is now offline.';
-	@override String friendActive({required Object userName}) => '${userName} is now active.';
-	@override String friendAdd({required Object userName}) => '${userName} has been added to your friends.';
-	@override String friendRemove({required Object userName}) => '${userName} has been removed from your friends.';
-	@override String statusUpdate({required Object userName, required Object status, required Object world}) => '${userName}\'s status updated: ${status}${world}';
-	@override String locationChange({required Object userName, required Object worldName}) => '${userName} moved to ${worldName}.';
-	@override String userUpdate({required Object world}) => 'Your information has been updated${world}.';
-	@override String myLocationChange({required Object worldName}) => 'You moved to: ${worldName}';
-	@override String requestInvite({required Object userName}) => 'You have a request to join from ${userName}.';
-	@override String votekick({required Object userName}) => 'There was a votekick from ${userName}.';
-	@override String responseReceived({required Object userName}) => 'Received response for notification ID: ${userName}';
-	@override String error({required Object worldName}) => 'Error: ${worldName}';
-	@override String system({required Object extraData}) => 'System notification: ${extraData}';
-	@override String secondsAgo({required Object seconds}) => '${seconds}s ago';
-	@override String minutesAgo({required Object minutes}) => '${minutes}m ago';
-	@override String hoursAgo({required Object hours}) => '${hours}h ago';
+
+	/// en: 'Notifications'
+	String get title => 'Notifications';
+
+	/// en: 'No Notifications'
+	String get emptyTitle => 'No Notifications';
+
+	/// en: 'New notifications, like friend requests and invites, will appear here.'
+	String get emptyDescription => 'New notifications, like friend requests and invites,\nwill appear here.';
+
+	/// en: 'All'
+	String get all => 'All';
+
+	/// en: 'Unread (${count})'
+	String unread({required Object count}) => 'Unread (${count})';
+
+	/// en: 'Read'
+	String get read => 'Read';
+
+	/// en: 'Friend log'
+	String get activity => 'Friend log';
+
+	/// en: 'Online alerts'
+	String get onlineAlerts => 'Online alerts';
+
+	/// en: 'Mark all as read'
+	String get markAllRead => 'Mark all as read';
+
+	/// en: 'All notifications marked as read.'
+	String get markAllReadDone => 'All notifications marked as read.';
+
+	/// en: 'Delete notification?'
+	String get deleteConfirmTitle => 'Delete notification?';
+
+	/// en: 'No unread notifications'
+	String get emptyUnread => 'No unread notifications';
+
+	/// en: 'No read notifications'
+	String get emptyRead => 'No read notifications';
+
+	/// en: 'Friend online alerts'
+	String get friendOnlineAlerts => 'Friend online alerts';
+
+	/// en: '${count} selected'
+	String selectedCount({required Object count}) => '${count} selected';
+
+	/// en: 'You have a friend request from ${userName}.'
+	String friendRequest({required Object userName}) => 'You have a friend request from ${userName}.';
+
+	/// en: 'You have an invite to ${worldName} from ${userName}.'
+	String invite({required Object worldName, required Object userName}) => 'You have an invite to ${worldName} from ${userName}.';
+
+	/// en: '${userName} is now online.'
+	String friendOnline({required Object userName}) => '${userName} is now online.';
+
+	/// en: '${userName} is now offline.'
+	String friendOffline({required Object userName}) => '${userName} is now offline.';
+
+	/// en: '${userName} is now active.'
+	String friendActive({required Object userName}) => '${userName} is now active.';
+
+	/// en: '${userName} has been added to your friends.'
+	String friendAdd({required Object userName}) => '${userName} has been added to your friends.';
+
+	/// en: '${userName} has been removed from your friends.'
+	String friendRemove({required Object userName}) => '${userName} has been removed from your friends.';
+
+	/// en: '${userName}'s status updated: ${status}${world}'
+	String statusUpdate({required Object userName, required Object status, required Object world}) => '${userName}\'s status updated: ${status}${world}';
+
+	/// en: '${userName} moved to ${worldName}.'
+	String locationChange({required Object userName, required Object worldName}) => '${userName} moved to ${worldName}.';
+
+	/// en: 'Your information has been updated${world}.'
+	String userUpdate({required Object world}) => 'Your information has been updated${world}.';
+
+	/// en: 'You moved to: ${worldName}'
+	String myLocationChange({required Object worldName}) => 'You moved to: ${worldName}';
+
+	/// en: 'You have a request to join from ${userName}.'
+	String requestInvite({required Object userName}) => 'You have a request to join from ${userName}.';
+
+	/// en: 'There was a votekick from ${userName}.'
+	String votekick({required Object userName}) => 'There was a votekick from ${userName}.';
+
+	/// en: 'Received response for notification ID: ${userName}'
+	String responseReceived({required Object userName}) => 'Received response for notification ID: ${userName}';
+
+	/// en: 'Error: ${worldName}'
+	String error({required Object worldName}) => 'Error: ${worldName}';
+
+	/// en: 'System notification: ${extraData}'
+	String system({required Object extraData}) => 'System notification: ${extraData}';
+
+	/// en: '${seconds}s ago'
+	String secondsAgo({required Object seconds}) => '${seconds}s ago';
+
+	/// en: '${minutes}m ago'
+	String minutesAgo({required Object minutes}) => '${minutes}m ago';
+
+	/// en: '${hours}h ago'
+	String hoursAgo({required Object hours}) => '${hours}h ago';
 }
 
 // Path: eventCalendar
-class _TranslationsEventCalendarEn implements TranslationsEventCalendarJa {
-	_TranslationsEventCalendarEn._(this._root);
+class Translations$eventCalendar$en {
+	Translations$eventCalendar$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Event Calendar';
-	@override String get filter => 'Filter Events';
-	@override String get refresh => 'Refresh Events';
-	@override String get loading => 'Loading events...';
-	@override String error({required Object error}) => 'Failed to load events: ${error}';
-	@override String filterActive({required Object count}) => 'Filter applied (${count} results)';
-	@override String get clear => 'Clear';
-	@override String get noEvents => 'No events match the criteria.';
-	@override String get clearFilter => 'Clear Filter';
-	@override String get today => 'Today';
-	@override String get reminderSet => 'Set Reminder';
-	@override String get reminderSetDone => 'Reminder Set';
-	@override String get reminderDeleted => 'Reminder deleted.';
-	@override String get eventName => 'Event Name';
-	@override String get organizer => 'Organizer';
-	@override String get description => 'Description';
-	@override String get genre => 'Genre';
-	@override String get condition => 'Participation Conditions';
-	@override String get way => 'How to Join';
-	@override String get note => 'Notes';
-	@override String get quest => 'Quest Compatible';
-	@override String reminderCount({required Object count}) => '${count}';
-	@override String startToEnd({required Object start, required Object end}) => '${start} - ${end}';
+
+	/// en: 'Event Calendar'
+	String get title => 'Event Calendar';
+
+	/// en: 'Filter Events'
+	String get filter => 'Filter Events';
+
+	/// en: 'Refresh Events'
+	String get refresh => 'Refresh Events';
+
+	/// en: 'Loading events...'
+	String get loading => 'Loading events...';
+
+	/// en: 'Failed to load events: ${error}'
+	String error({required Object error}) => 'Failed to load events: ${error}';
+
+	/// en: 'Filter applied (${count} results)'
+	String filterActive({required Object count}) => 'Filter applied (${count} results)';
+
+	/// en: 'Clear'
+	String get clear => 'Clear';
+
+	/// en: 'No events match the criteria.'
+	String get noEvents => 'No events match the criteria.';
+
+	/// en: 'Clear Filter'
+	String get clearFilter => 'Clear Filter';
+
+	/// en: 'Today'
+	String get today => 'Today';
+
+	/// en: 'Set Reminder'
+	String get reminderSet => 'Set Reminder';
+
+	/// en: 'Reminder Set'
+	String get reminderSetDone => 'Reminder Set';
+
+	/// en: 'Reminder deleted.'
+	String get reminderDeleted => 'Reminder deleted.';
+
+	/// en: 'Event Name'
+	String get eventName => 'Event Name';
+
+	/// en: 'Organizer'
+	String get organizer => 'Organizer';
+
+	/// en: 'Description'
+	String get description => 'Description';
+
+	/// en: 'Genre'
+	String get genre => 'Genre';
+
+	/// en: 'Participation Conditions'
+	String get condition => 'Participation Conditions';
+
+	/// en: 'How to Join'
+	String get way => 'How to Join';
+
+	/// en: 'Notes'
+	String get note => 'Notes';
+
+	/// en: 'Quest Compatible'
+	String get quest => 'Quest Compatible';
+
+	/// en: '${count}'
+	String reminderCount({required Object count}) => '${count}';
+
+	/// en: '${start} - ${end}'
+	String startToEnd({required Object start, required Object end}) => '${start} - ${end}';
 }
 
 // Path: avatars
-class _TranslationsAvatarsEn implements TranslationsAvatarsJa {
-	_TranslationsAvatarsEn._(this._root);
+class Translations$avatars$en {
+	Translations$avatars$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Avatars';
-	@override String get searchHint => 'Search by avatar name, etc.';
-	@override String get searchTooltip => 'Search';
-	@override String get searchEmptyTitle => 'No search results found.';
-	@override String get searchEmptyDescription => 'Please try a different search term.';
-	@override String get emptyTitle => 'No avatars';
-	@override String get emptyDescription => 'Please add an avatar or try again later.';
-	@override String get refresh => 'Refresh';
-	@override String get loading => 'Loading avatars...';
-	@override String error({required Object error}) => 'Failed to load avatars: ${error}';
-	@override String get current => 'In Use';
-	@override String get public => 'Public';
-	@override String get private => 'Private';
-	@override String get hidden => 'Hidden';
-	@override String get author => 'Author';
-	@override String get sortUpdated => 'By Update Date';
-	@override String get sortName => 'By Name';
-	@override String get sortTooltip => 'Sort';
-	@override String get viewModeTooltip => 'Toggle View Mode';
+
+	/// en: 'Avatars'
+	String get title => 'Avatars';
+
+	/// en: 'Search by avatar name, etc.'
+	String get searchHint => 'Search by avatar name, etc.';
+
+	/// en: 'Search'
+	String get searchTooltip => 'Search';
+
+	/// en: 'No search results found.'
+	String get searchEmptyTitle => 'No search results found.';
+
+	/// en: 'Please try a different search term.'
+	String get searchEmptyDescription => 'Please try a different search term.';
+
+	/// en: 'No avatars'
+	String get emptyTitle => 'No avatars';
+
+	/// en: 'Please add an avatar or try again later.'
+	String get emptyDescription => 'Please add an avatar or try again later.';
+
+	/// en: 'Refresh'
+	String get refresh => 'Refresh';
+
+	/// en: 'Loading avatars...'
+	String get loading => 'Loading avatars...';
+
+	/// en: 'Failed to load avatars: ${error}'
+	String error({required Object error}) => 'Failed to load avatars: ${error}';
+
+	/// en: 'In Use'
+	String get current => 'In Use';
+
+	/// en: 'Public'
+	String get public => 'Public';
+
+	/// en: 'Private'
+	String get private => 'Private';
+
+	/// en: 'Hidden'
+	String get hidden => 'Hidden';
+
+	/// en: 'Author'
+	String get author => 'Author';
+
+	/// en: 'By Update Date'
+	String get sortUpdated => 'By Update Date';
+
+	/// en: 'By Name'
+	String get sortName => 'By Name';
+
+	/// en: 'Sort'
+	String get sortTooltip => 'Sort';
+
+	/// en: 'Toggle View Mode'
+	String get viewModeTooltip => 'Toggle View Mode';
 }
 
 // Path: worldDetail
-class _TranslationsWorldDetailEn implements TranslationsWorldDetailJa {
-	_TranslationsWorldDetailEn._(this._root);
+class Translations$worldDetail$en {
+	Translations$worldDetail$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get loading => 'Loading world information...';
-	@override String error({required Object error}) => 'Failed to load world information: ${error}';
-	@override String get share => 'Share This World';
-	@override String get openInVRChat => 'Open on VRChat Official Website';
-	@override String get report => 'Report This World';
-	@override String get creator => 'Creator';
-	@override String get created => 'Created';
-	@override String get updated => 'Updated';
-	@override String get favorites => 'Favorites';
-	@override String get visits => 'Visits';
-	@override String get occupants => 'Current Occupants';
-	@override String get popularity => 'Popularity';
-	@override String get description => 'Description';
-	@override String get noDescription => 'No description available.';
-	@override String get tags => 'Tags';
-	@override String get joinPublic => 'Send Invite to Public Instance';
-	@override String get favoriteAdded => 'Added to favorites.';
-	@override String get favoriteRemoved => 'Removed from favorites.';
-	@override String get unknown => 'Unknown';
+
+	/// en: 'Loading world information...'
+	String get loading => 'Loading world information...';
+
+	/// en: 'Failed to load world information: ${error}'
+	String error({required Object error}) => 'Failed to load world information: ${error}';
+
+	/// en: 'Share This World'
+	String get share => 'Share This World';
+
+	/// en: 'Open on VRChat Official Website'
+	String get openInVRChat => 'Open on VRChat Official Website';
+
+	/// en: 'Report This World'
+	String get report => 'Report This World';
+
+	/// en: 'Creator'
+	String get creator => 'Creator';
+
+	/// en: 'Created'
+	String get created => 'Created';
+
+	/// en: 'Updated'
+	String get updated => 'Updated';
+
+	/// en: 'Favorites'
+	String get favorites => 'Favorites';
+
+	/// en: 'Visits'
+	String get visits => 'Visits';
+
+	/// en: 'Current Occupants'
+	String get occupants => 'Current Occupants';
+
+	/// en: 'Popularity'
+	String get popularity => 'Popularity';
+
+	/// en: 'Description'
+	String get description => 'Description';
+
+	/// en: 'No description available.'
+	String get noDescription => 'No description available.';
+
+	/// en: 'Tags'
+	String get tags => 'Tags';
+
+	/// en: 'Send Invite to Public Instance'
+	String get joinPublic => 'Send Invite to Public Instance';
+
+	/// en: 'Added to favorites.'
+	String get favoriteAdded => 'Added to favorites.';
+
+	/// en: 'Removed from favorites.'
+	String get favoriteRemoved => 'Removed from favorites.';
+
+	/// en: 'Unknown'
+	String get unknown => 'Unknown';
 }
 
 // Path: avatarDetail
-class _TranslationsAvatarDetailEn implements TranslationsAvatarDetailJa {
-	_TranslationsAvatarDetailEn._(this._root);
+class Translations$avatarDetail$en {
+	Translations$avatarDetail$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String changeSuccess({required Object name}) => 'Changed to avatar "${name}".';
-	@override String changeFailed({required Object error}) => 'Failed to change avatar: ${error}';
-	@override String get changing => 'Changing...';
-	@override String get useThisAvatar => 'Use This Avatar';
-	@override String get creator => 'Creator';
-	@override String get created => 'Created';
-	@override String get updated => 'Updated';
-	@override String get description => 'Description';
-	@override String get noDescription => 'No description available.';
-	@override String get tags => 'Tags';
-	@override String get addToFavorites => 'Add to Favorites';
-	@override String get public => 'Public';
-	@override String get private => 'Private';
-	@override String get hidden => 'Hidden';
-	@override String get unknown => 'Unknown';
-	@override String get share => 'Share';
-	@override String get loading => 'Loading avatar information...';
-	@override String error({required Object error}) => 'Failed to load avatar information: ${error}';
+
+	/// en: 'Changed to avatar "${name}".'
+	String changeSuccess({required Object name}) => 'Changed to avatar "${name}".';
+
+	/// en: 'Failed to change avatar: ${error}'
+	String changeFailed({required Object error}) => 'Failed to change avatar: ${error}';
+
+	/// en: 'Changing...'
+	String get changing => 'Changing...';
+
+	/// en: 'Use This Avatar'
+	String get useThisAvatar => 'Use This Avatar';
+
+	/// en: 'Creator'
+	String get creator => 'Creator';
+
+	/// en: 'Created'
+	String get created => 'Created';
+
+	/// en: 'Updated'
+	String get updated => 'Updated';
+
+	/// en: 'Description'
+	String get description => 'Description';
+
+	/// en: 'No description available.'
+	String get noDescription => 'No description available.';
+
+	/// en: 'Tags'
+	String get tags => 'Tags';
+
+	/// en: 'Add to Favorites'
+	String get addToFavorites => 'Add to Favorites';
+
+	/// en: 'Public'
+	String get public => 'Public';
+
+	/// en: 'Private'
+	String get private => 'Private';
+
+	/// en: 'Hidden'
+	String get hidden => 'Hidden';
+
+	/// en: 'Unknown'
+	String get unknown => 'Unknown';
+
+	/// en: 'Share'
+	String get share => 'Share';
+
+	/// en: 'Loading avatar information...'
+	String get loading => 'Loading avatar information...';
+
+	/// en: 'Failed to load avatar information: ${error}'
+	String error({required Object error}) => 'Failed to load avatar information: ${error}';
 }
 
 // Path: groups
-class _TranslationsGroupsEn implements TranslationsGroupsJa {
-	_TranslationsGroupsEn._(this._root);
+class Translations$groups$en {
+	Translations$groups$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Groups';
-	@override String get loadingUser => 'Loading user information...';
-	@override String errorUser({required Object error}) => 'Failed to load user information: ${error}';
-	@override String get loadingGroups => 'Loading group information...';
-	@override String errorGroups({required Object error}) => 'Failed to load group information: ${error}';
-	@override String get emptyTitle => 'You are not in any groups.';
-	@override String get emptyDescription => 'You can join groups from the VRChat app or website.';
-	@override String get searchGroups => 'Find Groups';
-	@override String members({required Object count}) => '${count} members';
-	@override String get showDetails => 'Show Details';
-	@override String get unknownName => 'Unknown Name';
+
+	/// en: 'Groups'
+	String get title => 'Groups';
+
+	/// en: 'Loading user information...'
+	String get loadingUser => 'Loading user information...';
+
+	/// en: 'Failed to load user information: ${error}'
+	String errorUser({required Object error}) => 'Failed to load user information: ${error}';
+
+	/// en: 'Loading group information...'
+	String get loadingGroups => 'Loading group information...';
+
+	/// en: 'Failed to load group information: ${error}'
+	String errorGroups({required Object error}) => 'Failed to load group information: ${error}';
+
+	/// en: 'You are not in any groups.'
+	String get emptyTitle => 'You are not in any groups.';
+
+	/// en: 'You can join groups from the VRChat app or website.'
+	String get emptyDescription => 'You can join groups from the VRChat app or website.';
+
+	/// en: 'Find Groups'
+	String get searchGroups => 'Find Groups';
+
+	/// en: '${count} members'
+	String members({required Object count}) => '${count} members';
+
+	/// en: 'Show Details'
+	String get showDetails => 'Show Details';
+
+	/// en: 'Unknown Name'
+	String get unknownName => 'Unknown Name';
 }
 
 // Path: groupDetail
-class _TranslationsGroupDetailEn implements TranslationsGroupDetailJa {
-	_TranslationsGroupDetailEn._(this._root);
+class Translations$groupDetail$en {
+	Translations$groupDetail$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get loading => 'Loading group information...';
-	@override String error({required Object error}) => 'Failed to load group information: ${error}';
-	@override String get share => 'Share Group Info';
-	@override String get description => 'Description';
-	@override String get roles => 'Roles';
-	@override String get basicInfo => 'Basic Info';
-	@override String get createdAt => 'Created At';
-	@override String get owner => 'Owner';
-	@override String get rules => 'Rules';
-	@override String get languages => 'Languages';
-	@override String memberCount({required Object count}) => '${count} Members';
-	@override late final _TranslationsGroupDetailPrivacyEn privacy = _TranslationsGroupDetailPrivacyEn._(_root);
-	@override late final _TranslationsGroupDetailRoleEn role = _TranslationsGroupDetailRoleEn._(_root);
+
+	/// en: 'Loading group information...'
+	String get loading => 'Loading group information...';
+
+	/// en: 'Failed to load group information: ${error}'
+	String error({required Object error}) => 'Failed to load group information: ${error}';
+
+	/// en: 'Share Group Info'
+	String get share => 'Share Group Info';
+
+	/// en: 'Description'
+	String get description => 'Description';
+
+	/// en: 'Roles'
+	String get roles => 'Roles';
+
+	/// en: 'Basic Info'
+	String get basicInfo => 'Basic Info';
+
+	/// en: 'Created At'
+	String get createdAt => 'Created At';
+
+	/// en: 'Owner'
+	String get owner => 'Owner';
+
+	/// en: 'Rules'
+	String get rules => 'Rules';
+
+	/// en: 'Languages'
+	String get languages => 'Languages';
+
+	/// en: '${count} Members'
+	String memberCount({required Object count}) => '${count} Members';
+
+	late final Translations$groupDetail$privacy$en privacy = Translations$groupDetail$privacy$en._(_root);
+	late final Translations$groupDetail$role$en role = Translations$groupDetail$role$en._(_root);
 }
 
 // Path: inventory
-class _TranslationsInventoryEn implements TranslationsInventoryJa {
-	_TranslationsInventoryEn._(this._root);
+class Translations$inventory$en {
+	Translations$inventory$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Inventory';
-	@override String get gallery => 'Gallery';
-	@override String get icon => 'Icon';
-	@override String get emoji => 'Emoji';
-	@override String get sticker => 'Sticker';
-	@override String get print => 'Print';
-	@override String get upload => 'Upload File';
-	@override String get uploadGallery => 'Uploading gallery image...';
-	@override String get uploadIcon => 'Uploading icon...';
-	@override String get uploadEmoji => 'Uploading emoji...';
-	@override String get uploadSticker => 'Uploading sticker...';
-	@override String get uploadPrint => 'Uploading print image...';
-	@override String get selectImage => 'Select Image';
-	@override String get selectFromGallery => 'Select from Gallery';
-	@override String get takePhoto => 'Take Photo with Camera';
-	@override String get uploadSuccess => 'Upload complete.';
-	@override String get uploadFailed => 'Upload failed.';
-	@override String get uploadFailedFormat => 'There is a problem with the file format or size. Please select a PNG image under 1MB.';
-	@override String get uploadFailedAuth => 'Authentication failed. Please log in again.';
-	@override String get uploadFailedSize => 'File size is too large. Please select a smaller image.';
-	@override String uploadFailedServer({required Object code}) => 'Server error occurred (${code})';
-	@override String pickImageFailed({required Object error}) => 'Failed to select image: ${error}';
-	@override late final _TranslationsInventoryTabsEn tabs = _TranslationsInventoryTabsEn._(_root);
-}
-
-// Path: vrcnsync
-class _TranslationsVrcnsyncEn implements TranslationsVrcnsyncJa {
-	_TranslationsVrcnsyncEn._(this._root);
-
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'VRCNSync (β)';
-	@override String get betaTitle => 'Beta Feature';
-	@override String get betaDescription => 'This feature is a beta version under development. Unexpected issues may occur.\nCurrently, it is only implemented locally, but a cloud version will be implemented if there is demand.';
-	@override String get githubLink => 'VRCNSync GitHub Page';
-	@override String get openGithub => 'Open GitHub Page';
-	@override String get serverRunning => 'Server Running';
-	@override String get serverStopped => 'Server Stopped';
-	@override String get serverRunningDesc => 'Saves photos from your PC to the VRCN album.';
-	@override String get serverStoppedDesc => 'The server is stopped.';
-	@override String get photoSaved => 'Photo saved to VRCN album.';
-	@override String get photoReceived => 'Photo received (failed to save to album).';
-	@override String get openAlbum => 'Open Album';
-	@override String get permissionErrorIos => 'Access to the photo library is required.';
-	@override String get permissionErrorAndroid => 'Access to storage is required.';
-	@override String get openSettings => 'Open Settings';
-	@override String initError({required Object error}) => 'Initialization failed: ${error}';
-	@override String get openPhotoAppError => 'Could not open the photo app.';
-	@override String get serverInfo => 'Server Information';
-	@override String ip({required Object ip}) => 'IP: ${ip}';
-	@override String port({required Object port}) => 'Port: ${port}';
-	@override String address({required Object ip, required Object port}) => '${ip}:${port}';
-	@override String get autoSave => 'Received photos are automatically saved to the "VRCN" album.';
-	@override String get usage => 'How to Use';
-	@override List<dynamic> get usageSteps => [
-		_TranslationsVrcnsync$usageSteps$0i0$En._(_root),
-		_TranslationsVrcnsync$usageSteps$0i1$En._(_root),
-		_TranslationsVrcnsync$usageSteps$0i2$En._(_root),
-		_TranslationsVrcnsync$usageSteps$0i3$En._(_root),
-	];
-	@override String get stats => 'Connection Status';
-	@override String get statServer => 'Server Status';
-	@override String get statServerRunning => 'Running';
-	@override String get statServerStopped => 'Stopped';
-	@override String get statNetwork => 'Network';
-	@override String get statNetworkConnected => 'Connected';
-	@override String get statNetworkDisconnected => 'Disconnected';
+
+	/// en: 'Inventory'
+	String get title => 'Inventory';
+
+	/// en: 'Gallery'
+	String get gallery => 'Gallery';
+
+	/// en: 'Icon'
+	String get icon => 'Icon';
+
+	/// en: 'Emoji'
+	String get emoji => 'Emoji';
+
+	/// en: 'Sticker'
+	String get sticker => 'Sticker';
+
+	/// en: 'Print'
+	String get print => 'Print';
+
+	/// en: 'Items'
+	String get item => 'Items';
+
+	/// en: 'Upload File'
+	String get upload => 'Upload File';
+
+	/// en: 'Uploading gallery image...'
+	String get uploadGallery => 'Uploading gallery image...';
+
+	/// en: 'Uploading icon...'
+	String get uploadIcon => 'Uploading icon...';
+
+	/// en: 'Uploading emoji...'
+	String get uploadEmoji => 'Uploading emoji...';
+
+	/// en: 'Uploading sticker...'
+	String get uploadSticker => 'Uploading sticker...';
+
+	/// en: 'Uploading print image...'
+	String get uploadPrint => 'Uploading print image...';
+
+	/// en: 'Select Image'
+	String get selectImage => 'Select Image';
+
+	/// en: 'Select from Gallery'
+	String get selectFromGallery => 'Select from Gallery';
+
+	/// en: 'Take Photo with Camera'
+	String get takePhoto => 'Take Photo with Camera';
+
+	/// en: 'Upload complete.'
+	String get uploadSuccess => 'Upload complete.';
+
+	/// en: 'Upload failed.'
+	String get uploadFailed => 'Upload failed.';
+
+	/// en: 'There is a problem with the file format or size. Please select a PNG image under 1MB.'
+	String get uploadFailedFormat => 'There is a problem with the file format or size. Please select a PNG image under 1MB.';
+
+	/// en: 'Authentication failed. Please log in again.'
+	String get uploadFailedAuth => 'Authentication failed. Please log in again.';
+
+	/// en: 'File size is too large. Please select a smaller image.'
+	String get uploadFailedSize => 'File size is too large. Please select a smaller image.';
+
+	/// en: 'Server error occurred (${code})'
+	String uploadFailedServer({required Object code}) => 'Server error occurred (${code})';
+
+	/// en: 'Failed to select image: ${error}'
+	String pickImageFailed({required Object error}) => 'Failed to select image: ${error}';
+
+	late final Translations$inventory$tabs$en tabs = Translations$inventory$tabs$en._(_root);
 }
 
 // Path: feedback
-class _TranslationsFeedbackEn implements TranslationsFeedbackJa {
-	_TranslationsFeedbackEn._(this._root);
+class Translations$feedback$en {
+	Translations$feedback$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Feedback';
-	@override String get type => 'Feedback Type';
-	@override Map<String, String> get types => {
+
+	/// en: 'Feedback'
+	String get title => 'Feedback';
+
+	/// en: 'Feedback Type'
+	String get type => 'Feedback Type';
+
+	Map<String, String> get types => {
 		'bug': 'Bug Report',
 		'feature': 'Feature Request',
 		'improvement': 'Suggestion for Improvement',
 		'other': 'Other',
 	};
-	@override String get inputTitle => 'Title *';
-	@override String get inputTitleHint => 'Please be concise.';
-	@override String get inputDescription => 'Description *';
-	@override String get inputDescriptionHint => 'Please provide a detailed description...';
-	@override String get cancel => 'Cancel';
-	@override String get send => 'Send';
-	@override String get sending => 'Sending...';
-	@override String get required => 'Title and description are required.';
-	@override String get success => 'Feedback sent. Thank you!';
-	@override String get fail => 'Failed to send feedback.';
+
+	/// en: 'Title *'
+	String get inputTitle => 'Title *';
+
+	/// en: 'Please be concise.'
+	String get inputTitleHint => 'Please be concise.';
+
+	/// en: 'Description *'
+	String get inputDescription => 'Description *';
+
+	/// en: 'Please provide a detailed description...'
+	String get inputDescriptionHint => 'Please provide a detailed description...';
+
+	/// en: 'Cancel'
+	String get cancel => 'Cancel';
+
+	/// en: 'Send'
+	String get send => 'Send';
+
+	/// en: 'Sending...'
+	String get sending => 'Sending...';
+
+	/// en: 'Title and description are required.'
+	String get required => 'Title and description are required.';
+
+	/// en: 'Feedback sent. Thank you!'
+	String get success => 'Feedback sent. Thank you!';
+
+	/// en: 'Failed to send feedback.'
+	String get fail => 'Failed to send feedback.';
 }
 
 // Path: settings
-class _TranslationsSettingsEn implements TranslationsSettingsJa {
-	_TranslationsSettingsEn._(this._root);
+class Translations$settings$en {
+	Translations$settings$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get appearance => 'Appearance';
-	@override String get language => 'Language';
-	@override String get languageDescription => 'You can select the display language for the app.';
-	@override String get appIcon => 'App Icon';
-	@override String get appIconDescription => 'Change the app icon displayed on the home screen.';
-	@override String get contentSettings => 'Content Settings';
-	@override String get searchEnabled => 'Search feature enabled.';
-	@override String get searchDisabled => 'Search feature disabled.';
-	@override String get enableSearch => 'Enable Search';
-	@override String get enableSearchDescription => 'Search results may include sexual or violent content.';
-	@override String get apiSetting => 'Avatar Search API';
-	@override String get apiSettingDescription => 'Set the API for the avatar search feature.';
-	@override String get apiSettingSaveUrl => 'URL saved.';
-	@override String get notSet => 'Not set (Avatar search feature cannot be used).';
-	@override String get notifications => 'Notification Settings';
-	@override String get eventReminder => 'Event Reminders';
-	@override String get eventReminderDescription => 'Receive notifications before your scheduled events start.';
-	@override String get manageReminders => 'Manage Set Reminders';
-	@override String get manageRemindersDescription => 'Cancel or check your notifications.';
-	@override String get dataStorage => 'Data and Storage';
-	@override String get clearCache => 'Clear Cache';
-	@override String get clearCacheSuccess => 'Cache cleared.';
-	@override String get clearCacheError => 'An error occurred while clearing the cache.';
-	@override String cacheSize({required Object size}) => 'Cache size: ${size}';
-	@override String get calculatingCache => 'Calculating cache size...';
-	@override String get cacheError => 'Could not get cache size.';
-	@override String get confirmClearCache => 'Clearing the cache will delete temporarily saved images and data.\n\nYour account information and app settings will not be deleted.';
-	@override String get appInfo => 'App Information';
-	@override String get version => 'Version';
-	@override String get packageName => 'Package Name';
-	@override String get credit => 'Credits';
-	@override String get creditDescription => 'Developer and contributor information.';
-	@override String get contact => 'Contact';
-	@override String get contactDescription => 'For bug reports and suggestions.';
-	@override String get privacyPolicy => 'Privacy Policy';
-	@override String get privacyPolicyDescription => 'About the handling of personal information.';
-	@override String get termsOfService => 'Terms of Service';
-	@override String get termsOfServiceDescription => 'Conditions for using the app.';
-	@override String get openSource => 'Open Source Information';
-	@override String get openSourceDescription => 'Licenses for libraries used.';
-	@override String get github => 'GitHub Repository';
-	@override String get githubDescription => 'View source code.';
-	@override String get logoutConfirm => 'Are you sure you want to log out?';
-	@override String logoutError({required Object error}) => 'An error occurred during logout: ${error}';
-	@override String get iconChangeNotSupported => 'Changing the app icon is not supported on your device.';
-	@override String get iconChangeFailed => 'Failed to change icon.';
-	@override String get themeMode => 'Theme Mode';
-	@override String get themeModeDescription => 'You can select the display theme of the app.';
-	@override String get themeLight => 'Light';
-	@override String get themeSystem => 'System';
-	@override String get themeDark => 'Dark';
-	@override String get appIconDefault => 'Default';
-	@override String get appIconIcon => 'Icon';
-	@override String get appIconLogo => 'Logo';
-	@override String get delete => 'Delete';
+
+	/// en: 'Appearance'
+	String get appearance => 'Appearance';
+
+	/// en: 'Language'
+	String get language => 'Language';
+
+	/// en: 'You can select the display language for the app.'
+	String get languageDescription => 'You can select the display language for the app.';
+
+	/// en: 'App Icon'
+	String get appIcon => 'App Icon';
+
+	/// en: 'Change the app icon displayed on the home screen.'
+	String get appIconDescription => 'Change the app icon displayed on the home screen.';
+
+	/// en: 'Content Settings'
+	String get contentSettings => 'Content Settings';
+
+	/// en: 'Search feature enabled.'
+	String get searchEnabled => 'Search feature enabled.';
+
+	/// en: 'Search feature disabled.'
+	String get searchDisabled => 'Search feature disabled.';
+
+	/// en: 'Enable Search'
+	String get enableSearch => 'Enable Search';
+
+	/// en: 'Search results may include sexual or violent content.'
+	String get enableSearchDescription => 'Search results may include sexual or violent content.';
+
+	/// en: 'Avatar Search API'
+	String get apiSetting => 'Avatar Search API';
+
+	/// en: 'Set the API for the avatar search feature.'
+	String get apiSettingDescription => 'Set the API for the avatar search feature.';
+
+	/// en: 'URL saved.'
+	String get apiSettingSaveUrl => 'URL saved.';
+
+	/// en: 'Not set (Avatar search feature cannot be used).'
+	String get notSet => 'Not set (Avatar search feature cannot be used).';
+
+	/// en: 'Notification Settings'
+	String get notifications => 'Notification Settings';
+
+	/// en: 'Event Reminders'
+	String get eventReminder => 'Event Reminders';
+
+	/// en: 'Receive notifications before your scheduled events start.'
+	String get eventReminderDescription => 'Receive notifications before your scheduled events start.';
+
+	/// en: 'Manage Set Reminders'
+	String get manageReminders => 'Manage Set Reminders';
+
+	/// en: 'Cancel or check your notifications.'
+	String get manageRemindersDescription => 'Cancel or check your notifications.';
+
+	/// en: 'Data and Storage'
+	String get dataStorage => 'Data and Storage';
+
+	/// en: 'Clear Cache'
+	String get clearCache => 'Clear Cache';
+
+	/// en: 'Cache cleared.'
+	String get clearCacheSuccess => 'Cache cleared.';
+
+	/// en: 'An error occurred while clearing the cache.'
+	String get clearCacheError => 'An error occurred while clearing the cache.';
+
+	/// en: 'Cache size: ${size}'
+	String cacheSize({required Object size}) => 'Cache size: ${size}';
+
+	/// en: 'Calculating cache size...'
+	String get calculatingCache => 'Calculating cache size...';
+
+	/// en: 'Could not get cache size.'
+	String get cacheError => 'Could not get cache size.';
+
+	/// en: 'Clearing the cache will delete temporarily saved images and data. Your account information and app settings will not be deleted.'
+	String get confirmClearCache => 'Clearing the cache will delete temporarily saved images and data.\n\nYour account information and app settings will not be deleted.';
+
+	/// en: 'App Information'
+	String get appInfo => 'App Information';
+
+	/// en: 'Version'
+	String get version => 'Version';
+
+	/// en: 'Package Name'
+	String get packageName => 'Package Name';
+
+	/// en: 'Credits'
+	String get credit => 'Credits';
+
+	/// en: 'Developer and contributor information.'
+	String get creditDescription => 'Developer and contributor information.';
+
+	/// en: 'Contact'
+	String get contact => 'Contact';
+
+	/// en: 'For bug reports and suggestions.'
+	String get contactDescription => 'For bug reports and suggestions.';
+
+	/// en: 'Privacy Policy'
+	String get privacyPolicy => 'Privacy Policy';
+
+	/// en: 'About the handling of personal information.'
+	String get privacyPolicyDescription => 'About the handling of personal information.';
+
+	/// en: 'Terms of Service'
+	String get termsOfService => 'Terms of Service';
+
+	/// en: 'Conditions for using the app.'
+	String get termsOfServiceDescription => 'Conditions for using the app.';
+
+	/// en: 'Open Source Information'
+	String get openSource => 'Open Source Information';
+
+	/// en: 'Licenses for libraries used.'
+	String get openSourceDescription => 'Licenses for libraries used.';
+
+	/// en: 'GitHub Repository'
+	String get github => 'GitHub Repository';
+
+	/// en: 'View source code.'
+	String get githubDescription => 'View source code.';
+
+	/// en: 'Are you sure you want to log out?'
+	String get logoutConfirm => 'Are you sure you want to log out?';
+
+	/// en: 'An error occurred during logout: ${error}'
+	String logoutError({required Object error}) => 'An error occurred during logout: ${error}';
+
+	/// en: 'Changing the app icon is not supported on your device.'
+	String get iconChangeNotSupported => 'Changing the app icon is not supported on your device.';
+
+	/// en: 'Failed to change icon.'
+	String get iconChangeFailed => 'Failed to change icon.';
+
+	/// en: 'Theme Mode'
+	String get themeMode => 'Theme Mode';
+
+	/// en: 'You can select the display theme of the app.'
+	String get themeModeDescription => 'You can select the display theme of the app.';
+
+	/// en: 'Light'
+	String get themeLight => 'Light';
+
+	/// en: 'System'
+	String get themeSystem => 'System';
+
+	/// en: 'Dark'
+	String get themeDark => 'Dark';
+
+	/// en: 'Default'
+	String get appIconDefault => 'Default';
+
+	/// en: 'Icon'
+	String get appIconIcon => 'Icon';
+
+	/// en: 'Logo'
+	String get appIconLogo => 'Logo';
+
+	/// en: 'Delete'
+	String get delete => 'Delete';
 }
 
 // Path: credits
-class _TranslationsCreditsEn implements TranslationsCreditsJa {
-	_TranslationsCreditsEn._(this._root);
+class Translations$credits$en {
+	Translations$credits$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Credits';
-	@override late final _TranslationsCreditsSectionEn section = _TranslationsCreditsSectionEn._(_root);
+
+	/// en: 'Credits'
+	String get title => 'Credits';
+
+	late final Translations$credits$section$en section = Translations$credits$section$en._(_root);
 }
 
 // Path: download
-class _TranslationsDownloadEn implements TranslationsDownloadJa {
-	_TranslationsDownloadEn._(this._root);
+class Translations$download$en {
+	Translations$download$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get success => 'Download complete.';
-	@override String failure({required Object error}) => 'Download failed: ${error}';
-	@override String shareFailure({required Object error}) => 'Sharing failed: ${error}';
-	@override String get permissionTitle => 'Permission Required';
-	@override String permissionDenied({required Object permissionType}) => 'Permission to save to ${permissionType} has been denied.\nPlease enable the permission from the settings app.';
-	@override String get permissionCancel => 'Cancel';
-	@override String get permissionOpenSettings => 'Open Settings';
-	@override String get permissionPhoto => 'Photos';
-	@override String get permissionPhotoLibrary => 'Photo Library';
-	@override String get permissionStorage => 'Storage';
-	@override String get permissionPhotoRequired => 'Permission to save to photos is required.';
-	@override String get permissionPhotoLibraryRequired => 'Permission to save to photo library is required.';
-	@override String get permissionStorageRequired => 'Permission to access storage is required.';
-	@override String permissionError({required Object error}) => 'An error occurred while checking permissions: ${error}';
-	@override String downloading({required Object fileName}) => 'Downloading ${fileName}...';
-	@override String sharing({required Object fileName}) => 'Preparing to share ${fileName}...';
+
+	/// en: 'Sharing failed: ${error}'
+	String shareFailure({required Object error}) => 'Sharing failed: ${error}';
+
+	/// en: 'Preparing to share ${fileName}...'
+	String sharing({required Object fileName}) => 'Preparing to share ${fileName}...';
 }
 
 // Path: instance
-class _TranslationsInstanceEn implements TranslationsInstanceJa {
-	_TranslationsInstanceEn._(this._root);
+class Translations$instance$en {
+	Translations$instance$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override late final _TranslationsInstanceTypeEn type = _TranslationsInstanceTypeEn._(_root);
+	late final Translations$instance$type$en type = Translations$instance$type$en._(_root);
 }
 
 // Path: status
-class _TranslationsStatusEn implements TranslationsStatusJa {
-	_TranslationsStatusEn._(this._root);
+class Translations$status$en {
+	Translations$status$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get active => 'Online';
-	@override String get joinMe => 'Join Me';
-	@override String get askMe => 'Ask Me';
-	@override String get busy => 'Busy';
-	@override String get offline => 'Offline';
-	@override String get unknown => 'Unknown Status';
+
+	/// en: 'Online'
+	String get active => 'Online';
+
+	/// en: 'Join Me'
+	String get joinMe => 'Join Me';
+
+	/// en: 'Ask Me'
+	String get askMe => 'Ask Me';
+
+	/// en: 'Busy'
+	String get busy => 'Busy';
+
+	/// en: 'Offline'
+	String get offline => 'Offline';
+
+	/// en: 'Unknown Status'
+	String get unknown => 'Unknown Status';
 }
 
 // Path: location
-class _TranslationsLocationEn implements TranslationsLocationJa {
-	_TranslationsLocationEn._(this._root);
+class Translations$location$en {
+	Translations$location$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get private => 'Private';
-	@override String playerCount({required Object userCount, required Object capacity}) => 'Players: ${userCount} / ${capacity}';
-	@override String instanceType({required Object type}) => 'Instance Type: ${type}';
-	@override String get noInfo => 'No location information available.';
-	@override String get fetchError => 'Failed to get location information.';
-	@override String get privateLocation => 'You are in a private location.';
-	@override String get inviteSending => 'Sending invite...';
-	@override String get inviteSent => 'Invite sent. You can join from your notifications.';
-	@override String inviteFailed({required Object error}) => 'Failed to send invite: ${error}';
-	@override String get inviteButton => 'Send Invite to Myself';
-	@override String isPrivate({required Object number}) => '${number} in private';
-	@override String isActive({required Object number}) => '${number} active';
-	@override String isOffline({required Object number}) => '${number} offline';
-	@override String isTraveling({required Object number}) => '${number} traveling';
-	@override String isStaying({required Object number}) => '${number} staying';
+
+	/// en: 'Private'
+	String get private => 'Private';
+
+	/// en: 'Players: ${userCount} / ${capacity}'
+	String playerCount({required Object userCount, required Object capacity}) => 'Players: ${userCount} / ${capacity}';
+
+	/// en: 'Instance Type: ${type}'
+	String instanceType({required Object type}) => 'Instance Type: ${type}';
+
+	/// en: 'No location information available.'
+	String get noInfo => 'No location information available.';
+
+	/// en: 'Failed to get location information.'
+	String get fetchError => 'Failed to get location information.';
+
+	/// en: 'You are in a private location.'
+	String get privateLocation => 'You are in a private location.';
+
+	/// en: 'Sending invite...'
+	String get inviteSending => 'Sending invite...';
+
+	/// en: 'Invite sent. You can join from your notifications.'
+	String get inviteSent => 'Invite sent. You can join from your notifications.';
+
+	/// en: 'Failed to send invite: ${error}'
+	String inviteFailed({required Object error}) => 'Failed to send invite: ${error}';
+
+	/// en: 'Send Invite to Myself'
+	String get inviteButton => 'Send Invite to Myself';
+
+	/// en: '${number} in private'
+	String isPrivate({required Object number}) => '${number} in private';
+
+	/// en: '${number} active'
+	String isActive({required Object number}) => '${number} active';
+
+	/// en: '${number} offline'
+	String isOffline({required Object number}) => '${number} offline';
+
+	/// en: '${number} traveling'
+	String isTraveling({required Object number}) => '${number} traveling';
+
+	/// en: '${number} staying'
+	String isStaying({required Object number}) => '${number} staying';
 }
 
 // Path: reminder
-class _TranslationsReminderEn implements TranslationsReminderJa {
-	_TranslationsReminderEn._(this._root);
+class Translations$reminder$en {
+	Translations$reminder$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get dialogTitle => 'Set Reminder';
-	@override String get alreadySet => 'Already Set';
-	@override String get set => 'Set';
-	@override String get cancel => 'Cancel';
-	@override String get delete => 'Delete';
-	@override String get deleteAll => 'Delete All Reminders';
-	@override String get deleteAllConfirm => 'This will delete all set event reminders. This action cannot be undone.';
-	@override String get deleted => 'Reminder deleted.';
-	@override String get deletedAll => 'All reminders deleted.';
-	@override String get noReminders => 'No reminders set.';
-	@override String get setFromEvent => 'You can set notifications from the event page.';
-	@override String eventStart({required Object time}) => 'Starts at ${time}';
-	@override String notifyAt({required Object time, required Object label}) => '${time} (${label})';
-	@override String get receiveNotification => 'When do you want to be notified?';
+
+	/// en: 'Set Reminder'
+	String get dialogTitle => 'Set Reminder';
+
+	/// en: 'Already Set'
+	String get alreadySet => 'Already Set';
+
+	/// en: 'Set'
+	String get set => 'Set';
+
+	/// en: 'Cancel'
+	String get cancel => 'Cancel';
+
+	/// en: 'Delete'
+	String get delete => 'Delete';
+
+	/// en: 'Delete All Reminders'
+	String get deleteAll => 'Delete All Reminders';
+
+	/// en: 'This will delete all set event reminders. This action cannot be undone.'
+	String get deleteAllConfirm => 'This will delete all set event reminders. This action cannot be undone.';
+
+	/// en: 'Reminder deleted.'
+	String get deleted => 'Reminder deleted.';
+
+	/// en: 'All reminders deleted.'
+	String get deletedAll => 'All reminders deleted.';
+
+	/// en: 'No reminders set.'
+	String get noReminders => 'No reminders set.';
+
+	/// en: 'You can set notifications from the event page.'
+	String get setFromEvent => 'You can set notifications from the event page.';
+
+	/// en: 'Starts at ${time}'
+	String eventStart({required Object time}) => 'Starts at ${time}';
+
+	/// en: '${time} (${label})'
+	String notifyAt({required Object time, required Object label}) => '${time} (${label})';
+
+	/// en: 'When do you want to be notified?'
+	String get receiveNotification => 'When do you want to be notified?';
 }
 
 // Path: friend
-class _TranslationsFriendEn implements TranslationsFriendJa {
-	_TranslationsFriendEn._(this._root);
+class Translations$friend$en {
+	Translations$friend$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get sortFilter => 'Sort & Filter';
-	@override String get filter => 'Filter';
-	@override String get filterAll => 'Show All';
-	@override String get filterOnline => 'Online Only';
-	@override String get filterOffline => 'Offline Only';
-	@override String get filterFavorite => 'Favorites Only';
-	@override String get sort => 'Sort';
-	@override String get sortStatus => 'By Status';
-	@override String get sortName => 'By Name';
-	@override String get sortLastLogin => 'By Last Login';
-	@override String get sortAsc => 'Ascending';
-	@override String get sortDesc => 'Descending';
-	@override String get close => 'Close';
+
+	/// en: 'Sort & Filter'
+	String get sortFilter => 'Sort & Filter';
+
+	/// en: 'Filter'
+	String get filter => 'Filter';
+
+	/// en: 'Show All'
+	String get filterAll => 'Show All';
+
+	/// en: 'Online Only'
+	String get filterOnline => 'Online Only';
+
+	/// en: 'Offline Only'
+	String get filterOffline => 'Offline Only';
+
+	/// en: 'Favorites Only'
+	String get filterFavorite => 'Favorites Only';
+
+	/// en: 'Sort'
+	String get sort => 'Sort';
+
+	/// en: 'By Status'
+	String get sortStatus => 'By Status';
+
+	/// en: 'By Name'
+	String get sortName => 'By Name';
+
+	/// en: 'By Last Login'
+	String get sortLastLogin => 'By Last Login';
+
+	/// en: 'Ascending'
+	String get sortAsc => 'Ascending';
+
+	/// en: 'Descending'
+	String get sortDesc => 'Descending';
+
+	/// en: 'Close'
+	String get close => 'Close';
 }
 
 // Path: eventCalendarFilter
-class _TranslationsEventCalendarFilterEn implements TranslationsEventCalendarFilterJa {
-	_TranslationsEventCalendarFilterEn._(this._root);
+class Translations$eventCalendarFilter$en {
+	Translations$eventCalendarFilter$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get filterTitle => 'Filter Events';
-	@override String get clear => 'Clear';
-	@override String get keyword => 'Keyword Search';
-	@override String get keywordHint => 'Event name, description, organizer, etc.';
-	@override String get date => 'Filter by Date';
-	@override String get dateHint => 'You can display events for a specific date range.';
-	@override String get startDate => 'Start Date';
-	@override String get endDate => 'End Date';
-	@override String get select => 'Please select';
-	@override String get time => 'Filter by Time';
-	@override String get timeHint => 'You can display events held during a specific time frame.';
-	@override String get startTime => 'Start Time';
-	@override String get endTime => 'End Time';
-	@override String get genre => 'Filter by Genre';
-	@override String genreSelected({required Object count}) => '${count} genres selected';
-	@override String get apply => 'Apply';
-	@override String get filterSummary => 'Filters';
-	@override String get filterNone => 'No filters are set.';
+
+	/// en: 'Filter Events'
+	String get filterTitle => 'Filter Events';
+
+	/// en: 'Clear'
+	String get clear => 'Clear';
+
+	/// en: 'Keyword Search'
+	String get keyword => 'Keyword Search';
+
+	/// en: 'Event name, description, organizer, etc.'
+	String get keywordHint => 'Event name, description, organizer, etc.';
+
+	/// en: 'Filter by Date'
+	String get date => 'Filter by Date';
+
+	/// en: 'You can display events for a specific date range.'
+	String get dateHint => 'You can display events for a specific date range.';
+
+	/// en: 'Start Date'
+	String get startDate => 'Start Date';
+
+	/// en: 'End Date'
+	String get endDate => 'End Date';
+
+	/// en: 'Please select'
+	String get select => 'Please select';
+
+	/// en: 'Filter by Time'
+	String get time => 'Filter by Time';
+
+	/// en: 'You can display events held during a specific time frame.'
+	String get timeHint => 'You can display events held during a specific time frame.';
+
+	/// en: 'Start Time'
+	String get startTime => 'Start Time';
+
+	/// en: 'End Time'
+	String get endTime => 'End Time';
+
+	/// en: 'Filter by Genre'
+	String get genre => 'Filter by Genre';
+
+	/// en: '${count} genres selected'
+	String genreSelected({required Object count}) => '${count} genres selected';
+
+	/// en: 'Apply'
+	String get apply => 'Apply';
+
+	/// en: 'Filters'
+	String get filterSummary => 'Filters';
+
+	/// en: 'No filters are set.'
+	String get filterNone => 'No filters are set.';
 }
 
 // Path: drawer.section
-class _TranslationsDrawerSectionEn implements TranslationsDrawerSectionJa {
-	_TranslationsDrawerSectionEn._(this._root);
+class Translations$drawer$section$en {
+	Translations$drawer$section$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get content => 'Content';
-	@override String get other => 'Other';
+
+	/// en: 'Content'
+	String get content => 'Content';
+
+	/// en: 'Other'
+	String get other => 'Other';
 }
 
 // Path: search.tabs
-class _TranslationsSearchTabsEn implements TranslationsSearchTabsJa {
-	_TranslationsSearchTabsEn._(this._root);
+class Translations$search$tabs$en {
+	Translations$search$tabs$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override late final _TranslationsSearchTabsUserSearchEn userSearch = _TranslationsSearchTabsUserSearchEn._(_root);
-	@override late final _TranslationsSearchTabsWorldSearchEn worldSearch = _TranslationsSearchTabsWorldSearchEn._(_root);
-	@override late final _TranslationsSearchTabsGroupSearchEn groupSearch = _TranslationsSearchTabsGroupSearchEn._(_root);
-	@override late final _TranslationsSearchTabsAvatarSearchEn avatarSearch = _TranslationsSearchTabsAvatarSearchEn._(_root);
+	late final Translations$search$tabs$userSearch$en userSearch = Translations$search$tabs$userSearch$en._(_root);
+	late final Translations$search$tabs$worldSearch$en worldSearch = Translations$search$tabs$worldSearch$en._(_root);
+	late final Translations$search$tabs$groupSearch$en groupSearch = Translations$search$tabs$groupSearch$en._(_root);
+	late final Translations$search$tabs$avatarSearch$en avatarSearch = Translations$search$tabs$avatarSearch$en._(_root);
 }
 
 // Path: groupDetail.privacy
-class _TranslationsGroupDetailPrivacyEn implements TranslationsGroupDetailPrivacyJa {
-	_TranslationsGroupDetailPrivacyEn._(this._root);
+class Translations$groupDetail$privacy$en {
+	Translations$groupDetail$privacy$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get public => 'Public';
-	@override String get private => 'Private';
-	@override String get friends => 'Friends';
-	@override String get invite => 'Invite';
-	@override String get unknown => 'Unknown';
+
+	/// en: 'Public'
+	String get public => 'Public';
+
+	/// en: 'Private'
+	String get private => 'Private';
+
+	/// en: 'Friends'
+	String get friends => 'Friends';
+
+	/// en: 'Invite'
+	String get invite => 'Invite';
+
+	/// en: 'Unknown'
+	String get unknown => 'Unknown';
 }
 
 // Path: groupDetail.role
-class _TranslationsGroupDetailRoleEn implements TranslationsGroupDetailRoleJa {
-	_TranslationsGroupDetailRoleEn._(this._root);
+class Translations$groupDetail$role$en {
+	Translations$groupDetail$role$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get admin => 'Admin';
-	@override String get moderator => 'Moderator';
-	@override String get member => 'Member';
-	@override String get unknown => 'Unknown';
+
+	/// en: 'Admin'
+	String get admin => 'Admin';
+
+	/// en: 'Moderator'
+	String get moderator => 'Moderator';
+
+	/// en: 'Member'
+	String get member => 'Member';
+
+	/// en: 'Unknown'
+	String get unknown => 'Unknown';
 }
 
 // Path: inventory.tabs
-class _TranslationsInventoryTabsEn implements TranslationsInventoryTabsJa {
-	_TranslationsInventoryTabsEn._(this._root);
+class Translations$inventory$tabs$en {
+	Translations$inventory$tabs$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override late final _TranslationsInventoryTabsEmojiInventoryEn emojiInventory = _TranslationsInventoryTabsEmojiInventoryEn._(_root);
-	@override late final _TranslationsInventoryTabsGalleryInventoryEn galleryInventory = _TranslationsInventoryTabsGalleryInventoryEn._(_root);
-	@override late final _TranslationsInventoryTabsIconInventoryEn iconInventory = _TranslationsInventoryTabsIconInventoryEn._(_root);
-	@override late final _TranslationsInventoryTabsPrintInventoryEn printInventory = _TranslationsInventoryTabsPrintInventoryEn._(_root);
-	@override late final _TranslationsInventoryTabsStickerInventoryEn stickerInventory = _TranslationsInventoryTabsStickerInventoryEn._(_root);
-}
-
-// Path: vrcnsync.usageSteps.0
-class _TranslationsVrcnsync$usageSteps$0i0$En implements TranslationsVrcnsync$usageSteps$0i0$Ja {
-	_TranslationsVrcnsync$usageSteps$0i0$En._(this._root);
-
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Launch the VRCNSync app on your PC';
-	@override String get desc => 'Please launch the VRCNSync app on your PC.';
-}
-
-// Path: vrcnsync.usageSteps.1
-class _TranslationsVrcnsync$usageSteps$0i1$En implements TranslationsVrcnsync$usageSteps$0i1$Ja {
-	_TranslationsVrcnsync$usageSteps$0i1$En._(this._root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Connect to the same WiFi network';
-	@override String get desc => 'Please connect your PC and mobile device to the same WiFi network.';
-}
-
-// Path: vrcnsync.usageSteps.2
-class _TranslationsVrcnsync$usageSteps$0i2$En implements TranslationsVrcnsync$usageSteps$0i2$Ja {
-	_TranslationsVrcnsync$usageSteps$0i2$En._(this._root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Specify the mobile device as the destination';
-	@override String get desc => 'Please specify the IP address and port above in the PC app.';
-}
-
-// Path: vrcnsync.usageSteps.3
-class _TranslationsVrcnsync$usageSteps$0i3$En implements TranslationsVrcnsync$usageSteps$0i3$Ja {
-	_TranslationsVrcnsync$usageSteps$0i3$En._(this._root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Send photos';
-	@override String get desc => 'When you send photos from your PC, they will be automatically saved to the VRCN album.';
+	late final Translations$inventory$tabs$emojiInventory$en emojiInventory = Translations$inventory$tabs$emojiInventory$en._(_root);
+	late final Translations$inventory$tabs$galleryInventory$en galleryInventory = Translations$inventory$tabs$galleryInventory$en._(_root);
+	late final Translations$inventory$tabs$iconInventory$en iconInventory = Translations$inventory$tabs$iconInventory$en._(_root);
+	late final Translations$inventory$tabs$printInventory$en printInventory = Translations$inventory$tabs$printInventory$en._(_root);
+	late final Translations$inventory$tabs$stickerInventory$en stickerInventory = Translations$inventory$tabs$stickerInventory$en._(_root);
+	late final Translations$inventory$tabs$inventoryItem$en inventoryItem = Translations$inventory$tabs$inventoryItem$en._(_root);
 }
 
 // Path: credits.section
-class _TranslationsCreditsSectionEn implements TranslationsCreditsSectionJa {
-	_TranslationsCreditsSectionEn._(this._root);
+class Translations$credits$section$en {
+	Translations$credits$section$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get development => 'Development';
-	@override String get iconPeople => 'The Fun Icon People';
-	@override String get testFeedback => 'Testing & Feedback';
-	@override String get specialThanks => 'Special Thanks';
+
+	/// en: 'Development'
+	String get development => 'Development';
+
+	/// en: 'The Fun Icon People'
+	String get iconPeople => 'The Fun Icon People';
+
+	/// en: 'Testing & Feedback'
+	String get testFeedback => 'Testing & Feedback';
+
+	/// en: 'Special Thanks'
+	String get specialThanks => 'Special Thanks';
 }
 
 // Path: instance.type
-class _TranslationsInstanceTypeEn implements TranslationsInstanceTypeJa {
-	_TranslationsInstanceTypeEn._(this._root);
+class Translations$instance$type$en {
+	Translations$instance$type$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get public => 'Public';
-	@override String get hidden => 'Friend+';
-	@override String get friends => 'Friends';
-	@override String get private => 'Invite+';
-	@override String get unknown => 'Unknown';
+
+	/// en: 'Public'
+	String get public => 'Public';
+
+	/// en: 'Friend+'
+	String get hidden => 'Friend+';
+
+	/// en: 'Friends'
+	String get friends => 'Friends';
+
+	/// en: 'Invite+'
+	String get private => 'Invite+';
+
+	/// en: 'Unknown'
+	String get unknown => 'Unknown';
 }
 
 // Path: search.tabs.userSearch
-class _TranslationsSearchTabsUserSearchEn implements TranslationsSearchTabsUserSearchJa {
-	_TranslationsSearchTabsUserSearchEn._(this._root);
+class Translations$search$tabs$userSearch$en {
+	Translations$search$tabs$userSearch$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get emptyTitle => 'User Search';
-	@override String get emptyDescription => 'You can search by username or ID.';
-	@override String get searching => 'Searching...';
-	@override String get noResults => 'No matching users found.';
-	@override String error({required Object error}) => 'An error occurred during user search: ${error}';
-	@override String get inputPlaceholder => 'Enter username or ID';
+
+	/// en: 'User Search'
+	String get emptyTitle => 'User Search';
+
+	/// en: 'You can search by username or ID.'
+	String get emptyDescription => 'You can search by username or ID.';
+
+	/// en: 'Searching...'
+	String get searching => 'Searching...';
+
+	/// en: 'No matching users found.'
+	String get noResults => 'No matching users found.';
+
+	/// en: 'An error occurred during user search: ${error}'
+	String error({required Object error}) => 'An error occurred during user search: ${error}';
+
+	/// en: 'Enter username or ID'
+	String get inputPlaceholder => 'Enter username or ID';
 }
 
 // Path: search.tabs.worldSearch
-class _TranslationsSearchTabsWorldSearchEn implements TranslationsSearchTabsWorldSearchJa {
-	_TranslationsSearchTabsWorldSearchEn._(this._root);
+class Translations$search$tabs$worldSearch$en {
+	Translations$search$tabs$worldSearch$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get emptyTitle => 'Explore Worlds';
-	@override String get emptyDescription => 'Please enter a keyword to search.';
-	@override String get searching => 'Searching...';
-	@override String get noResults => 'No matching worlds found.';
-	@override String noResultsWithQuery({required Object query}) => 'No worlds found matching "${query}"';
-	@override String get noResultsHint => 'Try changing your search keywords.';
-	@override String error({required Object error}) => 'An error occurred during world search: ${error}';
-	@override String resultCount({required Object count}) => '${count} worlds found';
-	@override String authorPrefix({required Object authorName}) => 'by ${authorName}';
-	@override String get listView => 'List View';
-	@override String get gridView => 'Grid View';
+
+	/// en: 'Explore Worlds'
+	String get emptyTitle => 'Explore Worlds';
+
+	/// en: 'Please enter a keyword to search.'
+	String get emptyDescription => 'Please enter a keyword to search.';
+
+	/// en: 'Searching...'
+	String get searching => 'Searching...';
+
+	/// en: 'No matching worlds found.'
+	String get noResults => 'No matching worlds found.';
+
+	/// en: 'No worlds found matching "${query}"'
+	String noResultsWithQuery({required Object query}) => 'No worlds found matching "${query}"';
+
+	/// en: 'Try changing your search keywords.'
+	String get noResultsHint => 'Try changing your search keywords.';
+
+	/// en: 'An error occurred during world search: ${error}'
+	String error({required Object error}) => 'An error occurred during world search: ${error}';
+
+	/// en: '${count} worlds found'
+	String resultCount({required Object count}) => '${count} worlds found';
+
+	/// en: 'by ${authorName}'
+	String authorPrefix({required Object authorName}) => 'by ${authorName}';
+
+	/// en: 'List View'
+	String get listView => 'List View';
+
+	/// en: 'Grid View'
+	String get gridView => 'Grid View';
 }
 
 // Path: search.tabs.groupSearch
-class _TranslationsSearchTabsGroupSearchEn implements TranslationsSearchTabsGroupSearchJa {
-	_TranslationsSearchTabsGroupSearchEn._(this._root);
+class Translations$search$tabs$groupSearch$en {
+	Translations$search$tabs$groupSearch$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get emptyTitle => 'Search Groups';
-	@override String get emptyDescription => 'Please enter a keyword to search.';
-	@override String get searching => 'Searching...';
-	@override String get noResults => 'No matching groups found.';
-	@override String noResultsWithQuery({required Object query}) => 'No groups found matching "${query}"';
-	@override String get noResultsHint => 'Try changing your search keywords.';
-	@override String error({required Object error}) => 'An error occurred during group search: ${error}';
-	@override String resultCount({required Object count}) => '${count} groups found';
-	@override String get listView => 'List View';
-	@override String get gridView => 'Grid View';
-	@override String memberCount({required Object count}) => '${count} members';
+
+	/// en: 'Search Groups'
+	String get emptyTitle => 'Search Groups';
+
+	/// en: 'Please enter a keyword to search.'
+	String get emptyDescription => 'Please enter a keyword to search.';
+
+	/// en: 'Searching...'
+	String get searching => 'Searching...';
+
+	/// en: 'No matching groups found.'
+	String get noResults => 'No matching groups found.';
+
+	/// en: 'No groups found matching "${query}"'
+	String noResultsWithQuery({required Object query}) => 'No groups found matching "${query}"';
+
+	/// en: 'Try changing your search keywords.'
+	String get noResultsHint => 'Try changing your search keywords.';
+
+	/// en: 'An error occurred during group search: ${error}'
+	String error({required Object error}) => 'An error occurred during group search: ${error}';
+
+	/// en: '${count} groups found'
+	String resultCount({required Object count}) => '${count} groups found';
+
+	/// en: 'List View'
+	String get listView => 'List View';
+
+	/// en: 'Grid View'
+	String get gridView => 'Grid View';
+
+	/// en: '${count} members'
+	String memberCount({required Object count}) => '${count} members';
 }
 
 // Path: search.tabs.avatarSearch
-class _TranslationsSearchTabsAvatarSearchEn implements TranslationsSearchTabsAvatarSearchJa {
-	_TranslationsSearchTabsAvatarSearchEn._(this._root);
+class Translations$search$tabs$avatarSearch$en {
+	Translations$search$tabs$avatarSearch$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get avatar => 'Avatar';
-	@override String get emptyTitle => 'Search Avatars';
-	@override String get emptyDescription => 'Please enter a keyword to search.';
-	@override String get searching => 'Searching for avatars...';
-	@override String get noResults => 'No search results found.';
-	@override String get noResultsHint => 'Try another keyword.';
-	@override String error({required Object error}) => 'An error occurred during avatar search: ${error}';
+
+	/// en: 'Avatar'
+	String get avatar => 'Avatar';
+
+	/// en: 'Search Avatars'
+	String get emptyTitle => 'Search Avatars';
+
+	/// en: 'Please enter a keyword to search.'
+	String get emptyDescription => 'Please enter a keyword to search.';
+
+	/// en: 'Searching for avatars...'
+	String get searching => 'Searching for avatars...';
+
+	/// en: 'No search results found.'
+	String get noResults => 'No search results found.';
+
+	/// en: 'Try another keyword.'
+	String get noResultsHint => 'Try another keyword.';
+
+	/// en: 'An error occurred during avatar search: ${error}'
+	String error({required Object error}) => 'An error occurred during avatar search: ${error}';
 }
 
 // Path: inventory.tabs.emojiInventory
-class _TranslationsInventoryTabsEmojiInventoryEn implements TranslationsInventoryTabsEmojiInventoryJa {
-	_TranslationsInventoryTabsEmojiInventoryEn._(this._root);
+class Translations$inventory$tabs$emojiInventory$en {
+	Translations$inventory$tabs$emojiInventory$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get loading => 'Loading emojis...';
-	@override String error({required Object error}) => 'Failed to load emojis: ${error}';
-	@override String get emptyTitle => 'No emojis';
-	@override String get emptyDescription => 'Emojis you upload in VRChat will appear here.';
-	@override String get zoomHint => 'Double-tap to zoom';
+
+	/// en: 'Loading emojis...'
+	String get loading => 'Loading emojis...';
+
+	/// en: 'Failed to load emojis: ${error}'
+	String error({required Object error}) => 'Failed to load emojis: ${error}';
+
+	/// en: 'No emojis'
+	String get emptyTitle => 'No emojis';
+
+	/// en: 'Emojis you upload in VRChat will appear here.'
+	String get emptyDescription => 'Emojis you upload in VRChat will appear here.';
+
+	/// en: 'Double-tap to zoom'
+	String get zoomHint => 'Double-tap to zoom';
 }
 
 // Path: inventory.tabs.galleryInventory
-class _TranslationsInventoryTabsGalleryInventoryEn implements TranslationsInventoryTabsGalleryInventoryJa {
-	_TranslationsInventoryTabsGalleryInventoryEn._(this._root);
+class Translations$inventory$tabs$galleryInventory$en {
+	Translations$inventory$tabs$galleryInventory$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get loading => 'Loading gallery...';
-	@override String error({required Object error}) => 'Failed to load gallery: ${error}';
-	@override String get emptyTitle => 'No gallery';
-	@override String get emptyDescription => 'Galleries you upload in VRChat will appear here.';
-	@override String get zoomHint => 'Double-tap to zoom';
+
+	/// en: 'Loading gallery...'
+	String get loading => 'Loading gallery...';
+
+	/// en: 'Failed to load gallery: ${error}'
+	String error({required Object error}) => 'Failed to load gallery: ${error}';
+
+	/// en: 'No gallery'
+	String get emptyTitle => 'No gallery';
+
+	/// en: 'Galleries you upload in VRChat will appear here.'
+	String get emptyDescription => 'Galleries you upload in VRChat will appear here.';
+
+	/// en: 'Double-tap to zoom'
+	String get zoomHint => 'Double-tap to zoom';
 }
 
 // Path: inventory.tabs.iconInventory
-class _TranslationsInventoryTabsIconInventoryEn implements TranslationsInventoryTabsIconInventoryJa {
-	_TranslationsInventoryTabsIconInventoryEn._(this._root);
+class Translations$inventory$tabs$iconInventory$en {
+	Translations$inventory$tabs$iconInventory$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get loading => 'Loading icons...';
-	@override String error({required Object error}) => 'Failed to load icons: ${error}';
-	@override String get emptyTitle => 'No icons';
-	@override String get emptyDescription => 'Icons you upload in VRChat will appear here.';
-	@override String get zoomHint => 'Double-tap to zoom';
+
+	/// en: 'Loading icons...'
+	String get loading => 'Loading icons...';
+
+	/// en: 'Failed to load icons: ${error}'
+	String error({required Object error}) => 'Failed to load icons: ${error}';
+
+	/// en: 'No icons'
+	String get emptyTitle => 'No icons';
+
+	/// en: 'Icons you upload in VRChat will appear here.'
+	String get emptyDescription => 'Icons you upload in VRChat will appear here.';
+
+	/// en: 'Double-tap to zoom'
+	String get zoomHint => 'Double-tap to zoom';
 }
 
 // Path: inventory.tabs.printInventory
-class _TranslationsInventoryTabsPrintInventoryEn implements TranslationsInventoryTabsPrintInventoryJa {
-	_TranslationsInventoryTabsPrintInventoryEn._(this._root);
+class Translations$inventory$tabs$printInventory$en {
+	Translations$inventory$tabs$printInventory$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get loading => 'Loading prints...';
-	@override String error({required Object error}) => 'Failed to load prints: ${error}';
-	@override String get emptyTitle => 'No prints';
-	@override String get emptyDescription => 'Prints you upload in VRChat will appear here.';
-	@override String get zoomHint => 'Double-tap to zoom';
+
+	/// en: 'Loading prints...'
+	String get loading => 'Loading prints...';
+
+	/// en: 'Failed to load prints: ${error}'
+	String error({required Object error}) => 'Failed to load prints: ${error}';
+
+	/// en: 'No prints'
+	String get emptyTitle => 'No prints';
+
+	/// en: 'Prints you upload in VRChat will appear here.'
+	String get emptyDescription => 'Prints you upload in VRChat will appear here.';
+
+	/// en: 'Double-tap to zoom'
+	String get zoomHint => 'Double-tap to zoom';
 }
 
 // Path: inventory.tabs.stickerInventory
-class _TranslationsInventoryTabsStickerInventoryEn implements TranslationsInventoryTabsStickerInventoryJa {
-	_TranslationsInventoryTabsStickerInventoryEn._(this._root);
+class Translations$inventory$tabs$stickerInventory$en {
+	Translations$inventory$tabs$stickerInventory$en._(this._root);
 
-	final TranslationsEn _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
 	// Translations
-	@override String get loading => 'Loading stickers...';
-	@override String error({required Object error}) => 'Failed to load stickers: ${error}';
-	@override String get emptyTitle => 'No stickers';
-	@override String get emptyDescription => 'Stickers you upload in VRChat will appear here.';
-	@override String get zoomHint => 'Double-tap to zoom';
+
+	/// en: 'Loading stickers...'
+	String get loading => 'Loading stickers...';
+
+	/// en: 'Failed to load stickers: ${error}'
+	String error({required Object error}) => 'Failed to load stickers: ${error}';
+
+	/// en: 'No stickers'
+	String get emptyTitle => 'No stickers';
+
+	/// en: 'Stickers you upload in VRChat will appear here.'
+	String get emptyDescription => 'Stickers you upload in VRChat will appear here.';
+
+	/// en: 'Double-tap to zoom'
+	String get zoomHint => 'Double-tap to zoom';
+}
+
+// Path: inventory.tabs.inventoryItem
+class Translations$inventory$tabs$inventoryItem$en {
+	Translations$inventory$tabs$inventoryItem$en._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Loading inventory...'
+	String get loading => 'Loading inventory...';
+
+	/// en: 'Failed to load inventory: ${error}'
+	String error({required Object error}) => 'Failed to load inventory: ${error}';
+
+	/// en: 'No inventory items'
+	String get emptyTitle => 'No inventory items';
+
+	/// en: 'Spawn'
+	String get spawn => 'Spawn';
+
+	/// en: 'Unequip'
+	String get unequip => 'Unequip';
+
+	/// en: 'Equipped: ${slot}'
+	String equipped({required Object slot}) => 'Equipped: ${slot}';
+
+	/// en: '${name} spawned'
+	String spawned({required Object name}) => '${name} spawned';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -1158,7 +2241,7 @@ class _TranslationsInventoryTabsStickerInventoryEn implements TranslationsInvent
 ///
 /// The Dart AOT compiler has issues with very large switch statements,
 /// so the map is split into smaller functions (512 entries each).
-extension on TranslationsEn {
+extension on Translations {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
 			'common.title' => 'VRCN',
@@ -1200,7 +2283,6 @@ extension on TranslationsEn {
 			'drawer.avatar' => 'Avatars',
 			'drawer.group' => 'Groups',
 			'drawer.inventory' => 'Inventory',
-			'drawer.vrcnsync' => 'VRCNSync (β)',
 			'drawer.review' => 'Review',
 			'drawer.feedback' => 'Feedback',
 			'drawer.settings' => 'Settings',
@@ -1392,8 +2474,21 @@ extension on TranslationsEn {
 			'favorites.hidden' => 'Hidden',
 			'favorites.unknown' => 'Unknown',
 			'favorites.loadingError' => 'Loading Error',
+			'notifications.title' => 'Notifications',
 			'notifications.emptyTitle' => 'No Notifications',
 			'notifications.emptyDescription' => 'New notifications, like friend requests and invites,\nwill appear here.',
+			'notifications.all' => 'All',
+			'notifications.unread' => ({required Object count}) => 'Unread (${count})',
+			'notifications.read' => 'Read',
+			'notifications.activity' => 'Friend log',
+			'notifications.onlineAlerts' => 'Online alerts',
+			'notifications.markAllRead' => 'Mark all as read',
+			'notifications.markAllReadDone' => 'All notifications marked as read.',
+			'notifications.deleteConfirmTitle' => 'Delete notification?',
+			'notifications.emptyUnread' => 'No unread notifications',
+			'notifications.emptyRead' => 'No read notifications',
+			'notifications.friendOnlineAlerts' => 'Friend online alerts',
+			'notifications.selectedCount' => ({required Object count}) => '${count} selected',
 			'notifications.friendRequest' => ({required Object userName}) => 'You have a friend request from ${userName}.',
 			'notifications.invite' => ({required Object worldName, required Object userName}) => 'You have an invite to ${worldName} from ${userName}.',
 			'notifications.friendOnline' => ({required Object userName}) => '${userName} is now online.',
@@ -1529,6 +2624,7 @@ extension on TranslationsEn {
 			'inventory.emoji' => 'Emoji',
 			'inventory.sticker' => 'Sticker',
 			'inventory.print' => 'Print',
+			'inventory.item' => 'Items',
 			'inventory.upload' => 'Upload File',
 			'inventory.uploadGallery' => 'Uploading gallery image...',
 			'inventory.uploadIcon' => 'Uploading icon...',
@@ -1570,44 +2666,13 @@ extension on TranslationsEn {
 			'inventory.tabs.stickerInventory.emptyTitle' => 'No stickers',
 			'inventory.tabs.stickerInventory.emptyDescription' => 'Stickers you upload in VRChat will appear here.',
 			'inventory.tabs.stickerInventory.zoomHint' => 'Double-tap to zoom',
-			'vrcnsync.title' => 'VRCNSync (β)',
-			'vrcnsync.betaTitle' => 'Beta Feature',
-			'vrcnsync.betaDescription' => 'This feature is a beta version under development. Unexpected issues may occur.\nCurrently, it is only implemented locally, but a cloud version will be implemented if there is demand.',
-			'vrcnsync.githubLink' => 'VRCNSync GitHub Page',
-			'vrcnsync.openGithub' => 'Open GitHub Page',
-			'vrcnsync.serverRunning' => 'Server Running',
-			'vrcnsync.serverStopped' => 'Server Stopped',
-			'vrcnsync.serverRunningDesc' => 'Saves photos from your PC to the VRCN album.',
-			'vrcnsync.serverStoppedDesc' => 'The server is stopped.',
-			'vrcnsync.photoSaved' => 'Photo saved to VRCN album.',
-			'vrcnsync.photoReceived' => 'Photo received (failed to save to album).',
-			'vrcnsync.openAlbum' => 'Open Album',
-			'vrcnsync.permissionErrorIos' => 'Access to the photo library is required.',
-			'vrcnsync.permissionErrorAndroid' => 'Access to storage is required.',
-			'vrcnsync.openSettings' => 'Open Settings',
-			'vrcnsync.initError' => ({required Object error}) => 'Initialization failed: ${error}',
-			'vrcnsync.openPhotoAppError' => 'Could not open the photo app.',
-			'vrcnsync.serverInfo' => 'Server Information',
-			'vrcnsync.ip' => ({required Object ip}) => 'IP: ${ip}',
-			'vrcnsync.port' => ({required Object port}) => 'Port: ${port}',
-			'vrcnsync.address' => ({required Object ip, required Object port}) => '${ip}:${port}',
-			'vrcnsync.autoSave' => 'Received photos are automatically saved to the "VRCN" album.',
-			'vrcnsync.usage' => 'How to Use',
-			'vrcnsync.usageSteps.0.title' => 'Launch the VRCNSync app on your PC',
-			'vrcnsync.usageSteps.0.desc' => 'Please launch the VRCNSync app on your PC.',
-			'vrcnsync.usageSteps.1.title' => 'Connect to the same WiFi network',
-			'vrcnsync.usageSteps.1.desc' => 'Please connect your PC and mobile device to the same WiFi network.',
-			'vrcnsync.usageSteps.2.title' => 'Specify the mobile device as the destination',
-			'vrcnsync.usageSteps.2.desc' => 'Please specify the IP address and port above in the PC app.',
-			'vrcnsync.usageSteps.3.title' => 'Send photos',
-			'vrcnsync.usageSteps.3.desc' => 'When you send photos from your PC, they will be automatically saved to the VRCN album.',
-			'vrcnsync.stats' => 'Connection Status',
-			'vrcnsync.statServer' => 'Server Status',
-			'vrcnsync.statServerRunning' => 'Running',
-			'vrcnsync.statServerStopped' => 'Stopped',
-			'vrcnsync.statNetwork' => 'Network',
-			'vrcnsync.statNetworkConnected' => 'Connected',
-			'vrcnsync.statNetworkDisconnected' => 'Disconnected',
+			'inventory.tabs.inventoryItem.loading' => 'Loading inventory...',
+			'inventory.tabs.inventoryItem.error' => ({required Object error}) => 'Failed to load inventory: ${error}',
+			'inventory.tabs.inventoryItem.emptyTitle' => 'No inventory items',
+			'inventory.tabs.inventoryItem.spawn' => 'Spawn',
+			'inventory.tabs.inventoryItem.unequip' => 'Unequip',
+			'inventory.tabs.inventoryItem.equipped' => ({required Object slot}) => 'Equipped: ${slot}',
+			'inventory.tabs.inventoryItem.spawned' => ({required Object name}) => '${name} spawned',
 			'feedback.title' => 'Feedback',
 			'feedback.type' => 'Feedback Type',
 			'feedback.types.bug' => 'Bug Report',
@@ -1673,8 +2738,6 @@ extension on TranslationsEn {
 			'settings.themeMode' => 'Theme Mode',
 			'settings.themeModeDescription' => 'You can select the display theme of the app.',
 			'settings.themeLight' => 'Light',
-			_ => null,
-		} ?? switch (path) {
 			'settings.themeSystem' => 'System',
 			'settings.themeDark' => 'Dark',
 			'settings.appIconDefault' => 'Default',
@@ -1686,27 +2749,15 @@ extension on TranslationsEn {
 			'credits.section.iconPeople' => 'The Fun Icon People',
 			'credits.section.testFeedback' => 'Testing & Feedback',
 			'credits.section.specialThanks' => 'Special Thanks',
-			'download.success' => 'Download complete.',
-			'download.failure' => ({required Object error}) => 'Download failed: ${error}',
 			'download.shareFailure' => ({required Object error}) => 'Sharing failed: ${error}',
-			'download.permissionTitle' => 'Permission Required',
-			'download.permissionDenied' => ({required Object permissionType}) => 'Permission to save to ${permissionType} has been denied.\nPlease enable the permission from the settings app.',
-			'download.permissionCancel' => 'Cancel',
-			'download.permissionOpenSettings' => 'Open Settings',
-			'download.permissionPhoto' => 'Photos',
-			'download.permissionPhotoLibrary' => 'Photo Library',
-			'download.permissionStorage' => 'Storage',
-			'download.permissionPhotoRequired' => 'Permission to save to photos is required.',
-			'download.permissionPhotoLibraryRequired' => 'Permission to save to photo library is required.',
-			'download.permissionStorageRequired' => 'Permission to access storage is required.',
-			'download.permissionError' => ({required Object error}) => 'An error occurred while checking permissions: ${error}',
-			'download.downloading' => ({required Object fileName}) => 'Downloading ${fileName}...',
 			'download.sharing' => ({required Object fileName}) => 'Preparing to share ${fileName}...',
 			'instance.type.public' => 'Public',
 			'instance.type.hidden' => 'Friend+',
 			'instance.type.friends' => 'Friends',
 			'instance.type.private' => 'Invite+',
 			'instance.type.unknown' => 'Unknown',
+			_ => null,
+		} ?? switch (path) {
 			'status.active' => 'Online',
 			'status.joinMe' => 'Join Me',
 			'status.askMe' => 'Ask Me',

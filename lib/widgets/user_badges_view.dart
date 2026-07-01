@@ -7,14 +7,13 @@ import 'package:vrchat/utils/cache_manager.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class UserBadgesView extends ConsumerWidget {
-  final User user;
-  final bool isDarkMode;
-
   const UserBadgesView({
     super.key,
     required this.user,
     required this.isDarkMode,
   });
+  final User user;
+  final bool isDarkMode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -80,20 +79,18 @@ class UserBadgesView extends ConsumerWidget {
           fit: BoxFit.cover,
           httpHeaders: headers,
           cacheManager: JsonCacheManager(),
-          placeholder:
-              (context, url) => const CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-              ),
-          errorWidget:
-              (context, url, error) => Container(
-                color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                child: const Icon(
-                  Icons.image_not_supported,
-                  color: Colors.green,
-                  size: 40,
-                ),
-              ),
+          placeholder: (context, url) => const CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+          ),
+          errorWidget: (context, url, error) => Container(
+            color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+            child: const Icon(
+              Icons.image_not_supported,
+              color: Colors.green,
+              size: 40,
+            ),
+          ),
         ),
       ),
     );

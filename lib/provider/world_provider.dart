@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
-final vrchatWorldProvider = FutureProvider((ref) async {
+final FutureProvider<WorldsApi> vrchatWorldProvider = FutureProvider((
+  ref,
+) async {
   try {
     final rawApi = await ref.watch(vrchatRawApiProvider);
     return rawApi.getWorldsApi();
@@ -13,38 +16,27 @@ final vrchatWorldProvider = FutureProvider((ref) async {
 });
 
 // ワールド情報
-final worldDetailProvider = FutureProvider.family<World, String>((
-  ref,
-  worldId,
-) async {
-  final worldsApi = await ref.watch(vrchatWorldProvider.future);
+final FutureProviderFamily<World, String> worldDetailProvider =
+    FutureProvider.family<World, String>((
+      ref,
+      worldId,
+    ) async {
+      final worldsApi = await ref.watch(vrchatWorldProvider.future);
 
-  try {
-    final response = await worldsApi.getWorld(worldId: worldId);
-    if (response.data == null) {
-      throw Exception('ワールドデータが取得できませんでした: $worldId');
-    }
-    return response.data!;
-  } catch (e) {
-    throw Exception('ワールド情報の取得に失敗しました: $e');
-  }
-});
+      try {
+        final response = await worldsApi.getWorld(worldId: worldId);
+        if (response.data == null) {
+          throw Exception('ワールドデータが取得できませんでした: $worldId');
+        }
+        return response.data!;
+      } catch (e) {
+        throw Exception('ワールド情報の取得に失敗しました: $e');
+      }
+    });
 
 // ワールド検索パラメータクラス
 @immutable
 class WorldSearchParams {
-  final bool? featured;
-  final SortOption? sort;
-  final String? user;
-  final String? userId;
-  final int? n;
-  final OrderOption? order;
-  final int? offset;
-  final String? search;
-  final String? tag;
-  final String? notag;
-  final String? platform;
-
   const WorldSearchParams({
     this.featured,
     this.sort,
@@ -58,6 +50,17 @@ class WorldSearchParams {
     this.notag,
     this.platform,
   });
+  final bool? featured;
+  final SortOption? sort;
+  final String? user;
+  final String? userId;
+  final int? n;
+  final OrderOption? order;
+  final int? offset;
+  final String? search;
+  final String? tag;
+  final String? notag;
+  final String? platform;
 
   // 文字列からSortOptionに変換するヘルパーメソッド
   SortOption? stringToSortOption(String? sortStr) {
@@ -139,7 +142,8 @@ class WorldSearchParams {
 }
 
 // ワールド検索プロバイダー
-final worldSearchProvider =
+final FutureProviderFamily<List<LimitedWorld>, WorldSearchParams>
+worldSearchProvider =
     FutureProvider.family<List<LimitedWorld>, WorldSearchParams>((
       ref,
       params,

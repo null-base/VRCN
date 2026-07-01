@@ -4,9 +4,8 @@ import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart';
 
 class LoadingIndicator extends StatefulWidget {
-  final String message;
-
   const LoadingIndicator({super.key, this.message = ''});
+  final String message;
 
   @override
   State<LoadingIndicator> createState() => _LoadingIndicatorState();
@@ -49,8 +48,9 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final displayMessage =
-        widget.message.isEmpty ? t.common.loading : widget.message;
+    final displayMessage = widget.message.isEmpty
+        ? t.common.loading
+        : widget.message;
 
     return Center(
       child: Column(
@@ -61,8 +61,8 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
             alignment: Alignment.center,
             children: [
               SizedBox(
-                width: 250,
-                height: 250,
+                width: 180,
+                height: 180,
 
                 child: Image.asset(
                   _showFirstImage
@@ -74,7 +74,7 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
             ],
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: 18),
 
           // メッセージテキスト
           Text(
@@ -83,7 +83,6 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
               fontSize: 16,
               fontWeight: FontWeight.w500,
               color: primaryColor,
-              letterSpacing: 0.5,
             ),
             textAlign: TextAlign.center,
           ),

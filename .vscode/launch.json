@@ -1,53 +1,56 @@
 {
-  // IntelliSense を使用して利用可能な属性を学べます。
-  // 既存の属性の説明をホバーして表示します。
-  // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
+
   "configurations": [
     {
-      "name": "Debug iPhoneエミュ",
+      "name": "🧪 iOS · Dev",
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
       "flutterMode": "debug",
-      // "deviceId": "28024EA2-C692-4BDA-B21E-35F52445C31F",
-      "args": ["--flavor", "dev"]
+      "toolArgs": ["--flavor", "dev"],
+      "presentation": {
+        "group": "iOS",
+        "order": 1
+      }
     },
     {
-      "name": "Debug iPhone実機",
+      "name": "🚀 iOS · Production",
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
-      "flutterMode": "debug",
-      "deviceId": "00008140-001C31993ADB001C",
-      "args": ["--flavor", "dev"]
+      "flutterMode": "release",
+      "toolArgs": ["--flavor", "production"],
+      "presentation": {
+        "group": "iOS",
+        "order": 2
+      }
     },
     {
-      "name": "Debug iPhoneエミュ プロ生",
-      "type": "dart",
-      "request": "launch",
-      "program": "lib/main.dart",
-      "flutterMode": "debug",
-      "deviceId": "DDF2F440-FBAF-4B2F-9B19-233CE6FEBCBE",
-      "args": ["--flavor", "dev"]
-    },
-    {
-      "name": "Debug Androidエミュ",
+      "name": "🤖 Android Emulator · Dev",
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
       "flutterMode": "debug",
       "deviceId": "emulator-5554",
-      "args": ["--flavor", "dev"]
+      "toolArgs": ["--flavor", "dev"],
+      "presentation": {
+        "group": "Android",
+        "order": 3
+      }
     },
     {
-      "name": "Production Androidエミュ",
+      "name": "📦 Android Emulator · Production",
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
       "flutterMode": "release",
       "deviceId": "emulator-5554",
-      "args": ["--flavor", "production"]
+      "toolArgs": ["--flavor", "production"],
+      "presentation": {
+        "group": "Android",
+        "order": 4
+      }
     }
   ]
 }

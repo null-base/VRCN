@@ -2,20 +2,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/avatar_provider.dart';
+import 'package:vrchat/provider/favorite_provider.dart' as favorites;
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/cache_manager.dart';
+import 'package:vrchat/utils/share_utils.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class AvatarDetailPage extends ConsumerStatefulWidget {
-  final String avatarId;
-
   const AvatarDetailPage({super.key, required this.avatarId});
+  final String avatarId;
 
   @override
   ConsumerState<AvatarDetailPage> createState() => _AvatarDetailPageState();
@@ -23,6 +23,7 @@ class AvatarDetailPage extends ConsumerStatefulWidget {
 
 class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
   var _isLoading = false;
+  var _isFavoriteLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +34,10 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
       body: avatarDetailAsync.when(
         data: (avatar) => _buildAvatarDetail(context, avatar, isDarkMode),
         loading: () => LoadingIndicator(message: t.avatarDetail.loading),
-        error:
-            (error, stackTrace) => ErrorContainer(
-              message: t.avatarDetail.error(error: error.toString()),
-              onRetry: () => ref.refresh(avatarDetailProvider(widget.avatarId)),
-            ),
+        error: (error, stackTrace) => ErrorContainer(
+          message: t.avatarDetail.error(error: error.toString()),
+          onRetry: () => ref.refresh(avatarDetailProvider(widget.avatarId)),
+        ),
       ),
     );
   }
@@ -115,27 +115,25 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
                 fit: BoxFit.cover,
                 httpHeaders: headers,
                 cacheManager: JsonCacheManager(),
-                placeholder:
-                    (context, url) => Container(
-                      color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.green,
-                          ),
-                        ),
+                placeholder: (context, url) => Container(
+                  color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.green,
                       ),
                     ),
-                errorWidget:
-                    (context, url, error) => Container(
-                      color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                      child: const Icon(
-                        Icons.image_not_supported,
-                        color: Colors.green,
-                        size: 40,
-                      ),
-                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+                  child: const Icon(
+                    Icons.image_not_supported,
+                    color: Colors.green,
+                    size: 40,
+                  ),
+                ),
               ),
             ),
             Container(
@@ -309,29 +307,28 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children:
-              avatar.tags.map((tag) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
-                    ),
-                  ),
-                  child: Text(
-                    tag,
-                    style: GoogleFonts.notoSans(
-                      fontSize: 14,
-                      color: isDarkMode ? Colors.grey[300] : Colors.grey[800],
-                    ),
-                  ),
-                );
-              }).toList(),
+          children: avatar.tags.map((tag) {
+            return Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 6,
+              ),
+              decoration: BoxDecoration(
+                color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
+                ),
+              ),
+              child: Text(
+                tag,
+                style: GoogleFonts.notoSans(
+                  fontSize: 14,
+                  color: isDarkMode ? Colors.grey[300] : Colors.grey[800],
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );
@@ -343,6 +340,12 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
     bool isDarkMode,
   ) {
     final isCurrentAvatar = avatar.tags.contains('currentAvatar');
+    final favoriteAvatarsAsync = ref.watch(favorites.favoriteAvatarsProvider);
+    final isFavorited =
+        favoriteAvatarsAsync.value?.any(
+          (favorite) => favorite.favoriteId == avatar.id,
+        ) ??
+        false;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,65 +354,63 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed:
-                  _isLoading
-                      ? null
-                      : () async {
-                        try {
+              onPressed: _isLoading
+                  ? null
+                  : () async {
+                      try {
+                        setState(() {
+                          _isLoading = true;
+                        });
+
+                        await ref.read(
+                          selectAvatarProvider(avatar.id).future,
+                        );
+
+                        if (mounted) {
                           setState(() {
-                            _isLoading = true;
+                            _isLoading = false;
                           });
 
-                          await ref.read(
-                            selectAvatarProvider(avatar.id).future,
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                t.avatarDetail.changeSuccess(
+                                  name: avatar.name,
+                                ),
+                              ),
+                              backgroundColor: Colors.green,
+                            ),
                           );
-
-                          if (mounted) {
-                            setState(() {
-                              _isLoading = false;
-                            });
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  t.avatarDetail.changeSuccess(
-                                    name: avatar.name,
-                                  ),
-                                ),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                            ref.invalidate(
-                              avatarDetailProvider(widget.avatarId),
-                            );
-                          }
-                        } catch (e) {
-                          if (mounted) {
-                            setState(() {
-                              _isLoading = false;
-                            });
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  t.avatarDetail.changeFailed(
-                                    error: e.toString(),
-                                  ),
-                                ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
+                          ref.invalidate(
+                            avatarDetailProvider(widget.avatarId),
+                          );
                         }
-                      },
-              icon:
-                  _isLoading
-                      ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: Colors.white),
-                      )
-                      : const Icon(Icons.person),
+                      } catch (e) {
+                        if (mounted) {
+                          setState(() {
+                            _isLoading = false;
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                t.avatarDetail.changeFailed(
+                                  error: e.toString(),
+                                ),
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    },
+              icon: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(color: Colors.white),
+                    )
+                  : const Icon(Icons.person),
               label: Text(
                 _isLoading
                     ? t.avatarDetail.changing
@@ -430,35 +431,97 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
             ),
           ),
         const SizedBox(height: 12),
-        // TODO: お気に入り追加
-        // SizedBox(
-        //   width: double.infinity,
-        //   child: OutlinedButton.icon(
-        //     onPressed: () {
-        //       ScaffoldMessenger.of(
-        //         context,
-        //       ).showSnackBar(const SnackBar(content: Text('この機能は現在開発中です')));
-        //     },
-        //     icon: const Icon(Icons.favorite_border),
-        //     label: Text(
-        //       t.avatarDetail.addToFavorites,
-        //       style: GoogleFonts.notoSans(
-        //         fontWeight: FontWeight.w500,
-        //         fontSize: 16,
-        //       ),
-        //     ),
-        //     style: OutlinedButton.styleFrom(
-        //       foregroundColor: AppTheme.primaryColor,
-        //       side: const BorderSide(color: AppTheme.primaryColor),
-        //       padding: const EdgeInsets.symmetric(vertical: 12),
-        //       shape: RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.circular(12),
-        //       ),
-        //     ),
-        //   ),
-        // ),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: _isFavoriteLoading || isFavorited
+                ? null
+                : () => _addAvatarToFavorites(context, avatar),
+            icon: _isFavoriteLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Icon(isFavorited ? Icons.favorite : Icons.favorite_border),
+            label: Text(
+              isFavorited
+                  ? t.worldDetail.favoriteAdded
+                  : t.avatarDetail.addToFavorites,
+              style: GoogleFonts.notoSans(
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+              ),
+            ),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: isFavorited ? Colors.red : AppTheme.primaryColor,
+              side: BorderSide(
+                color: isFavorited ? Colors.red : AppTheme.primaryColor,
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ),
       ],
     );
+  }
+
+  Future<void> _addAvatarToFavorites(
+    BuildContext context,
+    Avatar avatar,
+  ) async {
+    setState(() {
+      _isFavoriteLoading = true;
+    });
+
+    try {
+      final favoriteGroups = await ref.read(
+        favorites
+            .typedFavoriteGroupsProvider(favorites.FavoriteType.avatar)
+            .future,
+      );
+      if (favoriteGroups.isEmpty) {
+        throw Exception(t.favorites.emptyFolderDescription);
+      }
+
+      await ref
+          .read(favorites.favoriteActionProvider.notifier)
+          .addFavorite(
+            favoriteId: avatar.id,
+            type: favorites.FavoriteType.avatar,
+            tags: [favoriteGroups.first.name],
+          );
+
+      ref
+        ..invalidate(favorites.favoriteAvatarsProvider)
+        ..invalidate(
+          favorites.allFavoritesProvider(favorites.FavoriteType.avatar),
+        );
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(t.worldDetail.favoriteAdded)),
+        );
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(t.favorites.removeFailed(error: error.toString())),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isFavoriteLoading = false;
+        });
+      }
+    }
   }
 
   String _formatDate(DateTime date) {
@@ -513,13 +576,8 @@ class AppBackButton extends StatelessWidget {
 }
 
 Future<void> _shareAvatarProfile(Avatar avatar) async {
-  final url = 'https://vrchat.com/home/avatar/${avatar.id}';
-
-  try {
-    await SharePlus.instance.share(
-      ShareParams(uri: Uri.parse(url), subject: avatar.name),
-    );
-  } catch (e) {
-    debugPrint('共有中にエラーが発生しました: $e');
-  }
+  await ShareUtils.shareUrl(
+    'https://vrchat.com/home/avatar/${avatar.id}',
+    subject: avatar.name,
+  );
 }

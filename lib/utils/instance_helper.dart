@@ -27,6 +27,11 @@ class InstanceHelper {
       case 'friends':
       case 'hidden':
         return Colors.orange;
+      case 'group':
+      case 'group-public':
+      case 'group-plus':
+      case 'group-members':
+        return Colors.purple;
       case 'private':
         return Colors.redAccent;
       default:
@@ -34,9 +39,17 @@ class InstanceHelper {
     }
   }
 
-  // TODO: グループ判定
   static String getInstanceTypeText(String? type) {
-    switch (type?.toLowerCase()) {
+    final rawType = type;
+    if (rawType == null) return t.instance.type.unknown;
+
+    final normalizedType = rawType.toLowerCase();
+
+    if (normalizedType.startsWith('group')) {
+      return 'Group';
+    }
+
+    switch (normalizedType) {
       case 'public':
         return t.instance.type.public;
       case 'hidden':
@@ -46,7 +59,7 @@ class InstanceHelper {
       case 'private':
         return t.instance.type.private;
       default:
-        return type ?? t.instance.type.unknown;
+        return rawType;
     }
   }
 

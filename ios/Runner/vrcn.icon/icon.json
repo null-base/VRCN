@@ -5,6 +5,7 @@
       "layers" : [
         {
           "glass" : false,
+          "hidden" : true,
           "image-name" : "ios_icon.png",
           "name" : "ios_icon"
         },
@@ -21,6 +22,20 @@
             "translation-in-points" : [
               0,
               0
+            ]
+          }
+        },
+        {
+          "blend-mode" : "normal",
+          "fill" : "automatic",
+          "glass" : true,
+          "image-name" : "anomea.png",
+          "name" : "anomea",
+          "position" : {
+            "scale" : 0.85,
+            "translation-in-points" : [
+              0,
+              6.249999999999773
             ]
           }
         }

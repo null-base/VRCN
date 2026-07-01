@@ -33,24 +33,21 @@ final friendSortDirectionProvider =
     });
 
 /// 並び替え済みフレンドリストのプロバイダー
-final sortedFriendsProvider = Provider<List<LimitedUser>>((ref) {
+final sortedFriendsProvider = Provider<AsyncValue<List<LimitedUser>>>((ref) {
   final friendsAsync = ref.watch(friendsProvider);
   final sortType = ref.watch(friendSortTypeProvider);
   final sortDirection = ref.watch(friendSortDirectionProvider);
 
-  return friendsAsync.when(
-    data: (friends) => _sortFriends(friends, sortType, sortDirection),
-    loading: () => [],
-    error: (_, _) => [],
+  return friendsAsync.whenData(
+    (friends) => _sortFriends(friends, sortType, sortDirection),
   );
 });
 
 /// 並び替え方法の状態管理クラス
 class FriendSortTypeNotifier extends StateNotifier<FriendSortType> {
+  FriendSortTypeNotifier(this._prefs) : super(_getSavedSortType(_prefs));
   final SharedPreferences _prefs;
   static const _key = 'friend_sort_type';
-
-  FriendSortTypeNotifier(this._prefs) : super(_getSavedSortType(_prefs));
 
   static FriendSortType _getSavedSortType(SharedPreferences prefs) {
     final index = prefs.getInt(_key) ?? 0;
@@ -67,10 +64,9 @@ class FriendSortTypeNotifier extends StateNotifier<FriendSortType> {
 
 /// 並び替え方向の状態管理クラス
 class FriendSortDirectionNotifier extends StateNotifier<SortDirection> {
+  FriendSortDirectionNotifier(this._prefs) : super(_getSavedDirection(_prefs));
   final SharedPreferences _prefs;
   static const _key = 'friend_sort_direction';
-
-  FriendSortDirectionNotifier(this._prefs) : super(_getSavedDirection(_prefs));
 
   static SortDirection _getSavedDirection(SharedPreferences prefs) {
     final index = prefs.getInt(_key) ?? 0;

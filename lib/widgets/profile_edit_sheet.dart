@@ -6,11 +6,11 @@ import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/status_helpers.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 class ProfileEditSheet extends ConsumerStatefulWidget {
-  final CurrentUser user;
-
   const ProfileEditSheet({super.key, required this.user});
+  final CurrentUser user;
 
   @override
   ConsumerState<ProfileEditSheet> createState() => _ProfileEditSheetState();
@@ -73,10 +73,9 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
       text: widget.user.statusDescription,
     );
     _bioController = TextEditingController(text: widget.user.bio);
-    _bioLinkControllers =
-        widget.user.bioLinks
-            .map((link) => TextEditingController(text: link))
-            .toList();
+    _bioLinkControllers = widget.user.bioLinks
+        .map((link) => TextEditingController(text: link))
+        .toList();
     if (_bioLinkControllers.isEmpty) {
       _bioLinkControllers.add(TextEditingController());
     }
@@ -107,11 +106,10 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
     });
 
     try {
-      final bioLinks =
-          _bioLinkControllers
-              .map((controller) => controller.text.trim())
-              .where((link) => link.isNotEmpty)
-              .toList();
+      final bioLinks = _bioLinkControllers
+          .map((controller) => controller.text.trim())
+          .where((link) => link.isNotEmpty)
+          .toList();
 
       final updateRequest = UpdateUserRequest(
         status: _selectedStatus,
@@ -130,7 +128,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
       try {
         await ref.read(currentUserProvider.future);
       } catch (e) {
-        debugPrint('ユーザー情報の再取得中にエラーが発生: $e');
+        appLogger.d('ユーザー情報の再取得中にエラーが発生: $e');
         // エラーが発生しても保存成功として処理を続行
       }
 
@@ -200,10 +198,9 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     const accentColor = AppTheme.primaryColor;
-    final secondaryColor =
-        isDarkMode
-            ? HSLColor.fromColor(accentColor).withLightness(0.4).toColor()
-            : HSLColor.fromColor(accentColor).withLightness(0.6).toColor();
+    final secondaryColor = isDarkMode
+        ? HSLColor.fromColor(accentColor).withLightness(0.4).toColor()
+        : HSLColor.fromColor(accentColor).withLightness(0.6).toColor();
     final textColor = isDarkMode ? Colors.white : Colors.black87;
 
     return WillPopScope(
@@ -337,22 +334,20 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             decoration: BoxDecoration(
-                              color:
-                                  isSelected
-                                      ? categoryColor.withValues(
-                                        alpha: isDarkMode ? 0.2 : 0.1,
-                                      )
-                                      : isDarkMode
-                                      ? Colors.grey[850]
-                                      : Colors.grey[200],
+                              color: isSelected
+                                  ? categoryColor.withValues(
+                                      alpha: isDarkMode ? 0.2 : 0.1,
+                                    )
+                                  : isDarkMode
+                                  ? Colors.grey[850]
+                                  : Colors.grey[200],
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color:
-                                    isSelected
-                                        ? categoryColor
-                                        : isDarkMode
-                                        ? Colors.grey[700]!
-                                        : Colors.grey[300]!,
+                                color: isSelected
+                                    ? categoryColor
+                                    : isDarkMode
+                                    ? Colors.grey[700]!
+                                    : Colors.grey[300]!,
                                 width: 1.5,
                               ),
                             ),
@@ -361,12 +356,11 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
                                 Icon(
                                   category['icon'] as IconData,
                                   size: 20,
-                                  color:
-                                      isSelected
-                                          ? categoryColor
-                                          : isDarkMode
-                                          ? Colors.grey[400]
-                                          : Colors.grey[600],
+                                  color: isSelected
+                                      ? categoryColor
+                                      : isDarkMode
+                                      ? Colors.grey[400]
+                                      : Colors.grey[600],
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
@@ -374,12 +368,11 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
                                   style: GoogleFonts.notoSans(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
-                                    color:
-                                        isSelected
-                                            ? categoryColor
-                                            : isDarkMode
-                                            ? Colors.grey[300]
-                                            : Colors.grey[700],
+                                    color: isSelected
+                                        ? categoryColor
+                                        : isDarkMode
+                                        ? Colors.grey[300]
+                                        : Colors.grey[700],
                                   ),
                                 ),
                               ],
@@ -422,31 +415,30 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
                           ),
                           shadowColor: accentColor.withValues(alpha: 0.4),
                         ),
-                        child:
-                            _isLoading
-                                ? const SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                                : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.check_circle),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      t.profile.save,
-                                      style: GoogleFonts.notoSans(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                  ],
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
                                 ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.check_circle),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    t.profile.save,
+                                    style: GoogleFonts.notoSans(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
                   ),
@@ -505,7 +497,6 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
           controller: _statusDescriptionController,
           focusNode: _statusDescriptionFocusNode,
           hintText: t.profile.statusMessageHint,
-          maxLength: 100,
           prefix: Icon(
             Icons.short_text,
             color: Colors.green.withValues(alpha: 0.7),
@@ -746,11 +737,11 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
     required TextEditingController controller,
     required FocusNode focusNode,
     required String hintText,
+    required bool isDarkMode,
+    required Color accentColor,
     int maxLength = 100,
     int maxLines = 1,
     Widget? prefix,
-    required bool isDarkMode,
-    required Color accentColor,
   }) {
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -766,8 +757,9 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
         focusNode: focusNode,
         maxLength: maxLength,
         maxLines: maxLines,
-        keyboardType:
-            maxLines > 1 ? TextInputType.multiline : TextInputType.text,
+        keyboardType: maxLines > 1
+            ? TextInputType.multiline
+            : TextInputType.text,
         textCapitalization: TextCapitalization.sentences,
         style: GoogleFonts.notoSans(
           color: isDarkMode ? Colors.white : Colors.black87,
@@ -817,42 +809,41 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
             isExpanded: true,
             dropdownColor: isDarkMode ? Colors.grey[850] : Colors.white,
             borderRadius: BorderRadius.circular(16),
-            items:
-                statusList.map((status) {
-                  final statusText = StatusHelper.getStatusText(status);
-                  final statusColor = StatusHelper.getStatusColor(status);
+            items: statusList.map((status) {
+              final statusText = StatusHelper.getStatusText(status);
+              final statusColor = StatusHelper.getStatusColor(status);
 
-                  return DropdownMenuItem<UserStatus>(
-                    value: status,
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 12,
-                          height: 12,
-                          decoration: BoxDecoration(
-                            color: statusColor,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: statusColor.withValues(alpha: 0.4),
-                                blurRadius: 4,
-                                spreadRadius: 1,
-                              ),
-                            ],
+              return DropdownMenuItem<UserStatus>(
+                value: status,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: statusColor,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: statusColor.withValues(alpha: 0.4),
+                            blurRadius: 4,
+                            spreadRadius: 1,
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          statusText,
-                          style: GoogleFonts.notoSans(
-                            fontWeight: FontWeight.w500,
-                            color: isDarkMode ? Colors.white : Colors.black87,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  );
-                }).toList(),
+                    const SizedBox(width: 12),
+                    Text(
+                      statusText,
+                      style: GoogleFonts.notoSans(
+                        fontWeight: FontWeight.w500,
+                        color: isDarkMode ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
             onChanged: (newValue) {
               if (newValue != null) {
                 setState(() {
@@ -984,54 +975,51 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
-      builder:
-          (dialogContext) => AlertDialog(
-            // contextではなくdialogContextを使用
-            title: Row(
-              children: [
-                Icon(Icons.warning_amber_rounded, color: Colors.amber[700]),
-                const SizedBox(width: 12),
-                Text(t.profile.discardTitle),
-              ],
+      builder: (dialogContext) => AlertDialog(
+        // contextではなくdialogContextを使用
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.amber[700]),
+            const SizedBox(width: 12),
+            Text(t.profile.discardTitle),
+          ],
+        ),
+        content: Text(t.profile.discardContent),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        backgroundColor:
+            Theme.of(dialogContext).brightness ==
+                Brightness
+                    .dark // dialogContextを使用
+            ? Colors.grey[850]
+            : Colors.white,
+        elevation: 8,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(
+              dialogContext,
+            ).pop(false), // dialogContextを使用
+            child: Text(
+              t.profile.discardCancel,
+              style: const TextStyle(color: AppTheme.primaryColor),
             ),
-            content: Text(t.profile.discardContent),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            backgroundColor:
-                Theme.of(dialogContext).brightness ==
-                        Brightness
-                            .dark // dialogContextを使用
-                    ? Colors.grey[850]
-                    : Colors.white,
-            elevation: 8,
-            actions: [
-              TextButton(
-                onPressed:
-                    () => Navigator.of(
-                      dialogContext,
-                    ).pop(false), // dialogContextを使用
-                child: Text(
-                  t.profile.discardCancel,
-                  style: const TextStyle(color: AppTheme.primaryColor),
-                ),
-              ),
-              ElevatedButton(
-                onPressed:
-                    () => Navigator.of(
-                      dialogContext,
-                    ).pop(true), // dialogContextを使用
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[700],
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(t.profile.discardOk),
-              ),
-            ],
           ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(
+              dialogContext,
+            ).pop(true), // dialogContextを使用
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red[700],
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: Text(t.profile.discardOk),
+          ),
+        ],
+      ),
     );
 
     return result ?? false;

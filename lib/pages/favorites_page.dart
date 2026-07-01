@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,42 +10,10 @@ import 'package:vrchat/provider/favorite_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/provider/world_provider.dart';
-import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/cache_manager.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat_dart/vrchat_dart.dart' hide FavoriteType;
-
-// お気に入り削除用のStateNotifierプロバイダー
-final favoriteActionProvider =
-    StateNotifierProvider<FavoriteActionNotifier, AsyncValue<void>>((ref) {
-      final favoriteApi = ref.watch(vrchatFavoriteProvider).value;
-      return FavoriteActionNotifier(favoriteApi);
-    });
-
-// お気に入り操作の状態管理クラス
-class FavoriteActionNotifier extends StateNotifier<AsyncValue<void>> {
-  final FavoritesApi? _favoriteApi;
-
-  FavoriteActionNotifier(this._favoriteApi)
-    : super(const AsyncValue.data(null));
-
-  Future<void> removeFavorite(String favoriteId) async {
-    if (_favoriteApi == null) {
-      state = const AsyncValue.error('お気に入りAPIが初期化されていません', StackTrace.empty);
-      return;
-    }
-
-    state = const AsyncValue.loading();
-
-    try {
-      await _favoriteApi.removeFavorite(favoriteId: favoriteId);
-      state = const AsyncValue.data(null);
-    } catch (e, stack) {
-      state = AsyncValue.error('お気に入り削除に失敗しました: $e', stack);
-    }
-  }
-}
 
 class FavoritesPage extends ConsumerStatefulWidget {
   const FavoritesPage({super.key});
@@ -82,98 +48,78 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor =
-        isDarkMode ? const Color(0xFF151515) : const Color(0xFFF8F8F8);
+    final theme = Theme.of(context);
+    final backgroundColor = theme.colorScheme.surface;
 
     return Scaffold(
       backgroundColor: backgroundColor,
       body: NestedScrollView(
-        headerSliverBuilder:
-            (context, innerBoxIsScrolled) => [
-              SliverAppBar(
-                expandedHeight: 100,
-                pinned: true,
-                floating: true,
-                forceElevated: innerBoxIsScrolled,
-                backgroundColor: backgroundColor,
-                title: Text(
-                  t.favorites.title,
-                  style: GoogleFonts.notoSans(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: isDarkMode ? Colors.white : Colors.black87,
-                  ),
-                ),
-                centerTitle: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors:
-                            isDarkMode
-                                ? [
-                                  Colors.purple.withAlpha(77),
-                                  Colors.blue.withAlpha(51),
-                                ]
-                                : [
-                                  Colors.purple.withAlpha(26),
-                                  Colors.blue.withAlpha(13),
-                                ],
-                      ),
-                    ),
-                  ),
-                ),
-                bottom: TabBar(
-                  controller: _tabController,
-                  labelStyle: GoogleFonts.notoSans(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                  unselectedLabelStyle: GoogleFonts.notoSans(),
-                  indicatorColor: AppTheme.primaryColor,
-                  indicatorWeight: 3,
-                  labelColor: isDarkMode ? Colors.white : Colors.black87,
-                  unselectedLabelColor:
-                      isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                  indicatorSize: TabBarIndicatorSize.label,
-                  tabs: [
-                    Tab(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.people, size: 20),
-                          const SizedBox(width: 6),
-                          Text(t.favorites.friendsTab),
-                        ],
-                      ),
-                    ),
-                    Tab(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.public, size: 20),
-                          const SizedBox(width: 6),
-                          Text(t.favorites.worldsTab),
-                        ],
-                      ),
-                    ),
-                    Tab(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.face, size: 20),
-                          const SizedBox(width: 6),
-                          Text(t.favorites.avatarsTab),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverAppBar(
+            expandedHeight: 72,
+            pinned: true,
+            floating: true,
+            forceElevated: innerBoxIsScrolled,
+            backgroundColor: backgroundColor,
+            surfaceTintColor: backgroundColor,
+            elevation: innerBoxIsScrolled ? 1 : 0,
+            title: Text(
+              t.favorites.title,
+              style: GoogleFonts.notoSans(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+                color: theme.colorScheme.onSurface,
               ),
-            ],
+            ),
+            centerTitle: true,
+            bottom: TabBar(
+              controller: _tabController,
+              labelStyle: GoogleFonts.notoSans(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+              unselectedLabelStyle: GoogleFonts.notoSans(),
+              indicatorColor: theme.colorScheme.primary,
+              indicatorWeight: 2,
+              labelColor: theme.colorScheme.primary,
+              unselectedLabelColor: theme.colorScheme.onSurfaceVariant,
+              indicatorSize: TabBarIndicatorSize.label,
+              dividerColor: theme.colorScheme.outlineVariant,
+              tabs: [
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.people, size: 20),
+                      const SizedBox(width: 6),
+                      Text(t.favorites.friendsTab),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.public, size: 20),
+                      const SizedBox(width: 6),
+                      Text(t.favorites.worldsTab),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.face, size: 20),
+                      const SizedBox(width: 6),
+                      Text(t.favorites.avatarsTab),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         body: TabBarView(
           controller: _tabController,
           children: [
@@ -189,9 +135,8 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
 
 // フレンドお気に入りタブ
 class _FavoriteFriendsTab extends ConsumerWidget {
-  final ScrollController controller;
-
   const _FavoriteFriendsTab({required this.controller});
+  final ScrollController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -203,13 +148,11 @@ class _FavoriteFriendsTab extends ConsumerWidget {
       data: (favorites) {
         return favoriteGroupsAsync.when(
           data: (groups) {
-            final friendGroups =
-                groups
-                    .where(
-                      (group) =>
-                          group.type.toString() == FavoriteType.friend.value,
-                    )
-                    .toList();
+            final friendGroups = groups
+                .where(
+                  (group) => group.type.toString() == FavoriteType.friend.value,
+                )
+                .toList();
 
             if (friendGroups.isEmpty) {
               return _buildEmptyState(
@@ -234,124 +177,90 @@ class _FavoriteFriendsTab extends ConsumerWidget {
               }
             }
 
-            return AnimationLimiter(
-              child: ListView.builder(
-                controller: controller,
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 8,
-                ),
-                itemCount: groupedFavorites.length,
-                itemBuilder: (context, index) {
-                  final folderName = groupedFavorites.keys.elementAt(index);
-                  final folderFavorites = groupedFavorites[folderName]!;
-                  final folderColor = _getFolderColor(folderName, isDarkMode);
+            return ListView.builder(
+              controller: controller,
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
+              itemCount: groupedFavorites.length,
+              itemBuilder: (context, index) {
+                final folderName = groupedFavorites.keys.elementAt(index);
+                final folderFavorites = groupedFavorites[folderName]!;
+                final folderColor = _getFolderColor(folderName, isDarkMode);
 
-                  return AnimationConfiguration.staggeredList(
-                    position: index,
-                    duration: const Duration(milliseconds: 375),
-                    child: SlideAnimation(
-                      verticalOffset: 50,
-                      child: FadeInAnimation(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _StylishFolderHeader(
-                              folderName: folderName,
-                              color: folderColor,
-                              isDarkMode: isDarkMode,
-                              itemCount: folderFavorites.length,
-                              isExpanded: true,
-                              onToggle: () {},
-                            ),
-                            if (folderFavorites.isEmpty)
-                              _buildEmptyFolderMessage(
-                                context,
-                                t.favorites.emptyFriends,
-                                Icons.people_outline,
-                                isDarkMode,
-                              )
-                            else
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: folderFavorites.length,
-                                itemBuilder: (context, itemIndex) {
-                                  final favorite = folderFavorites[itemIndex];
-                                  final userAsync = ref.watch(
-                                    userDetailProvider(favorite.favoriteId),
-                                  );
-
-                                  return AnimationConfiguration.staggeredList(
-                                    position: itemIndex,
-                                    duration: const Duration(milliseconds: 250),
-                                    delay: const Duration(milliseconds: 50),
-                                    child: SlideAnimation(
-                                      horizontalOffset: 50,
-                                      child: FadeInAnimation(
-                                        child: userAsync.when(
-                                          data:
-                                              (user) =>
-                                                  _buildEnhancedFriendItem(
-                                                    context,
-                                                    user,
-                                                    favorite.id,
-                                                    ref,
-                                                    isDarkMode,
-                                                  ),
-                                          loading:
-                                              () =>
-                                                  _buildLoadingItem(isDarkMode),
-                                          error:
-                                              (_, _) => _buildErrorItem(
-                                                favorite.favoriteId,
-                                                favorite.id,
-                                                ref,
-                                                context,
-                                                isDarkMode,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                          ],
-                        ),
-                      ),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _StylishFolderHeader(
+                      folderName: folderName,
+                      color: folderColor,
+                      isDarkMode: isDarkMode,
+                      itemCount: folderFavorites.length,
                     ),
-                  );
-                },
-              ),
+                    if (folderFavorites.isEmpty)
+                      _buildEmptyFolderMessage(
+                        context,
+                        t.favorites.emptyFriends,
+                        Icons.people_outline,
+                        isDarkMode,
+                      )
+                    else
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: folderFavorites.length,
+                        itemBuilder: (context, itemIndex) {
+                          final favorite = folderFavorites[itemIndex];
+                          final userAsync = ref.watch(
+                            userDetailProvider(favorite.favoriteId),
+                          );
+
+                          return userAsync.when(
+                            data: (user) => _buildEnhancedFriendItem(
+                              context,
+                              user,
+                              favorite.id,
+                              ref,
+                              isDarkMode,
+                            ),
+                            loading: () => _buildLoadingItem(isDarkMode),
+                            error: (_, _) => _buildErrorItem(
+                              favorite.favoriteId,
+                              favorite.id,
+                              ref,
+                              context,
+                              isDarkMode,
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                );
+              },
             );
           },
           loading: () => LoadingIndicator(message: t.favorites.loadingFolder),
-          error:
-              (_, _) => ErrorContainer(
-                message: t.favorites.errorFolder,
-                onRetry: () {
-                  ref.invalidate(myFavoriteGroupsProvider);
-                  ref.invalidate(favoriteFriendsProvider);
-                },
-              ),
+          error: (_, _) => ErrorContainer(
+            message: t.favorites.errorFolder,
+            onRetry: () {
+              ref.invalidate(myFavoriteGroupsProvider);
+              ref.invalidate(favoriteFriendsProvider);
+            },
+          ),
         );
       },
       loading: () => LoadingIndicator(message: t.favorites.loading),
-      error:
-          (error, stack) => ErrorContainer(
-            message: t.favorites.error(error: error.toString()),
-            onRetry: () => ref.invalidate(favoriteFriendsProvider),
-          ),
+      error: (error, stack) => ErrorContainer(
+        message: t.favorites.error(error: error.toString()),
+        onRetry: () => ref.invalidate(favoriteFriendsProvider),
+      ),
     );
   }
 }
 
 // ワールドお気に入りタブ
 class _FavoriteWorldsTab extends ConsumerWidget {
-  final ScrollController controller;
-
   const _FavoriteWorldsTab({required this.controller});
+  final ScrollController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -379,140 +288,97 @@ class _FavoriteWorldsTab extends ConsumerWidget {
               type: FavoriteType.world,
             );
 
-            return AnimationLimiter(
-              child: ListView.builder(
-                controller: controller,
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 8,
-                ),
-                itemCount: groupedFavorites.length,
-                itemBuilder: (context, index) {
-                  final folderName = groupedFavorites.keys.elementAt(index);
-                  final folderFavorites = groupedFavorites[folderName]!;
-                  final folderColor = _getFolderColor(folderName, isDarkMode);
+            return ListView.builder(
+              controller: controller,
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
+              itemCount: groupedFavorites.length,
+              itemBuilder: (context, index) {
+                final folderName = groupedFavorites.keys.elementAt(index);
+                final folderFavorites = groupedFavorites[folderName]!;
+                final folderColor = _getFolderColor(folderName, isDarkMode);
 
-                  return AnimationConfiguration.staggeredList(
-                    position: index,
-                    duration: const Duration(milliseconds: 375),
-                    child: SlideAnimation(
-                      verticalOffset: 50,
-                      child: FadeInAnimation(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _StylishFolderHeader(
-                              folderName: folderName,
-                              color: folderColor,
-                              isDarkMode: isDarkMode,
-                              itemCount: folderFavorites.length,
-                              isExpanded: true,
-                              onToggle: () {},
-                            ),
-                            if (folderFavorites.isEmpty)
-                              _buildEmptyFolderMessage(
-                                context,
-                                t.favorites.emptyWorlds,
-                                Icons.public,
-                                isDarkMode,
-                              )
-                            else
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4,
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _StylishFolderHeader(
+                      folderName: folderName,
+                      color: folderColor,
+                      isDarkMode: isDarkMode,
+                      itemCount: folderFavorites.length,
+                    ),
+                    if (folderFavorites.isEmpty)
+                      _buildEmptyFolderMessage(
+                        context,
+                        t.favorites.emptyWorlds,
+                        Icons.public,
+                        isDarkMode,
+                      )
+                    else
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: StaggeredGrid.count(
+                          crossAxisCount: _favoriteGridCrossAxisCount(context),
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          children: List.generate(folderFavorites.length, (
+                            itemIndex,
+                          ) {
+                            final favorite = folderFavorites[itemIndex];
+                            final worldAsync = ref.watch(
+                              worldDetailProvider(favorite.favoriteId),
+                            );
+
+                            return StaggeredGridTile.fit(
+                              crossAxisCellCount: 1,
+                              child: worldAsync.when(
+                                data: (world) => _buildEnhancedWorldItem(
+                                  context,
+                                  world,
+                                  favorite.id,
+                                  ref,
+                                  isDarkMode,
                                 ),
-                                child: StaggeredGrid.count(
-                                  crossAxisCount: 2,
-                                  mainAxisSpacing: 10,
-                                  crossAxisSpacing: 10,
-                                  children: List.generate(
-                                    folderFavorites.length,
-                                    (itemIndex) {
-                                      final favorite =
-                                          folderFavorites[itemIndex];
-                                      final worldAsync = ref.watch(
-                                        worldDetailProvider(
-                                          favorite.favoriteId,
-                                        ),
-                                      );
-
-                                      return StaggeredGridTile.fit(
-                                        crossAxisCellCount: 1,
-                                        child: AnimationConfiguration.staggeredList(
-                                          position: itemIndex,
-                                          duration: const Duration(
-                                            milliseconds: 250,
-                                          ),
-                                          child: SlideAnimation(
-                                            verticalOffset: 50,
-                                            child: FadeInAnimation(
-                                              child: worldAsync.when(
-                                                data:
-                                                    (world) =>
-                                                        _buildEnhancedWorldItem(
-                                                          context,
-                                                          world,
-                                                          favorite.id,
-                                                          ref,
-                                                          isDarkMode,
-                                                        ),
-                                                loading:
-                                                    () =>
-                                                        _buildWorldLoadingItem(
-                                                          isDarkMode,
-                                                        ),
-                                                error:
-                                                    (_, _) =>
-                                                        _buildWorldErrorItem(
-                                                          favorite.favoriteId,
-                                                          isDarkMode,
-                                                        ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                loading: () =>
+                                    _buildWorldLoadingItem(isDarkMode),
+                                error: (_, _) => _buildWorldErrorItem(
+                                  favorite.favoriteId,
+                                  isDarkMode,
                                 ),
                               ),
-                            const SizedBox(height: 20),
-                          ],
+                            );
+                          }),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    const SizedBox(height: 20),
+                  ],
+                );
+              },
             );
           },
           loading: () => LoadingIndicator(message: t.favorites.loadingFolder),
-          error:
-              (_, _) => ErrorContainer(
-                message: t.favorites.errorFolder,
-                onRetry: () {
-                  ref.invalidate(myFavoriteGroupsProvider);
-                  ref.invalidate(favoriteWorldsProvider);
-                },
-              ),
+          error: (_, _) => ErrorContainer(
+            message: t.favorites.errorFolder,
+            onRetry: () {
+              ref.invalidate(myFavoriteGroupsProvider);
+              ref.invalidate(favoriteWorldsProvider);
+            },
+          ),
         );
       },
       loading: () => LoadingIndicator(message: t.favorites.loading),
-      error:
-          (error, stack) => ErrorContainer(
-            message: t.favorites.error(error: error.toString()),
-            onRetry: () => ref.refresh(favoriteWorldsProvider),
-          ),
+      error: (error, stack) => ErrorContainer(
+        message: t.favorites.error(error: error.toString()),
+        onRetry: () => ref.refresh(favoriteWorldsProvider),
+      ),
     );
   }
 }
 
 // アバターお気に入りタブ
 class _FavoriteAvatarsTab extends ConsumerWidget {
-  final ScrollController controller;
-
   const _FavoriteAvatarsTab({required this.controller});
+  final ScrollController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -540,219 +406,162 @@ class _FavoriteAvatarsTab extends ConsumerWidget {
               type: FavoriteType.avatar,
             );
 
-            return AnimationLimiter(
-              child: ListView.builder(
-                controller: controller,
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 8,
-                ),
-                itemCount: groupedFavorites.length,
-                itemBuilder: (context, index) {
-                  final folderName = groupedFavorites.keys.elementAt(index);
-                  final folderFavorites = groupedFavorites[folderName]!;
-                  final folderColor = _getFolderColor(folderName, isDarkMode);
+            return ListView.builder(
+              controller: controller,
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
+              itemCount: groupedFavorites.length,
+              itemBuilder: (context, index) {
+                final folderName = groupedFavorites.keys.elementAt(index);
+                final folderFavorites = groupedFavorites[folderName]!;
+                final folderColor = _getFolderColor(folderName, isDarkMode);
 
-                  return AnimationConfiguration.staggeredList(
-                    position: index,
-                    duration: const Duration(milliseconds: 375),
-                    child: SlideAnimation(
-                      verticalOffset: 50,
-                      child: FadeInAnimation(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _StylishFolderHeader(
-                              folderName: folderName,
-                              color: folderColor,
-                              isDarkMode: isDarkMode,
-                              itemCount: folderFavorites.length,
-                              isExpanded: true,
-                              onToggle: () {},
-                            ),
-                            if (folderFavorites.isEmpty)
-                              _buildEmptyFolderMessage(
-                                context,
-                                t.favorites.emptyAvatars,
-                                Icons.face,
-                                isDarkMode,
-                              )
-                            else
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4,
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _StylishFolderHeader(
+                      folderName: folderName,
+                      color: folderColor,
+                      isDarkMode: isDarkMode,
+                      itemCount: folderFavorites.length,
+                    ),
+                    if (folderFavorites.isEmpty)
+                      _buildEmptyFolderMessage(
+                        context,
+                        t.favorites.emptyAvatars,
+                        Icons.face,
+                        isDarkMode,
+                      )
+                    else
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: StaggeredGrid.count(
+                          crossAxisCount: _favoriteGridCrossAxisCount(context),
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          children: List.generate(folderFavorites.length, (
+                            itemIndex,
+                          ) {
+                            final favorite = folderFavorites[itemIndex];
+                            final avatarAsync = ref.watch(
+                              avatarDetailProvider(favorite.favoriteId),
+                            );
+
+                            return StaggeredGridTile.fit(
+                              crossAxisCellCount: 1,
+                              child: avatarAsync.when(
+                                data: (avatar) => _buildEnhancedAvatarItem(
+                                  context,
+                                  avatar,
+                                  favorite.id,
+                                  ref,
+                                  isDarkMode,
                                 ),
-                                child: StaggeredGrid.count(
-                                  crossAxisCount: 2,
-                                  mainAxisSpacing: 10,
-                                  crossAxisSpacing: 10,
-                                  children: List.generate(folderFavorites.length, (
-                                    itemIndex,
-                                  ) {
-                                    final favorite = folderFavorites[itemIndex];
-                                    final avatarAsync = ref.watch(
-                                      avatarDetailProvider(favorite.favoriteId),
-                                    );
-
-                                    return StaggeredGridTile.fit(
-                                      crossAxisCellCount: 1,
-                                      child: AnimationConfiguration.staggeredList(
-                                        position: itemIndex,
-                                        duration: const Duration(
-                                          milliseconds: 250,
-                                        ),
-                                        child: SlideAnimation(
-                                          verticalOffset: 50,
-                                          child: FadeInAnimation(
-                                            child: avatarAsync.when(
-                                              data:
-                                                  (avatar) =>
-                                                      _buildEnhancedAvatarItem(
-                                                        context,
-                                                        avatar,
-                                                        favorite.id,
-                                                        ref,
-                                                        isDarkMode,
-                                                      ),
-                                              loading:
-                                                  () => _buildAvatarLoadingItem(
-                                                    isDarkMode,
-                                                  ),
-                                              error:
-                                                  (_, _) =>
-                                                      _buildAvatarErrorItem(
-                                                        favorite.favoriteId,
-                                                        isDarkMode,
-                                                      ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }),
+                                loading: () =>
+                                    _buildAvatarLoadingItem(isDarkMode),
+                                error: (_, _) => _buildAvatarErrorItem(
+                                  favorite.favoriteId,
+                                  isDarkMode,
                                 ),
                               ),
-                            const SizedBox(height: 20),
-                          ],
+                            );
+                          }),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    const SizedBox(height: 20),
+                  ],
+                );
+              },
             );
           },
           loading: () => LoadingIndicator(message: t.favorites.loadingFolder),
-          error:
-              (_, _) => ErrorContainer(
-                message: t.favorites.errorFolder,
-                onRetry: () {
-                  ref.invalidate(myFavoriteGroupsProvider);
-                  ref.invalidate(favoriteAvatarsProvider);
-                },
-              ),
+          error: (_, _) => ErrorContainer(
+            message: t.favorites.errorFolder,
+            onRetry: () {
+              ref.invalidate(myFavoriteGroupsProvider);
+              ref.invalidate(favoriteAvatarsProvider);
+            },
+          ),
         );
       },
       loading: () => LoadingIndicator(message: t.favorites.loading),
-      error:
-          (error, stack) => ErrorContainer(
-            message: t.favorites.error(error: error.toString()),
-            onRetry: () => ref.refresh(favoriteAvatarsProvider),
-          ),
+      error: (error, stack) => ErrorContainer(
+        message: t.favorites.error(error: error.toString()),
+        onRetry: () => ref.refresh(favoriteAvatarsProvider),
+      ),
     );
   }
 }
 
 // スタイリッシュなフォルダヘッダー
 class _StylishFolderHeader extends StatelessWidget {
-  final String folderName;
-  final Color color;
-  final bool isDarkMode;
-  final int itemCount;
-  final bool isExpanded;
-  final VoidCallback onToggle;
-
   const _StylishFolderHeader({
     required this.folderName,
     required this.color,
     required this.isDarkMode,
     required this.itemCount,
-    required this.isExpanded,
-    required this.onToggle,
   });
+  final String folderName;
+  final Color color;
+  final bool isDarkMode;
+  final int itemCount;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onToggle,
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(8, 16, 8, 12),
-        child: Row(
-          children: [
-            // カラーマーカーとアイコン
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: color.withAlpha(77),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: const Icon(Icons.folder, size: 18, color: Colors.white),
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 16, 4, 10),
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: isDarkMode ? 0.24 : 0.14),
+              borderRadius: BorderRadius.circular(8),
             ),
-
-            const SizedBox(width: 12),
-
-            // フォルダ名とカウント
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    folderName,
-                    style: GoogleFonts.notoSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: isDarkMode ? Colors.white : Colors.black87,
-                    ),
-                  ),
-                  Text(
-                    t.favorites.itemsCount(count: itemCount.toString()),
-                    style: GoogleFonts.notoSans(
-                      fontSize: 12,
-                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                    ),
-                  ),
-                ],
+            child: Icon(Icons.folder_rounded, size: 18, color: color),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              folderName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.notoSans(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: theme.colorScheme.onSurface,
               ),
             ),
-
-            // 展開/折りたたみアイコン
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Icon(
-                isExpanded
-                    ? Icons.keyboard_arrow_up
-                    : Icons.keyboard_arrow_right,
-                size: 16,
-                color: isDarkMode ? Colors.grey[400] : Colors.grey[700],
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              t.favorites.itemsCount(count: itemCount.toString()),
+              style: GoogleFonts.notoSans(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+}
+
+int _favoriteGridCrossAxisCount(BuildContext context) {
+  final width = MediaQuery.sizeOf(context).width;
+  if (width >= 840) return 4;
+  if (width >= 560) return 3;
+  return 2;
 }
 
 // 強化されたフレンドアイテム
@@ -770,11 +579,10 @@ Widget _buildEnhancedFriendItem(
 
   return Card(
     margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    elevation: 2,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     color: isDarkMode ? const Color(0xFF222222) : Colors.white,
     child: InkWell(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(12),
       onTap: () => context.push('/user/${friend.id}'),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -800,30 +608,29 @@ Widget _buildEnhancedFriendItem(
                     ],
                   ),
                   child: CircleAvatar(
-                    backgroundImage:
-                        friend.userIcon.isNotEmpty
-                            ? CachedNetworkImageProvider(
-                              friend.userIcon,
-                              headers: headers,
-                              cacheManager: JsonCacheManager(),
-                            )
-                            : (friend.currentAvatarThumbnailImageUrl.isNotEmpty
-                                ? CachedNetworkImageProvider(
+                    backgroundImage: friend.userIcon.isNotEmpty
+                        ? CachedNetworkImageProvider(
+                            friend.userIcon,
+                            headers: headers,
+                            cacheManager: JsonCacheManager(),
+                          )
+                        : (friend.currentAvatarThumbnailImageUrl.isNotEmpty
+                              ? CachedNetworkImageProvider(
                                   friend.currentAvatarThumbnailImageUrl,
                                   headers: headers,
                                   cacheManager: JsonCacheManager(),
                                 )
-                                : null),
+                              : null),
                     backgroundColor:
                         (friend.userIcon.isEmpty) &&
-                                friend.currentAvatarThumbnailImageUrl.isEmpty
-                            ? Colors.grey[300]
-                            : null,
+                            friend.currentAvatarThumbnailImageUrl.isEmpty
+                        ? Colors.grey[300]
+                        : null,
                     child:
                         (friend.userIcon.isEmpty) &&
-                                friend.currentAvatarThumbnailImageUrl.isEmpty
-                            ? const Icon(Icons.person, color: Colors.grey)
-                            : null,
+                            friend.currentAvatarThumbnailImageUrl.isEmpty
+                        ? const Icon(Icons.person, color: Colors.grey)
+                        : null,
                   ),
                 ),
               ],
@@ -896,13 +703,12 @@ Widget _buildEnhancedFriendItem(
                 borderRadius: BorderRadius.circular(12),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  onTap:
-                      () => _removeFavorite(
-                        context,
-                        ref,
-                        favoriteId,
-                        friend.displayName,
-                      ),
+                  onTap: () => _removeFavorite(
+                    context,
+                    ref,
+                    favoriteId,
+                    friend.displayName,
+                  ),
                   child: Icon(Icons.favorite, color: Colors.red[400], size: 20),
                 ),
               ),
@@ -929,9 +735,7 @@ Widget _buildEnhancedWorldItem(
 
   return Card(
     clipBehavior: Clip.antiAlias,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    elevation: 4,
-    shadowColor: Colors.black26,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     child: InkWell(
       onTap: () => context.push('/world/${world.id}'),
       child: Column(
@@ -947,18 +751,16 @@ Widget _buildEnhancedWorldItem(
                   fit: BoxFit.cover,
                   httpHeaders: headers,
                   cacheManager: JsonCacheManager(),
-                  placeholder:
-                      (context, url) => Container(
-                        color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                        child: const Center(
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
-                  errorWidget:
-                      (context, url, error) => Container(
-                        color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                        child: const Icon(Icons.broken_image),
-                      ),
+                  placeholder: (context, url) => Container(
+                    color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+                    child: const Icon(Icons.broken_image),
+                  ),
                 ),
               ),
 
@@ -1005,18 +807,16 @@ Widget _buildEnhancedWorldItem(
                 top: 8,
                 right: 8,
                 child: Material(
-                  elevation: 2,
                   color: Colors.black.withAlpha(128),
                   borderRadius: BorderRadius.circular(20),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(20),
-                    onTap:
-                        () => _removeFavorite(
-                          context,
-                          ref,
-                          favoriteId,
-                          world.name,
-                        ),
+                    onTap: () => _removeFavorite(
+                      context,
+                      ref,
+                      favoriteId,
+                      world.name,
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(6),
                       child: Icon(
@@ -1102,9 +902,7 @@ Widget _buildEnhancedAvatarItem(
 
   return Card(
     clipBehavior: Clip.antiAlias,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    elevation: 4,
-    shadowColor: Colors.black26,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     child: InkWell(
       onTap: () => context.push('/avatar/${avatar.id}'),
       child: Column(
@@ -1120,18 +918,16 @@ Widget _buildEnhancedAvatarItem(
                   fit: BoxFit.cover,
                   httpHeaders: headers,
                   cacheManager: JsonCacheManager(),
-                  placeholder:
-                      (context, url) => Container(
-                        color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                        child: const Center(
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
-                  errorWidget:
-                      (context, url, error) => Container(
-                        color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                        child: const Icon(Icons.broken_image),
-                      ),
+                  placeholder: (context, url) => Container(
+                    color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+                    child: const Icon(Icons.broken_image),
+                  ),
                 ),
               ),
 
@@ -1178,18 +974,16 @@ Widget _buildEnhancedAvatarItem(
                 top: 8,
                 right: 8,
                 child: Material(
-                  elevation: 2,
                   color: Colors.black.withAlpha(128),
                   borderRadius: BorderRadius.circular(20),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(20),
-                    onTap:
-                        () => _removeFavorite(
-                          context,
-                          ref,
-                          favoriteId,
-                          avatar.name,
-                        ),
+                    onTap: () => _removeFavorite(
+                      context,
+                      ref,
+                      favoriteId,
+                      avatar.name,
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(6),
                       child: Icon(
@@ -1227,8 +1021,9 @@ Widget _buildEnhancedAvatarItem(
                         avatar.authorName,
                         style: GoogleFonts.notoSans(
                           fontSize: 12,
-                          color:
-                              isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          color: isDarkMode
+                              ? Colors.grey[400]
+                              : Colors.grey[600],
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -1266,10 +1061,9 @@ Widget _buildEmptyFolderMessage(
     padding: const EdgeInsets.symmetric(vertical: 20),
     decoration: BoxDecoration(
       color: isDarkMode ? Colors.grey[850]!.withAlpha(128) : Colors.grey[100]!,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(12),
       border: Border.all(
         color: isDarkMode ? Colors.grey[800]! : Colors.grey[300]!,
-        width: 1,
       ),
     ),
     child: Center(
@@ -1300,7 +1094,7 @@ Widget _buildEmptyFolderMessage(
 Widget _buildLoadingItem(bool isDarkMode) {
   return Card(
     margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     color: isDarkMode ? const Color(0xFF222222) : Colors.white,
     child: Padding(
       padding: const EdgeInsets.all(12),
@@ -1362,7 +1156,7 @@ Widget _buildErrorItem(
 ) {
   return Card(
     margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     color: isDarkMode ? const Color(0xFF222222) : Colors.white,
     child: Padding(
       padding: const EdgeInsets.all(12),
@@ -1374,8 +1168,9 @@ Widget _buildErrorItem(
             height: 60,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color:
-                  isDarkMode ? Colors.red[900]!.withAlpha(51) : Colors.red[50],
+              color: isDarkMode
+                  ? Colors.red[900]!.withAlpha(51)
+                  : Colors.red[50],
               border: Border.all(
                 color: Colors.red[300]!.withAlpha(128),
                 width: 2,
@@ -1420,13 +1215,12 @@ Widget _buildErrorItem(
               borderRadius: BorderRadius.circular(12),
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
-                onTap:
-                    () => _removeFavorite(
-                      context,
-                      ref,
-                      favoriteItemId,
-                      'エラーアイテム',
-                    ),
+                onTap: () => _removeFavorite(
+                  context,
+                  ref,
+                  favoriteItemId,
+                  'エラーアイテム',
+                ),
                 child: Icon(
                   Icons.delete_outline,
                   color: Colors.red[400],
@@ -1445,9 +1239,7 @@ Widget _buildErrorItem(
 Widget _buildWorldLoadingItem(bool isDarkMode) {
   return Card(
     clipBehavior: Clip.antiAlias,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    elevation: 4,
-    shadowColor: Colors.black26,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1469,8 +1261,9 @@ Widget _buildWorldLoadingItem(bool isDarkMode) {
             children: [
               CircleAvatar(
                 radius: 12,
-                backgroundColor:
-                    isDarkMode ? Colors.grey[700] : Colors.grey[400],
+                backgroundColor: isDarkMode
+                    ? Colors.grey[700]
+                    : Colors.grey[400],
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -1494,9 +1287,7 @@ Widget _buildWorldLoadingItem(bool isDarkMode) {
 Widget _buildAvatarLoadingItem(bool isDarkMode) {
   return Card(
     clipBehavior: Clip.antiAlias,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    elevation: 4,
-    shadowColor: Colors.black26,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1546,9 +1337,7 @@ Widget _buildAvatarLoadingItem(bool isDarkMode) {
 Widget _buildWorldErrorItem(String favoriteId, bool isDarkMode) {
   return Card(
     clipBehavior: Clip.antiAlias,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    elevation: 4,
-    shadowColor: Colors.black26,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     child: Column(
       children: [
         // エラー画像プレースホルダー
@@ -1603,9 +1392,7 @@ Widget _buildWorldErrorItem(String favoriteId, bool isDarkMode) {
 Widget _buildAvatarErrorItem(String favoriteId, bool isDarkMode) {
   return Card(
     clipBehavior: Clip.antiAlias,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    elevation: 4,
-    shadowColor: Colors.black26,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     child: Column(
       children: [
         // エラー画像プレースホルダー
@@ -1686,17 +1473,10 @@ Map<String, List<Favorite>> _groupFavoritesByFolder({
   required List<FavoriteGroup> groups,
   required FavoriteType type,
 }) {
-  // デバッグ情報を出力
-  debugPrint('=== デバッグ情報 ===');
-  debugPrint('タイプ: ${type.value}');
-  debugPrint('グループ数: ${groups.length}');
-  debugPrint('お気に入り数: ${favorites.length}');
-
   // タイプでフィルタリングしたグループを取得
-  final typeGroups =
-      groups.where((group) => group.type.toString() == type.value).toList();
-
-  debugPrint('フィルタリング後のグループ数: ${typeGroups.length}');
+  final typeGroups = groups
+      .where((group) => group.type.toString() == type.value)
+      .toList();
 
   // 結果を格納するMap（キー：表示名、値：お気に入りリスト）
   final result = <String, List<Favorite>>{};
@@ -1724,12 +1504,6 @@ Map<String, List<Favorite>> _groupFavoritesByFolder({
         break;
       }
     }
-  }
-
-  // 分類結果をデバッグ出力
-  debugPrint('=== 分類結果 ===');
-  for (final folderName in result.keys) {
-    debugPrint('$folderName: ${result[folderName]!.length}件');
   }
 
   return result;

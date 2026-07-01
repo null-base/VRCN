@@ -3,19 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:vrchat/gen/strings.g.dart';
-import 'package:vrchat/pages/event_calendar_page.dart';
+import 'package:vrchat/models/event_calendar_models.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
 
 class ReminderDialog extends ConsumerStatefulWidget {
-  final Event event;
-  final bool isDarkMode;
-
   const ReminderDialog({
     super.key,
     required this.event,
     required this.isDarkMode,
   });
+  final Event event;
+  final bool isDarkMode;
 
   @override
   ConsumerState<ReminderDialog> createState() => _ReminderDialogState();
@@ -27,12 +26,11 @@ class _ReminderDialogState extends ConsumerState<ReminderDialog> {
   @override
   Widget build(BuildContext context) {
     final eventTime = DateFormat('yyyy/MM/dd HH:mm').format(widget.event.start);
-    final reminders =
-        ref
-            .watch(eventReminderProvider)
-            .where((r) => r.eventId == widget.event.id)
-            .map((r) => r.reminderTime)
-            .toSet();
+    final reminders = ref
+        .watch(eventReminderProvider)
+        .where((r) => r.eventId == widget.event.id)
+        .map((r) => r.reminderTime)
+        .toSet();
 
     return AlertDialog(
       title: Text(
@@ -65,8 +63,9 @@ class _ReminderDialogState extends ConsumerState<ReminderDialog> {
                 eventTime,
                 style: GoogleFonts.notoSans(
                   fontSize: 14,
-                  color:
-                      widget.isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                  color: widget.isDarkMode
+                      ? Colors.grey[400]
+                      : Colors.grey[600],
                 ),
               ),
             ],
@@ -160,24 +159,22 @@ class _ReminderDialogState extends ConsumerState<ReminderDialog> {
         leading: Radio<ReminderTime>(
           value: time,
           groupValue: _selectedTime,
-          onChanged:
-              isDisabled
-                  ? null
-                  : (value) {
-                    setState(() {
-                      _selectedTime = value;
-                    });
-                  },
-          activeColor: AppTheme.primaryColor,
-        ),
-        onTap:
-            isDisabled
-                ? null
-                : () {
+          onChanged: isDisabled
+              ? null
+              : (value) {
                   setState(() {
-                    _selectedTime = time;
+                    _selectedTime = value;
                   });
                 },
+          activeColor: AppTheme.primaryColor,
+        ),
+        onTap: isDisabled
+            ? null
+            : () {
+                setState(() {
+                  _selectedTime = time;
+                });
+              },
       ),
     );
   }

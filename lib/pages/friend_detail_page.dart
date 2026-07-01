@@ -4,8 +4,6 @@ import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/instance_provider.dart';
 import 'package:vrchat/provider/playermoderation_provider.dart';
@@ -15,6 +13,7 @@ import 'package:vrchat/provider/world_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/cache_manager.dart';
 import 'package:vrchat/utils/date_formatter.dart';
+import 'package:vrchat/utils/share_utils.dart';
 import 'package:vrchat/utils/status_helpers.dart';
 import 'package:vrchat/utils/url_launcher_utils.dart';
 import 'package:vrchat/utils/user_type_helpers.dart';
@@ -27,9 +26,8 @@ import 'package:vrchat/widgets/user_badges_view.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class FriendDetailPage extends ConsumerWidget {
-  final String userId;
-
   const FriendDetailPage({super.key, required this.userId});
+  final String userId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,11 +38,10 @@ class FriendDetailPage extends ConsumerWidget {
       body: friendDetailAsync.when(
         data: (user) => _buildUserDetail(context, user, ref, isDarkMode),
         loading: () => LoadingIndicator(message: t.friendDetail.loading),
-        error:
-            (error, stackTrace) => ErrorContainer(
-              message: t.friendDetail.error(error: error.toString()),
-              onRetry: () => ref.refresh(userDetailProvider(userId)),
-            ),
+        error: (error, stackTrace) => ErrorContainer(
+          message: t.friendDetail.error(error: error.toString()),
+          onRetry: () => ref.refresh(userDetailProvider(userId)),
+        ),
       ),
     );
   }
@@ -90,8 +87,6 @@ class FriendDetailPage extends ConsumerWidget {
       },
       color: statusColor,
       backgroundColor: isDarkMode ? Colors.grey[850] : Colors.white,
-      strokeWidth: 2.5,
-      displacement: 40,
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
@@ -99,10 +94,9 @@ class FriendDetailPage extends ConsumerWidget {
             expandedHeight: 300,
             pinned: true,
             stretch: true,
-            backgroundColor:
-                isDarkMode
-                    ? AppTheme.primaryColor.withValues(alpha: .8)
-                    : AppTheme.primaryColor,
+            backgroundColor: isDarkMode
+                ? AppTheme.primaryColor.withValues(alpha: .8)
+                : AppTheme.primaryColor,
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 fit: StackFit.expand,
@@ -118,12 +112,10 @@ class FriendDetailPage extends ConsumerWidget {
                               fit: BoxFit.cover,
                               httpHeaders: headers,
                               cacheManager: JsonCacheManager(),
-                              placeholder:
-                                  (context, url) =>
-                                      Container(color: AppTheme.primaryColor),
-                              errorWidget:
-                                  (context, url, error) =>
-                                      Container(color: AppTheme.primaryColor),
+                              placeholder: (context, url) =>
+                                  Container(color: AppTheme.primaryColor),
+                              errorWidget: (context, url, error) =>
+                                  Container(color: AppTheme.primaryColor),
                             ),
                             Container(
                               color: Colors.black.withValues(alpha: 0.2),
@@ -167,30 +159,28 @@ class FriendDetailPage extends ConsumerWidget {
                         );
                       }
                     },
-                    loading:
-                        () => Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            _buildGradientBackground(statusColor),
-                            Positioned(
-                              left: 16,
-                              bottom: 16,
-                              child: _buildUserTypeContainer(user, isDarkMode),
-                            ),
-                          ],
+                    loading: () => Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        _buildGradientBackground(statusColor),
+                        Positioned(
+                          left: 16,
+                          bottom: 16,
+                          child: _buildUserTypeContainer(user, isDarkMode),
                         ),
-                    error:
-                        (_, _) => Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            _buildGradientBackground(statusColor),
-                            Positioned(
-                              left: 16,
-                              bottom: 16,
-                              child: _buildUserTypeContainer(user, isDarkMode),
-                            ),
-                          ],
+                      ],
+                    ),
+                    error: (_, _) => Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        _buildGradientBackground(statusColor),
+                        Positioned(
+                          left: 16,
+                          bottom: 16,
+                          child: _buildUserTypeContainer(user, isDarkMode),
                         ),
+                      ],
+                    ),
                   ),
                   _buildUserHeader(user, statusColor, ref),
                 ],
@@ -233,9 +223,9 @@ class FriendDetailPage extends ConsumerWidget {
                         label: t.friendDetail.dateJoined,
                         value:
                             user.dateJoined !=
-                                    DateTime.fromMillisecondsSinceEpoch(0)
-                                ? DateFormatter.formatDate(user.dateJoined)
-                                : t.friendDetail.unknownGroup,
+                                DateTime.fromMillisecondsSinceEpoch(0)
+                            ? DateFormatter.formatDate(user.dateJoined)
+                            : t.friendDetail.unknownGroup,
                         isDarkMode: isDarkMode,
                       ),
                       InfoRow(
@@ -446,9 +436,8 @@ class FriendDetailPage extends ConsumerWidget {
         httpHeaders: headers,
         cacheManager: JsonCacheManager(),
         placeholder: (context, url) => Container(color: Colors.grey[300]),
-        errorWidget:
-            (context, url, error) =>
-                const Icon(Icons.person, size: 80, color: Colors.white70),
+        errorWidget: (context, url, error) =>
+            const Icon(Icons.person, size: 80, color: Colors.white70),
       );
     } else if (user.currentAvatarThumbnailImageUrl.isNotEmpty) {
       return CachedNetworkImage(
@@ -457,9 +446,8 @@ class FriendDetailPage extends ConsumerWidget {
         httpHeaders: headers,
         cacheManager: JsonCacheManager(),
         placeholder: (context, url) => Container(color: Colors.grey[300]),
-        errorWidget:
-            (context, url, error) =>
-                const Icon(Icons.person, size: 80, color: Colors.white70),
+        errorWidget: (context, url, error) =>
+            const Icon(Icons.person, size: 80, color: Colors.white70),
       );
     } else {
       return Container(
@@ -569,12 +557,11 @@ class FriendDetailPage extends ConsumerWidget {
           icon: Icons.link,
           isDarkMode: isDarkMode,
           customColor: Colors.teal,
-          children:
-              linkData.isEmpty
-                  ? [_buildLoadingLinksIndicator(isDarkMode)]
-                  : linkData
-                      .map((data) => _buildLinkItem(context, data, isDarkMode))
-                      .toList(),
+          children: linkData.isEmpty
+              ? [_buildLoadingLinksIndicator(isDarkMode)]
+              : linkData
+                    .map((data) => _buildLinkItem(context, data, isDarkMode))
+                    .toList(),
         );
       },
     );
@@ -611,30 +598,29 @@ class FriendDetailPage extends ConsumerWidget {
                 color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
                 borderRadius: BorderRadius.circular(4),
               ),
-              child:
-                  faviconUrl != null
-                      ? ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: Image.network(
-                          faviconUrl,
-                          width: 16,
-                          height: 16,
-                          errorBuilder:
-                              (context, error, stackTrace) => Icon(
-                                Icons.language,
-                                size: 16,
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[400]
-                                        : Colors.grey[600],
-                              ),
+              child: faviconUrl != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: CachedNetworkImage(
+                        imageUrl: faviconUrl,
+                        cacheManager: JsonCacheManager(),
+                        width: 16,
+                        height: 16,
+                        fit: BoxFit.contain,
+                        errorWidget: (context, error, stackTrace) => Icon(
+                          Icons.language,
+                          size: 16,
+                          color: isDarkMode
+                              ? Colors.grey[400]
+                              : Colors.grey[600],
                         ),
-                      )
-                      : Icon(
-                        Icons.language,
-                        size: 16,
-                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                       ),
+                    )
+                  : Icon(
+                      Icons.language,
+                      size: 16,
+                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                    ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -701,7 +687,7 @@ class FriendDetailPage extends ConsumerWidget {
   }
 
   String _extractDomain(String url) {
-    var processedUrl = url.replaceAll(RegExp(r'https?://'), '');
+    var processedUrl = url.replaceAll(RegExp('https?://'), '');
     processedUrl = processedUrl.split('/')[0];
     processedUrl = processedUrl.split('?')[0].split('#')[0];
     return processedUrl;
@@ -739,10 +725,9 @@ class FriendDetailPage extends ConsumerWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color:
-                              isDarkMode
-                                  ? Colors.grey[700]!
-                                  : Colors.grey[300]!,
+                          color: isDarkMode
+                              ? Colors.grey[700]!
+                              : Colors.grey[300]!,
                         ),
                       ),
                       child: ClipRRect(
@@ -752,36 +737,30 @@ class FriendDetailPage extends ConsumerWidget {
                           httpHeaders: headers,
                           cacheManager: JsonCacheManager(),
                           fit: BoxFit.cover,
-                          placeholder:
-                              (context, url) => Container(
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[800]
-                                        : Colors.grey[200],
-                                child: Icon(
-                                  Icons.group,
-                                  color:
-                                      isDarkMode
-                                          ? Colors.grey[600]
-                                          : Colors.grey[400],
-                                  size: 30,
-                                ),
-                              ),
-                          errorWidget:
-                              (context, url, error) => Container(
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[800]
-                                        : Colors.grey[200],
-                                child: Icon(
-                                  Icons.group,
-                                  color:
-                                      isDarkMode
-                                          ? Colors.grey[600]
-                                          : Colors.grey[400],
-                                  size: 30,
-                                ),
-                              ),
+                          placeholder: (context, url) => Container(
+                            color: isDarkMode
+                                ? Colors.grey[800]
+                                : Colors.grey[200],
+                            child: Icon(
+                              Icons.group,
+                              color: isDarkMode
+                                  ? Colors.grey[600]
+                                  : Colors.grey[400],
+                              size: 30,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            color: isDarkMode
+                                ? Colors.grey[800]
+                                : Colors.grey[200],
+                            child: Icon(
+                              Icons.group,
+                              color: isDarkMode
+                                  ? Colors.grey[600]
+                                  : Colors.grey[400],
+                              size: 30,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -803,10 +782,9 @@ class FriendDetailPage extends ConsumerWidget {
                             t.friendDetail.groupCode(code: group!.shortCode!),
                             style: GoogleFonts.notoSans(
                               fontSize: 14,
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[300]
-                                      : Colors.grey[700],
+                              color: isDarkMode
+                                  ? Colors.grey[300]
+                                  : Colors.grey[700],
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -818,10 +796,9 @@ class FriendDetailPage extends ConsumerWidget {
                             ),
                             style: GoogleFonts.notoSans(
                               fontSize: 14,
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[300]
-                                      : Colors.grey[700],
+                              color: isDarkMode
+                                  ? Colors.grey[300]
+                                  : Colors.grey[700],
                             ),
                           ),
                       ],
@@ -853,13 +830,12 @@ class FriendDetailPage extends ConsumerWidget {
           return const SizedBox.shrink();
         }
       },
-      loading:
-          () => const Center(
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ),
+      loading: () => const Center(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      ),
       error: (_, _) => const SizedBox.shrink(),
     );
   }
@@ -923,33 +899,32 @@ class FriendDetailPage extends ConsumerWidget {
             await _shareUserProfile(user);
         }
       },
-      itemBuilder:
-          (context) => [
-            _buildPopupMenuItem(
-              'block',
-              t.friendDetail.block,
-              Icons.block,
-              isDarkMode,
-            ),
-            _buildPopupMenuItem(
-              'mute',
-              t.friendDetail.mute,
-              Icons.volume_off,
-              isDarkMode,
-            ),
-            _buildPopupMenuItem(
-              'website',
-              t.friendDetail.openWebsite,
-              Icons.public,
-              isDarkMode,
-            ),
-            _buildPopupMenuItem(
-              'share',
-              t.friendDetail.shareProfile,
-              Icons.share_outlined,
-              isDarkMode,
-            ),
-          ],
+      itemBuilder: (context) => [
+        _buildPopupMenuItem(
+          'block',
+          t.friendDetail.block,
+          Icons.block,
+          isDarkMode,
+        ),
+        _buildPopupMenuItem(
+          'mute',
+          t.friendDetail.mute,
+          Icons.volume_off,
+          isDarkMode,
+        ),
+        _buildPopupMenuItem(
+          'website',
+          t.friendDetail.openWebsite,
+          Icons.public,
+          isDarkMode,
+        ),
+        _buildPopupMenuItem(
+          'share',
+          t.friendDetail.shareProfile,
+          Icons.share_outlined,
+          isDarkMode,
+        ),
+      ],
     );
   }
 
@@ -992,40 +967,39 @@ class FriendDetailPage extends ConsumerWidget {
   ) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(title, style: GoogleFonts.notoSans()),
-            content: Text(message, style: GoogleFonts.notoSans()),
-            backgroundColor: isDarkMode ? Colors.grey[850] : Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+      builder: (context) => AlertDialog(
+        title: Text(title, style: GoogleFonts.notoSans()),
+        content: Text(message, style: GoogleFonts.notoSans()),
+        backgroundColor: isDarkMode ? Colors.grey[850] : Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              t.common.cancel,
+              style: GoogleFonts.notoSans(
+                color: isDarkMode ? Colors.grey[300] : Colors.grey[800],
+              ),
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  t.common.cancel,
-                  style: GoogleFonts.notoSans(
-                    color: isDarkMode ? Colors.grey[300] : Colors.grey[800],
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  onConfirm();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Text(t.common.confirm, style: GoogleFonts.notoSans()),
-              ),
-            ],
           ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              onConfirm();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text(t.common.confirm, style: GoogleFonts.notoSans()),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1061,27 +1035,17 @@ class FriendDetailPage extends ConsumerWidget {
 
   // ユーザーのVRChatウェブサイトページを開くメソッド
   Future<void> _openUserWebsite(String userId) async {
-    final url = Uri.parse('https://vrchat.com/home/user/$userId');
-
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      debugPrint('URLを開けませんでした: $url');
-      // refコンテキストの代わりに現在のBuildContextを使用
-    }
+    await UrlLauncherUtils.launchExternalURL(
+      'https://vrchat.com/home/user/$userId',
+    );
   }
 
   // ユーザーのプロフィールを共有するメソッド
   Future<void> _shareUserProfile(User user) async {
-    final url = 'https://vrchat.com/home/user/${user.id}';
-
-    try {
-      await SharePlus.instance.share(
-        ShareParams(uri: Uri.parse(url), title: user.displayName),
-      );
-    } catch (e) {
-      debugPrint('共有に失敗しました: $e');
-    }
+    await ShareUtils.shareUrl(
+      'https://vrchat.com/home/user/${user.id}',
+      title: user.displayName,
+    );
   }
 }
 

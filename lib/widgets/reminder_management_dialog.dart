@@ -90,8 +90,9 @@ class ReminderManagementDialog extends ConsumerWidget {
                         style: GoogleFonts.notoSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color:
-                              isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          color: isDarkMode
+                              ? Colors.grey[400]
+                              : Colors.grey[600],
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -100,8 +101,9 @@ class ReminderManagementDialog extends ConsumerWidget {
                         t.reminder.setFromEvent,
                         style: GoogleFonts.notoSans(
                           fontSize: 14,
-                          color:
-                              isDarkMode ? Colors.grey[500] : Colors.grey[600],
+                          color: isDarkMode
+                              ? Colors.grey[500]
+                              : Colors.grey[600],
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -268,41 +270,38 @@ class ReminderManagementDialog extends ConsumerWidget {
   void _showClearAllDialog(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              t.reminder.deleteAll,
-              style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
-            ),
-            content: Text(
-              t.reminder.deleteAllConfirm,
-              style: GoogleFonts.notoSans(),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(t.reminder.cancel, style: GoogleFonts.notoSans()),
-              ),
-              TextButton(
-                onPressed: () {
-                  ref
-                      .read(eventReminderProvider.notifier)
-                      .cancelAllNotifications();
-                  Navigator.pop(context); // 確認ダイアログを閉じる
-                  Navigator.pop(context); // 管理ダイアログも閉じる
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(t.reminder.deletedAll),
-                      backgroundColor: Colors.red[700],
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                },
-                style: TextButton.styleFrom(foregroundColor: Colors.red),
-                child: Text(t.reminder.delete, style: GoogleFonts.notoSans()),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text(
+          t.reminder.deleteAll,
+          style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          t.reminder.deleteAllConfirm,
+          style: GoogleFonts.notoSans(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(t.reminder.cancel, style: GoogleFonts.notoSans()),
           ),
+          TextButton(
+            onPressed: () {
+              ref.read(eventReminderProvider.notifier).cancelAllNotifications();
+              Navigator.pop(context); // 確認ダイアログを閉じる
+              Navigator.pop(context); // 管理ダイアログも閉じる
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(t.reminder.deletedAll),
+                  backgroundColor: Colors.red[700],
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: Text(t.reminder.delete, style: GoogleFonts.notoSans()),
+          ),
+        ],
+      ),
     );
   }
 }

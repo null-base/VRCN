@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/provider/favorite_provider.dart' as favorites;
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/provider/world_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
+import 'package:vrchat/utils/share_utils.dart';
+import 'package:vrchat/utils/url_launcher_utils.dart';
 import 'package:vrchat/widgets/error_view.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class WorldDetailPage extends ConsumerWidget {
-  final String worldId;
-
   const WorldDetailPage({super.key, required this.worldId});
+  final String worldId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,14 +27,12 @@ class WorldDetailPage extends ConsumerWidget {
 
     return Scaffold(
       body: worldDetailAsync.when(
-        data:
-            (world) =>
-                _buildWorldDetailView(context, world, isDarkMode, headers, ref),
+        data: (world) =>
+            _buildWorldDetailView(context, world, isDarkMode, headers, ref),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error:
-            (error, _) => ErrorView(
-              message: t.worldDetail.error(error: error.toString()),
-            ),
+        error: (error, _) => ErrorView(
+          message: t.worldDetail.error(error: error.toString()),
+        ),
       ),
     );
   }
@@ -63,7 +61,7 @@ class WorldDetailPage extends ConsumerWidget {
                 const SizedBox(height: 24),
                 _buildTags(context, world, isDarkMode),
                 const SizedBox(height: 32),
-                // _buildActionButtons(context, world, isDarkMode, ref),
+                _buildActionButtons(context, world, isDarkMode, ref),
               ],
             ),
           ),
@@ -103,25 +101,23 @@ class WorldDetailPage extends ConsumerWidget {
               fit: BoxFit.cover,
               httpHeaders: headers,
               cacheManager: JsonCacheManager(),
-              placeholder:
-                  (context, url) => Container(
-                    color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-                      ),
-                    ),
+              placeholder: (context, url) => Container(
+                color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
                   ),
-              errorWidget:
-                  (context, url, error) => Container(
-                    color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                    child: const Icon(
-                      Icons.image_not_supported,
-                      color: Colors.green,
-                      size: 40,
-                    ),
-                  ),
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
+                color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+                child: const Icon(
+                  Icons.image_not_supported,
+                  color: Colors.green,
+                  size: 40,
+                ),
+              ),
             ),
           ],
         ),
@@ -146,29 +142,28 @@ class WorldDetailPage extends ConsumerWidget {
                 _launchVRChatWebsite(world.id);
             }
           },
-          itemBuilder:
-              (context) => [
-                PopupMenuItem<String>(
-                  value: 'website',
-                  child: Row(
-                    children: [
-                      const Icon(Icons.public, size: 20),
-                      const SizedBox(width: 12),
-                      Text(t.worldDetail.openInVRChat),
-                    ],
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'report',
-                  child: Row(
-                    children: [
-                      const Icon(Icons.report_problem, size: 20),
-                      const SizedBox(width: 12),
-                      Text(t.worldDetail.report),
-                    ],
-                  ),
-                ),
-              ],
+          itemBuilder: (context) => [
+            PopupMenuItem<String>(
+              value: 'website',
+              child: Row(
+                children: [
+                  const Icon(Icons.public, size: 20),
+                  const SizedBox(width: 12),
+                  Text(t.worldDetail.openInVRChat),
+                ],
+              ),
+            ),
+            PopupMenuItem<String>(
+              value: 'report',
+              child: Row(
+                children: [
+                  const Icon(Icons.report_problem, size: 20),
+                  const SizedBox(width: 12),
+                  Text(t.worldDetail.report),
+                ],
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -240,10 +235,9 @@ class WorldDetailPage extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color:
-            isDarkMode
-                ? Colors.grey[850]!.withValues(alpha: .5)
-                : Colors.grey[100],
+        color: isDarkMode
+            ? Colors.grey[850]!.withValues(alpha: .5)
+            : Colors.grey[100],
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
@@ -323,10 +317,9 @@ class WorldDetailPage extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color:
-                isDarkMode
-                    ? Colors.grey[850]!.withValues(alpha: 0.5)
-                    : Colors.grey[100],
+            color: isDarkMode
+                ? Colors.grey[850]!.withValues(alpha: 0.5)
+                : Colors.grey[100],
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
@@ -362,8 +355,9 @@ class WorldDetailPage extends ConsumerWidget {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children:
-              world.tags.map((tag) => _buildTagChip(tag, isDarkMode)).toList(),
+          children: world.tags
+              .map((tag) => _buildTagChip(tag, isDarkMode))
+              .toList(),
         ),
       ],
     );
@@ -383,74 +377,114 @@ class WorldDetailPage extends ConsumerWidget {
     );
   }
 
-  // Widget _buildActionButtons(
-  //   BuildContext context,
-  //   World world,
-  //   bool isDarkMode,
-  //   WidgetRef ref,
-  // ) {
-  //   return Row(
-  //     children: [
-  //       Expanded(
-  //         child: ElevatedButton.icon(
-  //           onPressed: () {
-  //             // TODO: ワールドへの参加処理
-  //             _joinWorld(context, world, ref);
-  //           },
-  //           icon: const Icon(Icons.public),
-  //           label: Text(
-  //             t.worldDetail.joinPublic,
-  //             style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
-  //           ),
-  //           style: ElevatedButton.styleFrom(
-  //             backgroundColor: Colors.green,
-  //             foregroundColor: Colors.white,
-  //             padding: const EdgeInsets.symmetric(vertical: 12),
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(8),
-  //             ),
-  //             elevation: 2,
-  //           ),
-  //         ),
-  //       ),
-  //       const SizedBox(width: 12),
-  //       IconButton(
-  //         onPressed: () {
-  //           // TODO: お気に入り登録処理
-  //           _toggleFavorite(context, world, ref);
-  //         },
-  //         icon: const Icon(Icons.favorite_border),
-  //         style: IconButton.styleFrom(
-  //           backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
-  //           foregroundColor: Colors.red,
-  //           padding: const EdgeInsets.all(12),
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(8),
-  //             side: BorderSide(color: Colors.red.withValues(alpha: 0.5)),
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget _buildActionButtons(
+    BuildContext context,
+    World world,
+    bool isDarkMode,
+    WidgetRef ref,
+  ) {
+    final favoriteWorldsAsync = ref.watch(favorites.favoriteWorldsProvider);
+    final favoriteAction = ref.watch(favorites.favoriteActionProvider);
+    final isFavorited =
+        favoriteWorldsAsync.value?.any(
+          (favorite) => favorite.favoriteId == world.id,
+        ) ??
+        false;
+    final isFavoriteLoading = favoriteAction.isLoading;
 
-  // void _joinWorld(BuildContext context, World world, WidgetRef ref) {
-  //   ScaffoldMessenger.of(
-  //     context,
-  //   ).showSnackBar(SnackBar(content: Text('${world.name}へ参加しようとしています...実装中')));
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: () => _launchVRChatWebsite(world.id),
+            icon: const Icon(Icons.public),
+            label: Text(
+              t.worldDetail.openInVRChat,
+              style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              elevation: 2,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        IconButton(
+          onPressed: isFavorited || isFavoriteLoading
+              ? null
+              : () => _addWorldToFavorites(context, world, ref),
+          icon: isFavoriteLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Icon(isFavorited ? Icons.favorite : Icons.favorite_border),
+          style: IconButton.styleFrom(
+            backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
+            foregroundColor: Colors.red,
+            disabledForegroundColor: Colors.red.withValues(alpha: 0.7),
+            padding: const EdgeInsets.all(12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(color: Colors.red.withValues(alpha: 0.5)),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-  //   // TODO:ここに実際のワールド参加ロジックを実装
-  //   // 例: ref.read(joinWorldProvider)(world.id);
-  // }
+  Future<void> _addWorldToFavorites(
+    BuildContext context,
+    World world,
+    WidgetRef ref,
+  ) async {
+    try {
+      final favoriteGroups = await ref.read(
+        favorites
+            .typedFavoriteGroupsProvider(favorites.FavoriteType.world)
+            .future,
+      );
+      if (favoriteGroups.isEmpty) {
+        throw Exception(t.favorites.emptyFolderDescription);
+      }
 
-  // void _toggleFavorite(BuildContext context, World world, WidgetRef ref) {
-  //   ScaffoldMessenger.of(
-  //     context,
-  //   ).showSnackBar(SnackBar(content: Text('${world.name}をお気に入りに追加しました。実装中')));
+      await ref
+          .read(favorites.favoriteActionProvider.notifier)
+          .addFavorite(
+            favoriteId: world.id,
+            type: favorites.FavoriteType.world,
+            tags: [favoriteGroups.first.name],
+          );
 
-  //   // TODO:ここに実際のお気に入り登録/解除ロジックを実装
-  //   // 例: ref.read(favoriteWorldProvider)(world.id);
-  // }
+      ref
+        ..invalidate(favorites.favoriteWorldsProvider)
+        ..invalidate(
+          favorites.allFavoritesProvider(favorites.FavoriteType.world),
+        );
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(t.worldDetail.favoriteAdded)),
+        );
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(t.favorites.removeFailed(error: error.toString())),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   String _formatDate(DateTime? date) {
     if (date == null) return t.worldDetail.unknown;
@@ -470,27 +504,15 @@ class WorldDetailPage extends ConsumerWidget {
 
 // ブラウザでVRChatウェブサイトを開くメソッド
 Future<void> _launchVRChatWebsite(String worldId) async {
-  final url = Uri.parse('https://vrchat.com/home/world/$worldId');
-  try {
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      throw 'Could not launch $url';
-    }
-  } catch (e) {
-    debugPrint('Error launching URL: $e');
-  }
+  await UrlLauncherUtils.launchExternalURL(
+    'https://vrchat.com/home/world/$worldId',
+  );
 }
 
 // ワールド情報を共有するメソッド
 Future<void> _shareWorld(World world) async {
-  final url = 'https://vrchat.com/home/world/${world.id}';
-
-  try {
-    await SharePlus.instance.share(
-      ShareParams(uri: Uri.parse(url), subject: world.name),
-    );
-  } catch (e) {
-    debugPrint('共有中にエラーが発生しました: $e');
-  }
+  await ShareUtils.shareUrl(
+    'https://vrchat.com/home/world/${world.id}',
+    subject: world.name,
+  );
 }

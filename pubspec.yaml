@@ -1,205 +1,61 @@
 name: vrchat
 description: "VRCN for VRChat"
 publish_to: "none"
-version: 1.2.5+155
+version: 1.3.0
 
 environment:
-  sdk: ^3.10.4
+  sdk: ^3.12.1
 
 dependencies:
+  app_links: ^7.1.1
+  cached_network_image: ^3.4.1
+  dio: ^5.9.2
+  favicon: ^1.1.2
+  firebase_analytics: ^12.4.3
+  firebase_core: ^4.11.0
+  firebase_crashlytics: ^5.2.4
+  firebase_messaging: ^16.4.1
+  firebase_remote_config: ^6.5.3
   flutter:
     sdk: flutter
-
+  flutter_animate: ^4.5.2
+  flutter_cache_manager: ^3.4.1
+  flutter_local_notifications: ^22.0.1
   flutter_localizations:
     sdk: flutter
-
-  # VRChat API
-  vrchat_dart: ^4.0.0
-  vrchat_dart_generated: ^1.20.6
-
-  # パス操作
-  path_provider: ^2.1.5
-  # デバイス情報取得
-  device_info_plus: ^11.5.0
-  # Apple製品名取得
-  apple_product_name: ^3.6.0
-
-  # 設定保存
-  shared_preferences: ^2.5.3
-
-  # セキュアストレージ
-  flutter_secure_storage: ^10.0.0
-
-  # 状態管理
-  flutter_riverpod: ^3.0.3
-  riverpod_annotation: ^3.0.3
-
-  # 環境変数
-  flutter_dotenv: ^6.0.0
-
-  # アプリ情報
-  package_info_plus: ^8.0.0
-
-  # 画像キャッシュ
-  cached_network_image: ^3.4.1
-  flutter_cache_manager: ^3.4.1
-
-  # Googleフォント
-  google_fonts: ^6.2.1
-
-  # アイコン切り替え
-  flutter_dynamic_icon_plus: ^1.3.1
-
-  # Firebase Core
-  firebase_core: ^4.0.0
-  # Firebase Analytics
-  firebase_analytics: ^12.0.0
-  # Firebase Crashlytics
-  firebase_crashlytics: ^5.0.0
-  # Firebase Performance Monitoring
-  firebase_performance: ^0.11.0
-  # Firebase Authentication
-  firebase_auth: ^6.0.0
-  # Cloud Firestore
-  cloud_firestore: ^6.0.0
-  # Cloud Storage
-  firebase_storage: ^13.0.0
-  # Cloud Messaging
-  firebase_messaging: ^16.0.0
-  # In-App Messaging
-  firebase_in_app_messaging: ^0.9.0
-  # App Check
-  firebase_app_check: ^0.4.0
-  # Firebase Remote Config
-  firebase_remote_config: ^6.0.0
-
-  # スプラッシュ画面
-  flutter_native_splash: ^2.4.4
-
-  # URL起動
-  url_launcher: ^6.3.1
-
-  # ローカル通知
-  flutter_local_notifications: ^19.1.0
-
-  # 画面遷移
-  go_router: ^17.0.0
-
-  # 日付・数値フォーマット
-  intl: any
-
-  # 共有
-  share_plus: ^12.0.1
-
-  # アニメーション
-  flutter_animate: ^4.5.2
-
-  # グリッドレイアウト
+  flutter_native_splash: ^2.4.8
+  flutter_riverpod: ^3.3.2
+  flutter_secure_storage: ^10.3.1
   flutter_staggered_grid_view: ^0.7.0
-  flutter_staggered_animations: ^1.1.1
-
-  # ローディング用シマー
-  shimmer: ^3.0.0
-
-  # ファビコン取得
-  favicon: ^1.1.2
-
-  # HTTP通信
-  http: ^1.4.0
-
-  # パレット抽出
-  material_color_utilities: ^0.11.1
-
-  # 生体認証
-  local_auth: ^3.0.0
-
-  # OSC通信
-  osc: ^1.0.0
-
-  # Deeplink対応
-  app_links: ^7.0.0
-
-  # タイムゾーン
-  timezone: ^0.10.1
-
-  # アプリアイコンバッジ
-  flutter_app_badge_control: ^0.0.2
-
-  # バックグラウンドサービス
-  flutter_background_service: ^5.1.0
-
-  # Shorebirdホットアップデート
-  shorebird_code_push: ^2.0.4
-
-  # HTTPクライアント
-  dio: ^5.8.0+1
-
-  # ファイル選択
-  file_picker: ^10.2.0
-
-  # 権限管理
-  permission_handler: ^12.0.1
-
-  # 画像選択
-  image_picker: ^1.1.2
-  # HTTPヘッダー解析
+  go_router: ^17.3.0
+  google_fonts: ^8.1.0
+  http: ^1.6.0
   http_parser: ^4.1.2
-  # パス操作
+  image_picker: ^1.2.2
+  in_app_review: ^2.0.12
+  intl: ^0.20.2
+  logger: ^2.7.0
+  material_color_utilities: ^0.13.0
+  mobile_scanner: ^7.2.0
+  osc: ^1.0.0
+  package_info_plus: ^9.0.0
   path: ^1.9.1
-  # ネットワーク情報取得
-  network_info_plus: ^7.0.0
-  # MIMEタイプ判定
-  mime: ^2.0.0
-  # ギャラリー操作
-  gal: ^2.3.2
-  # Bonjour/mDNSサービス
-  nsd: ^4.0.3
-  # QRコード生成
+  path_provider: ^2.1.6
   qr_flutter: ^4.1.0
-  # QRコードスキャン
-  mobile_scanner: ^7.0.1
-  # 画面輝度制御
-  screen_brightness: ^2.1.5
-  # Liquid Glass
-  liquid_glass_renderer: ^0.2.0-dev.4
-  # 高機能画像表示
-  extended_image: ^10.0.1
-  # 画像トリミング
-  image_cropper: ^11.0.0
-  # レビュー
-  in_app_review: ^2.0.10
-  # ウォレット
-  # flutter_wallet_card: ^4.0.4
-
-  # 多言語化
-  slang: ^4.11.1
-  slang_flutter: ^4.11.0
-
-  # 画像ビュー
-  photo_view: ^0.15.0
-  # 音楽再生
-  audioplayers: ^6.5.0
-
-  flutter_sharing_intent: ^2.0.4
-
-  # バージョン確認
-  new_version_plus: ^0.1.1
-
-  # AppsFlyer
-  appsflyer_sdk: ^6.17.5
-
-  # アイコン
-  font_awesome_flutter: ^10.10.0
+  screen_brightness: ^2.1.11
+  share_plus: ^12.0.2
+  shared_preferences: ^2.5.5
+  slang: ^4.16.0
+  slang_flutter: ^4.16.0
+  timezone: ^0.11.0
+  url_launcher: ^6.3.2
+  vrchat_dart: ^4.0.1
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^6.0.0
-  # rexios_lints: ^17.0.0
-  build_runner: ^2.10.4
-  riverpod_generator: ^3.0.3
+  build_runner: ^2.15.0
+  flutter_gen_runner: ^5.14.1
   flutter_launcher_icons: ^0.14.4
-  flutter_gen_runner: ^5.12.0
+  very_good_analysis: ^10.3.0
 
 flutter:
   uses-material-design: true
@@ -207,8 +63,3 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
-    - assets/google_fonts/
-    - shorebird.yaml
-    - path: .env
-      flavors:
-        - dev

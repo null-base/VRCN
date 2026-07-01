@@ -43,7 +43,6 @@
     "avatar": "Avatars",
     "group": "Groups",
     "inventory": "Inventory",
-    "vrcnsync": "VRCNSync (β)",
     "review": "Review",
     "feedback": "Feedback",
     "settings": "Settings",
@@ -265,8 +264,21 @@
     "loadingError": "Loading Error"
   },
   "notifications": {
+    "title": "Notifications",
     "emptyTitle": "No Notifications",
     "emptyDescription": "New notifications, like friend requests and invites,\nwill appear here.",
+    "all": "All",
+    "unread": "Unread (${count})",
+    "read": "Read",
+    "activity": "Friend log",
+    "onlineAlerts": "Online alerts",
+    "markAllRead": "Mark all as read",
+    "markAllReadDone": "All notifications marked as read.",
+    "deleteConfirmTitle": "Delete notification?",
+    "emptyUnread": "No unread notifications",
+    "emptyRead": "No read notifications",
+    "friendOnlineAlerts": "Friend online alerts",
+    "selectedCount": "${count} selected",
     "friendRequest": "You have a friend request from ${userName}.",
     "invite": "You have an invite to ${worldName} from ${userName}.",
     "friendOnline": "${userName} is now online.",
@@ -420,6 +432,7 @@
     "emoji": "Emoji",
     "sticker": "Sticker",
     "print": "Print",
+    "item": "Items",
     "upload": "Upload File",
     "uploadGallery": "Uploading gallery image...",
     "uploadIcon": "Uploading icon...",
@@ -471,58 +484,17 @@
         "emptyTitle": "No stickers",
         "emptyDescription": "Stickers you upload in VRChat will appear here.",
         "zoomHint": "Double-tap to zoom"
+      },
+      "inventoryItem": {
+        "loading": "Loading inventory...",
+        "error": "Failed to load inventory: ${error}",
+        "emptyTitle": "No inventory items",
+        "spawn": "Spawn",
+        "unequip": "Unequip",
+        "equipped": "Equipped: ${slot}",
+        "spawned": "${name} spawned"
       }
     }
-  },
-  "vrcnsync": {
-    "title": "VRCNSync (β)",
-    "betaTitle": "Beta Feature",
-    "betaDescription": "This feature is a beta version under development. Unexpected issues may occur.\nCurrently, it is only implemented locally, but a cloud version will be implemented if there is demand.",
-    "githubLink": "VRCNSync GitHub Page",
-    "openGithub": "Open GitHub Page",
-    "serverRunning": "Server Running",
-    "serverStopped": "Server Stopped",
-    "serverRunningDesc": "Saves photos from your PC to the VRCN album.",
-    "serverStoppedDesc": "The server is stopped.",
-    "photoSaved": "Photo saved to VRCN album.",
-    "photoReceived": "Photo received (failed to save to album).",
-    "openAlbum": "Open Album",
-    "permissionErrorIos": "Access to the photo library is required.",
-    "permissionErrorAndroid": "Access to storage is required.",
-    "openSettings": "Open Settings",
-    "initError": "Initialization failed: ${error}",
-    "openPhotoAppError": "Could not open the photo app.",
-    "serverInfo": "Server Information",
-    "ip": "IP: ${ip}",
-    "port": "Port: ${port}",
-    "address": "${ip}:${port}",
-    "autoSave": "Received photos are automatically saved to the \"VRCN\" album.",
-    "usage": "How to Use",
-    "usageSteps": [
-      {
-        "title": "Launch the VRCNSync app on your PC",
-        "desc": "Please launch the VRCNSync app on your PC."
-      },
-      {
-        "title": "Connect to the same WiFi network",
-        "desc": "Please connect your PC and mobile device to the same WiFi network."
-      },
-      {
-        "title": "Specify the mobile device as the destination",
-        "desc": "Please specify the IP address and port above in the PC app."
-      },
-      {
-        "title": "Send photos",
-        "desc": "When you send photos from your PC, they will be automatically saved to the VRCN album."
-      }
-    ],
-    "stats": "Connection Status",
-    "statServer": "Server Status",
-    "statServerRunning": "Running",
-    "statServerStopped": "Stopped",
-    "statNetwork": "Network",
-    "statNetworkConnected": "Connected",
-    "statNetworkDisconnected": "Disconnected"
   },
   "feedback": {
     "title": "Feedback",
@@ -611,21 +583,7 @@
     }
   },
   "download": {
-    "success": "Download complete.",
-    "failure": "Download failed: ${error}",
     "shareFailure": "Sharing failed: ${error}",
-    "permissionTitle": "Permission Required",
-    "permissionDenied": "Permission to save to ${permissionType} has been denied.\nPlease enable the permission from the settings app.",
-    "permissionCancel": "Cancel",
-    "permissionOpenSettings": "Open Settings",
-    "permissionPhoto": "Photos",
-    "permissionPhotoLibrary": "Photo Library",
-    "permissionStorage": "Storage",
-    "permissionPhotoRequired": "Permission to save to photos is required.",
-    "permissionPhotoLibraryRequired": "Permission to save to photo library is required.",
-    "permissionStorageRequired": "Permission to access storage is required.",
-    "permissionError": "An error occurred while checking permissions: ${error}",
-    "downloading": "Downloading ${fileName}...",
     "sharing": "Preparing to share ${fileName}..."
   },
   "instance": {

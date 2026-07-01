@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 /// アプリのキャッシュを管理するサービスクラス
 class CacheService {
@@ -19,7 +19,7 @@ class CacheService {
       // サイズを読みやすいフォーマットに変換
       return _formatSize(totalSize);
     } catch (e) {
-      debugPrint('キャッシュサイズ計算エラー: $e');
+      appLogger.d('キャッシュサイズ計算エラー: $e');
       return '計算できませんでした';
     }
   }
@@ -42,7 +42,7 @@ class CacheService {
 
       return true;
     } catch (e) {
-      debugPrint('キャッシュ削除エラー: $e');
+      appLogger.d('キャッシュ削除エラー: $e');
       return false;
     }
   }
@@ -63,7 +63,7 @@ class CacheService {
 
       return totalSize;
     } catch (e) {
-      debugPrint('ディレクトリサイズ計算エラー: $e');
+      appLogger.d('ディレクトリサイズ計算エラー: $e');
       return 0;
     }
   }
@@ -81,7 +81,7 @@ class CacheService {
         }
       }
     } catch (e) {
-      debugPrint('ディレクトリ内容削除エラー: $e');
+      appLogger.d('ディレクトリ内容削除エラー: $e');
     }
   }
 

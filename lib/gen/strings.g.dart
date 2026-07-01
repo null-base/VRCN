@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 5
-/// Strings: 3050 (610 per locale)
+/// Strings: 2890 (578 per locale)
 ///
-/// Built on 2025-12-17 at 09:43 UTC
+/// Built on 2026-06-30 at 04:20 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
@@ -18,21 +18,21 @@ import 'package:slang/generated.dart';
 import 'package:slang_flutter/slang_flutter.dart';
 export 'package:slang_flutter/slang_flutter.dart';
 
-import 'strings_en.g.dart' deferred as l_en;
+import 'strings_ja.g.dart' deferred as l_ja;
 import 'strings_ko.g.dart' deferred as l_ko;
 import 'strings_zh_CN.g.dart' deferred as l_zh_CN;
 import 'strings_zh_TW.g.dart' deferred as l_zh_TW;
-part 'strings_ja.g.dart';
+part 'strings_en.g.dart';
 
 /// Supported locales.
 ///
 /// Usage:
-/// - LocaleSettings.setLocale(AppLocale.ja) // set locale
-/// - Locale locale = AppLocale.ja.flutterLocale // get flutter locale from enum
-/// - if (LocaleSettings.currentLocale == AppLocale.ja) // locale check
+/// - LocaleSettings.setLocale(AppLocale.en) // set locale
+/// - Locale locale = AppLocale.en.flutterLocale // get flutter locale from enum
+/// - if (LocaleSettings.currentLocale == AppLocale.en) // locale check
 enum AppLocale with BaseAppLocale<AppLocale, Translations> {
-	ja(languageCode: 'ja'),
 	en(languageCode: 'en'),
+	ja(languageCode: 'ja'),
 	ko(languageCode: 'ko'),
 	zhCn(languageCode: 'zh', countryCode: 'CN'),
 	zhTw(languageCode: 'zh', countryCode: 'TW');
@@ -54,15 +54,15 @@ enum AppLocale with BaseAppLocale<AppLocale, Translations> {
 		PluralResolver? ordinalResolver,
 	}) async {
 		switch (this) {
-			case AppLocale.ja:
-				return TranslationsJa(
+			case AppLocale.en:
+				return TranslationsEn(
 					overrides: overrides,
 					cardinalResolver: cardinalResolver,
 					ordinalResolver: ordinalResolver,
 				);
-			case AppLocale.en:
-				await l_en.loadLibrary();
-				return l_en.TranslationsEn(
+			case AppLocale.ja:
+				await l_ja.loadLibrary();
+				return l_ja.TranslationsJa(
 					overrides: overrides,
 					cardinalResolver: cardinalResolver,
 					ordinalResolver: ordinalResolver,
@@ -98,14 +98,14 @@ enum AppLocale with BaseAppLocale<AppLocale, Translations> {
 		PluralResolver? ordinalResolver,
 	}) {
 		switch (this) {
-			case AppLocale.ja:
-				return TranslationsJa(
+			case AppLocale.en:
+				return TranslationsEn(
 					overrides: overrides,
 					cardinalResolver: cardinalResolver,
 					ordinalResolver: ordinalResolver,
 				);
-			case AppLocale.en:
-				return l_en.TranslationsEn(
+			case AppLocale.ja:
+				return l_ja.TranslationsJa(
 					overrides: overrides,
 					cardinalResolver: cardinalResolver,
 					ordinalResolver: ordinalResolver,
@@ -213,7 +213,7 @@ class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, Translations> 
 /// Provides utility functions without any side effects.
 class AppLocaleUtils extends BaseAppLocaleUtils<AppLocale, Translations> {
 	AppLocaleUtils._() : super(
-		baseLocale: AppLocale.ja,
+		baseLocale: AppLocale.en,
 		locales: AppLocale.values,
 	);
 

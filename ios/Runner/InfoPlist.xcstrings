@@ -1,5 +1,5 @@
 {
-  "sourceLanguage" : "ja",
+  "sourceLanguage" : "en",
   "strings" : {
     "CFBundleDisplayName" : {
       "comment" : "Bundle display name",
@@ -73,18 +73,11 @@
     },
     "NSCameraUsageDescription" : {
       "comment" : "Privacy - Camera Usage Description",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Use the camera to scan QR codes"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "QRコードをスキャンするためにカメラを使用します"
           }
         },
         "ko" : {
@@ -214,18 +207,11 @@
     },
     "NSPhotoLibraryUsageDescription" : {
       "comment" : "Privacy - Photo Library Usage Description",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Access the photo library to select images"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "画像を選択するために写真ライブラリにアクセスします"
           }
         },
         "ko" : {

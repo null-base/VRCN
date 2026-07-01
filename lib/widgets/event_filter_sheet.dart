@@ -7,14 +7,13 @@ import 'package:vrchat/provider/event_filter_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
 
 class FilterBottomSheet extends ConsumerWidget {
-  final bool isDarkMode;
-  final Map<String, int> genres;
-
   const FilterBottomSheet({
     super.key,
     required this.isDarkMode,
     required this.genres,
   });
+  final bool isDarkMode;
+  final Map<String, int> genres;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,18 +22,18 @@ class FilterBottomSheet extends ConsumerWidget {
     final primaryColor = Theme.of(context).colorScheme.primary;
 
     // ジャンルをイベント数でソート
-    final sortedGenres =
-        genres.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    final sortedGenres = genres.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
 
     // セクションの背景色
-    final sectionColor =
-        isDarkMode ? const Color(0xFF222222) : const Color(0xFFF5F5F5);
+    final sectionColor = isDarkMode
+        ? const Color(0xFF222222)
+        : const Color(0xFFF5F5F5);
 
     // 境界線の色
-    final borderColor =
-        isDarkMode
-            ? Colors.white.withValues(alpha: 0.15)
-            : Colors.grey.withValues(alpha: 0.25);
+    final borderColor = isDarkMode
+        ? Colors.white.withValues(alpha: 0.15)
+        : Colors.grey.withValues(alpha: 0.25);
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
@@ -93,8 +92,8 @@ class FilterBottomSheet extends ConsumerWidget {
                   ],
                 ),
                 TextButton.icon(
-                  onPressed:
-                      () => ref.read(eventFilterProvider.notifier).clearAll(),
+                  onPressed: () =>
+                      ref.read(eventFilterProvider.notifier).clearAll(),
                   icon: const Icon(Icons.refresh, size: 18),
                   label: Text(
                     'クリア',
@@ -134,8 +133,9 @@ class FilterBottomSheet extends ConsumerWidget {
                         color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                       ),
                       filled: true,
-                      fillColor:
-                          isDarkMode ? Colors.grey[850] : Colors.grey[100],
+                      fillColor: isDarkMode
+                          ? Colors.grey[850]
+                          : Colors.grey[100],
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide.none,
@@ -158,10 +158,9 @@ class FilterBottomSheet extends ConsumerWidget {
                       color: isDarkMode ? Colors.white : Colors.black87,
                     ),
                     cursorColor: primaryColor,
-                    onChanged:
-                        (value) => ref
-                            .read(eventFilterProvider.notifier)
-                            .setSearchQuery(value),
+                    onChanged: (value) => ref
+                        .read(eventFilterProvider.notifier)
+                        .setSearchQuery(value),
                   ),
                   isDarkMode: isDarkMode,
                   backgroundColor: sectionColor,
@@ -187,10 +186,9 @@ class FilterBottomSheet extends ConsumerWidget {
                         ),
                         margin: const EdgeInsets.only(bottom: 12),
                         decoration: BoxDecoration(
-                          color:
-                              isDarkMode
-                                  ? Colors.blue.withValues(alpha: 0.1)
-                                  : Colors.blue.withValues(alpha: 0.05),
+                          color: isDarkMode
+                              ? Colors.blue.withValues(alpha: 0.1)
+                              : Colors.blue.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: Colors.blue.withValues(
@@ -249,10 +247,9 @@ class FilterBottomSheet extends ConsumerWidget {
                             width: 20,
                             height: 2,
                             decoration: BoxDecoration(
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[700]
-                                      : Colors.grey[300],
+                              color: isDarkMode
+                                  ? Colors.grey[700]
+                                  : Colors.grey[300],
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
@@ -306,10 +303,9 @@ class FilterBottomSheet extends ConsumerWidget {
                         ),
                         margin: const EdgeInsets.only(bottom: 12),
                         decoration: BoxDecoration(
-                          color:
-                              isDarkMode
-                                  ? Colors.green.withValues(alpha: 0.1)
-                                  : Colors.green.withValues(alpha: 0.05),
+                          color: isDarkMode
+                              ? Colors.green.withValues(alpha: 0.1)
+                              : Colors.green.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: Colors.green.withValues(
@@ -367,10 +363,9 @@ class FilterBottomSheet extends ConsumerWidget {
                             width: 20,
                             height: 2,
                             decoration: BoxDecoration(
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[700]
-                                      : Colors.grey[300],
+                              color: isDarkMode
+                                  ? Colors.grey[700]
+                                  : Colors.grey[300],
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
@@ -425,10 +420,9 @@ class FilterBottomSheet extends ConsumerWidget {
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color:
-                                isDarkMode
-                                    ? primaryColor.withValues(alpha: 0.15)
-                                    : primaryColor.withValues(alpha: 0.08),
+                            color: isDarkMode
+                                ? primaryColor.withValues(alpha: 0.15)
+                                : primaryColor.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: primaryColor.withValues(
@@ -460,21 +454,20 @@ class FilterBottomSheet extends ConsumerWidget {
                       Wrap(
                         spacing: 8,
                         runSpacing: 12,
-                        children:
-                            sortedGenres.map((entry) {
-                              filter.selectedGenres.contains(entry.key);
+                        children: sortedGenres.map((entry) {
+                          filter.selectedGenres.contains(entry.key);
 
-                              // ジャンルごとの色を決定
-                              _getGenreColor(entry.key, isDarkMode);
+                          // ジャンルごとの色を決定
+                          _getGenreColor(entry.key, isDarkMode);
 
-                              return _buildGenreChip(
-                                entry,
-                                filter,
-                                isDarkMode,
-                                primaryColor,
-                                ref,
-                              );
-                            }).toList(),
+                          return _buildGenreChip(
+                            entry,
+                            filter,
+                            isDarkMode,
+                            primaryColor,
+                            ref,
+                          );
+                        }).toList(),
                       ),
                     ],
                   ),
@@ -498,10 +491,9 @@ class FilterBottomSheet extends ConsumerWidget {
               color: isDarkMode ? const Color(0xFF1A1A1A) : Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color:
-                      isDarkMode
-                          ? Colors.black.withValues(alpha: 0.3)
-                          : Colors.black.withValues(alpha: 0.05),
+                  color: isDarkMode
+                      ? Colors.black.withValues(alpha: 0.3)
+                      : Colors.black.withValues(alpha: 0.05),
                   blurRadius: 8,
                   offset: const Offset(0, -4),
                 ),
@@ -571,10 +563,9 @@ class FilterBottomSheet extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color:
-                        isDarkMode
-                            ? AppTheme.primaryColor.withValues(alpha: 0.2)
-                            : AppTheme.primaryColor.withValues(alpha: 0.1),
+                    color: isDarkMode
+                        ? AppTheme.primaryColor.withValues(alpha: 0.2)
+                        : AppTheme.primaryColor.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(icon, color: AppTheme.primaryColor, size: 18),
@@ -649,22 +640,20 @@ class FilterBottomSheet extends ConsumerWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           decoration: BoxDecoration(
-            color:
-                hasValue
-                    ? isDarkMode
-                        ? primaryColor.withValues(alpha: .15)
-                        : primaryColor.withValues(alpha: 0.05)
-                    : isDarkMode
-                    ? Colors.grey[850]
-                    : Colors.grey[100],
+            color: hasValue
+                ? isDarkMode
+                      ? primaryColor.withValues(alpha: .15)
+                      : primaryColor.withValues(alpha: 0.05)
+                : isDarkMode
+                ? Colors.grey[850]
+                : Colors.grey[100],
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color:
-                  hasValue
-                      ? primaryColor.withValues(alpha: isDarkMode ? 0.5 : 0.3)
-                      : isDarkMode
-                      ? Colors.grey[700]!
-                      : Colors.grey[300]!,
+              color: hasValue
+                  ? primaryColor.withValues(alpha: isDarkMode ? 0.5 : 0.3)
+                  : isDarkMode
+                  ? Colors.grey[700]!
+                  : Colors.grey[300]!,
               width: hasValue ? 1.5 : 1,
             ),
           ),
@@ -679,12 +668,11 @@ class FilterBottomSheet extends ConsumerWidget {
                     labelText,
                     style: GoogleFonts.notoSans(
                       fontSize: 12,
-                      color:
-                          hasValue
-                              ? primaryColor
-                              : isDarkMode
-                              ? Colors.grey[400]
-                              : Colors.grey[600],
+                      color: hasValue
+                          ? primaryColor
+                          : isDarkMode
+                          ? Colors.grey[400]
+                          : Colors.grey[600],
                     ),
                   ),
                   if (hasValue)
@@ -707,12 +695,11 @@ class FilterBottomSheet extends ConsumerWidget {
                         ? Icons.calendar_today_rounded
                         : Icons.event_rounded,
                     size: 18,
-                    color:
-                        hasValue
-                            ? primaryColor
-                            : isDarkMode
-                            ? Colors.grey[400]
-                            : Colors.grey[600],
+                    color: hasValue
+                        ? primaryColor
+                        : isDarkMode
+                        ? Colors.grey[400]
+                        : Colors.grey[600],
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -721,16 +708,16 @@ class FilterBottomSheet extends ConsumerWidget {
                       hasValue ? dateFormat.format(date) : '選択してください',
                       style: GoogleFonts.notoSans(
                         fontSize: 15,
-                        fontWeight:
-                            hasValue ? FontWeight.w500 : FontWeight.normal,
-                        color:
-                            hasValue
-                                ? isDarkMode
-                                    ? Colors.white
-                                    : Colors.black87
-                                : isDarkMode
-                                ? Colors.grey[400]
-                                : Colors.grey[600],
+                        fontWeight: hasValue
+                            ? FontWeight.w500
+                            : FontWeight.normal,
+                        color: hasValue
+                            ? isDarkMode
+                                  ? Colors.white
+                                  : Colors.black87
+                            : isDarkMode
+                            ? Colors.grey[400]
+                            : Colors.grey[600],
                       ),
                       overflow: TextOverflow.ellipsis, // オーバーフロー時に省略
                     ),
@@ -763,7 +750,6 @@ class FilterBottomSheet extends ConsumerWidget {
       child: InkWell(
         onTap: () async {
           final selected = await showTimePicker(
-            
             context: context,
             initialTime: time ?? TimeOfDay.now(),
             builder: (context, child) {
@@ -785,22 +771,20 @@ class FilterBottomSheet extends ConsumerWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           decoration: BoxDecoration(
-            color:
-                hasValue
-                    ? isDarkMode
-                        ? primaryColor.withValues(alpha: 0.15)
-                        : primaryColor.withValues(alpha: 0.05)
-                    : isDarkMode
-                    ? Colors.grey[850]
-                    : Colors.grey[100],
+            color: hasValue
+                ? isDarkMode
+                      ? primaryColor.withValues(alpha: 0.15)
+                      : primaryColor.withValues(alpha: 0.05)
+                : isDarkMode
+                ? Colors.grey[850]
+                : Colors.grey[100],
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color:
-                  hasValue
-                      ? primaryColor.withValues(alpha: isDarkMode ? 0.5 : 0.3)
-                      : isDarkMode
-                      ? Colors.grey[700]!
-                      : Colors.grey[300]!,
+              color: hasValue
+                  ? primaryColor.withValues(alpha: isDarkMode ? 0.5 : 0.3)
+                  : isDarkMode
+                  ? Colors.grey[700]!
+                  : Colors.grey[300]!,
               width: hasValue ? 1.5 : 1,
             ),
           ),
@@ -814,12 +798,11 @@ class FilterBottomSheet extends ConsumerWidget {
                     labelText,
                     style: GoogleFonts.notoSans(
                       fontSize: 12,
-                      color:
-                          hasValue
-                              ? primaryColor
-                              : isDarkMode
-                              ? Colors.grey[400]
-                              : Colors.grey[600],
+                      color: hasValue
+                          ? primaryColor
+                          : isDarkMode
+                          ? Colors.grey[400]
+                          : Colors.grey[600],
                     ),
                   ),
                   if (hasValue)
@@ -841,12 +824,11 @@ class FilterBottomSheet extends ConsumerWidget {
                         ? Icons.access_time_rounded
                         : Icons.schedule_rounded,
                     size: 18,
-                    color:
-                        hasValue
-                            ? primaryColor
-                            : isDarkMode
-                            ? Colors.grey[400]
-                            : Colors.grey[600],
+                    color: hasValue
+                        ? primaryColor
+                        : isDarkMode
+                        ? Colors.grey[400]
+                        : Colors.grey[600],
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -857,16 +839,16 @@ class FilterBottomSheet extends ConsumerWidget {
                           : '選択してください',
                       style: GoogleFonts.notoSans(
                         fontSize: 15,
-                        fontWeight:
-                            hasValue ? FontWeight.w500 : FontWeight.normal,
-                        color:
-                            hasValue
-                                ? isDarkMode
-                                    ? Colors.white
-                                    : Colors.black87
-                                : isDarkMode
-                                ? Colors.grey[400]
-                                : Colors.grey[600],
+                        fontWeight: hasValue
+                            ? FontWeight.w500
+                            : FontWeight.normal,
+                        color: hasValue
+                            ? isDarkMode
+                                  ? Colors.white
+                                  : Colors.black87
+                            : isDarkMode
+                            ? Colors.grey[400]
+                            : Colors.grey[600],
                       ),
                       overflow: TextOverflow.ellipsis, // 長いテキストは省略
                     ),
@@ -1039,39 +1021,35 @@ class FilterBottomSheet extends ConsumerWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200), // アニメーション時間を少し短く
         decoration: BoxDecoration(
-          color:
-              isSelected
-                  ? baseColor.withValues(alpha: isDarkMode ? 0.3 : 0.2)
-                  : isDarkMode
-                  ? Colors.grey[800]!
-                  : Colors.grey[200]!,
+          color: isSelected
+              ? baseColor.withValues(alpha: isDarkMode ? 0.3 : 0.2)
+              : isDarkMode
+              ? Colors.grey[800]!
+              : Colors.grey[200]!,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color:
-                isSelected
-                    ? baseColor.withValues(alpha: isDarkMode ? 0.6 : 0.5)
-                    : isDarkMode
-                    ? Colors.grey[700]!
-                    : Colors.grey[300]!,
+            color: isSelected
+                ? baseColor.withValues(alpha: isDarkMode ? 0.6 : 0.5)
+                : isDarkMode
+                ? Colors.grey[700]!
+                : Colors.grey[300]!,
             width: isSelected ? 1.5 : 1,
           ),
-          boxShadow:
-              isSelected
-                  ? [
-                    BoxShadow(
-                      color: baseColor.withValues(
-                        alpha: isDarkMode ? 0.2 : 0.1,
-                      ),
-                      blurRadius: 3,
-                      offset: const Offset(0, 1),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: baseColor.withValues(
+                      alpha: isDarkMode ? 0.2 : 0.1,
                     ),
-                  ]
-                  : null,
+                    blurRadius: 3,
+                    offset: const Offset(0, 1),
+                  ),
+                ]
+              : null,
         ),
         child: InkWell(
-          onTap:
-              () =>
-                  ref.read(eventFilterProvider.notifier).toggleGenre(entry.key),
+          onTap: () =>
+              ref.read(eventFilterProvider.notifier).toggleGenre(entry.key),
           borderRadius: BorderRadius.circular(20),
           splashColor: baseColor.withValues(alpha: 0.1),
           highlightColor: baseColor.withValues(alpha: 0.05),
@@ -1090,14 +1068,14 @@ class FilterBottomSheet extends ConsumerWidget {
                     entry.key,
                     style: GoogleFonts.notoSans(
                       fontSize: 13,
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
-                      color:
-                          isSelected
-                              ? baseColor
-                              : isDarkMode
-                              ? Colors.grey[300]
-                              : Colors.grey[800],
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: isSelected
+                          ? baseColor
+                          : isDarkMode
+                          ? Colors.grey[300]
+                          : Colors.grey[800],
                     ),
                     overflow: TextOverflow.ellipsis, // 長いテキストは省略
                   ),
@@ -1109,12 +1087,11 @@ class FilterBottomSheet extends ConsumerWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color:
-                        isSelected
-                            ? baseColor.withValues(alpha: 0.2)
-                            : isDarkMode
-                            ? Colors.grey[700]
-                            : Colors.grey[300],
+                    color: isSelected
+                        ? baseColor.withValues(alpha: 0.2)
+                        : isDarkMode
+                        ? Colors.grey[700]
+                        : Colors.grey[300],
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
@@ -1122,12 +1099,11 @@ class FilterBottomSheet extends ConsumerWidget {
                     style: GoogleFonts.notoSans(
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
-                      color:
-                          isSelected
-                              ? baseColor
-                              : isDarkMode
-                              ? Colors.grey[300]
-                              : Colors.grey[800],
+                      color: isSelected
+                          ? baseColor
+                          : isDarkMode
+                          ? Colors.grey[300]
+                          : Colors.grey[800],
                     ),
                   ),
                 ),

@@ -1,20 +1,22 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 /// FirebaseAnalyticsのインスタンス
-final analyticsRepository = Provider((ref) => AnalyticsService());
+final Provider<AnalyticsService> analyticsRepository = Provider(
+  (ref) => AnalyticsService(),
+);
 
 /// FirebaseAnalyticsObserverのインスタンス
-final analyticsObserverRepository = Provider(
-  (ref) => FirebaseAnalyticsObserver(
-    analytics: FirebaseAnalytics.instance,
-    nameExtractor: (settings) {
-      return settings.name;
-    },
-  ),
-);
+final Provider<FirebaseAnalyticsObserver> analyticsObserverRepository =
+    Provider(
+      (ref) => FirebaseAnalyticsObserver(
+        analytics: FirebaseAnalytics.instance,
+        nameExtractor: (settings) {
+          return settings.name;
+        },
+      ),
+    );
 
 /// Analyticsサービスクラス
 class AnalyticsService {
@@ -22,7 +24,7 @@ class AnalyticsService {
 
   // 画面表示のログ記録
   void logScreenView({required String screenName}) {
-    debugPrint('Screen view: $screenName');
+    appLogger.d('Screen view: $screenName');
     _analytics.logScreenView(screenName: screenName);
   }
 

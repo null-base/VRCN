@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart'; // 多言語化パッケージ
+import 'package:vrchat/provider/package_info_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
@@ -32,57 +32,32 @@ class AppDrawer extends ConsumerWidget {
       elevation: 0,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors:
-                isDarkMode
-                    ? [const Color(0xFF141E30), const Color(0xFF243B55)]
-                    : [Colors.white, const Color(0xFFF5F7FA)],
-          ),
-          borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(16),
-            bottomRight: Radius.circular(16),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 15,
-              offset: const Offset(5, 0),
+          color: Theme.of(context).colorScheme.surface,
+          border: Border(
+            right: BorderSide(
+              color: Theme.of(context).colorScheme.outlineVariant,
             ),
-          ],
+          ),
         ),
         child: Column(
           children: [
             // ユーザー情報ヘッダー
             currentUserAsync.when(
-              data:
-                  (user) => _buildEnhancedHeader(
-                    context,
-                    user,
-                    headers,
-                    isDarkMode,
-                    t,
-                  ),
+              data: (user) =>
+                  _buildEnhancedHeader(context, user, headers, isDarkMode, t),
               loading: () => _buildStylishLoadingHeader(context, isDarkMode, t),
-              error:
-                  (_, _) =>
-                      _buildEnhancedErrorHeader(context, ref, isDarkMode, t),
+              error: (_, _) =>
+                  _buildEnhancedErrorHeader(context, ref, isDarkMode, t),
             ),
 
             // メニュー項目
             Expanded(
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color:
-                      isDarkMode
-                          ? const Color(0xFF1A1F2C).withValues(alpha: 0.9)
-                          : Colors.white.withValues(alpha: 0.9),
+                  color: Theme.of(context).colorScheme.surface,
                 ),
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(32),
-                  ),
+                  borderRadius: BorderRadius.zero,
                   child: Column(
                     children: [
                       // スクロール可能なメニュー部分
@@ -132,17 +107,6 @@ class AppDrawer extends ConsumerWidget {
                                     },
                                   ),
                                   _MenuItem(
-                                    icon: Icons.rss_feed,
-                                    title: 'フレンドログ',
-                                    isSelected: GoRouterState.of(
-                                      context,
-                                    ).uri.path.startsWith('/notifications'),
-                                    onTap: () {
-                                      context.push('/notifications');
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  _MenuItem(
                                     icon: Icons.calendar_month,
                                     title: t.drawer.eventCalendar,
                                     isSelected: GoRouterState.of(
@@ -158,6 +122,7 @@ class AppDrawer extends ConsumerWidget {
 
                               // コンテンツセクション
                               _buildSectionHeader(
+                                context,
                                 t.drawer.section.content,
                                 isDarkMode,
                               ),
@@ -203,6 +168,7 @@ class AppDrawer extends ConsumerWidget {
 
                               // 設定セクション
                               _buildSectionHeader(
+                                context,
                                 t.drawer.section.other,
                                 isDarkMode,
                               ),
@@ -210,17 +176,6 @@ class AppDrawer extends ConsumerWidget {
                                 context: context,
                                 isDarkMode: isDarkMode,
                                 items: [
-                                  _MenuItem(
-                                    imagePath: Assets.images.logo.path,
-                                    title: t.drawer.vrcnsync,
-                                    isSelected:
-                                        GoRouterState.of(context).uri.path ==
-                                        '/vrcnsync',
-                                    onTap: () {
-                                      context.push('/vrcnsync');
-                                      Navigator.pop(context);
-                                    },
-                                  ),
                                   _MenuItem(
                                     icon: Icons.star_outlined,
                                     title: t.drawer.review,
@@ -238,8 +193,8 @@ class AppDrawer extends ConsumerWidget {
                                       Navigator.pop(context);
                                       showDialog(
                                         context: context,
-                                        builder:
-                                            (context) => const FeedbackDialog(),
+                                        builder: (context) =>
+                                            const FeedbackDialog(),
                                       );
                                     },
                                   ),
@@ -261,7 +216,7 @@ class AppDrawer extends ConsumerWidget {
                               const SizedBox(height: 20),
 
                               // フッターセクション（固定）
-                              _buildFooterSection(isDarkMode),
+                              _buildFooterSection(ref, isDarkMode),
                             ],
                           ),
                         ),
@@ -278,7 +233,11 @@ class AppDrawer extends ConsumerWidget {
   }
 
   // セクションヘッダー
-  Widget _buildSectionHeader(String title, bool isDarkMode) {
+  Widget _buildSectionHeader(
+    BuildContext context,
+    String title,
+    bool isDarkMode,
+  ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
       child: Row(
@@ -288,15 +247,14 @@ class AppDrawer extends ConsumerWidget {
             style: GoogleFonts.notoSans(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
-              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(width: 4),
           Expanded(
             child: Container(
               height: 1,
-              color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+              color: Theme.of(context).colorScheme.outlineVariant,
             ),
           ),
         ],
@@ -308,113 +266,73 @@ class AppDrawer extends ConsumerWidget {
   Widget _buildAnimatedMenuItem({
     required BuildContext context,
     required IconData? icon,
-    String? imagePath,
     required String title,
     required bool isSelected,
     required VoidCallback onTap,
     required bool isDarkMode,
   }) {
     const selectedColor = AppTheme.primaryColor;
-    final unselectedIconColor =
-        isDarkMode ? Colors.grey[400] : Colors.grey[700];
-    final unselectedTextColor =
-        isDarkMode ? Colors.grey[300] : Colors.grey[800];
+    final theme = Theme.of(context);
+    final unselectedIconColor = theme.colorScheme.onSurfaceVariant;
+    final unselectedTextColor = theme.colorScheme.onSurface;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color:
-            isSelected
-                ? selectedColor.withValues(alpha: isDarkMode ? 0.15 : 0.1)
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? selectedColor.withValues(alpha: isDarkMode ? 0.18 : 0.09)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected
+                ? selectedColor.withValues(alpha: 0.32)
                 : Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          splashColor: selectedColor.withValues(alpha: 0.1),
-          highlightColor: selectedColor.withValues(alpha: 0.05),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: Row(
-              children: [
-                // アイコンまたは画像
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color:
-                        isSelected
-                            ? selectedColor
-                            : isDarkMode
-                            ? const Color(0xFF2A3142)
-                            : const Color(0xFFF0F3F6),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow:
-                        isSelected
-                            ? [
-                              BoxShadow(
-                                color: selectedColor.withValues(alpha: 0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ]
-                            : null,
-                  ),
-                  child:
-                      imagePath != null
-                          ? Image.asset(
-                            imagePath,
-                            width: 22,
-                            height: 22,
-                            color:
-                                isSelected ? Colors.white : unselectedIconColor,
-                          )
-                          : Icon(
-                            icon!,
-                            color:
-                                isSelected ? Colors.white : unselectedIconColor,
-                            size: 22,
-                          ),
-                ),
-
-                const SizedBox(width: 10),
-
-                // タイトル
-                Expanded(
-                  child: Text(
-                    title,
-                    style: GoogleFonts.notoSans(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: isSelected ? selectedColor : unselectedTextColor,
-                    ),
-                  ),
-                ),
-
-                // 選択インジケーター
-                if (isSelected)
-                  Container(
-                    width: 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: selectedColor,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: selectedColor.withValues(alpha: 0.3),
-                          blurRadius: 6,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
           ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 34,
+              height: 34,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? selectedColor.withValues(alpha: 0.14)
+                    : theme.colorScheme.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                color: isSelected ? selectedColor : unselectedIconColor,
+                size: 21,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                title,
+                style: GoogleFonts.notoSans(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: isSelected ? selectedColor : unselectedTextColor,
+                ),
+              ),
+            ),
+            if (isSelected)
+              Container(
+                width: 6,
+                height: 6,
+                decoration: const BoxDecoration(
+                  color: selectedColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -427,20 +345,18 @@ class AppDrawer extends ConsumerWidget {
     required List<_MenuItem> items,
   }) {
     return Column(
-      children:
-          items
-              .map(
-                (item) => _buildAnimatedMenuItem(
-                  context: context,
-                  icon: item.icon,
-                  imagePath: item.imagePath,
-                  title: item.title,
-                  isSelected: item.isSelected,
-                  onTap: item.onTap,
-                  isDarkMode: isDarkMode,
-                ),
-              )
-              .toList(),
+      children: items
+          .map(
+            (item) => _buildAnimatedMenuItem(
+              context: context,
+              icon: item.icon,
+              title: item.title,
+              isSelected: item.isSelected,
+              onTap: item.onTap,
+              isDarkMode: isDarkMode,
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -460,13 +376,12 @@ class AppDrawer extends ConsumerWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors:
-              isDarkMode
-                  ? [const Color(0xFF2A3F54), const Color(0xFF1F2A40)]
-                  : [
-                    const Color(0xFF5C6BC0).withValues(alpha: 0.15),
-                    const Color(0xFF9FA8DA).withValues(alpha: 0.1),
-                  ],
+          colors: isDarkMode
+              ? [const Color(0xFF2A3F54), const Color(0xFF1F2A40)]
+              : [
+                  const Color(0xFF5C6BC0).withValues(alpha: 0.15),
+                  const Color(0xFF9FA8DA).withValues(alpha: 0.1),
+                ],
         ),
       ),
       child: SafeArea(
@@ -499,35 +414,33 @@ class AppDrawer extends ConsumerWidget {
                     ),
                     child: CircleAvatar(
                       radius: 42,
-                      backgroundColor:
-                          isDarkMode ? Colors.grey[800] : Colors.grey[200],
-                      backgroundImage:
-                          user.userIcon.isNotEmpty
-                              ? CachedNetworkImageProvider(
-                                user.userIcon,
-                                headers: headers,
-                                cacheManager: JsonCacheManager(),
-                              )
-                              : user.currentAvatarThumbnailImageUrl.isNotEmpty
-                              ? CachedNetworkImageProvider(
-                                user.currentAvatarThumbnailImageUrl,
-                                headers: headers,
-                                cacheManager: JsonCacheManager(),
-                              )
-                              : AssetImage(Assets.icons.vrcn.path)
-                                  as ImageProvider,
+                      backgroundColor: isDarkMode
+                          ? Colors.grey[800]
+                          : Colors.grey[200],
+                      backgroundImage: user.userIcon.isNotEmpty
+                          ? CachedNetworkImageProvider(
+                              user.userIcon,
+                              headers: headers,
+                              cacheManager: JsonCacheManager(),
+                            )
+                          : user.currentAvatarThumbnailImageUrl.isNotEmpty
+                          ? CachedNetworkImageProvider(
+                              user.currentAvatarThumbnailImageUrl,
+                              headers: headers,
+                              cacheManager: JsonCacheManager(),
+                            )
+                          : AssetImage(Assets.icons.vrcn.path) as ImageProvider,
                       child:
                           user.currentAvatarThumbnailImageUrl.isEmpty &&
-                                  user.userIcon.isEmpty
-                              ? Icon(
-                                Icons.person,
-                                size: 36,
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[400]
-                                        : Colors.grey[600],
-                              )
-                              : null,
+                              user.userIcon.isEmpty
+                          ? Icon(
+                              Icons.person,
+                              size: 36,
+                              color: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
+                            )
+                          : null,
                     ),
                   ),
 
@@ -538,8 +451,9 @@ class AppDrawer extends ConsumerWidget {
                     child: Container(
                       padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
-                        color:
-                            isDarkMode ? const Color(0xFF1F2A40) : Colors.white,
+                        color: isDarkMode
+                            ? const Color(0xFF1F2A40)
+                            : Colors.white,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
@@ -612,15 +526,14 @@ class AppDrawer extends ConsumerWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color:
-                          isDarkMode
-                              ? Colors.black.withValues(alpha: 0.2)
-                              : Colors.white.withValues(alpha: 0.6),
+                      color: isDarkMode
+                          ? Colors.black.withValues(alpha: 0.2)
+                          : Colors.white.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color:
-                            isDarkMode ? Colors.grey[800]! : Colors.grey[300]!,
-                        width: 1,
+                        color: isDarkMode
+                            ? Colors.grey[800]!
+                            : Colors.grey[300]!,
                       ),
                     ),
                     child: Text(
@@ -656,13 +569,12 @@ class AppDrawer extends ConsumerWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors:
-              isDarkMode
-                  ? [const Color(0xFF2A3F54), const Color(0xFF1F2A40)]
-                  : [
-                    AppTheme.primaryColor.withValues(alpha: 0.15),
-                    AppTheme.primaryColor.withValues(alpha: 0.05),
-                  ],
+          colors: isDarkMode
+              ? [const Color(0xFF2A3F54), const Color(0xFF1F2A40)]
+              : [
+                  AppTheme.primaryColor.withValues(alpha: 0.15),
+                  AppTheme.primaryColor.withValues(alpha: 0.05),
+                ],
         ),
       ),
       child: SafeArea(
@@ -767,10 +679,7 @@ class AppDrawer extends ConsumerWidget {
               const SizedBox(height: 16),
               // スタイリッシュなリトライボタン
               ElevatedButton.icon(
-                onPressed: () {
-                  final refreshedUser = ref.refresh(currentUserProvider);
-                  refreshedUser.whenData((_) => {});
-                },
+                onPressed: () => ref.invalidate(currentUserProvider),
                 icon: const Icon(Icons.refresh_rounded),
                 label: Text(t.drawer.retry, style: GoogleFonts.notoSans()),
                 style: ElevatedButton.styleFrom(
@@ -794,126 +703,114 @@ class AppDrawer extends ConsumerWidget {
   }
 
   // フッターセクションを修正
-  Widget _buildFooterSection(bool isDarkMode) {
-    return FutureBuilder<PackageInfo>(
-      future: PackageInfo.fromPlatform(),
-      builder: (context, snapshot) {
-        final version = snapshot.data?.version ?? '1.0.0';
-        final buildNumber = snapshot.data?.buildNumber ?? '1';
+  Widget _buildFooterSection(WidgetRef ref, bool isDarkMode) {
+    final packageInfo = ref.watch(packageInfoProvider).value;
+    final version = packageInfo?.version ?? '1.0.0';
+    final buildNumber = packageInfo?.buildNumber ?? '1';
 
-        return Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(
-                color:
-                    isDarkMode
-                        ? Colors.grey[800]!.withValues(alpha: .5)
-                        : Colors.grey[300]!.withValues(alpha: 0.5),
-                width: 0.5,
-              ),
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: isDarkMode
+                ? Colors.grey[800]!.withValues(alpha: .5)
+                : Colors.grey[300]!.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            child: Image.asset(
+              Assets.images.sheIsWatchingYou.path,
+              width: 75,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: 80,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: isDarkMode
+                        ? Colors.grey[800]!.withValues(alpha: 0.3)
+                        : Colors.grey[300]!.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.image_not_supported_outlined,
+                    size: 20,
+                    color: isDarkMode ? Colors.grey[600] : Colors.grey[500],
+                  ),
+                );
+              },
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                child: Image.asset(
-                  Assets.images.sheIsWatchingYou.path,
-                  width: 75,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: 80,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color:
-                            isDarkMode
-                                ? Colors.grey[800]!.withValues(alpha: 0.3)
-                                : Colors.grey[300]!.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        Icons.image_not_supported_outlined,
-                        size: 20,
-                        color: isDarkMode ? Colors.grey[600] : Colors.grey[500],
-                      ),
-                    );
-                  },
-                ),
-              ),
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Center(
-                    child: Container(
+          Column(
+            children: [
+              Center(
+                child: Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      Assets.images.icon.path,
                       width: 64,
                       height: 64,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.asset(
-                          Assets.images.icon.path,
-                          width: 64,
-                          height: 64,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    child: Center(
-                      child: Text(
-                        'Powered by null_base',
-                        style: GoogleFonts.jetBrainsMono(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                          letterSpacing: 0.5,
-                        ),
-                        textAlign: TextAlign.center,
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                child: Center(
+                  child: Text(
+                    'Powered by null_base',
+                    style: GoogleFonts.jetBrainsMono(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                      letterSpacing: 0.5,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 14,
+                      color: isDarkMode ? Colors.grey[500] : Colors.grey[500],
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'v$version ($buildNumber)',
+                      style: GoogleFonts.jetBrainsMono(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                        color: isDarkMode ? Colors.grey[500] : Colors.grey[500],
+                        letterSpacing: 0.3,
                       ),
                     ),
-                  ),
-                  Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          size: 14,
-                          color:
-                              isDarkMode ? Colors.grey[500] : Colors.grey[500],
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          'v$version ($buildNumber)',
-                          style: GoogleFonts.jetBrainsMono(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w400,
-                            color:
-                                isDarkMode
-                                    ? Colors.grey[500]
-                                    : Colors.grey[500],
-                            letterSpacing: 0.3,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
@@ -921,17 +818,14 @@ class AppDrawer extends ConsumerWidget {
 // メニュー項目データクラス
 @immutable
 class _MenuItem {
-  final IconData? icon;
-  final String? imagePath;
-  final String title;
-  final bool isSelected;
-  final VoidCallback onTap;
-
   const _MenuItem({
     this.icon,
-    this.imagePath,
     required this.title,
     required this.isSelected,
     required this.onTap,
   });
+  final IconData? icon;
+  final String title;
+  final bool isSelected;
+  final VoidCallback onTap;
 }

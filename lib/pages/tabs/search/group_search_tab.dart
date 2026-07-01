@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -50,13 +49,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
   }
 
   void _loadMoreResults() {
-    if (ref.read(searchingProvider)) return;
-
-    final currentOffset = ref.read(groupSearchOffsetProvider);
-    ref.read(groupSearchOffsetProvider.notifier).state = currentOffset + 60;
-
-    // 検索実行のトリガー
-    setState(() {});
+    advanceSearchOffset(ref, groupSearchOffsetProvider);
   }
 
   void _toggleViewMode() {
@@ -80,57 +73,27 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
     // 検索機能に関連するプロバイダーなので、search_providersからのものを使用
     final cachedResults = ref.watch(groupSearchResultsProvider);
 
-    final searchState = ref.watch(
-      gp.groupSearchProvider(
-        gp.GroupSearchParams(query: query, n: 60, offset: offset),
-      ),
+    final searchProvider = gp.groupSearchProvider(
+      gp.GroupSearchParams(query: query, offset: offset),
     );
+    final searchState = ref.watch(searchProvider);
 
     // searchStateが変化したときの処理
     ref.listen<AsyncValue<List<LimitedGroup>>>(
-      gp.groupSearchProvider(
-        gp.GroupSearchParams(query: query, n: 60, offset: offset),
-      ),
+      searchProvider,
       (previous, current) {
-        Future.microtask(() {
-          if (current.isLoading) {
-            ref.read(searchingProvider.notifier).state = true;
-          } else if (current.hasValue) {
-            ref.read(searchingProvider.notifier).state = false;
-
-            final newResults = current.value ?? [];
-
-            if (offset == 0) {
-              ref.read(groupSearchResultsProvider.notifier).state = newResults;
-            } else if (newResults.isNotEmpty) {
-              final combinedResults = <LimitedGroup>[...cachedResults];
-
-              // 重複を避けるために既存のIDをチェック
-              final existingIds = cachedResults.map((g) => g.id).toSet();
-              for (final group in newResults) {
-                if (!existingIds.contains(group.id)) {
-                  combinedResults.add(group);
-                }
-              }
-
-              ref.read(groupSearchResultsProvider.notifier).state =
-                  combinedResults;
-            }
-          } else {
-            ref.read(searchingProvider.notifier).state = false;
-          }
-        });
+        handlePagedSearchResults(
+          ref: ref,
+          state: current,
+          offset: offset,
+          cachedResults: cachedResults,
+          resultsProvider: groupSearchResultsProvider,
+          idOf: (group) => group.id,
+        );
       },
     );
 
     if (query.isEmpty) {
-      // 検索クエリがない場合は結果をクリア
-      if (cachedResults.isNotEmpty) {
-        // ビルド後にマイクロタスクとして実行
-        Future.microtask(() {
-          ref.read(groupSearchResultsProvider.notifier).state = [];
-        });
-      }
       return _buildEmptySearchPrompt(isDarkMode);
     }
 
@@ -155,26 +118,24 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
     }
 
     // ビューモード切替ボタン
-    final viewToggleButton =
-        !isMobileSize
-            ? Positioned(
-              top: 16,
-              right: 16,
-              child: FloatingActionButton.small(
-                onPressed: _toggleViewMode,
-                tooltip:
-                    effectiveIsGridView
-                        ? t.search.tabs.groupSearch.listView
-                        : t.search.tabs.groupSearch.gridView,
-                elevation: 2,
-                backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
-                foregroundColor: isDarkMode ? Colors.white : Colors.grey[800],
-                child: Icon(
-                  effectiveIsGridView ? Icons.view_list : Icons.grid_view,
-                ),
+    final viewToggleButton = !isMobileSize
+        ? Positioned(
+            top: 16,
+            right: 16,
+            child: FloatingActionButton.small(
+              onPressed: _toggleViewMode,
+              tooltip: effectiveIsGridView
+                  ? t.search.tabs.groupSearch.listView
+                  : t.search.tabs.groupSearch.gridView,
+              elevation: 2,
+              backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
+              foregroundColor: isDarkMode ? Colors.white : Colors.grey[800],
+              child: Icon(
+                effectiveIsGridView ? Icons.view_list : Icons.grid_view,
               ),
-            )
-            : const SizedBox.shrink();
+            ),
+          )
+        : const SizedBox.shrink();
 
     // キャッシュされた結果を表示
     return Stack(
@@ -183,20 +144,17 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
           children: [
             // 検索結果表示エリア
             Expanded(
-              child: AnimationLimiter(
-                child:
-                    effectiveIsGridView
-                        ? _buildGroupGrid(
-                          cachedResults,
-                          searchState.isLoading,
-                          isDarkMode,
-                        )
-                        : _buildGroupList(
-                          cachedResults,
-                          searchState.isLoading,
-                          isDarkMode,
-                        ),
-              ),
+              child: effectiveIsGridView
+                  ? _buildGroupGrid(
+                      cachedResults,
+                      searchState.isLoading,
+                      isDarkMode,
+                    )
+                  : _buildGroupList(
+                      cachedResults,
+                      searchState.isLoading,
+                      isDarkMode,
+                    ),
             ),
           ],
         ),
@@ -224,26 +182,15 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
           return Padding(
             padding: const EdgeInsets.all(16),
             child: Center(
-              child:
-                  isLoading
-                      ? const CircularProgressIndicator()
-                      : const SizedBox(height: 40),
+              child: isLoading
+                  ? const CircularProgressIndicator()
+                  : const SizedBox(height: 40),
             ),
           );
         }
 
         final group = groups[index];
-        return AnimationConfiguration.staggeredGrid(
-          position: index,
-          duration: const Duration(milliseconds: 375),
-          columnCount: 2,
-          child: SlideAnimation(
-            verticalOffset: 50,
-            child: FadeInAnimation(
-              child: _buildGroupGridItem(context, group, isDarkMode),
-            ),
-          ),
-        );
+        return _buildGroupGridItem(context, group, isDarkMode);
       },
     );
   }
@@ -264,25 +211,15 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
           return Padding(
             padding: const EdgeInsets.all(16),
             child: Center(
-              child:
-                  isLoading
-                      ? const CircularProgressIndicator()
-                      : const SizedBox(height: 40),
+              child: isLoading
+                  ? const CircularProgressIndicator()
+                  : const SizedBox(height: 40),
             ),
           );
         }
 
         final group = groups[index];
-        return AnimationConfiguration.staggeredList(
-          position: index,
-          duration: const Duration(milliseconds: 375),
-          child: SlideAnimation(
-            horizontalOffset: 50,
-            child: FadeInAnimation(
-              child: _buildGroupListItem(group, isDarkMode),
-            ),
-          ),
-        );
+        return _buildGroupListItem(group, isDarkMode);
       },
     );
   }
@@ -321,50 +258,43 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                   SizedBox(
                     height: 180,
                     width: double.infinity,
-                    child:
-                        group.iconUrl != null && group.iconUrl!.isNotEmpty
-                            ? CachedNetworkImage(
-                              imageUrl: group.iconUrl!,
-                              fit: BoxFit.cover,
-                              httpHeaders: headers,
-                              cacheManager: JsonCacheManager(),
-                              placeholder:
-                                  (context, url) => Container(
-                                    color:
-                                        isDarkMode
-                                            ? Colors.grey[800]
-                                            : Colors.grey[300],
-                                    child: const Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    ),
-                                  ),
-                              errorWidget:
-                                  (context, url, error) => Container(
-                                    color:
-                                        isDarkMode
-                                            ? Colors.grey[800]
-                                            : Colors.grey[300],
-                                    child: const Icon(Icons.group, size: 60),
-                                  ),
-                            )
-                            : Container(
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[800]
-                                      : Colors.grey[300],
-                              child: Center(
-                                child: Icon(
-                                  Icons.group,
-                                  size: 60,
-                                  color:
-                                      isDarkMode
-                                          ? Colors.grey[600]
-                                          : Colors.grey[500],
+                    child: group.iconUrl != null && group.iconUrl!.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: group.iconUrl!,
+                            fit: BoxFit.cover,
+                            httpHeaders: headers,
+                            cacheManager: JsonCacheManager(),
+                            placeholder: (context, url) => Container(
+                              color: isDarkMode
+                                  ? Colors.grey[800]
+                                  : Colors.grey[300],
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
                                 ),
                               ),
                             ),
+                            errorWidget: (context, url, error) => Container(
+                              color: isDarkMode
+                                  ? Colors.grey[800]
+                                  : Colors.grey[300],
+                              child: const Icon(Icons.group, size: 60),
+                            ),
+                          )
+                        : Container(
+                            color: isDarkMode
+                                ? Colors.grey[800]
+                                : Colors.grey[300],
+                            child: Center(
+                              child: Icon(
+                                Icons.group,
+                                size: 60,
+                                color: isDarkMode
+                                    ? Colors.grey[600]
+                                    : Colors.grey[500],
+                              ),
+                            ),
+                          ),
                   ),
                   // グラデーションオーバーレイ
                   Positioned(
@@ -447,20 +377,18 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                           Icon(
                             Icons.tag,
                             size: 14,
-                            color:
-                                isDarkMode
-                                    ? Colors.indigo.shade300
-                                    : Colors.indigo.shade700,
+                            color: isDarkMode
+                                ? Colors.indigo.shade300
+                                : Colors.indigo.shade700,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             group.shortCode!,
                             style: GoogleFonts.notoSans(
                               fontSize: 13,
-                              color:
-                                  isDarkMode
-                                      ? Colors.indigo.shade300
-                                      : Colors.indigo.shade700,
+                              color: isDarkMode
+                                  ? Colors.indigo.shade300
+                                  : Colors.indigo.shade700,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -493,7 +421,6 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // グループアイコン
               Hero(
@@ -503,48 +430,41 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                   child: SizedBox(
                     width: 70,
                     height: 70,
-                    child:
-                        group.iconUrl != null && group.iconUrl!.isNotEmpty
-                            ? CachedNetworkImage(
-                              imageUrl: group.iconUrl!,
-                              fit: BoxFit.cover,
-                              httpHeaders: headers,
-                              cacheManager: JsonCacheManager(),
-                              placeholder:
-                                  (context, url) => Container(
-                                    color:
-                                        isDarkMode
-                                            ? Colors.grey[800]
-                                            : Colors.grey[300],
-                                    child: const Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    ),
-                                  ),
-                              errorWidget:
-                                  (context, url, error) => Container(
-                                    color:
-                                        isDarkMode
-                                            ? Colors.grey[800]
-                                            : Colors.grey[300],
-                                    child: const Icon(Icons.group, size: 30),
-                                  ),
-                            )
-                            : Container(
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[800]
-                                      : Colors.grey[300],
-                              child: Icon(
-                                Icons.group,
-                                size: 30,
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[600]
-                                        : Colors.grey[500],
+                    child: group.iconUrl != null && group.iconUrl!.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: group.iconUrl!,
+                            fit: BoxFit.cover,
+                            httpHeaders: headers,
+                            cacheManager: JsonCacheManager(),
+                            placeholder: (context, url) => Container(
+                              color: isDarkMode
+                                  ? Colors.grey[800]
+                                  : Colors.grey[300],
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               ),
                             ),
+                            errorWidget: (context, url, error) => Container(
+                              color: isDarkMode
+                                  ? Colors.grey[800]
+                                  : Colors.grey[300],
+                              child: const Icon(Icons.group, size: 30),
+                            ),
+                          )
+                        : Container(
+                            color: isDarkMode
+                                ? Colors.grey[800]
+                                : Colors.grey[300],
+                            child: Icon(
+                              Icons.group,
+                              size: 30,
+                              color: isDarkMode
+                                  ? Colors.grey[600]
+                                  : Colors.grey[500],
+                            ),
+                          ),
                   ),
                 ),
               ),
@@ -575,20 +495,18 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                           Icon(
                             Icons.tag,
                             size: 14,
-                            color:
-                                isDarkMode
-                                    ? Colors.indigo.shade300
-                                    : Colors.indigo.shade700,
+                            color: isDarkMode
+                                ? Colors.indigo.shade300
+                                : Colors.indigo.shade700,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             group.shortCode!,
                             style: GoogleFonts.notoSans(
                               fontSize: 13,
-                              color:
-                                  isDarkMode
-                                      ? Colors.indigo.shade300
-                                      : Colors.indigo.shade700,
+                              color: isDarkMode
+                                  ? Colors.indigo.shade300
+                                  : Colors.indigo.shade700,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -603,8 +521,9 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                         Icon(
                           Icons.people,
                           size: 14,
-                          color:
-                              isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          color: isDarkMode
+                              ? Colors.grey[400]
+                              : Colors.grey[600],
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -613,10 +532,9 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                           ),
                           style: GoogleFonts.notoSans(
                             fontSize: 13,
-                            color:
-                                isDarkMode
-                                    ? Colors.grey[400]
-                                    : Colors.grey[600],
+                            color: isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
                           ),
                         ),
                       ],

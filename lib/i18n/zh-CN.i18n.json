@@ -43,7 +43,6 @@
     "avatar": "虚拟形象",
     "group": "群组",
     "inventory": "物品栏",
-    "vrcnsync": "VRCNSync (β)",
     "review": "评价",
     "feedback": "反馈",
     "settings": "设置",
@@ -265,8 +264,21 @@
     "loadingError": "加载错误"
   },
   "notifications": {
+    "title": "通知",
     "emptyTitle": "没有通知",
     "emptyDescription": "好友请求、邀请等新通知\n将会显示在这里",
+    "all": "全部",
+    "unread": "未读 (${count})",
+    "read": "已读",
+    "activity": "好友日志",
+    "onlineAlerts": "上线提醒",
+    "markAllRead": "全部标为已读",
+    "markAllReadDone": "所有通知已标为已读",
+    "deleteConfirmTitle": "删除通知？",
+    "emptyUnread": "没有未读通知",
+    "emptyRead": "没有已读通知",
+    "friendOnlineAlerts": "好友上线提醒",
+    "selectedCount": "已选择 ${count} 人",
     "friendRequest": "您收到了来自 ${userName} 的好友请求",
     "invite": "您收到了来自 ${userName} 前往 ${worldName} 的邀请",
     "friendOnline": "${userName} 已上线",
@@ -420,6 +432,7 @@
     "emoji": "表情",
     "sticker": "贴纸",
     "print": "打印图",
+    "item": "物品",
     "upload": "上传文件",
     "uploadGallery": "正在上传画廊图片...",
     "uploadIcon": "正在上传图标...",
@@ -471,58 +484,17 @@
         "emptyTitle": "没有贴纸",
         "emptyDescription": "您在VRChat中上传的贴纸将显示在这里",
         "zoomHint": "双击缩放"
+      },
+      "inventoryItem": {
+        "loading": "正在加载物品栏...",
+        "error": "获取物品栏失败：${error}",
+        "emptyTitle": "没有物品",
+        "spawn": "生成",
+        "unequip": "卸下",
+        "equipped": "已装备：${slot}",
+        "spawned": "已生成 ${name}"
       }
     }
-  },
-  "vrcnsync": {
-    "title": "VRCNSync (β)",
-    "betaTitle": "测试版功能",
-    "betaDescription": "此功能为开发中的测试版，可能会出现意外问题。\n目前仅为本地实现，如果需求量大，将会实现云端版本。",
-    "githubLink": "VRCNSync的GitHub页面",
-    "openGithub": "打开GitHub页面",
-    "serverRunning": "服务器运行中",
-    "serverStopped": "服务器已停止",
-    "serverRunningDesc": "将PC上的照片保存到VRCN相册",
-    "serverStoppedDesc": "服务器已停止",
-    "photoSaved": "照片已保存到VRCN相册",
-    "photoReceived": "已接收照片（保存到相册失败）",
-    "openAlbum": "打开相册",
-    "permissionErrorIos": "需要照片库的访问权限",
-    "permissionErrorAndroid": "需要存储空间的访问权限",
-    "openSettings": "打开设置",
-    "initError": "初始化失败：${error}",
-    "openPhotoAppError": "无法打开照片应用",
-    "serverInfo": "服务器信息",
-    "ip": "IP: ${ip}",
-    "port": "端口: ${port}",
-    "address": "${ip}:${port}",
-    "autoSave": "接收到的照片将自动保存到“VRCN”相册",
-    "usage": "使用方法",
-    "usageSteps": [
-      {
-        "title": "在PC上启动VRCNSync应用",
-        "desc": "请在您的PC上启动VRCNSync应用"
-      },
-      {
-        "title": "连接到同一WiFi网络",
-        "desc": "请将您的PC和移动设备连接到同一个WiFi网络"
-      },
-      {
-        "title": "将移动设备指定为连接目标",
-        "desc": "请在PC应用中指定上述IP地址和端口"
-      },
-      {
-        "title": "发送照片",
-        "desc": "从PC发送照片后，将自动保存到VRCN相册"
-      }
-    ],
-    "stats": "连接状态",
-    "statServer": "服务器状态",
-    "statServerRunning": "运行中",
-    "statServerStopped": "已停止",
-    "statNetwork": "网络",
-    "statNetworkConnected": "已连接",
-    "statNetworkDisconnected": "未连接"
   },
   "feedback": {
     "title": "反馈",
@@ -611,21 +583,7 @@
     }
   },
   "download": {
-    "success": "下载完成",
-    "failure": "下载失败：${error}",
     "shareFailure": "分享失败：${error}",
-    "permissionTitle": "需要权限",
-    "permissionDenied": "保存到${permissionType}的权限已被拒绝。\n请从设置应用中启用权限。",
-    "permissionCancel": "取消",
-    "permissionOpenSettings": "打开设置",
-    "permissionPhoto": "照片",
-    "permissionPhotoLibrary": "照片库",
-    "permissionStorage": "存储",
-    "permissionPhotoRequired": "需要保存到照片的权限",
-    "permissionPhotoLibraryRequired": "需要保存到照片库的权限",
-    "permissionStorageRequired": "需要访问存储空间的权限",
-    "permissionError": "检查权限时发生错误：${error}",
-    "downloading": "正在下载 ${fileName}...",
     "sharing": "正在准备分享 ${fileName}..."
   },
   "instance": {

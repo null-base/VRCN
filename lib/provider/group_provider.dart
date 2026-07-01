@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
-final vrchatGroupProvider = FutureProvider((ref) async {
+final FutureProvider<GroupsApi> vrchatGroupProvider = FutureProvider((
+  ref,
+) async {
   try {
     final rawApi = await ref.watch(vrchatRawApiProvider);
     return rawApi.getGroupsApi();
@@ -16,11 +18,10 @@ final vrchatGroupProvider = FutureProvider((ref) async {
 /// グループ検索パラメータクラス
 @immutable
 class GroupSearchParams {
+  const GroupSearchParams({this.query, this.offset = 0, this.n = 60});
   final String? query;
   final int? offset;
   final int? n;
-
-  const GroupSearchParams({this.query, this.offset = 0, this.n = 60});
 
   @override
   bool operator ==(Object other) {
@@ -36,7 +37,8 @@ class GroupSearchParams {
 }
 
 /// グループ検索プロバイダー
-final groupSearchProvider =
+final FutureProviderFamily<List<LimitedGroup>, GroupSearchParams>
+groupSearchProvider =
     FutureProvider.family<List<LimitedGroup>, GroupSearchParams>((
       ref,
       params,
@@ -61,40 +63,35 @@ final groupSearchProvider =
       }
     });
 
-// グループキャッシュ用のプロバイダー
-final groupSearchResultsProvider = StateProvider<List<LimitedGroup>>(
-  (ref) => [],
-);
-
 /// グループ情報の詳細を取得するプロバイダー
-final groupDetailProvider = FutureProvider.family<Group, GroupDetailParams>((
-  ref,
-  params,
-) async {
-  final groupsApi = await ref.watch(vrchatGroupProvider.future);
+final FutureProviderFamily<Group, GroupDetailParams> groupDetailProvider =
+    FutureProvider.family<Group, GroupDetailParams>((
+      ref,
+      params,
+    ) async {
+      final groupsApi = await ref.watch(vrchatGroupProvider.future);
 
-  try {
-    final response = await groupsApi.getGroup(
-      groupId: params.groupId,
-      includeRoles: params.includeRoles,
-    );
+      try {
+        final response = await groupsApi.getGroup(
+          groupId: params.groupId,
+          includeRoles: params.includeRoles,
+        );
 
-    if (response.data == null) {
-      throw Exception('グループデータが取得できませんでした: ${params.groupId}');
-    }
-    return response.data!;
-  } catch (e) {
-    throw Exception('グループ情報の取得に失敗しました: $e');
-  }
-});
+        if (response.data == null) {
+          throw Exception('グループデータが取得できませんでした: ${params.groupId}');
+        }
+        return response.data!;
+      } catch (e) {
+        throw Exception('グループ情報の取得に失敗しました: $e');
+      }
+    });
 
 /// グループ詳細取得パラメータクラス
 @immutable
 class GroupDetailParams {
+  const GroupDetailParams({required this.groupId, this.includeRoles = false});
   final String groupId;
   final bool includeRoles;
-
-  const GroupDetailParams({required this.groupId, this.includeRoles = false});
 
   @override
   bool operator ==(Object other) {

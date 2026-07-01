@@ -1,24 +1,20 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:app_links/app_links.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart'; // 追加
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app_badge_control/flutter_app_badge_control.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:new_version_plus/new_version_plus.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vrchat/analytics_repository.dart';
@@ -26,6 +22,7 @@ import 'package:vrchat/config/app_config.dart';
 import 'package:vrchat/firebase_options.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
+import 'package:vrchat/provider/package_info_provider.dart';
 import 'package:vrchat/provider/settings_provider.dart';
 import 'package:vrchat/provider/streaming_provider.dart';
 import 'package:vrchat/provider/version_check_provider.dart';
@@ -35,17 +32,18 @@ import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/url_launcher_utils.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat/widgets/update_dialog.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 // FCMバックグラウンドメッセージハンドラー
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Firebase の初期化が必要
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  debugPrint('🔔 バックグラウンドメッセージを受信:');
-  debugPrint('📱 Message ID: ${message.messageId}');
-  debugPrint('📰 Title: ${message.notification?.title}');
-  debugPrint('📝 Body: ${message.notification?.body}');
-  debugPrint('📊 Data: ${message.data}');
+  appLogger.d('🔔 バックグラウンドメッセージを受信:');
+  appLogger.d('📱 Message ID: ${message.messageId}');
+  appLogger.d('📰 Title: ${message.notification?.title}');
+  appLogger.d('📝 Body: ${message.notification?.body}');
+  appLogger.d('📊 Data: ${message.data}');
 
   // バックグラウンドでローカル通知を表示
   await _showLocalNotification(message);
@@ -59,7 +57,6 @@ Future<void> _showLocalNotification(RemoteMessage message) async {
     channelDescription: 'Firebase Cloud Messagingからの通知',
     importance: Importance.high,
     priority: Priority.high,
-    showWhen: true,
   );
 
   const notificationDetails = NotificationDetails(
@@ -74,10 +71,10 @@ Future<void> _showLocalNotification(RemoteMessage message) async {
   final notifications = FlutterLocalNotificationsPlugin();
 
   await notifications.show(
-    message.hashCode,
-    message.notification?.title ?? 'VRCNからの通知',
-    message.notification?.body ?? 'メッセージを受信しました',
-    notificationDetails,
+    id: message.hashCode,
+    title: message.notification?.title ?? 'VRCNからの通知',
+    body: message.notification?.body ?? 'メッセージを受信しました',
+    notificationDetails: notificationDetails,
     payload: message.data.toString(),
   );
 }
@@ -109,14 +106,6 @@ Future<void> main() async {
     };
   }
 
-  // App Check初期化
-  await FirebaseAppCheck.instance.activate(
-    androidProvider:
-        kReleaseMode ? AndroidProvider.playIntegrity : AndroidProvider.debug,
-    appleProvider:
-        kReleaseMode ? AppleProvider.deviceCheck : AppleProvider.debug,
-  );
-
   // FCMの初期化とデバッグ情報表示
   await _initializeFCM();
 
@@ -141,30 +130,25 @@ Future<void> main() async {
 
   // 言語設定
   final savedLocale = prefs.getString('locale');
+  final hasLocaleOverride = prefs.getBool('localeOverride') ?? false;
 
-  if (savedLocale != null) {
-    // 保存された言語設定がある場合
+  if (hasLocaleOverride && savedLocale != null) {
+    // ユーザーが明示的に選択した言語設定がある場合
     await LocaleSettings.setLocaleRaw(savedLocale);
   } else {
-    // 初回起動時は端末の言語を使用し、設定として保存
+    // 端末の言語を優先する。未対応言語の場合は slang の baseLocale(en) に戻る。
     await LocaleSettings.useDeviceLocale();
-    final currentLocale = LocaleSettings.currentLocale;
-    await prefs.setString('locale', currentLocale.languageCode);
+    await prefs.remove('locale');
   }
 
   // 通知の初期化
   final notifications = await initializeNotifications();
 
-  // デバッグ用.envファイルの読み込み
-  if (kDebugMode) {
-    await dotenv.load(fileName: '.env');
-  }
-
   // 前回表示された通知の履歴を確認
   final launchDetails = await notifications.getNotificationAppLaunchDetails();
   if (launchDetails != null && launchDetails.didNotificationLaunchApp) {
     // 通知によってアプリが起動された場合
-    debugPrint('通知からアプリが起動されました');
+    appLogger.d('通知からアプリが起動されました');
     if (launchDetails.notificationResponse != null) {
       _handleNotificationResponse(launchDetails.notificationResponse!);
     }
@@ -180,7 +164,7 @@ Future<void> main() async {
   try {
     await container.read(eventReminderProvider.notifier).cleanupOldReminders();
   } catch (e) {
-    debugPrint('リマインダーのクリーンアップ中にエラーが発生しました: $e');
+    appLogger.d('リマインダーのクリーンアップ中にエラーが発生しました: $e');
   }
 
   runApp(
@@ -198,44 +182,38 @@ Future<void> _initializeFCM() async {
   try {
     // 通知権限をリクエスト
     final settings = await messaging.requestPermission(
-      alert: true,
       announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
     );
 
-    debugPrint('🔔 ========== FCM設定情報 ==========');
-    debugPrint('📱 通知権限ステータス: ${settings.authorizationStatus}');
+    appLogger.d('🔔 ========== FCM設定情報 ==========');
+    appLogger.d('📱 通知権限ステータス: ${settings.authorizationStatus}');
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      debugPrint('✅ 通知権限が許可されています');
+      appLogger.d('✅ 通知権限が許可されています');
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      debugPrint('⚠️ 通知権限が仮許可されています');
+      appLogger.d('⚠️ 通知権限が仮許可されています');
     } else {
-      debugPrint('❌ 通知権限が拒否されています');
+      appLogger.d('❌ 通知権限が拒否されています');
     }
 
     // FCMトークンを取得してデバッグ出力
 
     final token = await messaging.getToken();
-    debugPrint('🔑 FCMトークン: $token');
+    appLogger.d('🔑 FCMトークン: $token');
 
     // トークンの更新を監視
     messaging.onTokenRefresh.listen((newToken) {
-      debugPrint('🔄 FCMトークンが更新されました: $newToken');
+      appLogger.d('🔄 FCMトークンが更新されました: $newToken');
     });
 
     // フォアグラウンドメッセージを処理
     FirebaseMessaging.onMessage.listen((message) {
-      debugPrint('📬 フォアグラウンドメッセージを受信:');
-      debugPrint('📱 Message ID: ${message.messageId}');
-      debugPrint('📰 Title: ${message.notification?.title}');
-      debugPrint('📝 Body: ${message.notification?.body}');
-      debugPrint('📊 Data: ${message.data}');
+      appLogger.d('📬 フォアグラウンドメッセージを受信:');
+      appLogger.d('📱 Message ID: ${message.messageId}');
+      appLogger.d('📰 Title: ${message.notification?.title}');
+      appLogger.d('📝 Body: ${message.notification?.body}');
+      appLogger.d('📊 Data: ${message.data}');
 
       // フォアグラウンドでもローカル通知を表示
       _showLocalNotification(message);
@@ -245,9 +223,9 @@ Future<void> _initializeFCM() async {
     // アプリが終了状態から通知タップで起動された場合
     messaging.getInitialMessage().then((message) {
       if (message != null) {
-        debugPrint('🚀 アプリが通知から起動されました:');
-        debugPrint('📱 Message ID: ${message.messageId}');
-        debugPrint('📊 Data: ${message.data}');
+        appLogger.d('🚀 アプリが通知から起動されました:');
+        appLogger.d('📱 Message ID: ${message.messageId}');
+        appLogger.d('📊 Data: ${message.data}');
 
         _handleFcmMessageUrl(message.data);
       }
@@ -255,16 +233,16 @@ Future<void> _initializeFCM() async {
 
     // アプリがバックグラウンドから通知タップで復帰した場合
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      debugPrint('📱 バックグラウンドから通知タップで復帰:');
-      debugPrint('📱 Message ID: ${message.messageId}');
-      debugPrint('📊 Data: ${message.data}');
+      appLogger.d('📱 バックグラウンドから通知タップで復帰:');
+      appLogger.d('📱 Message ID: ${message.messageId}');
+      appLogger.d('📊 Data: ${message.data}');
 
       _handleFcmMessageUrl(message.data);
     });
 
-    debugPrint('🔔 ========== FCM初期化完了 ==========');
+    appLogger.d('🔔 ========== FCM初期化完了 ==========');
   } catch (e) {
-    debugPrint('❌ FCM初期化エラー: $e');
+    appLogger.d('❌ FCM初期化エラー: $e');
   }
 }
 
@@ -279,9 +257,7 @@ Future<FlutterLocalNotificationsPlugin> initializeNotifications() async {
 
   // iOS設定
   const initializationSettingsIOS = DarwinInitializationSettings(
-    requestAlertPermission: true,
     requestBadgePermission: true,
-    requestSoundPermission: true,
   );
 
   // 初期化設定
@@ -292,7 +268,7 @@ Future<FlutterLocalNotificationsPlugin> initializeNotifications() async {
 
   // 通知が届いたときやタップされたときの処理を設定
   await flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
+    settings: initializationSettings,
     onDidReceiveNotificationResponse: _handleNotificationResponse,
   );
 
@@ -324,7 +300,7 @@ void _handleNotificationResponse(NotificationResponse details) {
         .removeReminderByNotificationId(notificationId);
   }
 
-  debugPrint('🔔 通知がタップされました: ${details.payload}');
+  appLogger.d('🔔 通知がタップされました: ${details.payload}');
 
   _handleNotificationUrl(details.payload);
 }
@@ -357,39 +333,32 @@ void _handleNotificationUrl(String? payload) {
     // urlキーが存在する場合、URLを開く
     final url = data['url'] as String?;
     if (url != null && url.isNotEmpty) {
-      debugPrint('🔗 通知からURLを開きます: $url');
-
-      // URLを開く（外部ブラウザで開く）
-      Future.microtask(() async {
-        final success = await UrlLauncherUtils.launchURL(
-          url,
-          mode: LaunchMode.externalApplication,
-        );
-        if (!success) {
-          debugPrint('❌ URLを開けませんでした: $url');
-        }
-      });
+      unawaited(_launchExternalUrl(url, source: '通知'));
     }
   } catch (e) {
-    debugPrint('❌ 通知データの解析エラー: $e');
+    appLogger.d('❌ 通知データの解析エラー: $e');
   }
 }
 
 void _handleFcmMessageUrl(Map<String, dynamic> data) {
   final url = data['url'] as String?;
   if (url != null && url.isNotEmpty) {
-    debugPrint('🔗 FCMメッセージからURLを開きます: $url');
+    unawaited(_launchExternalUrl(url, source: 'FCMメッセージ'));
+  }
+}
 
-    // URLを開く
-    Future.microtask(() async {
-      final success = await UrlLauncherUtils.launchURL(
-        url,
-        mode: LaunchMode.externalApplication,
-      );
-      if (!success) {
-        debugPrint('❌ URLを開けませんでした: $url');
-      }
-    });
+Future<void> _launchExternalUrl(
+  String url, {
+  required String source,
+}) async {
+  appLogger.d('$sourceからURLを開きます: $url');
+
+  final success = await UrlLauncherUtils.launchURL(
+    url,
+    mode: LaunchMode.externalApplication,
+  );
+  if (!success) {
+    appLogger.d('URLを開けませんでした: $url');
   }
 }
 
@@ -403,6 +372,9 @@ class VRChatApp extends ConsumerStatefulWidget {
 class _VRChatAppState extends ConsumerState<VRChatApp>
     with WidgetsBindingObserver {
   late AppLinks _appLinks;
+  StreamSubscription<Uri>? _appLinkSubscription;
+  ProviderSubscription<AsyncValue<bool>>? _authStateSubscription;
+  var _didStartLoggedInTasks = false;
 
   @override
   void initState() {
@@ -411,19 +383,45 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
     WidgetsBinding.instance.addObserver(this);
 
     _initAppLinks();
+    _recordAppOpenAnalytics();
+    _authStateSubscription = ref.listenManual<AsyncValue<bool>>(
+      appAuthStateProvider,
+      (previous, next) => _handleAuthState(next),
+      fireImmediately: true,
+    );
   }
 
-  void _initAppLinks() async {
+  Future<void> _initAppLinks() async {
     _appLinks = AppLinks();
 
-    // アプリ起動時のリンク処理
-    final initialLink = await _appLinks.getInitialLink();
-    if (initialLink != null) {
-      _handleIncomingLink(initialLink);
+    try {
+      final initialLink = await _appLinks.getInitialLink();
+      if (initialLink != null) {
+        _handleIncomingLink(initialLink);
+      }
+    } catch (error) {
+      appLogger.d('初期リンクの取得に失敗しました: $error');
     }
 
-    // アプリ実行中のリンク処理
-    _appLinks.uriLinkStream.listen(_handleIncomingLink);
+    _appLinkSubscription = _appLinks.uriLinkStream.listen(
+      _handleIncomingLink,
+      onError: (Object error) {
+        appLogger.d('リンクストリームの処理に失敗しました: $error');
+      },
+    );
+  }
+
+  Future<void> _recordAppOpenAnalytics() async {
+    if (kDebugMode) return;
+
+    final analytics = ref.read(analyticsRepository);
+    analytics.logAppOpen();
+
+    final packageInfo = await ref.read(packageInfoProvider.future);
+    await FirebaseAnalytics.instance.setUserProperty(
+      name: 'app_version',
+      value: packageInfo.version,
+    );
   }
 
   void _handleIncomingLink(Uri uri) {
@@ -435,9 +433,23 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
     }
   }
 
+  void _handleAuthState(AsyncValue<bool> authState) {
+    authState.whenData((isLoggedIn) {
+      if (isLoggedIn && !_didStartLoggedInTasks) {
+        _didStartLoggedInTasks = true;
+        ref.read(streamingControllerProvider).startConnection();
+        ref.read(versionCheckProvider);
+      } else if (!isLoggedIn) {
+        _didStartLoggedInTasks = false;
+      }
+    });
+  }
+
   @override
   void dispose() {
     // ライフサイクルオブザーバーの登録解除
+    _authStateSubscription?.close();
+    _appLinkSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -446,9 +458,7 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      // アプリがフォアグラウンドに戻ったらバッジをクリア
-      FlutterAppBadgeControl.removeBadge();
-      debugPrint('アプリがフォアグラウンドに戻りました: 通知バッジをクリア');
+      appLogger.d('アプリがフォアグラウンドに戻りました');
     }
   }
 
@@ -457,24 +467,8 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
     final isInitializing = ref.watch(apiInitializingProvider);
     final themeMode = ref.watch(themeModeProvider);
 
-    final analytics = ref.watch(analyticsRepository);
-
-    // アプリ起動時の分析記録
-    if (!kDebugMode) {
-      // アプリ開いたとき
-      analytics.logAppOpen();
-
-      Future.microtask(() async {
-        final packageInfo = await PackageInfo.fromPlatform();
-        await FirebaseAnalytics.instance.setUserProperty(
-          name: 'app_version',
-          value: packageInfo.version,
-        );
-      });
-    }
-
     // バージョンチェックと更新ダイアログの表示
-    ref.listen<AsyncValue<VersionStatus?>>(versionCheckProvider, (
+    ref.listen<AsyncValue<AppVersionStatus?>>(versionCheckProvider, (
       previous,
       next,
     ) {
@@ -490,8 +484,8 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
             if (context.mounted) {
               showDialog(
                 context: context,
-                builder:
-                    (context) => UpdateDialog(versionStatus: versionStatus),
+                builder: (context) =>
+                    UpdateDialog(versionStatus: versionStatus),
               );
             }
           });
@@ -502,29 +496,10 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
     // APIの初期化を開始
     ref.watch(vrchatProvider);
 
-    // 認証状態を監視してストリーミング接続を開始
-    final authState = ref.watch(authStateProvider);
-    authState.whenData((isLoggedIn) {
-      if (isLoggedIn) {
-        // ログイン済みならストリーミングコントローラーを使用して接続を開始
-        Future.microtask(
-          () => ref.read(streamingControllerProvider).startConnection(),
-        );
-
-        // ログイン後にバージョンチェックを実行
-        Future.microtask(() {
-          ref.read(versionCheckProvider);
-        });
-      }
-    });
-
     // 初期化中はローディング画面、完了後は通常のルーターを使用
     if (isInitializing) {
       return _buildApp(themeMode: themeMode, home: const LoadingIndicator());
     }
-
-    // 自動ログイン試行
-    ref.watch(autoLoginProvider);
 
     // ルーターベースのアプリを構築
     final router = ref.watch(routerProvider);

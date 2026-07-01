@@ -11,88 +11,6 @@
 
 import 'package:flutter/widgets.dart';
 
-class $AssetsGoogleFontsGen {
-  const $AssetsGoogleFontsGen();
-
-  /// File path: assets/google_fonts/MPLUSRounded1c-Black.ttf
-  String get mPLUSRounded1cBlack =>
-      'assets/google_fonts/MPLUSRounded1c-Black.ttf';
-
-  /// File path: assets/google_fonts/MPLUSRounded1c-Bold.ttf
-  String get mPLUSRounded1cBold =>
-      'assets/google_fonts/MPLUSRounded1c-Bold.ttf';
-
-  /// File path: assets/google_fonts/MPLUSRounded1c-ExtraBold.ttf
-  String get mPLUSRounded1cExtraBold =>
-      'assets/google_fonts/MPLUSRounded1c-ExtraBold.ttf';
-
-  /// File path: assets/google_fonts/MPLUSRounded1c-Light.ttf
-  String get mPLUSRounded1cLight =>
-      'assets/google_fonts/MPLUSRounded1c-Light.ttf';
-
-  /// File path: assets/google_fonts/MPLUSRounded1c-Medium.ttf
-  String get mPLUSRounded1cMedium =>
-      'assets/google_fonts/MPLUSRounded1c-Medium.ttf';
-
-  /// File path: assets/google_fonts/MPLUSRounded1c-Regular.ttf
-  String get mPLUSRounded1cRegular =>
-      'assets/google_fonts/MPLUSRounded1c-Regular.ttf';
-
-  /// File path: assets/google_fonts/MPLUSRounded1c-Thin.ttf
-  String get mPLUSRounded1cThin =>
-      'assets/google_fonts/MPLUSRounded1c-Thin.ttf';
-
-  /// File path: assets/google_fonts/NotoSansJP-Black.ttf
-  String get notoSansJPBlack => 'assets/google_fonts/NotoSansJP-Black.ttf';
-
-  /// File path: assets/google_fonts/NotoSansJP-Bold.ttf
-  String get notoSansJPBold => 'assets/google_fonts/NotoSansJP-Bold.ttf';
-
-  /// File path: assets/google_fonts/NotoSansJP-ExtraBold.ttf
-  String get notoSansJPExtraBold =>
-      'assets/google_fonts/NotoSansJP-ExtraBold.ttf';
-
-  /// File path: assets/google_fonts/NotoSansJP-ExtraLight.ttf
-  String get notoSansJPExtraLight =>
-      'assets/google_fonts/NotoSansJP-ExtraLight.ttf';
-
-  /// File path: assets/google_fonts/NotoSansJP-Light.ttf
-  String get notoSansJPLight => 'assets/google_fonts/NotoSansJP-Light.ttf';
-
-  /// File path: assets/google_fonts/NotoSansJP-Medium.ttf
-  String get notoSansJPMedium => 'assets/google_fonts/NotoSansJP-Medium.ttf';
-
-  /// File path: assets/google_fonts/NotoSansJP-Regular.ttf
-  String get notoSansJPRegular => 'assets/google_fonts/NotoSansJP-Regular.ttf';
-
-  /// File path: assets/google_fonts/NotoSansJP-SemiBold.ttf
-  String get notoSansJPSemiBold =>
-      'assets/google_fonts/NotoSansJP-SemiBold.ttf';
-
-  /// File path: assets/google_fonts/NotoSansJP-Thin.ttf
-  String get notoSansJPThin => 'assets/google_fonts/NotoSansJP-Thin.ttf';
-
-  /// List of all assets
-  List<String> get values => [
-    mPLUSRounded1cBlack,
-    mPLUSRounded1cBold,
-    mPLUSRounded1cExtraBold,
-    mPLUSRounded1cLight,
-    mPLUSRounded1cMedium,
-    mPLUSRounded1cRegular,
-    mPLUSRounded1cThin,
-    notoSansJPBlack,
-    notoSansJPBold,
-    notoSansJPExtraBold,
-    notoSansJPExtraLight,
-    notoSansJPLight,
-    notoSansJPMedium,
-    notoSansJPRegular,
-    notoSansJPSemiBold,
-    notoSansJPThin,
-  ];
-}
-
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
@@ -239,14 +157,8 @@ class $AssetsImagesGen {
 class Assets {
   const Assets._();
 
-  static const String aEnv = '.env';
-  static const $AssetsGoogleFontsGen googleFonts = $AssetsGoogleFontsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
-  static const String shorebird = 'shorebird.yaml';
-
-  /// List of all assets
-  static List<String> get values => [aEnv, shorebird];
 }
 
 class AssetGenImage {

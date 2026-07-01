@@ -1,208 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:osc/osc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vrchat/provider/settings_provider.dart';
+import 'package:vrchat/models/osc_models.dart';
+import 'package:vrchat/provider/osc_settings_provider.dart';
+import 'package:vrchat/services/osc_service.dart';
 import 'package:vrchat/theme/app_theme.dart';
-
-// OSCの設定を保存するためのプロバイダー
-final oscSettingsProvider =
-    StateNotifierProvider<OscSettingsNotifier, OscSettings>((ref) {
-      final prefs = ref.watch(sharedPreferencesProvider);
-      return OscSettingsNotifier(prefs);
-    });
-
-// OSC設定モデル
-@immutable
-class OscSettings {
-  final String ipAddress;
-  final int port;
-  final List<OscParam> savedParams;
-
-  const OscSettings({
-    this.ipAddress = '127.0.0.1',
-    this.port = 9000,
-    this.savedParams = const [],
-  });
-
-  OscSettings copyWith({
-    String? ipAddress,
-    int? port,
-    List<OscParam>? savedParams,
-  }) {
-    return OscSettings(
-      ipAddress: ipAddress ?? this.ipAddress,
-      port: port ?? this.port,
-      savedParams: savedParams ?? this.savedParams,
-    );
-  }
-
-  // JSON変換用メソッド
-  Map<String, dynamic> toJson() {
-    return {
-      'ipAddress': ipAddress,
-      'port': port,
-      'savedParams': savedParams.map((param) => param.toJson()).toList(),
-    };
-  }
-
-  factory OscSettings.fromJson(Map<String, dynamic> json) {
-    return OscSettings(
-      ipAddress: json['ipAddress'] ?? '127.0.0.1',
-      port: json['port'] ?? 9000,
-      savedParams:
-          (json['savedParams'] as List?)
-              ?.map((paramJson) => OscParam.fromJson(paramJson))
-              .toList() ??
-          [],
-    );
-  }
-}
-
-// OSCパラメータモデル
-@immutable
-class OscParam {
-  final String name;
-  final String address;
-  final OscParamType type;
-  final dynamic defaultValue;
-
-  const OscParam({
-    required this.name,
-    required this.address,
-    required this.type,
-    this.defaultValue,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'address': address,
-      'type': type.toString(),
-      'defaultValue': defaultValue,
-    };
-  }
-
-  factory OscParam.fromJson(Map<String, dynamic> json) {
-    return OscParam(
-      name: json['name'] ?? '',
-      address: json['address'] ?? '',
-      type: _parseParamType(json['type'] ?? 'OscParamType.float'),
-      defaultValue: json['defaultValue'],
-    );
-  }
-
-  static OscParamType _parseParamType(String typeStr) {
-    if (typeStr.contains('bool')) return OscParamType.bool;
-    if (typeStr.contains('int')) return OscParamType.int;
-    return OscParamType.float;
-  }
-}
-
-enum OscParamType { bool, int, float }
-
-// OSC設定の状態管理
-class OscSettingsNotifier extends StateNotifier<OscSettings> {
-  final SharedPreferences prefs;
-
-  OscSettingsNotifier(this.prefs) : super(const OscSettings()) {
-    _loadSettings();
-  }
-
-  Future<void> _loadSettings() async {
-    final settingsJson = prefs.getString('osc_settings');
-    if (settingsJson != null) {
-      try {
-        state = OscSettings.fromJson(jsonDecode(settingsJson));
-      } catch (e) {
-        // エラー時はデフォルト設定を使用
-        state = const OscSettings();
-      }
-    } else {
-      // デフォルトパラメータを設定
-      state = const OscSettings(
-        savedParams: [
-          OscParam(
-            name: '表情 - 喜び',
-            address: '/avatar/parameters/VRCFaceBlendH/Joy',
-            type: OscParamType.float,
-            defaultValue: 0.0,
-          ),
-          OscParam(
-            name: '表情 - 悲しみ',
-            address: '/avatar/parameters/VRCFaceBlendH/Sorrow',
-            type: OscParamType.float,
-            defaultValue: 0.0,
-          ),
-          OscParam(
-            name: '表情 - 驚き',
-            address: '/avatar/parameters/VRCFaceBlendH/Surprise',
-            type: OscParamType.float,
-            defaultValue: 0.0,
-          ),
-          OscParam(
-            name: '表情 - 怒り',
-            address: '/avatar/parameters/VRCFaceBlendH/Anger',
-            type: OscParamType.float,
-            defaultValue: 0.0,
-          ),
-          OscParam(
-            name: 'ジェスチャー左',
-            address: '/avatar/parameters/GestureLeft',
-            type: OscParamType.int,
-            defaultValue: 0,
-          ),
-          OscParam(
-            name: 'ジェスチャー右',
-            address: '/avatar/parameters/GestureRight',
-            type: OscParamType.int,
-            defaultValue: 0,
-          ),
-        ],
-      );
-    }
-  }
-
-  Future<void> saveSettings() async {
-    await prefs.setString('osc_settings', jsonEncode(state.toJson()));
-  }
-
-  void updateIpAddress(String ipAddress) {
-    state = state.copyWith(ipAddress: ipAddress);
-    saveSettings();
-  }
-
-  void updatePort(int port) {
-    state = state.copyWith(port: port);
-    saveSettings();
-  }
-
-  void addParam(OscParam param) {
-    final newParams = [...state.savedParams, param];
-    state = state.copyWith(savedParams: newParams);
-    saveSettings();
-  }
-
-  void updateParam(int index, OscParam param) {
-    final newParams = [...state.savedParams];
-    newParams[index] = param;
-    state = state.copyWith(savedParams: newParams);
-    saveSettings();
-  }
-
-  void removeParam(int index) {
-    final newParams = [...state.savedParams];
-    newParams.removeAt(index);
-    state = state.copyWith(savedParams: newParams);
-    saveSettings();
-  }
-}
+import 'package:vrchat/utils/app_logger.dart';
 
 // OSCページ
 class OscPage extends ConsumerStatefulWidget {
@@ -216,9 +21,10 @@ class _OscPageState extends ConsumerState<OscPage> {
   var _isConnected = false;
   var _statusMessage = 'OSC未接続';
   Timer? _connectionCheckTimer;
+  final _oscService = const OscService();
 
   // 現在編集中のパラメータ値
-  final Map<int, dynamic> _currentValues = {};
+  final Map<int, Object?> _currentValues = {};
 
   @override
   void initState() {
@@ -246,15 +52,8 @@ class _OscPageState extends ConsumerState<OscPage> {
     final settings = ref.read(oscSettingsProvider);
 
     try {
-      // IPアドレスの形式をチェック
-      final destination = InternetAddress.tryParse(settings.ipAddress);
-      if (destination == null) {
-        throw Exception('無効なIPアドレスです');
-      }
-
       // テスト送信してみる
-      final testMessage = OSCMessage('/avatar/parameters/Test', arguments: [1]);
-      await _sendOscMessage(testMessage, destination, settings.port);
+      await _oscService.sendTestMessage(settings);
 
       setState(() {
         _isConnected = true;
@@ -277,16 +76,12 @@ class _OscPageState extends ConsumerState<OscPage> {
   }
 
   // テストメッセージ送信
-  void _sendTestMessage() {
+  Future<void> _sendTestMessage() async {
     try {
       final settings = ref.read(oscSettingsProvider);
-      final destination = InternetAddress.tryParse(settings.ipAddress);
-      if (destination != null) {
-        final message = OSCMessage('/avatar/parameters/Test', arguments: [1]);
-        _sendOscMessage(message, destination, settings.port);
-      }
+      await _oscService.sendTestMessage(settings);
     } catch (e) {
-      debugPrint('テストメッセージエラー: $e');
+      appLogger.d('テストメッセージエラー: $e');
       setState(() {
         _isConnected = false;
         _statusMessage = '接続が切れました';
@@ -294,25 +89,8 @@ class _OscPageState extends ConsumerState<OscPage> {
     }
   }
 
-  // OSCメッセージ送信（RawDatagramSocketを使用）
-  Future<void> _sendOscMessage(
-    OSCMessage message,
-    InternetAddress destination,
-    int port,
-  ) async {
-    try {
-      final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-      final bytes = message.toBytes();
-      socket.send(bytes, destination, port);
-      socket.close();
-    } catch (e) {
-      debugPrint('OSC送信エラー: $e');
-      rethrow;
-    }
-  }
-
   // パラメータを送信
-  void _sendParameter(OscParam param, dynamic value) {
+  Future<void> _sendParameter(OscParam param, Object value) async {
     if (!_isConnected) {
       ScaffoldMessenger.of(
         context,
@@ -322,15 +100,15 @@ class _OscPageState extends ConsumerState<OscPage> {
 
     try {
       final settings = ref.read(oscSettingsProvider);
-      final destination = InternetAddress.tryParse(settings.ipAddress);
-      if (destination != null) {
-        final message = OSCMessage(param.address, arguments: [value]);
-        _sendOscMessage(message, destination, settings.port);
+      await _oscService.sendParameter(
+        settings: settings,
+        param: param,
+        value: value,
+      );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${param.name}: $value を送信しました')),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${param.name}: $value を送信しました')),
+      );
     } catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -438,7 +216,6 @@ class _OscPageState extends ConsumerState<OscPage> {
 
                 // ポート入力
                 Expanded(
-                  flex: 1,
                   child: TextField(
                     controller: portController,
                     decoration: InputDecoration(
@@ -473,8 +250,9 @@ class _OscPageState extends ConsumerState<OscPage> {
                   icon: Icon(_isConnected ? Icons.link_off : Icons.link),
                   label: Text(_isConnected ? '切断' : '接続'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        _isConnected ? Colors.red : AppTheme.primaryColor,
+                    backgroundColor: _isConnected
+                        ? Colors.red
+                        : AppTheme.primaryColor,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
@@ -575,24 +353,22 @@ class _OscPageState extends ConsumerState<OscPage> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed:
-                        () => _showEditParamDialog(
-                          context,
-                          index,
-                          param,
-                          isDarkMode,
-                        ),
+                    onPressed: () => _showEditParamDialog(
+                      context,
+                      index,
+                      param,
+                      isDarkMode,
+                    ),
                     tooltip: '編集',
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed:
-                        () => _showDeleteParamDialog(
-                          context,
-                          index,
-                          param,
-                          isDarkMode,
-                        ),
+                    onPressed: () => _showDeleteParamDialog(
+                      context,
+                      index,
+                      param,
+                      isDarkMode,
+                    ),
                     tooltip: '削除',
                   ),
                 ],
@@ -608,9 +384,10 @@ class _OscPageState extends ConsumerState<OscPage> {
   Widget _buildParamControl(OscParam param, int index, bool isDarkMode) {
     switch (param.type) {
       case OscParamType.bool:
+        final currentValue = _boolValue(index);
         return SwitchListTile(
-          title: Text('${_currentValues[index] == true ? 'ON' : 'OFF'} に設定'),
-          value: _currentValues[index] ?? false,
+          title: Text('${currentValue ? 'ON' : 'OFF'} に設定'),
+          value: currentValue,
           activeThumbColor: AppTheme.primaryColor,
           onChanged: (value) {
             setState(() {
@@ -621,22 +398,22 @@ class _OscPageState extends ConsumerState<OscPage> {
         );
 
       case OscParamType.int:
+        final currentValue = _intValue(index);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '現在の値: ${_currentValues[index]}',
+              '現在の値: $currentValue',
               style: GoogleFonts.notoSans(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
             ),
             Slider(
-              value: (_currentValues[index] ?? 0).toDouble(),
-              min: 0,
+              value: currentValue.toDouble(),
               max: 7, // ジェスチャーの場合は0-7の範囲
               divisions: 7,
-              label: _currentValues[index]?.toString(),
+              label: currentValue.toString(),
               activeColor: AppTheme.primaryColor,
               onChanged: (value) {
                 setState(() {
@@ -661,18 +438,16 @@ class _OscPageState extends ConsumerState<OscPage> {
                     _sendParameter(param, i);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        _currentValues[index] == i
-                            ? AppTheme.primaryColor
-                            : isDarkMode
-                            ? Colors.grey[800]
-                            : Colors.grey[200],
-                    foregroundColor:
-                        _currentValues[index] == i
-                            ? Colors.white
-                            : isDarkMode
-                            ? Colors.white
-                            : Colors.black,
+                    backgroundColor: _currentValues[index] == i
+                        ? AppTheme.primaryColor
+                        : isDarkMode
+                        ? Colors.grey[800]
+                        : Colors.grey[200],
+                    foregroundColor: _currentValues[index] == i
+                        ? Colors.white
+                        : isDarkMode
+                        ? Colors.white
+                        : Colors.black,
                     minimumSize: const Size(40, 40),
                     padding: EdgeInsets.zero,
                   ),
@@ -684,22 +459,21 @@ class _OscPageState extends ConsumerState<OscPage> {
         );
 
       case OscParamType.float:
+        final currentValue = _doubleValue(index);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '現在の値: ${(_currentValues[index] ?? 0.0).toStringAsFixed(2)}',
+              '現在の値: ${currentValue.toStringAsFixed(2)}',
               style: GoogleFonts.notoSans(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
             ),
             Slider(
-              value: _currentValues[index] ?? 0.0,
-              min: 0,
-              max: 1,
+              value: currentValue,
               divisions: 100,
-              label: (_currentValues[index] ?? 0.0).toStringAsFixed(2),
+              label: currentValue.toStringAsFixed(2),
               activeColor: AppTheme.primaryColor,
               onChanged: (value) {
                 setState(() {
@@ -745,23 +519,33 @@ class _OscPageState extends ConsumerState<OscPage> {
         _sendParameter(param, value);
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor:
-            isSelected
-                ? AppTheme.primaryColor
-                : isDarkMode
-                ? Colors.grey[800]
-                : Colors.grey[200],
-        foregroundColor:
-            isSelected
-                ? Colors.white
-                : isDarkMode
-                ? Colors.white
-                : Colors.black,
+        backgroundColor: isSelected
+            ? AppTheme.primaryColor
+            : isDarkMode
+            ? Colors.grey[800]
+            : Colors.grey[200],
+        foregroundColor: isSelected
+            ? Colors.white
+            : isDarkMode
+            ? Colors.white
+            : Colors.black,
         minimumSize: const Size(50, 36),
         padding: const EdgeInsets.symmetric(horizontal: 8),
       ),
       child: Text(label),
     );
+  }
+
+  bool _boolValue(int index) {
+    return _currentValues[index] as bool? ?? false;
+  }
+
+  int _intValue(int index) {
+    return _currentValues[index] as int? ?? 0;
+  }
+
+  double _doubleValue(int index) {
+    return _currentValues[index] as double? ?? 0;
   }
 
   // パラメータ追加ダイアログ
@@ -774,115 +558,112 @@ class _OscPageState extends ConsumerState<OscPage> {
 
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              'パラメータを追加',
-              style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
-            ),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      labelText: '名前（表示用）',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+      builder: (context) => AlertDialog(
+        title: Text(
+          'パラメータを追加',
+          style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: '名前（表示用）',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: addressController,
-                    decoration: InputDecoration(
-                      labelText: 'OSCアドレス',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      helperText: '例: /avatar/parameters/VRCFaceBlendH/Joy',
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'パラメータの種類',
-                    style: GoogleFonts.notoSans(
-                      fontSize: 14,
-                      color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
-                    ),
-                  ),
-                  StatefulBuilder(
-                    builder:
-                        (context, setState) => Column(
-                          children: [
-                            RadioListTile<OscParamType>(
-                              title: const Text('Float (0.0～1.0)'),
-                              value: OscParamType.float,
-                              groupValue: selectedType,
-                              onChanged: (value) {
-                                setState(() => selectedType = value!);
-                              },
-                            ),
-                            RadioListTile<OscParamType>(
-                              title: const Text('Int (整数値)'),
-                              value: OscParamType.int,
-                              groupValue: selectedType,
-                              onChanged: (value) {
-                                setState(() => selectedType = value!);
-                              },
-                            ),
-                            RadioListTile<OscParamType>(
-                              title: const Text('Bool (On/Off)'),
-                              value: OscParamType.bool,
-                              groupValue: selectedType,
-                              onChanged: (value) {
-                                setState(() => selectedType = value!);
-                              },
-                            ),
-                          ],
-                        ),
-                  ),
-                ],
+                ),
               ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('キャンセル'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: addressController,
+                decoration: InputDecoration(
+                  labelText: 'OSCアドレス',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  helperText: '例: /avatar/parameters/VRCFaceBlendH/Joy',
+                ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  if (nameController.text.isEmpty ||
-                      addressController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('名前とアドレスを入力してください')),
-                    );
-                    return;
-                  }
-
-                  final defaultValue =
-                      selectedType == OscParamType.float
-                          ? 0.0
-                          : selectedType == OscParamType.int
-                          ? 0
-                          : false;
-
-                  final newParam = OscParam(
-                    name: nameController.text,
-                    address: addressController.text,
-                    type: selectedType,
-                    defaultValue: defaultValue,
-                  );
-
-                  ref.read(oscSettingsProvider.notifier).addParam(newParam);
-                  Navigator.pop(context);
-                },
-                child: const Text('追加'),
+              const SizedBox(height: 16),
+              Text(
+                'パラメータの種類',
+                style: GoogleFonts.notoSans(
+                  fontSize: 14,
+                  color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
+                ),
+              ),
+              StatefulBuilder(
+                builder: (context, setState) => Column(
+                  children: [
+                    RadioListTile<OscParamType>(
+                      title: const Text('Float (0.0～1.0)'),
+                      value: OscParamType.float,
+                      groupValue: selectedType,
+                      onChanged: (value) {
+                        setState(() => selectedType = value!);
+                      },
+                    ),
+                    RadioListTile<OscParamType>(
+                      title: const Text('Int (整数値)'),
+                      value: OscParamType.int,
+                      groupValue: selectedType,
+                      onChanged: (value) {
+                        setState(() => selectedType = value!);
+                      },
+                    ),
+                    RadioListTile<OscParamType>(
+                      title: const Text('Bool (On/Off)'),
+                      value: OscParamType.bool,
+                      groupValue: selectedType,
+                      onChanged: (value) {
+                        setState(() => selectedType = value!);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (nameController.text.isEmpty ||
+                  addressController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('名前とアドレスを入力してください')),
+                );
+                return;
+              }
+
+              final defaultValue = selectedType == OscParamType.float
+                  ? 0.0
+                  : selectedType == OscParamType.int
+                  ? 0
+                  : false;
+
+              final newParam = OscParam(
+                name: nameController.text,
+                address: addressController.text,
+                type: selectedType,
+                defaultValue: defaultValue,
+              );
+
+              ref.read(oscSettingsProvider.notifier).addParam(newParam);
+              Navigator.pop(context);
+            },
+            child: const Text('追加'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -899,125 +680,122 @@ class _OscPageState extends ConsumerState<OscPage> {
 
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              'パラメータを編集',
-              style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
-            ),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      labelText: '名前（表示用）',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+      builder: (context) => AlertDialog(
+        title: Text(
+          'パラメータを編集',
+          style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: '名前（表示用）',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: addressController,
-                    decoration: InputDecoration(
-                      labelText: 'OSCアドレス',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'パラメータの種類',
-                    style: GoogleFonts.notoSans(
-                      fontSize: 14,
-                      color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
-                    ),
-                  ),
-                  StatefulBuilder(
-                    builder:
-                        (context, setState) => Column(
-                          children: [
-                            RadioListTile<OscParamType>(
-                              title: const Text('Float (0.0～1.0)'),
-                              value: OscParamType.float,
-                              groupValue: selectedType,
-                              onChanged: (value) {
-                                setState(() => selectedType = value!);
-                              },
-                            ),
-                            RadioListTile<OscParamType>(
-                              title: const Text('Int (整数値)'),
-                              value: OscParamType.int,
-                              groupValue: selectedType,
-                              onChanged: (value) {
-                                setState(() => selectedType = value!);
-                              },
-                            ),
-                            RadioListTile<OscParamType>(
-                              title: const Text('Bool (On/Off)'),
-                              value: OscParamType.bool,
-                              groupValue: selectedType,
-                              onChanged: (value) {
-                                setState(() => selectedType = value!);
-                              },
-                            ),
-                          ],
-                        ),
-                  ),
-                ],
+                ),
               ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('キャンセル'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: addressController,
+                decoration: InputDecoration(
+                  labelText: 'OSCアドレス',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  if (nameController.text.isEmpty ||
-                      addressController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('名前とアドレスを入力してください')),
-                    );
-                    return;
-                  }
-
-                  // 種類が変わった場合はデフォルト値も更新
-                  final defaultValue =
-                      selectedType == param.type
-                          ? param.defaultValue
-                          : selectedType == OscParamType.float
-                          ? 0.0
-                          : selectedType == OscParamType.int
-                          ? 0
-                          : false;
-
-                  final updatedParam = OscParam(
-                    name: nameController.text,
-                    address: addressController.text,
-                    type: selectedType,
-                    defaultValue: defaultValue,
-                  );
-
-                  ref
-                      .read(oscSettingsProvider.notifier)
-                      .updateParam(index, updatedParam);
-
-                  // 現在値も更新
-                  setState(() {
-                    _currentValues[index] = defaultValue;
-                  });
-
-                  Navigator.pop(context);
-                },
-                child: const Text('保存'),
+              const SizedBox(height: 16),
+              Text(
+                'パラメータの種類',
+                style: GoogleFonts.notoSans(
+                  fontSize: 14,
+                  color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
+                ),
+              ),
+              StatefulBuilder(
+                builder: (context, setState) => Column(
+                  children: [
+                    RadioListTile<OscParamType>(
+                      title: const Text('Float (0.0～1.0)'),
+                      value: OscParamType.float,
+                      groupValue: selectedType,
+                      onChanged: (value) {
+                        setState(() => selectedType = value!);
+                      },
+                    ),
+                    RadioListTile<OscParamType>(
+                      title: const Text('Int (整数値)'),
+                      value: OscParamType.int,
+                      groupValue: selectedType,
+                      onChanged: (value) {
+                        setState(() => selectedType = value!);
+                      },
+                    ),
+                    RadioListTile<OscParamType>(
+                      title: const Text('Bool (On/Off)'),
+                      value: OscParamType.bool,
+                      groupValue: selectedType,
+                      onChanged: (value) {
+                        setState(() => selectedType = value!);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (nameController.text.isEmpty ||
+                  addressController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('名前とアドレスを入力してください')),
+                );
+                return;
+              }
+
+              // 種類が変わった場合はデフォルト値も更新
+              final defaultValue = selectedType == param.type
+                  ? param.defaultValue
+                  : selectedType == OscParamType.float
+                  ? 0.0
+                  : selectedType == OscParamType.int
+                  ? 0
+                  : false;
+
+              final updatedParam = OscParam(
+                name: nameController.text,
+                address: addressController.text,
+                type: selectedType,
+                defaultValue: defaultValue,
+              );
+
+              ref
+                  .read(oscSettingsProvider.notifier)
+                  .updateParam(index, updatedParam);
+
+              // 現在値も更新
+              setState(() {
+                _currentValues[index] = defaultValue;
+              });
+
+              Navigator.pop(context);
+            },
+            child: const Text('保存'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1030,30 +808,29 @@ class _OscPageState extends ConsumerState<OscPage> {
   ) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('パラメータを削除'),
-            content: Text('「${param.name}」を削除しますか？'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('キャンセル'),
-              ),
-              TextButton(
-                onPressed: () {
-                  ref.read(oscSettingsProvider.notifier).removeParam(index);
-                  Navigator.pop(context);
-
-                  // 現在値も削除
-                  setState(() {
-                    _currentValues.remove(index);
-                  });
-                },
-                style: TextButton.styleFrom(foregroundColor: Colors.red),
-                child: const Text('削除'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('パラメータを削除'),
+        content: Text('「${param.name}」を削除しますか？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('キャンセル'),
           ),
+          TextButton(
+            onPressed: () {
+              ref.read(oscSettingsProvider.notifier).removeParam(index);
+              Navigator.pop(context);
+
+              // 現在値も削除
+              setState(() {
+                _currentValues.remove(index);
+              });
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
     );
   }
 }

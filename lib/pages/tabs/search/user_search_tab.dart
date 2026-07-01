@@ -43,13 +43,7 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
   }
 
   void _loadMoreResults() {
-    if (ref.read(searchingProvider)) return;
-
-    final currentOffset = ref.read(userSearchOffsetProvider);
-    ref.read(userSearchOffsetProvider.notifier).state = currentOffset + 60;
-
-    // 検索実行のトリガー
-    setState(() {});
+    advanceSearchOffset(ref, userSearchOffsetProvider);
   }
 
   @override
@@ -61,45 +55,23 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
     // 累積された結果を取得
     final cachedResults = ref.watch(userSearchResultsProvider);
 
-    final searchState = ref.watch(
-      userSearchProvider(
-        UserSearchParams(search: query, n: 60, offset: offset),
-      ),
+    final searchProvider = userSearchProvider(
+      UserSearchParams(search: query, offset: offset),
     );
+    final searchState = ref.watch(searchProvider);
 
     // 検索状態が変化したときのリスナー
     ref.listen<AsyncValue<List<LimitedUser>>>(
-      userSearchProvider(
-        UserSearchParams(search: query, n: 60, offset: offset),
-      ),
+      searchProvider,
       (previous, current) {
-        Future.microtask(() {
-          if (current.isLoading) {
-            ref.read(searchingProvider.notifier).state = true;
-          } else if (current.hasValue) {
-            ref.read(searchingProvider.notifier).state = false;
-
-            final newResults = current.value ?? [];
-
-            if (offset == 0) {
-              ref.read(userSearchResultsProvider.notifier).state = newResults;
-            } else if (newResults.isNotEmpty) {
-              final combinedResults = <LimitedUser>[...cachedResults];
-
-              final existingIds = cachedResults.map((u) => u.id).toSet();
-              for (final user in newResults) {
-                if (!existingIds.contains(user.id)) {
-                  combinedResults.add(user);
-                }
-              }
-
-              ref.read(userSearchResultsProvider.notifier).state =
-                  combinedResults;
-            }
-          } else {
-            ref.read(searchingProvider.notifier).state = false;
-          }
-        });
+        handlePagedSearchResults(
+          ref: ref,
+          state: current,
+          offset: offset,
+          cachedResults: cachedResults,
+          resultsProvider: userSearchResultsProvider,
+          idOf: (user) => user.id,
+        );
       },
     );
 
@@ -136,10 +108,9 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
           return Padding(
             padding: const EdgeInsets.all(16),
             child: Center(
-              child:
-                  searchState.isLoading
-                      ? const CircularProgressIndicator()
-                      : const SizedBox(height: 40),
+              child: searchState.isLoading
+                  ? const CircularProgressIndicator()
+                  : const SizedBox(height: 40),
             ),
           );
         }
@@ -164,7 +135,6 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 width: 60,
@@ -175,35 +145,34 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 4,
-                      spreadRadius: 0,
                     ),
                   ],
                 ),
                 child: CircleAvatar(
                   backgroundImage:
                       user.userIcon != null && user.userIcon!.isNotEmpty
-                          ? CachedNetworkImageProvider(
-                            user.userIcon!,
-                            headers: headers,
-                            cacheManager: JsonCacheManager(),
-                          )
-                          : (user.currentAvatarThumbnailImageUrl != null
-                              ? CachedNetworkImageProvider(
+                      ? CachedNetworkImageProvider(
+                          user.userIcon!,
+                          headers: headers,
+                          cacheManager: JsonCacheManager(),
+                        )
+                      : (user.currentAvatarThumbnailImageUrl != null
+                            ? CachedNetworkImageProvider(
                                 user.currentAvatarThumbnailImageUrl!,
                                 headers: headers,
                                 cacheManager: JsonCacheManager(),
                               )
-                              : null),
+                            : null),
                   backgroundColor:
                       (user.userIcon == null || user.userIcon!.isEmpty) &&
-                              user.currentAvatarThumbnailImageUrl == null
-                          ? Colors.grey[300]
-                          : null,
+                          user.currentAvatarThumbnailImageUrl == null
+                      ? Colors.grey[300]
+                      : null,
                   child:
                       (user.userIcon == null || user.userIcon!.isEmpty) &&
-                              user.currentAvatarThumbnailImageUrl == null
-                          ? const Icon(Icons.person, color: Colors.grey)
-                          : null,
+                          user.currentAvatarThumbnailImageUrl == null
+                      ? const Icon(Icons.person, color: Colors.grey)
+                      : null,
                 ),
               ),
 
@@ -230,8 +199,9 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
                         user.statusDescription,
                         style: GoogleFonts.notoSans(
                           fontSize: 13,
-                          color:
-                              isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          color: isDarkMode
+                              ? Colors.grey[400]
+                              : Colors.grey[600],
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

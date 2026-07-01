@@ -43,7 +43,6 @@
     "avatar": "アバター",
     "group": "グループ",
     "inventory": "インベントリ",
-    "vrcnsync": "VRCNSync (β)",
     "review": "レビュー",
     "feedback": "フィードバック",
     "settings": "設定",
@@ -265,8 +264,21 @@
     "loadingError": "読み込みエラー"
   },
   "notifications": {
+    "title": "通知",
     "emptyTitle": "通知はありません",
     "emptyDescription": "フレンドリクエストや招待など\n新しい通知がここに表示されます",
+    "all": "すべて",
+    "unread": "未読 (${count})",
+    "read": "既読",
+    "activity": "フレンドログ",
+    "onlineAlerts": "オンライン通知",
+    "markAllRead": "すべて既読にする",
+    "markAllReadDone": "すべての通知を既読にしました",
+    "deleteConfirmTitle": "通知を削除しますか？",
+    "emptyUnread": "未読通知はありません",
+    "emptyRead": "既読通知はありません",
+    "friendOnlineAlerts": "フレンドのオンライン通知",
+    "selectedCount": "${count}人選択中",
     "friendRequest": "${userName}さんからフレンドリクエストが届いています",
     "invite": "${userName}さんから${worldName}への招待が届いています",
     "friendOnline": "${userName}さんがオンラインになりました",
@@ -420,6 +432,7 @@
     "emoji": "絵文字",
     "sticker": "ステッカー",
     "print": "プリント",
+    "item": "アイテム",
     "upload": "ファイルをアップロード",
     "uploadGallery": "ギャラリー画像をアップロード中...",
     "uploadIcon": "アイコンをアップロード中...",
@@ -471,58 +484,17 @@
         "emptyTitle": "ステッカーがありません",
         "emptyDescription": "VRChatでアップロードしたステッカーがここに表示されます",
         "zoomHint": "ダブルタップでズーム"
+      },
+      "inventoryItem": {
+        "loading": "インベントリを読み込み中...",
+        "error": "インベントリの取得に失敗しました: ${error}",
+        "emptyTitle": "インベントリアイテムがありません",
+        "spawn": "スポーン",
+        "unequip": "装備解除",
+        "equipped": "装備中: ${slot}",
+        "spawned": "${name}をスポーンしました"
       }
     }
-  },
-  "vrcnsync": {
-    "title": "VRCNSync (β)",
-    "betaTitle": "ベータ版機能",
-    "betaDescription": "この機能は開発中のベータ版です。予期せぬ問題が発生する可能性があります。\n現在はローカルのみの実装ですが、クラウド版が需要があれば実装します。",
-    "githubLink": "VRCNSyncのGitHubページ",
-    "openGithub": "GitHubページを開く",
-    "serverRunning": "サーバー実行中",
-    "serverStopped": "サーバー停止中",
-    "serverRunningDesc": "PCからの写真をVRCNアルバムに保存します",
-    "serverStoppedDesc": "サーバーが停止しています",
-    "photoSaved": "写真をVRCNアルバムに保存しました",
-    "photoReceived": "写真を受信しました（アルバム保存に失敗）",
-    "openAlbum": "アルバムを開く",
-    "permissionErrorIos": "フォトライブラリへのアクセス権限が必要です",
-    "permissionErrorAndroid": "ストレージへのアクセス権限が必要です",
-    "openSettings": "設定を開く",
-    "initError": "初期化に失敗しました: ${error}",
-    "openPhotoAppError": "フォトアプリを開けませんでした",
-    "serverInfo": "サーバー情報",
-    "ip": "IP: ${ip}",
-    "port": "ポート: ${port}",
-    "address": "${ip}:${port}",
-    "autoSave": "受信した写真は「VRCN」アルバムに自動保存されます",
-    "usage": "使用方法",
-    "usageSteps": [
-      {
-        "title": "PCでVRCNSyncアプリを起動",
-        "desc": "PCでVRCNSyncアプリを起動してください"
-      },
-      {
-        "title": "同じWiFiネットワークに接続",
-        "desc": "PC・モバイル端末を同じWiFiネットワークに接続してください"
-      },
-      {
-        "title": "接続先にモバイル端末を指定",
-        "desc": "PCアプリで上記のIPアドレスとポートを指定してください"
-      },
-      {
-        "title": "写真を送信",
-        "desc": "PCから写真を送信すると、自動的にVRCNアルバムに保存されます"
-      }
-    ],
-    "stats": "接続状況",
-    "statServer": "サーバー状態",
-    "statServerRunning": "実行中",
-    "statServerStopped": "停止中",
-    "statNetwork": "ネットワーク",
-    "statNetworkConnected": "接続済み",
-    "statNetworkDisconnected": "未接続"
   },
   "feedback": {
     "title": "フィードバック",
@@ -611,21 +583,7 @@
     }
   },
   "download": {
-    "success": "ダウンロードが完了しました",
-    "failure": "ダウンロードに失敗しました: ${error}",
     "shareFailure": "共有に失敗しました: ${error}",
-    "permissionTitle": "権限が必要です",
-    "permissionDenied": "${permissionType}への保存権限が拒否されています。\n設定アプリから権限を有効にしてください。",
-    "permissionCancel": "キャンセル",
-    "permissionOpenSettings": "設定を開く",
-    "permissionPhoto": "フォト",
-    "permissionPhotoLibrary": "フォトライブラリ",
-    "permissionStorage": "ストレージ",
-    "permissionPhotoRequired": "写真への保存権限が必要です",
-    "permissionPhotoLibraryRequired": "フォトライブラリへの保存権限が必要です",
-    "permissionStorageRequired": "ストレージへのアクセス権限が必要です",
-    "permissionError": "権限チェック中にエラーが発生しました: ${error}",
-    "downloading": "${fileName} をダウンロード中...",
     "sharing": "${fileName} を共有準備中..."
   },
   "instance": {

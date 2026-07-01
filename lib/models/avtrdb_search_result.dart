@@ -2,11 +2,6 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class AvtrDbSearchResult {
-  final String id;
-  final String name;
-  final String authorName;
-  final String imageUrl;
-
   const AvtrDbSearchResult({
     required this.id,
     required this.name,
@@ -22,4 +17,8 @@ class AvtrDbSearchResult {
       imageUrl: json['imageUrl'] as String,
     );
   }
+  final String id;
+  final String name;
+  final String authorName;
+  final String imageUrl;
 }

@@ -1,38 +1,38 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:vrchat/api/vrc_api_container.dart';
+import 'package:vrchat/provider/auth_refresh_provider.dart';
 import 'package:vrchat/provider/auth_storage_provider.dart';
-import 'package:vrchat/router/app_router.dart';
+import 'package:vrchat/services/vrchat_auth_service.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
-
-final vrchatApiProvider = Provider<Future<VrchatDart>>((ref) {
-  return VrcApiContainer().create();
-});
+import 'package:vrchat/utils/app_logger.dart';
 
 final apiInitializingProvider = StateProvider<bool>((ref) => true);
 
 // FutureProviderでVRChatのAPIを非同期に初期化
 final vrchatProvider = FutureProvider<VrchatDart>((ref) async {
-  final apiPromise = ref.watch(vrchatApiProvider);
   try {
-    final vrchatApi = await apiPromise;
+    final vrchatApi = await VrcApiContainer().create();
     ref.read(apiInitializingProvider.notifier).state = false;
     return vrchatApi;
   } catch (e) {
     ref.read(apiInitializingProvider.notifier).state = false;
-    debugPrint('【ERROR】VRChat API初期化エラー: $e');
+    appLogger.d('【ERROR】VRChat API初期化エラー: $e');
     rethrow;
   }
 });
 
-final vrchatAuthProvider = FutureProvider((ref) async {
-  final api = await ref.watch(vrchatApiProvider);
-  return api.auth;
+final FutureProvider<VrchatAuthService> vrchatAuthProvider = FutureProvider((
+  ref,
+) async {
+  final api = await ref.watch(vrchatProvider.future);
+  return VrchatAuthService(api);
 });
-final vrchatRawApiProvider = Provider((ref) async {
-  final api = await ref.watch(vrchatApiProvider);
+
+final Provider<Future<VrchatDartGenerated>> vrchatRawApiProvider = Provider((
+  ref,
+) async {
+  final api = await ref.watch(vrchatProvider.future);
   return api.rawApi;
 });
 
@@ -50,7 +50,7 @@ final autoLoginProvider = FutureProvider<bool>((ref) async {
     }
 
     // 保存されたセッションを使ってログインを試みる
-    final (loginSuccess, loginFailure) = await api.login();
+    final (loginSuccess, _) = await api.login();
 
     final authResponse = loginSuccess?.data;
 
@@ -72,38 +72,18 @@ final autoLoginProvider = FutureProvider<bool>((ref) async {
           credentials.password != null &&
           credentials.username!.isNotEmpty &&
           credentials.password!.isNotEmpty) {
-        debugPrint('保存された認証情報でログインを試みます');
+        appLogger.d('保存された認証情報でログインを試みます');
 
         // 保存された認証情報でログイン試行
-        final (loginSuccess, loginFailure) = await api.login(
-          username: credentials.username!,
-          password: credentials.password!,
+        final (loginSuccess, _) = await api.login(
+          username: credentials.username,
+          password: credentials.password,
         );
 
-        if (loginSuccess != null && !authResponse!.requiresTwoFactorAuth) {
-          // 認証状態更新
-          ref.read(authRefreshProvider.notifier).state++;
-          return true;
-        }
-      }
-    }
-
-    // デバッグモードで.env認証情報がある場合に使用
-    if (kDebugMode) {
-      final username = dotenv.env['VRCHAT_USERNAME'];
-      final password = dotenv.env['VRCHAT_PASSWORD'];
-
-      if (username != null &&
-          password != null &&
-          username.isNotEmpty &&
-          password.isNotEmpty) {
-        // .envの認証情報でログイン試行
-        final (loginSuccess, loginFailure) = await api.login(
-          username: username,
-          password: password,
-        );
-
-        if (loginSuccess != null) {
+        final credentialAuthResponse = loginSuccess?.data;
+        if (loginSuccess != null &&
+            credentialAuthResponse != null &&
+            !credentialAuthResponse.requiresTwoFactorAuth) {
           // 認証状態更新
           ref.read(authRefreshProvider.notifier).state++;
           return true;
@@ -113,7 +93,7 @@ final autoLoginProvider = FutureProvider<bool>((ref) async {
 
     return false;
   } catch (e) {
-    debugPrint('自動ログイン失敗: $e');
+    appLogger.d('自動ログイン失敗: $e');
     return false;
   }
 });

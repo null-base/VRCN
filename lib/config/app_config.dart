@@ -1,12 +1,12 @@
 // lib/config/app_config.dart
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 class AppConfig {
+  AppConfig._();
   static FirebaseRemoteConfig? _remoteConfig;
   static var _initialized = false;
-
-  AppConfig._();
 
   /// Remote Configを初期化
   static Future<void> initialize() async {
@@ -19,19 +19,18 @@ class AppConfig {
       await _remoteConfig!.setConfigSettings(
         RemoteConfigSettings(
           fetchTimeout: const Duration(seconds: 10),
-          minimumFetchInterval:
-              kDebugMode
-                  ? const Duration(minutes: 1) // デバッグ
-                  : const Duration(hours: 24), // リリース
+          minimumFetchInterval: kDebugMode
+              ? const Duration(minutes: 1) // デバッグ
+              : const Duration(hours: 24), // リリース
         ),
       );
 
       await _remoteConfig!.fetchAndActivate();
 
       _initialized = true;
-      debugPrint('AppConfig初期化完了');
+      appLogger.d('AppConfig初期化完了');
     } catch (e) {
-      debugPrint('AppConfig初期化エラー: $e');
+      appLogger.d('AppConfig初期化エラー: $e');
       _initialized = false;
     }
   }
@@ -44,7 +43,7 @@ class AppConfig {
     try {
       return _remoteConfig!.getString('feedbackDiscordWebhookUrl');
     } catch (e) {
-      debugPrint('Discord Webhook URL取得エラー: $e');
+      appLogger.d('Discord Webhook URL取得エラー: $e');
       return '';
     }
   }
@@ -57,7 +56,7 @@ class AppConfig {
     try {
       return _remoteConfig!.getString('vrchatEventCalenderUrl');
     } catch (e) {
-      debugPrint('Event Calendar URL取得エラー: $e');
+      appLogger.d('Event Calendar URL取得エラー: $e');
       return '';
     }
   }

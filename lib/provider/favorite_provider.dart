@@ -1,22 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
+import 'package:vrchat_dart/vrchat_dart.dart' as vrc;
+import 'package:vrchat/utils/app_logger.dart';
 
-final vrchatFavoriteProvider = FutureProvider((ref) async {
+final FutureProvider<FavoritesApi> vrchatFavoriteProvider = FutureProvider((
+  ref,
+) async {
   final rawApi = await ref.watch(vrchatRawApiProvider);
   return rawApi.getFavoritesApi();
 });
 
+final favoriteActionProvider =
+    StateNotifierProvider<FavoriteActionNotifier, AsyncValue<void>>((ref) {
+      final favoriteApi = ref.watch(vrchatFavoriteProvider).value;
+      return FavoriteActionNotifier(favoriteApi);
+    });
+
+class FavoriteActionNotifier extends StateNotifier<AsyncValue<void>> {
+  FavoriteActionNotifier(this._favoriteApi)
+    : super(const AsyncValue.data(null));
+
+  final FavoritesApi? _favoriteApi;
+
+  Future<void> removeFavorite(String favoriteId) async {
+    if (_favoriteApi == null) {
+      state = const AsyncValue.error('お気に入りAPIが初期化されていません', StackTrace.empty);
+      return;
+    }
+
+    state = const AsyncValue.loading();
+
+    try {
+      await _favoriteApi.removeFavorite(favoriteId: favoriteId);
+      state = const AsyncValue.data(null);
+    } catch (error, stack) {
+      state = AsyncValue.error('お気に入り削除に失敗しました: $error', stack);
+    }
+  }
+
+  Future<void> addFavorite({
+    required String favoriteId,
+    required FavoriteType type,
+    required List<String> tags,
+  }) async {
+    if (_favoriteApi == null) {
+      state = const AsyncValue.error('お気に入りAPIが初期化されていません', StackTrace.empty);
+      return;
+    }
+
+    state = const AsyncValue.loading();
+
+    try {
+      await _favoriteApi.addFavorite(
+        addFavoriteRequest: vrc.AddFavoriteRequest(
+          favoriteId: favoriteId,
+          tags: tags,
+          type: type.apiType,
+        ),
+      );
+      state = const AsyncValue.data(null);
+    } catch (error, stack) {
+      state = AsyncValue.error('お気に入り追加に失敗しました: $error', stack);
+      rethrow;
+    }
+  }
+}
+
 // お気に入りの検索パラメータを定義
 @immutable
 class FavoriteSearchParams {
+  const FavoriteSearchParams({this.n = 100, this.offset, this.type, this.tag});
   final int? n;
   final int? offset;
   final String? type;
   final String? tag;
-
-  const FavoriteSearchParams({this.n = 100, this.offset, this.type, this.tag});
 
   // パラメータの比較用
   @override
@@ -34,7 +95,8 @@ class FavoriteSearchParams {
 }
 
 // お気に入り一覧を取得するプロバイダー
-final favoritesListProvider =
+final FutureProviderFamily<List<Favorite>, FavoriteSearchParams>
+favoritesListProvider =
     FutureProvider.family<List<Favorite>, FavoriteSearchParams>((
       ref,
       params,
@@ -77,17 +139,31 @@ extension FavoriteTypeExtension on FavoriteType {
         return 'avatar';
     }
   }
+
+  vrc.FavoriteType get apiType {
+    switch (this) {
+      case FavoriteType.world:
+        return vrc.FavoriteType.world;
+      case FavoriteType.friend:
+        return vrc.FavoriteType.friend;
+      case FavoriteType.avatar:
+        return vrc.FavoriteType.avatar;
+    }
+  }
 }
 
 // タイプ別にお気に入りを簡単に取得するヘルパープロバイダー
-final typedFavoritesProvider =
-    FutureProvider.family<List<Favorite>, FavoriteType>((ref, type) {
-      final params = FavoriteSearchParams(type: type.value);
-      return ref.watch(favoritesListProvider(params).future);
-    });
+final FutureProviderFamily<List<Favorite>, FavoriteType>
+typedFavoritesProvider = FutureProvider.family<List<Favorite>, FavoriteType>((
+  ref,
+  type,
+) {
+  final params = FavoriteSearchParams(type: type.value);
+  return ref.watch(favoritesListProvider(params).future);
+});
 
 // すべてのお気に入りを再帰的に取得するプロバイダー
-final allFavoritesProvider =
+final FutureProviderFamily<List<Favorite>, FavoriteType> allFavoritesProvider =
     FutureProvider.family<List<Favorite>, FavoriteType>((ref, type) async {
       final favoriteApi = ref.watch(vrchatFavoriteProvider).value;
       if (favoriteApi == null) {
@@ -119,14 +195,14 @@ final allFavoritesProvider =
             }
 
             // デバッグ情報
-            debugPrint('${type.value}のお気に入りを$offset件取得中...');
+            appLogger.d('${type.value}のお気に入りを$offset件取得中...');
           }
         } catch (e) {
           throw Exception('お気に入りの取得に失敗しました: $e');
         }
       }
 
-      debugPrint('${type.value}のお気に入りを合計${allFavorites.length}件取得しました');
+      appLogger.d('${type.value}のお気に入りを合計${allFavorites.length}件取得しました');
       return allFavorites;
     });
 
@@ -148,15 +224,14 @@ final favoriteFriendsProvider = FutureProvider<List<Favorite>>((ref) {
 // お気に入りグループの検索パラメータを定義
 @immutable
 class FavoriteGroupSearchParams {
-  final int? n;
-  final int? offset;
-  final String? ownerId;
-
   const FavoriteGroupSearchParams({
     this.n = 60, // デフォルト値は60件
     this.offset,
     this.ownerId, // 省略時は自分自身のお気に入りグループを取得
   });
+  final int? n;
+  final int? offset;
+  final String? ownerId;
 
   // パラメータの比較用
   @override
@@ -173,7 +248,8 @@ class FavoriteGroupSearchParams {
 }
 
 // お気に入りグループ一覧を取得するプロバイダー
-final favoriteGroupsListProvider =
+final FutureProviderFamily<List<FavoriteGroup>, FavoriteGroupSearchParams>
+favoriteGroupsListProvider =
     FutureProvider.family<List<FavoriteGroup>, FavoriteGroupSearchParams>((
       ref,
       params,
@@ -207,7 +283,8 @@ final myFavoriteGroupsProvider = FutureProvider<List<FavoriteGroup>>((ref) {
 });
 
 // 特定のタイプのお気に入りグループを取得するプロバイダー
-final typedFavoriteGroupsProvider =
+final FutureProviderFamily<List<FavoriteGroup>, FavoriteType>
+typedFavoriteGroupsProvider =
     FutureProvider.family<List<FavoriteGroup>, FavoriteType>((ref, type) async {
       final allGroups = await ref.watch(myFavoriteGroupsProvider.future);
       // グループタイプでフィルタリング
@@ -217,7 +294,7 @@ final typedFavoriteGroupsProvider =
     });
 
 // お気に入りグループを取得して、そのグループに所属するお気に入りを取得するプロバイダー
-final favoritesByGroupIdProvider =
+final FutureProviderFamily<List<Favorite>, String> favoritesByGroupIdProvider =
     FutureProvider.family<List<Favorite>, String>((ref, groupId) {
       // グループIDに指定したタグのついたお気に入りを検索
       final params = FavoriteSearchParams(tag: groupId);

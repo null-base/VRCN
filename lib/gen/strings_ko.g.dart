@@ -37,41 +37,40 @@ class TranslationsKo with BaseTranslations<AppLocale, Translations> implements T
 	TranslationsKo $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsKo(meta: meta ?? this.$meta);
 
 	// Translations
-	@override late final _TranslationsCommonKo common = _TranslationsCommonKo._(_root);
-	@override late final _TranslationsTermsAgreementKo termsAgreement = _TranslationsTermsAgreementKo._(_root);
-	@override late final _TranslationsDrawerKo drawer = _TranslationsDrawerKo._(_root);
-	@override late final _TranslationsLoginKo login = _TranslationsLoginKo._(_root);
-	@override late final _TranslationsFriendsKo friends = _TranslationsFriendsKo._(_root);
-	@override late final _TranslationsFriendDetailKo friendDetail = _TranslationsFriendDetailKo._(_root);
-	@override late final _TranslationsSearchKo search = _TranslationsSearchKo._(_root);
-	@override late final _TranslationsProfileKo profile = _TranslationsProfileKo._(_root);
-	@override late final _TranslationsEngageCardKo engageCard = _TranslationsEngageCardKo._(_root);
-	@override late final _TranslationsQrScannerKo qrScanner = _TranslationsQrScannerKo._(_root);
-	@override late final _TranslationsFavoritesKo favorites = _TranslationsFavoritesKo._(_root);
-	@override late final _TranslationsNotificationsKo notifications = _TranslationsNotificationsKo._(_root);
-	@override late final _TranslationsEventCalendarKo eventCalendar = _TranslationsEventCalendarKo._(_root);
-	@override late final _TranslationsAvatarsKo avatars = _TranslationsAvatarsKo._(_root);
-	@override late final _TranslationsWorldDetailKo worldDetail = _TranslationsWorldDetailKo._(_root);
-	@override late final _TranslationsAvatarDetailKo avatarDetail = _TranslationsAvatarDetailKo._(_root);
-	@override late final _TranslationsGroupsKo groups = _TranslationsGroupsKo._(_root);
-	@override late final _TranslationsGroupDetailKo groupDetail = _TranslationsGroupDetailKo._(_root);
-	@override late final _TranslationsInventoryKo inventory = _TranslationsInventoryKo._(_root);
-	@override late final _TranslationsVrcnsyncKo vrcnsync = _TranslationsVrcnsyncKo._(_root);
-	@override late final _TranslationsFeedbackKo feedback = _TranslationsFeedbackKo._(_root);
-	@override late final _TranslationsSettingsKo settings = _TranslationsSettingsKo._(_root);
-	@override late final _TranslationsCreditsKo credits = _TranslationsCreditsKo._(_root);
-	@override late final _TranslationsDownloadKo download = _TranslationsDownloadKo._(_root);
-	@override late final _TranslationsInstanceKo instance = _TranslationsInstanceKo._(_root);
-	@override late final _TranslationsStatusKo status = _TranslationsStatusKo._(_root);
-	@override late final _TranslationsLocationKo location = _TranslationsLocationKo._(_root);
-	@override late final _TranslationsReminderKo reminder = _TranslationsReminderKo._(_root);
-	@override late final _TranslationsFriendKo friend = _TranslationsFriendKo._(_root);
-	@override late final _TranslationsEventCalendarFilterKo eventCalendarFilter = _TranslationsEventCalendarFilterKo._(_root);
+	@override late final _Translations$common$ko common = _Translations$common$ko._(_root);
+	@override late final _Translations$termsAgreement$ko termsAgreement = _Translations$termsAgreement$ko._(_root);
+	@override late final _Translations$drawer$ko drawer = _Translations$drawer$ko._(_root);
+	@override late final _Translations$login$ko login = _Translations$login$ko._(_root);
+	@override late final _Translations$friends$ko friends = _Translations$friends$ko._(_root);
+	@override late final _Translations$friendDetail$ko friendDetail = _Translations$friendDetail$ko._(_root);
+	@override late final _Translations$search$ko search = _Translations$search$ko._(_root);
+	@override late final _Translations$profile$ko profile = _Translations$profile$ko._(_root);
+	@override late final _Translations$engageCard$ko engageCard = _Translations$engageCard$ko._(_root);
+	@override late final _Translations$qrScanner$ko qrScanner = _Translations$qrScanner$ko._(_root);
+	@override late final _Translations$favorites$ko favorites = _Translations$favorites$ko._(_root);
+	@override late final _Translations$notifications$ko notifications = _Translations$notifications$ko._(_root);
+	@override late final _Translations$eventCalendar$ko eventCalendar = _Translations$eventCalendar$ko._(_root);
+	@override late final _Translations$avatars$ko avatars = _Translations$avatars$ko._(_root);
+	@override late final _Translations$worldDetail$ko worldDetail = _Translations$worldDetail$ko._(_root);
+	@override late final _Translations$avatarDetail$ko avatarDetail = _Translations$avatarDetail$ko._(_root);
+	@override late final _Translations$groups$ko groups = _Translations$groups$ko._(_root);
+	@override late final _Translations$groupDetail$ko groupDetail = _Translations$groupDetail$ko._(_root);
+	@override late final _Translations$inventory$ko inventory = _Translations$inventory$ko._(_root);
+	@override late final _Translations$feedback$ko feedback = _Translations$feedback$ko._(_root);
+	@override late final _Translations$settings$ko settings = _Translations$settings$ko._(_root);
+	@override late final _Translations$credits$ko credits = _Translations$credits$ko._(_root);
+	@override late final _Translations$download$ko download = _Translations$download$ko._(_root);
+	@override late final _Translations$instance$ko instance = _Translations$instance$ko._(_root);
+	@override late final _Translations$status$ko status = _Translations$status$ko._(_root);
+	@override late final _Translations$location$ko location = _Translations$location$ko._(_root);
+	@override late final _Translations$reminder$ko reminder = _Translations$reminder$ko._(_root);
+	@override late final _Translations$friend$ko friend = _Translations$friend$ko._(_root);
+	@override late final _Translations$eventCalendarFilter$ko eventCalendarFilter = _Translations$eventCalendarFilter$ko._(_root);
 }
 
 // Path: common
-class _TranslationsCommonKo implements TranslationsCommonJa {
-	_TranslationsCommonKo._(this._root);
+class _Translations$common$ko implements Translations$common$en {
+	_Translations$common$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -102,8 +101,8 @@ class _TranslationsCommonKo implements TranslationsCommonJa {
 }
 
 // Path: termsAgreement
-class _TranslationsTermsAgreementKo implements TranslationsTermsAgreementJa {
-	_TranslationsTermsAgreementKo._(this._root);
+class _Translations$termsAgreement$ko implements Translations$termsAgreement$en {
+	_Translations$termsAgreement$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -120,8 +119,8 @@ class _TranslationsTermsAgreementKo implements TranslationsTermsAgreementJa {
 }
 
 // Path: drawer
-class _TranslationsDrawerKo implements TranslationsDrawerJa {
-	_TranslationsDrawerKo._(this._root);
+class _Translations$drawer$ko implements Translations$drawer$en {
+	_Translations$drawer$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -133,19 +132,18 @@ class _TranslationsDrawerKo implements TranslationsDrawerJa {
 	@override String get avatar => '아바타';
 	@override String get group => '그룹';
 	@override String get inventory => '인벤토리';
-	@override String get vrcnsync => 'VRCNSync (β)';
 	@override String get review => '리뷰';
 	@override String get feedback => '피드백';
 	@override String get settings => '설정';
 	@override String get userLoading => '사용자 정보 로딩 중...';
 	@override String get userError => '사용자 정보 로딩에 실패했습니다';
 	@override String get retry => '재시도';
-	@override late final _TranslationsDrawerSectionKo section = _TranslationsDrawerSectionKo._(_root);
+	@override late final _Translations$drawer$section$ko section = _Translations$drawer$section$ko._(_root);
 }
 
 // Path: login
-class _TranslationsLoginKo implements TranslationsLoginJa {
-	_TranslationsLoginKo._(this._root);
+class _Translations$login$ko implements Translations$login$en {
+	_Translations$login$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -174,8 +172,8 @@ class _TranslationsLoginKo implements TranslationsLoginJa {
 }
 
 // Path: friends
-class _TranslationsFriendsKo implements TranslationsFriendsJa {
-	_TranslationsFriendsKo._(this._root);
+class _Translations$friends$ko implements Translations$friends$en {
+	_Translations$friends$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -194,8 +192,8 @@ class _TranslationsFriendsKo implements TranslationsFriendsJa {
 }
 
 // Path: friendDetail
-class _TranslationsFriendDetailKo implements TranslationsFriendDetailJa {
-	_TranslationsFriendDetailKo._(this._root);
+class _Translations$friendDetail$ko implements Translations$friendDetail$en {
+	_Translations$friendDetail$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -229,8 +227,8 @@ class _TranslationsFriendDetailKo implements TranslationsFriendDetailJa {
 }
 
 // Path: search
-class _TranslationsSearchKo implements TranslationsSearchJa {
-	_TranslationsSearchKo._(this._root);
+class _Translations$search$ko implements Translations$search$en {
+	_Translations$search$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -239,12 +237,12 @@ class _TranslationsSearchKo implements TranslationsSearchJa {
 	@override String get worldTab => '월드';
 	@override String get avatarTab => '아바타';
 	@override String get groupTab => '그룹';
-	@override late final _TranslationsSearchTabsKo tabs = _TranslationsSearchTabsKo._(_root);
+	@override late final _Translations$search$tabs$ko tabs = _Translations$search$tabs$ko._(_root);
 }
 
 // Path: profile
-class _TranslationsProfileKo implements TranslationsProfileJa {
-	_TranslationsProfileKo._(this._root);
+class _Translations$profile$ko implements Translations$profile$en {
+	_Translations$profile$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -296,8 +294,8 @@ class _TranslationsProfileKo implements TranslationsProfileJa {
 }
 
 // Path: engageCard
-class _TranslationsEngageCardKo implements TranslationsEngageCardJa {
-	_TranslationsEngageCardKo._(this._root);
+class _Translations$engageCard$ko implements Translations$engageCard$en {
+	_Translations$engageCard$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -315,8 +313,8 @@ class _TranslationsEngageCardKo implements TranslationsEngageCardJa {
 }
 
 // Path: qrScanner
-class _TranslationsQrScannerKo implements TranslationsQrScannerJa {
-	_TranslationsQrScannerKo._(this._root);
+class _Translations$qrScanner$ko implements Translations$qrScanner$en {
+	_Translations$qrScanner$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -329,8 +327,8 @@ class _TranslationsQrScannerKo implements TranslationsQrScannerJa {
 }
 
 // Path: favorites
-class _TranslationsFavoritesKo implements TranslationsFavoritesJa {
-	_TranslationsFavoritesKo._(this._root);
+class _Translations$favorites$ko implements Translations$favorites$en {
+	_Translations$favorites$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -365,14 +363,27 @@ class _TranslationsFavoritesKo implements TranslationsFavoritesJa {
 }
 
 // Path: notifications
-class _TranslationsNotificationsKo implements TranslationsNotificationsJa {
-	_TranslationsNotificationsKo._(this._root);
+class _Translations$notifications$ko implements Translations$notifications$en {
+	_Translations$notifications$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
 	// Translations
+	@override String get title => '알림';
 	@override String get emptyTitle => '알림이 없습니다';
 	@override String get emptyDescription => '친구 요청이나 초대 등\n새로운 알림이 여기에 표시됩니다';
+	@override String get all => '전체';
+	@override String unread({required Object count}) => '읽지 않음 (${count})';
+	@override String get read => '읽음';
+	@override String get activity => '친구 로그';
+	@override String get onlineAlerts => '온라인 알림';
+	@override String get markAllRead => '모두 읽음으로 표시';
+	@override String get markAllReadDone => '모든 알림을 읽음으로 표시했습니다';
+	@override String get deleteConfirmTitle => '알림을 삭제할까요?';
+	@override String get emptyUnread => '읽지 않은 알림이 없습니다';
+	@override String get emptyRead => '읽은 알림이 없습니다';
+	@override String get friendOnlineAlerts => '친구 온라인 알림';
+	@override String selectedCount({required Object count}) => '${count}명 선택됨';
 	@override String friendRequest({required Object userName}) => '${userName}님으로부터 친구 요청이 도착했습니다';
 	@override String invite({required Object userName, required Object worldName}) => '${userName}님으로부터 ${worldName}(으)로 초대가 도착했습니다';
 	@override String friendOnline({required Object userName}) => '${userName}님이 온라인 상태가 되었습니다';
@@ -395,8 +406,8 @@ class _TranslationsNotificationsKo implements TranslationsNotificationsJa {
 }
 
 // Path: eventCalendar
-class _TranslationsEventCalendarKo implements TranslationsEventCalendarJa {
-	_TranslationsEventCalendarKo._(this._root);
+class _Translations$eventCalendar$ko implements Translations$eventCalendar$en {
+	_Translations$eventCalendar$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -427,8 +438,8 @@ class _TranslationsEventCalendarKo implements TranslationsEventCalendarJa {
 }
 
 // Path: avatars
-class _TranslationsAvatarsKo implements TranslationsAvatarsJa {
-	_TranslationsAvatarsKo._(this._root);
+class _Translations$avatars$ko implements Translations$avatars$en {
+	_Translations$avatars$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -455,8 +466,8 @@ class _TranslationsAvatarsKo implements TranslationsAvatarsJa {
 }
 
 // Path: worldDetail
-class _TranslationsWorldDetailKo implements TranslationsWorldDetailJa {
-	_TranslationsWorldDetailKo._(this._root);
+class _Translations$worldDetail$ko implements Translations$worldDetail$en {
+	_Translations$worldDetail$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -483,8 +494,8 @@ class _TranslationsWorldDetailKo implements TranslationsWorldDetailJa {
 }
 
 // Path: avatarDetail
-class _TranslationsAvatarDetailKo implements TranslationsAvatarDetailJa {
-	_TranslationsAvatarDetailKo._(this._root);
+class _Translations$avatarDetail$ko implements Translations$avatarDetail$en {
+	_Translations$avatarDetail$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -510,8 +521,8 @@ class _TranslationsAvatarDetailKo implements TranslationsAvatarDetailJa {
 }
 
 // Path: groups
-class _TranslationsGroupsKo implements TranslationsGroupsJa {
-	_TranslationsGroupsKo._(this._root);
+class _Translations$groups$ko implements Translations$groups$en {
+	_Translations$groups$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -530,8 +541,8 @@ class _TranslationsGroupsKo implements TranslationsGroupsJa {
 }
 
 // Path: groupDetail
-class _TranslationsGroupDetailKo implements TranslationsGroupDetailJa {
-	_TranslationsGroupDetailKo._(this._root);
+class _Translations$groupDetail$ko implements Translations$groupDetail$en {
+	_Translations$groupDetail$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -547,13 +558,13 @@ class _TranslationsGroupDetailKo implements TranslationsGroupDetailJa {
 	@override String get rules => '규칙';
 	@override String get languages => '언어';
 	@override String memberCount({required Object count}) => '${count} 멤버';
-	@override late final _TranslationsGroupDetailPrivacyKo privacy = _TranslationsGroupDetailPrivacyKo._(_root);
-	@override late final _TranslationsGroupDetailRoleKo role = _TranslationsGroupDetailRoleKo._(_root);
+	@override late final _Translations$groupDetail$privacy$ko privacy = _Translations$groupDetail$privacy$ko._(_root);
+	@override late final _Translations$groupDetail$role$ko role = _Translations$groupDetail$role$ko._(_root);
 }
 
 // Path: inventory
-class _TranslationsInventoryKo implements TranslationsInventoryJa {
-	_TranslationsInventoryKo._(this._root);
+class _Translations$inventory$ko implements Translations$inventory$en {
+	_Translations$inventory$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -564,6 +575,7 @@ class _TranslationsInventoryKo implements TranslationsInventoryJa {
 	@override String get emoji => '이모지';
 	@override String get sticker => '스티커';
 	@override String get print => '프린트';
+	@override String get item => '아이템';
 	@override String get upload => '파일 업로드';
 	@override String get uploadGallery => '갤러리 이미지 업로드 중...';
 	@override String get uploadIcon => '아이콘 업로드 중...';
@@ -580,57 +592,12 @@ class _TranslationsInventoryKo implements TranslationsInventoryJa {
 	@override String get uploadFailedSize => '파일 크기가 너무 큽니다. 더 작은 이미지를 선택해 주세요.';
 	@override String uploadFailedServer({required Object code}) => '서버 오류가 발생했습니다 (${code})';
 	@override String pickImageFailed({required Object error}) => '이미지 선택에 실패했습니다: ${error}';
-	@override late final _TranslationsInventoryTabsKo tabs = _TranslationsInventoryTabsKo._(_root);
-}
-
-// Path: vrcnsync
-class _TranslationsVrcnsyncKo implements TranslationsVrcnsyncJa {
-	_TranslationsVrcnsyncKo._(this._root);
-
-	final TranslationsKo _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'VRCNSync (β)';
-	@override String get betaTitle => '베타 기능';
-	@override String get betaDescription => '이 기능은 개발 중인 베타 버전입니다. 예기치 않은 문제가 발생할 수 있습니다.\n현재는 로컬에서만 구현되어 있지만, 수요가 있으면 클라우드 버전을 구현할 예정입니다.';
-	@override String get githubLink => 'VRCNSync GitHub 페이지';
-	@override String get openGithub => 'GitHub 페이지 열기';
-	@override String get serverRunning => '서버 실행 중';
-	@override String get serverStopped => '서버 중지됨';
-	@override String get serverRunningDesc => 'PC의 사진을 VRCN 앨범에 저장합니다';
-	@override String get serverStoppedDesc => '서버가 중지되었습니다';
-	@override String get photoSaved => '사진을 VRCN 앨범에 저장했습니다';
-	@override String get photoReceived => '사진을 수신했습니다 (앨범 저장 실패)';
-	@override String get openAlbum => '앨범 열기';
-	@override String get permissionErrorIos => '사진 라이브러리에 대한 접근 권한이 필요합니다';
-	@override String get permissionErrorAndroid => '저장소에 대한 접근 권한이 필요합니다';
-	@override String get openSettings => '설정 열기';
-	@override String initError({required Object error}) => '초기화에 실패했습니다: ${error}';
-	@override String get openPhotoAppError => '사진 앱을 열 수 없었습니다';
-	@override String get serverInfo => '서버 정보';
-	@override String ip({required Object ip}) => 'IP: ${ip}';
-	@override String port({required Object port}) => '포트: ${port}';
-	@override String address({required Object ip, required Object port}) => '${ip}:${port}';
-	@override String get autoSave => '수신된 사진은 \'VRCN\' 앨범에 자동 저장됩니다';
-	@override String get usage => '사용 방법';
-	@override List<dynamic> get usageSteps => [
-		_TranslationsVrcnsync$usageSteps$0i0$Ko._(_root),
-		_TranslationsVrcnsync$usageSteps$0i1$Ko._(_root),
-		_TranslationsVrcnsync$usageSteps$0i2$Ko._(_root),
-		_TranslationsVrcnsync$usageSteps$0i3$Ko._(_root),
-	];
-	@override String get stats => '연결 상태';
-	@override String get statServer => '서버 상태';
-	@override String get statServerRunning => '실행 중';
-	@override String get statServerStopped => '중지됨';
-	@override String get statNetwork => '네트워크';
-	@override String get statNetworkConnected => '연결됨';
-	@override String get statNetworkDisconnected => '연결 안 됨';
+	@override late final _Translations$inventory$tabs$ko tabs = _Translations$inventory$tabs$ko._(_root);
 }
 
 // Path: feedback
-class _TranslationsFeedbackKo implements TranslationsFeedbackJa {
-	_TranslationsFeedbackKo._(this._root);
+class _Translations$feedback$ko implements Translations$feedback$en {
+	_Translations$feedback$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -656,8 +623,8 @@ class _TranslationsFeedbackKo implements TranslationsFeedbackJa {
 }
 
 // Path: settings
-class _TranslationsSettingsKo implements TranslationsSettingsJa {
-	_TranslationsSettingsKo._(this._root);
+class _Translations$settings$ko implements Translations$settings$en {
+	_Translations$settings$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -720,54 +687,40 @@ class _TranslationsSettingsKo implements TranslationsSettingsJa {
 }
 
 // Path: credits
-class _TranslationsCreditsKo implements TranslationsCreditsJa {
-	_TranslationsCreditsKo._(this._root);
+class _Translations$credits$ko implements Translations$credits$en {
+	_Translations$credits$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => '크레딧';
-	@override late final _TranslationsCreditsSectionKo section = _TranslationsCreditsSectionKo._(_root);
+	@override late final _Translations$credits$section$ko section = _Translations$credits$section$ko._(_root);
 }
 
 // Path: download
-class _TranslationsDownloadKo implements TranslationsDownloadJa {
-	_TranslationsDownloadKo._(this._root);
+class _Translations$download$ko implements Translations$download$en {
+	_Translations$download$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
 	// Translations
-	@override String get success => '다운로드가 완료되었습니다';
-	@override String failure({required Object error}) => '다운로드에 실패했습니다: ${error}';
 	@override String shareFailure({required Object error}) => '공유에 실패했습니다: ${error}';
-	@override String get permissionTitle => '권한이 필요합니다';
-	@override String permissionDenied({required Object permissionType}) => '${permissionType}에 대한 저장 권한이 거부되었습니다.\n설정 앱에서 권한을 활성화해 주세요.';
-	@override String get permissionCancel => '취소';
-	@override String get permissionOpenSettings => '설정 열기';
-	@override String get permissionPhoto => '사진';
-	@override String get permissionPhotoLibrary => '사진 라이브러리';
-	@override String get permissionStorage => '저장 공간';
-	@override String get permissionPhotoRequired => '사진에 대한 저장 권한이 필요합니다';
-	@override String get permissionPhotoLibraryRequired => '사진 라이브러리에 대한 저장 권한이 필요합니다';
-	@override String get permissionStorageRequired => '저장 공간에 대한 접근 권한이 필요합니다';
-	@override String permissionError({required Object error}) => '권한 확인 중 오류가 발생했습니다: ${error}';
-	@override String downloading({required Object fileName}) => '${fileName} 다운로드 중...';
 	@override String sharing({required Object fileName}) => '${fileName} 공유 준비 중...';
 }
 
 // Path: instance
-class _TranslationsInstanceKo implements TranslationsInstanceJa {
-	_TranslationsInstanceKo._(this._root);
+class _Translations$instance$ko implements Translations$instance$en {
+	_Translations$instance$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
 	// Translations
-	@override late final _TranslationsInstanceTypeKo type = _TranslationsInstanceTypeKo._(_root);
+	@override late final _Translations$instance$type$ko type = _Translations$instance$type$ko._(_root);
 }
 
 // Path: status
-class _TranslationsStatusKo implements TranslationsStatusJa {
-	_TranslationsStatusKo._(this._root);
+class _Translations$status$ko implements Translations$status$en {
+	_Translations$status$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -781,8 +734,8 @@ class _TranslationsStatusKo implements TranslationsStatusJa {
 }
 
 // Path: location
-class _TranslationsLocationKo implements TranslationsLocationJa {
-	_TranslationsLocationKo._(this._root);
+class _Translations$location$ko implements Translations$location$en {
+	_Translations$location$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -805,8 +758,8 @@ class _TranslationsLocationKo implements TranslationsLocationJa {
 }
 
 // Path: reminder
-class _TranslationsReminderKo implements TranslationsReminderJa {
-	_TranslationsReminderKo._(this._root);
+class _Translations$reminder$ko implements Translations$reminder$en {
+	_Translations$reminder$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -828,8 +781,8 @@ class _TranslationsReminderKo implements TranslationsReminderJa {
 }
 
 // Path: friend
-class _TranslationsFriendKo implements TranslationsFriendJa {
-	_TranslationsFriendKo._(this._root);
+class _Translations$friend$ko implements Translations$friend$en {
+	_Translations$friend$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -850,8 +803,8 @@ class _TranslationsFriendKo implements TranslationsFriendJa {
 }
 
 // Path: eventCalendarFilter
-class _TranslationsEventCalendarFilterKo implements TranslationsEventCalendarFilterJa {
-	_TranslationsEventCalendarFilterKo._(this._root);
+class _Translations$eventCalendarFilter$ko implements Translations$eventCalendarFilter$en {
+	_Translations$eventCalendarFilter$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -877,8 +830,8 @@ class _TranslationsEventCalendarFilterKo implements TranslationsEventCalendarFil
 }
 
 // Path: drawer.section
-class _TranslationsDrawerSectionKo implements TranslationsDrawerSectionJa {
-	_TranslationsDrawerSectionKo._(this._root);
+class _Translations$drawer$section$ko implements Translations$drawer$section$en {
+	_Translations$drawer$section$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -888,21 +841,21 @@ class _TranslationsDrawerSectionKo implements TranslationsDrawerSectionJa {
 }
 
 // Path: search.tabs
-class _TranslationsSearchTabsKo implements TranslationsSearchTabsJa {
-	_TranslationsSearchTabsKo._(this._root);
+class _Translations$search$tabs$ko implements Translations$search$tabs$en {
+	_Translations$search$tabs$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
 	// Translations
-	@override late final _TranslationsSearchTabsUserSearchKo userSearch = _TranslationsSearchTabsUserSearchKo._(_root);
-	@override late final _TranslationsSearchTabsWorldSearchKo worldSearch = _TranslationsSearchTabsWorldSearchKo._(_root);
-	@override late final _TranslationsSearchTabsGroupSearchKo groupSearch = _TranslationsSearchTabsGroupSearchKo._(_root);
-	@override late final _TranslationsSearchTabsAvatarSearchKo avatarSearch = _TranslationsSearchTabsAvatarSearchKo._(_root);
+	@override late final _Translations$search$tabs$userSearch$ko userSearch = _Translations$search$tabs$userSearch$ko._(_root);
+	@override late final _Translations$search$tabs$worldSearch$ko worldSearch = _Translations$search$tabs$worldSearch$ko._(_root);
+	@override late final _Translations$search$tabs$groupSearch$ko groupSearch = _Translations$search$tabs$groupSearch$ko._(_root);
+	@override late final _Translations$search$tabs$avatarSearch$ko avatarSearch = _Translations$search$tabs$avatarSearch$ko._(_root);
 }
 
 // Path: groupDetail.privacy
-class _TranslationsGroupDetailPrivacyKo implements TranslationsGroupDetailPrivacyJa {
-	_TranslationsGroupDetailPrivacyKo._(this._root);
+class _Translations$groupDetail$privacy$ko implements Translations$groupDetail$privacy$en {
+	_Translations$groupDetail$privacy$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -915,8 +868,8 @@ class _TranslationsGroupDetailPrivacyKo implements TranslationsGroupDetailPrivac
 }
 
 // Path: groupDetail.role
-class _TranslationsGroupDetailRoleKo implements TranslationsGroupDetailRoleJa {
-	_TranslationsGroupDetailRoleKo._(this._root);
+class _Translations$groupDetail$role$ko implements Translations$groupDetail$role$en {
+	_Translations$groupDetail$role$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -928,66 +881,23 @@ class _TranslationsGroupDetailRoleKo implements TranslationsGroupDetailRoleJa {
 }
 
 // Path: inventory.tabs
-class _TranslationsInventoryTabsKo implements TranslationsInventoryTabsJa {
-	_TranslationsInventoryTabsKo._(this._root);
+class _Translations$inventory$tabs$ko implements Translations$inventory$tabs$en {
+	_Translations$inventory$tabs$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
 	// Translations
-	@override late final _TranslationsInventoryTabsEmojiInventoryKo emojiInventory = _TranslationsInventoryTabsEmojiInventoryKo._(_root);
-	@override late final _TranslationsInventoryTabsGalleryInventoryKo galleryInventory = _TranslationsInventoryTabsGalleryInventoryKo._(_root);
-	@override late final _TranslationsInventoryTabsIconInventoryKo iconInventory = _TranslationsInventoryTabsIconInventoryKo._(_root);
-	@override late final _TranslationsInventoryTabsPrintInventoryKo printInventory = _TranslationsInventoryTabsPrintInventoryKo._(_root);
-	@override late final _TranslationsInventoryTabsStickerInventoryKo stickerInventory = _TranslationsInventoryTabsStickerInventoryKo._(_root);
-}
-
-// Path: vrcnsync.usageSteps.0
-class _TranslationsVrcnsync$usageSteps$0i0$Ko implements TranslationsVrcnsync$usageSteps$0i0$Ja {
-	_TranslationsVrcnsync$usageSteps$0i0$Ko._(this._root);
-
-	final TranslationsKo _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'PC에서 VRCNSync 앱 실행';
-	@override String get desc => 'PC에서 VRCNSync 앱을 실행해 주세요';
-}
-
-// Path: vrcnsync.usageSteps.1
-class _TranslationsVrcnsync$usageSteps$0i1$Ko implements TranslationsVrcnsync$usageSteps$0i1$Ja {
-	_TranslationsVrcnsync$usageSteps$0i1$Ko._(this._root);
-
-	final TranslationsKo _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => '동일한 WiFi 네트워크에 연결';
-	@override String get desc => 'PC와 모바일 기기를 동일한 WiFi 네트워크에 연결해 주세요';
-}
-
-// Path: vrcnsync.usageSteps.2
-class _TranslationsVrcnsync$usageSteps$0i2$Ko implements TranslationsVrcnsync$usageSteps$0i2$Ja {
-	_TranslationsVrcnsync$usageSteps$0i2$Ko._(this._root);
-
-	final TranslationsKo _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => '연결 대상으로 모바일 기기 지정';
-	@override String get desc => 'PC 앱에서 위의 IP 주소와 포트를 지정해 주세요';
-}
-
-// Path: vrcnsync.usageSteps.3
-class _TranslationsVrcnsync$usageSteps$0i3$Ko implements TranslationsVrcnsync$usageSteps$0i3$Ja {
-	_TranslationsVrcnsync$usageSteps$0i3$Ko._(this._root);
-
-	final TranslationsKo _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => '사진 전송';
-	@override String get desc => 'PC에서 사진을 전송하면 자동으로 VRCN 앨범에 저장됩니다';
+	@override late final _Translations$inventory$tabs$emojiInventory$ko emojiInventory = _Translations$inventory$tabs$emojiInventory$ko._(_root);
+	@override late final _Translations$inventory$tabs$galleryInventory$ko galleryInventory = _Translations$inventory$tabs$galleryInventory$ko._(_root);
+	@override late final _Translations$inventory$tabs$iconInventory$ko iconInventory = _Translations$inventory$tabs$iconInventory$ko._(_root);
+	@override late final _Translations$inventory$tabs$printInventory$ko printInventory = _Translations$inventory$tabs$printInventory$ko._(_root);
+	@override late final _Translations$inventory$tabs$stickerInventory$ko stickerInventory = _Translations$inventory$tabs$stickerInventory$ko._(_root);
+	@override late final _Translations$inventory$tabs$inventoryItem$ko inventoryItem = _Translations$inventory$tabs$inventoryItem$ko._(_root);
 }
 
 // Path: credits.section
-class _TranslationsCreditsSectionKo implements TranslationsCreditsSectionJa {
-	_TranslationsCreditsSectionKo._(this._root);
+class _Translations$credits$section$ko implements Translations$credits$section$en {
+	_Translations$credits$section$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -999,8 +909,8 @@ class _TranslationsCreditsSectionKo implements TranslationsCreditsSectionJa {
 }
 
 // Path: instance.type
-class _TranslationsInstanceTypeKo implements TranslationsInstanceTypeJa {
-	_TranslationsInstanceTypeKo._(this._root);
+class _Translations$instance$type$ko implements Translations$instance$type$en {
+	_Translations$instance$type$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -1013,8 +923,8 @@ class _TranslationsInstanceTypeKo implements TranslationsInstanceTypeJa {
 }
 
 // Path: search.tabs.userSearch
-class _TranslationsSearchTabsUserSearchKo implements TranslationsSearchTabsUserSearchJa {
-	_TranslationsSearchTabsUserSearchKo._(this._root);
+class _Translations$search$tabs$userSearch$ko implements Translations$search$tabs$userSearch$en {
+	_Translations$search$tabs$userSearch$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -1028,8 +938,8 @@ class _TranslationsSearchTabsUserSearchKo implements TranslationsSearchTabsUserS
 }
 
 // Path: search.tabs.worldSearch
-class _TranslationsSearchTabsWorldSearchKo implements TranslationsSearchTabsWorldSearchJa {
-	_TranslationsSearchTabsWorldSearchKo._(this._root);
+class _Translations$search$tabs$worldSearch$ko implements Translations$search$tabs$worldSearch$en {
+	_Translations$search$tabs$worldSearch$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -1048,8 +958,8 @@ class _TranslationsSearchTabsWorldSearchKo implements TranslationsSearchTabsWorl
 }
 
 // Path: search.tabs.groupSearch
-class _TranslationsSearchTabsGroupSearchKo implements TranslationsSearchTabsGroupSearchJa {
-	_TranslationsSearchTabsGroupSearchKo._(this._root);
+class _Translations$search$tabs$groupSearch$ko implements Translations$search$tabs$groupSearch$en {
+	_Translations$search$tabs$groupSearch$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -1068,8 +978,8 @@ class _TranslationsSearchTabsGroupSearchKo implements TranslationsSearchTabsGrou
 }
 
 // Path: search.tabs.avatarSearch
-class _TranslationsSearchTabsAvatarSearchKo implements TranslationsSearchTabsAvatarSearchJa {
-	_TranslationsSearchTabsAvatarSearchKo._(this._root);
+class _Translations$search$tabs$avatarSearch$ko implements Translations$search$tabs$avatarSearch$en {
+	_Translations$search$tabs$avatarSearch$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -1084,8 +994,8 @@ class _TranslationsSearchTabsAvatarSearchKo implements TranslationsSearchTabsAva
 }
 
 // Path: inventory.tabs.emojiInventory
-class _TranslationsInventoryTabsEmojiInventoryKo implements TranslationsInventoryTabsEmojiInventoryJa {
-	_TranslationsInventoryTabsEmojiInventoryKo._(this._root);
+class _Translations$inventory$tabs$emojiInventory$ko implements Translations$inventory$tabs$emojiInventory$en {
+	_Translations$inventory$tabs$emojiInventory$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -1098,8 +1008,8 @@ class _TranslationsInventoryTabsEmojiInventoryKo implements TranslationsInventor
 }
 
 // Path: inventory.tabs.galleryInventory
-class _TranslationsInventoryTabsGalleryInventoryKo implements TranslationsInventoryTabsGalleryInventoryJa {
-	_TranslationsInventoryTabsGalleryInventoryKo._(this._root);
+class _Translations$inventory$tabs$galleryInventory$ko implements Translations$inventory$tabs$galleryInventory$en {
+	_Translations$inventory$tabs$galleryInventory$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -1112,8 +1022,8 @@ class _TranslationsInventoryTabsGalleryInventoryKo implements TranslationsInvent
 }
 
 // Path: inventory.tabs.iconInventory
-class _TranslationsInventoryTabsIconInventoryKo implements TranslationsInventoryTabsIconInventoryJa {
-	_TranslationsInventoryTabsIconInventoryKo._(this._root);
+class _Translations$inventory$tabs$iconInventory$ko implements Translations$inventory$tabs$iconInventory$en {
+	_Translations$inventory$tabs$iconInventory$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -1126,8 +1036,8 @@ class _TranslationsInventoryTabsIconInventoryKo implements TranslationsInventory
 }
 
 // Path: inventory.tabs.printInventory
-class _TranslationsInventoryTabsPrintInventoryKo implements TranslationsInventoryTabsPrintInventoryJa {
-	_TranslationsInventoryTabsPrintInventoryKo._(this._root);
+class _Translations$inventory$tabs$printInventory$ko implements Translations$inventory$tabs$printInventory$en {
+	_Translations$inventory$tabs$printInventory$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -1140,8 +1050,8 @@ class _TranslationsInventoryTabsPrintInventoryKo implements TranslationsInventor
 }
 
 // Path: inventory.tabs.stickerInventory
-class _TranslationsInventoryTabsStickerInventoryKo implements TranslationsInventoryTabsStickerInventoryJa {
-	_TranslationsInventoryTabsStickerInventoryKo._(this._root);
+class _Translations$inventory$tabs$stickerInventory$ko implements Translations$inventory$tabs$stickerInventory$en {
+	_Translations$inventory$tabs$stickerInventory$ko._(this._root);
 
 	final TranslationsKo _root; // ignore: unused_field
 
@@ -1151,6 +1061,22 @@ class _TranslationsInventoryTabsStickerInventoryKo implements TranslationsInvent
 	@override String get emptyTitle => '스티커가 없습니다';
 	@override String get emptyDescription => 'VRChat에서 업로드한 스티커가 여기에 표시됩니다';
 	@override String get zoomHint => '더블 탭으로 확대';
+}
+
+// Path: inventory.tabs.inventoryItem
+class _Translations$inventory$tabs$inventoryItem$ko implements Translations$inventory$tabs$inventoryItem$en {
+	_Translations$inventory$tabs$inventoryItem$ko._(this._root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get loading => '인벤토리를 불러오는 중...';
+	@override String error({required Object error}) => '인벤토리를 가져오지 못했습니다: ${error}';
+	@override String get emptyTitle => '인벤토리 아이템이 없습니다';
+	@override String get spawn => '스폰';
+	@override String get unequip => '장착 해제';
+	@override String equipped({required Object slot}) => '장착 중: ${slot}';
+	@override String spawned({required Object name}) => '${name} 스폰됨';
 }
 
 /// The flat map containing all translations for locale <ko>.
@@ -1200,7 +1126,6 @@ extension on TranslationsKo {
 			'drawer.avatar' => '아바타',
 			'drawer.group' => '그룹',
 			'drawer.inventory' => '인벤토리',
-			'drawer.vrcnsync' => 'VRCNSync (β)',
 			'drawer.review' => '리뷰',
 			'drawer.feedback' => '피드백',
 			'drawer.settings' => '설정',
@@ -1392,8 +1317,21 @@ extension on TranslationsKo {
 			'favorites.hidden' => '숨김',
 			'favorites.unknown' => '알 수 없음',
 			'favorites.loadingError' => '로딩 오류',
+			'notifications.title' => '알림',
 			'notifications.emptyTitle' => '알림이 없습니다',
 			'notifications.emptyDescription' => '친구 요청이나 초대 등\n새로운 알림이 여기에 표시됩니다',
+			'notifications.all' => '전체',
+			'notifications.unread' => ({required Object count}) => '읽지 않음 (${count})',
+			'notifications.read' => '읽음',
+			'notifications.activity' => '친구 로그',
+			'notifications.onlineAlerts' => '온라인 알림',
+			'notifications.markAllRead' => '모두 읽음으로 표시',
+			'notifications.markAllReadDone' => '모든 알림을 읽음으로 표시했습니다',
+			'notifications.deleteConfirmTitle' => '알림을 삭제할까요?',
+			'notifications.emptyUnread' => '읽지 않은 알림이 없습니다',
+			'notifications.emptyRead' => '읽은 알림이 없습니다',
+			'notifications.friendOnlineAlerts' => '친구 온라인 알림',
+			'notifications.selectedCount' => ({required Object count}) => '${count}명 선택됨',
 			'notifications.friendRequest' => ({required Object userName}) => '${userName}님으로부터 친구 요청이 도착했습니다',
 			'notifications.invite' => ({required Object userName, required Object worldName}) => '${userName}님으로부터 ${worldName}(으)로 초대가 도착했습니다',
 			'notifications.friendOnline' => ({required Object userName}) => '${userName}님이 온라인 상태가 되었습니다',
@@ -1529,6 +1467,7 @@ extension on TranslationsKo {
 			'inventory.emoji' => '이모지',
 			'inventory.sticker' => '스티커',
 			'inventory.print' => '프린트',
+			'inventory.item' => '아이템',
 			'inventory.upload' => '파일 업로드',
 			'inventory.uploadGallery' => '갤러리 이미지 업로드 중...',
 			'inventory.uploadIcon' => '아이콘 업로드 중...',
@@ -1570,44 +1509,13 @@ extension on TranslationsKo {
 			'inventory.tabs.stickerInventory.emptyTitle' => '스티커가 없습니다',
 			'inventory.tabs.stickerInventory.emptyDescription' => 'VRChat에서 업로드한 스티커가 여기에 표시됩니다',
 			'inventory.tabs.stickerInventory.zoomHint' => '더블 탭으로 확대',
-			'vrcnsync.title' => 'VRCNSync (β)',
-			'vrcnsync.betaTitle' => '베타 기능',
-			'vrcnsync.betaDescription' => '이 기능은 개발 중인 베타 버전입니다. 예기치 않은 문제가 발생할 수 있습니다.\n현재는 로컬에서만 구현되어 있지만, 수요가 있으면 클라우드 버전을 구현할 예정입니다.',
-			'vrcnsync.githubLink' => 'VRCNSync GitHub 페이지',
-			'vrcnsync.openGithub' => 'GitHub 페이지 열기',
-			'vrcnsync.serverRunning' => '서버 실행 중',
-			'vrcnsync.serverStopped' => '서버 중지됨',
-			'vrcnsync.serverRunningDesc' => 'PC의 사진을 VRCN 앨범에 저장합니다',
-			'vrcnsync.serverStoppedDesc' => '서버가 중지되었습니다',
-			'vrcnsync.photoSaved' => '사진을 VRCN 앨범에 저장했습니다',
-			'vrcnsync.photoReceived' => '사진을 수신했습니다 (앨범 저장 실패)',
-			'vrcnsync.openAlbum' => '앨범 열기',
-			'vrcnsync.permissionErrorIos' => '사진 라이브러리에 대한 접근 권한이 필요합니다',
-			'vrcnsync.permissionErrorAndroid' => '저장소에 대한 접근 권한이 필요합니다',
-			'vrcnsync.openSettings' => '설정 열기',
-			'vrcnsync.initError' => ({required Object error}) => '초기화에 실패했습니다: ${error}',
-			'vrcnsync.openPhotoAppError' => '사진 앱을 열 수 없었습니다',
-			'vrcnsync.serverInfo' => '서버 정보',
-			'vrcnsync.ip' => ({required Object ip}) => 'IP: ${ip}',
-			'vrcnsync.port' => ({required Object port}) => '포트: ${port}',
-			'vrcnsync.address' => ({required Object ip, required Object port}) => '${ip}:${port}',
-			'vrcnsync.autoSave' => '수신된 사진은 \'VRCN\' 앨범에 자동 저장됩니다',
-			'vrcnsync.usage' => '사용 방법',
-			'vrcnsync.usageSteps.0.title' => 'PC에서 VRCNSync 앱 실행',
-			'vrcnsync.usageSteps.0.desc' => 'PC에서 VRCNSync 앱을 실행해 주세요',
-			'vrcnsync.usageSteps.1.title' => '동일한 WiFi 네트워크에 연결',
-			'vrcnsync.usageSteps.1.desc' => 'PC와 모바일 기기를 동일한 WiFi 네트워크에 연결해 주세요',
-			'vrcnsync.usageSteps.2.title' => '연결 대상으로 모바일 기기 지정',
-			'vrcnsync.usageSteps.2.desc' => 'PC 앱에서 위의 IP 주소와 포트를 지정해 주세요',
-			'vrcnsync.usageSteps.3.title' => '사진 전송',
-			'vrcnsync.usageSteps.3.desc' => 'PC에서 사진을 전송하면 자동으로 VRCN 앨범에 저장됩니다',
-			'vrcnsync.stats' => '연결 상태',
-			'vrcnsync.statServer' => '서버 상태',
-			'vrcnsync.statServerRunning' => '실행 중',
-			'vrcnsync.statServerStopped' => '중지됨',
-			'vrcnsync.statNetwork' => '네트워크',
-			'vrcnsync.statNetworkConnected' => '연결됨',
-			'vrcnsync.statNetworkDisconnected' => '연결 안 됨',
+			'inventory.tabs.inventoryItem.loading' => '인벤토리를 불러오는 중...',
+			'inventory.tabs.inventoryItem.error' => ({required Object error}) => '인벤토리를 가져오지 못했습니다: ${error}',
+			'inventory.tabs.inventoryItem.emptyTitle' => '인벤토리 아이템이 없습니다',
+			'inventory.tabs.inventoryItem.spawn' => '스폰',
+			'inventory.tabs.inventoryItem.unequip' => '장착 해제',
+			'inventory.tabs.inventoryItem.equipped' => ({required Object slot}) => '장착 중: ${slot}',
+			'inventory.tabs.inventoryItem.spawned' => ({required Object name}) => '${name} 스폰됨',
 			'feedback.title' => '피드백',
 			'feedback.type' => '피드백 유형',
 			'feedback.types.bug' => '버그 신고',
@@ -1673,8 +1581,6 @@ extension on TranslationsKo {
 			'settings.themeMode' => '테마 모드',
 			'settings.themeModeDescription' => '앱의 표시 테마를 선택할 수 있습니다',
 			'settings.themeLight' => '밝게',
-			_ => null,
-		} ?? switch (path) {
 			'settings.themeSystem' => '시스템',
 			'settings.themeDark' => '어둡게',
 			'settings.appIconDefault' => '기본',
@@ -1686,27 +1592,15 @@ extension on TranslationsKo {
 			'credits.section.iconPeople' => '재미있는 아이콘 제공자들',
 			'credits.section.testFeedback' => '테스트·피드백',
 			'credits.section.specialThanks' => '스페셜 땡스',
-			'download.success' => '다운로드가 완료되었습니다',
-			'download.failure' => ({required Object error}) => '다운로드에 실패했습니다: ${error}',
 			'download.shareFailure' => ({required Object error}) => '공유에 실패했습니다: ${error}',
-			'download.permissionTitle' => '권한이 필요합니다',
-			'download.permissionDenied' => ({required Object permissionType}) => '${permissionType}에 대한 저장 권한이 거부되었습니다.\n설정 앱에서 권한을 활성화해 주세요.',
-			'download.permissionCancel' => '취소',
-			'download.permissionOpenSettings' => '설정 열기',
-			'download.permissionPhoto' => '사진',
-			'download.permissionPhotoLibrary' => '사진 라이브러리',
-			'download.permissionStorage' => '저장 공간',
-			'download.permissionPhotoRequired' => '사진에 대한 저장 권한이 필요합니다',
-			'download.permissionPhotoLibraryRequired' => '사진 라이브러리에 대한 저장 권한이 필요합니다',
-			'download.permissionStorageRequired' => '저장 공간에 대한 접근 권한이 필요합니다',
-			'download.permissionError' => ({required Object error}) => '권한 확인 중 오류가 발생했습니다: ${error}',
-			'download.downloading' => ({required Object fileName}) => '${fileName} 다운로드 중...',
 			'download.sharing' => ({required Object fileName}) => '${fileName} 공유 준비 중...',
 			'instance.type.public' => '퍼블릭',
 			'instance.type.hidden' => '프렌드+',
 			'instance.type.friends' => '프렌드',
 			'instance.type.private' => '인바이트+',
 			'instance.type.unknown' => '알 수 없음',
+			_ => null,
+		} ?? switch (path) {
 			'status.active' => '온라인',
 			'status.joinMe' => '누구나 와요',
 			'status.askMe' => '물어보세요',

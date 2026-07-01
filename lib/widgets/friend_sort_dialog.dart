@@ -163,10 +163,9 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                             t.friend.sortStatus,
                             style: GoogleFonts.notoSans(),
                           ),
-                          trailing:
-                              localSortType == FriendSortType.status
-                                  ? const Icon(Icons.check)
-                                  : null,
+                          trailing: localSortType == FriendSortType.status
+                              ? const Icon(Icons.check)
+                              : null,
                           onTap: () {
                             // プロバイダーを更新
                             ref
@@ -185,10 +184,9 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                             t.friend.sortName,
                             style: GoogleFonts.notoSans(),
                           ),
-                          trailing:
-                              localSortType == FriendSortType.name
-                                  ? const Icon(Icons.check)
-                                  : null,
+                          trailing: localSortType == FriendSortType.name
+                              ? const Icon(Icons.check)
+                              : null,
                           onTap: () {
                             ref
                                 .read(friendSortTypeProvider.notifier)
@@ -205,10 +203,9 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                             t.friend.sortLastLogin,
                             style: GoogleFonts.notoSans(),
                           ),
-                          trailing:
-                              localSortType == FriendSortType.lastLogin
-                                  ? const Icon(Icons.check)
-                                  : null,
+                          trailing: localSortType == FriendSortType.lastLogin
+                              ? const Icon(Icons.check)
+                              : null,
                           onTap: () {
                             ref
                                 .read(friendSortTypeProvider.notifier)
@@ -237,8 +234,8 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                           onTap: () {
                             final newDirection =
                                 localDirection == SortDirection.ascending
-                                    ? SortDirection.descending
-                                    : SortDirection.ascending;
+                                ? SortDirection.descending
+                                : SortDirection.ascending;
                             ref
                                 .read(friendSortDirectionProvider.notifier)
                                 .setDirection(newDirection);
@@ -277,18 +274,16 @@ Widget _buildFilterOption({
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
         decoration: BoxDecoration(
-          color:
-              isSelected
-                  ? AppTheme.primaryColor.withAlpha(25)
-                  : Colors.transparent,
+          color: isSelected
+              ? AppTheme.primaryColor.withAlpha(25)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color:
-                isSelected
-                    ? AppTheme.primaryColor
-                    : isDarkMode
-                    ? Colors.grey[700]!
-                    : Colors.grey[300]!,
+            color: isSelected
+                ? AppTheme.primaryColor
+                : isDarkMode
+                ? Colors.grey[700]!
+                : Colors.grey[300]!,
             width: 1.5,
           ),
         ),
@@ -296,12 +291,11 @@ Widget _buildFilterOption({
           children: [
             Icon(
               icon,
-              color:
-                  isSelected
-                      ? AppTheme.primaryColor
-                      : isDarkMode
-                      ? Colors.grey[400]
-                      : Colors.grey[600],
+              color: isSelected
+                  ? AppTheme.primaryColor
+                  : isDarkMode
+                  ? Colors.grey[400]
+                  : Colors.grey[600],
               size: 18,
             ),
             const SizedBox(width: 12),
@@ -310,12 +304,11 @@ Widget _buildFilterOption({
               style: GoogleFonts.notoSans(
                 fontSize: 14,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color:
-                    isSelected
-                        ? AppTheme.primaryColor
-                        : isDarkMode
-                        ? Colors.white
-                        : Colors.black87,
+                color: isSelected
+                    ? AppTheme.primaryColor
+                    : isDarkMode
+                    ? Colors.white
+                    : Colors.black87,
               ),
             ),
             const Spacer(),
@@ -325,28 +318,26 @@ Widget _buildFilterOption({
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color:
-                      isSelected
-                          ? AppTheme.primaryColor
-                          : isDarkMode
-                          ? Colors.grey[600]!
-                          : Colors.grey[400]!,
+                  color: isSelected
+                      ? AppTheme.primaryColor
+                      : isDarkMode
+                      ? Colors.grey[600]!
+                      : Colors.grey[400]!,
                   width: 1.5,
                 ),
               ),
-              child:
-                  isSelected
-                      ? Center(
-                        child: Container(
-                          width: 10,
-                          height: 10,
-                          decoration: const BoxDecoration(
-                            color: AppTheme.primaryColor,
-                            shape: BoxShape.circle,
-                          ),
+              child: isSelected
+                  ? Center(
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: const BoxDecoration(
+                          color: AppTheme.primaryColor,
+                          shape: BoxShape.circle,
                         ),
-                      )
-                      : null,
+                      ),
+                    )
+                  : null,
             ),
           ],
         ),

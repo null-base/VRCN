@@ -9,11 +9,6 @@ import 'package:vrchat/utils/instance_helper.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class WorldInstanceView extends StatelessWidget {
-  final AsyncValue<World>? worldDetailAsync;
-  final AsyncValue<Instance>? instanceDetailAsync;
-  final bool isDarkMode;
-  final Map<String, String> headers;
-
   const WorldInstanceView({
     super.key,
     required this.worldDetailAsync,
@@ -21,15 +16,18 @@ class WorldInstanceView extends StatelessWidget {
     required this.isDarkMode,
     required this.headers,
   });
+  final AsyncValue<World>? worldDetailAsync;
+  final AsyncValue<Instance>? instanceDetailAsync;
+  final bool isDarkMode;
+  final Map<String, String> headers;
 
   @override
   Widget build(BuildContext context) {
     // インスタンス情報がある場合
     if (instanceDetailAsync != null) {
       return instanceDetailAsync!.when(
-        data:
-            (instanceInfo) =>
-                _buildInstanceContent(context, worldDetailAsync, instanceInfo),
+        data: (instanceInfo) =>
+            _buildInstanceContent(context, worldDetailAsync, instanceInfo),
         loading: _buildLoadingView,
         error: (error, _) => _buildErrorView(error.toString()),
       );
@@ -57,10 +55,9 @@ class WorldInstanceView extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color:
-              isDarkMode
-                  ? Colors.black.withValues(alpha: 0.15)
-                  : Colors.white.withValues(alpha: 0.5),
+          color: isDarkMode
+              ? Colors.black.withValues(alpha: 0.15)
+              : Colors.white.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
@@ -116,81 +113,75 @@ class WorldInstanceView extends StatelessWidget {
     }
 
     return worldDetailAsync.when(
-      data:
-          (worldInfo) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (worldInfo.imageUrl.isNotEmpty)
-                _buildWorldImageView(context, worldInfo, instanceInfo),
-            ],
-          ),
-      loading:
-          () => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [_buildLoadingView()],
-          ),
-      error:
-          (_, _) => Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color:
-                  isDarkMode
-                      ? Colors.black.withValues(alpha: 0.15)
-                      : Colors.white.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      data: (worldInfo) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (worldInfo.imageUrl.isNotEmpty)
+            _buildWorldImageView(context, worldInfo, instanceInfo),
+        ],
+      ),
+      loading: () => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [_buildLoadingView()],
+      ),
+      error: (_, _) => Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isDarkMode
+              ? Colors.black.withValues(alpha: 0.15)
+              : Colors.white.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      InstanceHelper.getInstanceTypeIcon(
-                        instanceInfo.type.toString(),
-                      ),
-                      size: 18,
-                      color: isDarkMode ? Colors.green[200] : Colors.green[700],
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      t.location.instanceType(
-                        type: InstanceHelper.getInstanceTypeText(
-                          instanceInfo.type.toString(),
-                        ),
-                      ),
-                      style: GoogleFonts.notoSans(
-                        fontSize: 15,
-                        color:
-                            isDarkMode ? Colors.green[100] : Colors.green[800],
-                      ),
-                    ),
-                  ],
+                Icon(
+                  InstanceHelper.getInstanceTypeIcon(
+                    instanceInfo.type.toString(),
+                  ),
+                  size: 18,
+                  color: isDarkMode ? Colors.green[200] : Colors.green[700],
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.people,
-                      size: 18,
-                      color: isDarkMode ? Colors.green[200] : Colors.green[700],
+                const SizedBox(width: 8),
+                Text(
+                  t.location.instanceType(
+                    type: InstanceHelper.getInstanceTypeText(
+                      instanceInfo.type.toString(),
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      t.location.playerCount(
-                        userCount: instanceInfo.userCount.toString(),
-                        capacity: instanceInfo.capacity.toString(),
-                      ),
-                      style: GoogleFonts.notoSans(
-                        fontSize: 15,
-                        color:
-                            isDarkMode ? Colors.green[100] : Colors.green[800],
-                      ),
-                    ),
-                  ],
+                  ),
+                  style: GoogleFonts.notoSans(
+                    fontSize: 15,
+                    color: isDarkMode ? Colors.green[100] : Colors.green[800],
+                  ),
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(
+                  Icons.people,
+                  size: 18,
+                  color: isDarkMode ? Colors.green[200] : Colors.green[700],
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  t.location.playerCount(
+                    userCount: instanceInfo.userCount.toString(),
+                    capacity: instanceInfo.capacity.toString(),
+                  ),
+                  style: GoogleFonts.notoSans(
+                    fontSize: 15,
+                    color: isDarkMode ? Colors.green[100] : Colors.green[800],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -218,27 +209,25 @@ class WorldInstanceView extends StatelessWidget {
                 fit: BoxFit.cover,
                 httpHeaders: headers,
                 cacheManager: JsonCacheManager(),
-                placeholder:
-                    (context, url) => Container(
-                      color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.green,
-                          ),
-                        ),
+                placeholder: (context, url) => Container(
+                  color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.green,
                       ),
                     ),
-                errorWidget:
-                    (context, url, error) => Container(
-                      color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                      child: const Icon(
-                        Icons.image_not_supported,
-                        color: Colors.green,
-                        size: 40,
-                      ),
-                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
+                  child: const Icon(
+                    Icons.image_not_supported,
+                    color: Colors.green,
+                    size: 40,
+                  ),
+                ),
               ),
 
               // グラデーションオーバーレイ
@@ -390,20 +379,18 @@ class WorldInstanceView extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color:
-            isPrivateLocation
-                ? (isDarkMode
-                    ? Colors.blue.shade900.withValues(alpha: 0.2)
-                    : Colors.blue.shade50)
-                : (isDarkMode
-                    ? Colors.red.shade900.withValues(alpha: 0.2)
-                    : Colors.red.shade50),
+        color: isPrivateLocation
+            ? (isDarkMode
+                  ? Colors.blue.shade900.withValues(alpha: 0.2)
+                  : Colors.blue.shade50)
+            : (isDarkMode
+                  ? Colors.red.shade900.withValues(alpha: 0.2)
+                  : Colors.red.shade50),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color:
-              isPrivateLocation
-                  ? Colors.blue.withValues(alpha: 0.3)
-                  : Colors.red.withValues(alpha: 0.3),
+          color: isPrivateLocation
+              ? Colors.blue.withValues(alpha: 0.3)
+              : Colors.red.withValues(alpha: 0.3),
         ),
       ),
       child: Column(
@@ -425,8 +412,9 @@ class WorldInstanceView extends StatelessWidget {
                   style: GoogleFonts.notoSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color:
-                        isPrivateLocation ? Colors.blue[300] : Colors.red[300],
+                    color: isPrivateLocation
+                        ? Colors.blue[300]
+                        : Colors.red[300],
                   ),
                 ),
               ),

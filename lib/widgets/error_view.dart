@@ -3,10 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vrchat/gen/strings.g.dart';
 
 class ErrorView extends StatelessWidget {
+  const ErrorView({super.key, required this.message, this.onRetry});
   final String message;
   final VoidCallback? onRetry;
-
-  const ErrorView({super.key, required this.message, this.onRetry});
 
   @override
   Widget build(BuildContext context) {

@@ -37,41 +37,40 @@ class TranslationsZhCn with BaseTranslations<AppLocale, Translations> implements
 	TranslationsZhCn $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsZhCn(meta: meta ?? this.$meta);
 
 	// Translations
-	@override late final _TranslationsCommonZhCn common = _TranslationsCommonZhCn._(_root);
-	@override late final _TranslationsTermsAgreementZhCn termsAgreement = _TranslationsTermsAgreementZhCn._(_root);
-	@override late final _TranslationsDrawerZhCn drawer = _TranslationsDrawerZhCn._(_root);
-	@override late final _TranslationsLoginZhCn login = _TranslationsLoginZhCn._(_root);
-	@override late final _TranslationsFriendsZhCn friends = _TranslationsFriendsZhCn._(_root);
-	@override late final _TranslationsFriendDetailZhCn friendDetail = _TranslationsFriendDetailZhCn._(_root);
-	@override late final _TranslationsSearchZhCn search = _TranslationsSearchZhCn._(_root);
-	@override late final _TranslationsProfileZhCn profile = _TranslationsProfileZhCn._(_root);
-	@override late final _TranslationsEngageCardZhCn engageCard = _TranslationsEngageCardZhCn._(_root);
-	@override late final _TranslationsQrScannerZhCn qrScanner = _TranslationsQrScannerZhCn._(_root);
-	@override late final _TranslationsFavoritesZhCn favorites = _TranslationsFavoritesZhCn._(_root);
-	@override late final _TranslationsNotificationsZhCn notifications = _TranslationsNotificationsZhCn._(_root);
-	@override late final _TranslationsEventCalendarZhCn eventCalendar = _TranslationsEventCalendarZhCn._(_root);
-	@override late final _TranslationsAvatarsZhCn avatars = _TranslationsAvatarsZhCn._(_root);
-	@override late final _TranslationsWorldDetailZhCn worldDetail = _TranslationsWorldDetailZhCn._(_root);
-	@override late final _TranslationsAvatarDetailZhCn avatarDetail = _TranslationsAvatarDetailZhCn._(_root);
-	@override late final _TranslationsGroupsZhCn groups = _TranslationsGroupsZhCn._(_root);
-	@override late final _TranslationsGroupDetailZhCn groupDetail = _TranslationsGroupDetailZhCn._(_root);
-	@override late final _TranslationsInventoryZhCn inventory = _TranslationsInventoryZhCn._(_root);
-	@override late final _TranslationsVrcnsyncZhCn vrcnsync = _TranslationsVrcnsyncZhCn._(_root);
-	@override late final _TranslationsFeedbackZhCn feedback = _TranslationsFeedbackZhCn._(_root);
-	@override late final _TranslationsSettingsZhCn settings = _TranslationsSettingsZhCn._(_root);
-	@override late final _TranslationsCreditsZhCn credits = _TranslationsCreditsZhCn._(_root);
-	@override late final _TranslationsDownloadZhCn download = _TranslationsDownloadZhCn._(_root);
-	@override late final _TranslationsInstanceZhCn instance = _TranslationsInstanceZhCn._(_root);
-	@override late final _TranslationsStatusZhCn status = _TranslationsStatusZhCn._(_root);
-	@override late final _TranslationsLocationZhCn location = _TranslationsLocationZhCn._(_root);
-	@override late final _TranslationsReminderZhCn reminder = _TranslationsReminderZhCn._(_root);
-	@override late final _TranslationsFriendZhCn friend = _TranslationsFriendZhCn._(_root);
-	@override late final _TranslationsEventCalendarFilterZhCn eventCalendarFilter = _TranslationsEventCalendarFilterZhCn._(_root);
+	@override late final Translations$common$zh_CN common = Translations$common$zh_CN.internal(_root);
+	@override late final Translations$termsAgreement$zh_CN termsAgreement = Translations$termsAgreement$zh_CN.internal(_root);
+	@override late final Translations$drawer$zh_CN drawer = Translations$drawer$zh_CN.internal(_root);
+	@override late final Translations$login$zh_CN login = Translations$login$zh_CN.internal(_root);
+	@override late final Translations$friends$zh_CN friends = Translations$friends$zh_CN.internal(_root);
+	@override late final Translations$friendDetail$zh_CN friendDetail = Translations$friendDetail$zh_CN.internal(_root);
+	@override late final Translations$search$zh_CN search = Translations$search$zh_CN.internal(_root);
+	@override late final Translations$profile$zh_CN profile = Translations$profile$zh_CN.internal(_root);
+	@override late final Translations$engageCard$zh_CN engageCard = Translations$engageCard$zh_CN.internal(_root);
+	@override late final Translations$qrScanner$zh_CN qrScanner = Translations$qrScanner$zh_CN.internal(_root);
+	@override late final Translations$favorites$zh_CN favorites = Translations$favorites$zh_CN.internal(_root);
+	@override late final Translations$notifications$zh_CN notifications = Translations$notifications$zh_CN.internal(_root);
+	@override late final Translations$eventCalendar$zh_CN eventCalendar = Translations$eventCalendar$zh_CN.internal(_root);
+	@override late final Translations$avatars$zh_CN avatars = Translations$avatars$zh_CN.internal(_root);
+	@override late final Translations$worldDetail$zh_CN worldDetail = Translations$worldDetail$zh_CN.internal(_root);
+	@override late final Translations$avatarDetail$zh_CN avatarDetail = Translations$avatarDetail$zh_CN.internal(_root);
+	@override late final Translations$groups$zh_CN groups = Translations$groups$zh_CN.internal(_root);
+	@override late final Translations$groupDetail$zh_CN groupDetail = Translations$groupDetail$zh_CN.internal(_root);
+	@override late final Translations$inventory$zh_CN inventory = Translations$inventory$zh_CN.internal(_root);
+	@override late final Translations$feedback$zh_CN feedback = Translations$feedback$zh_CN.internal(_root);
+	@override late final Translations$settings$zh_CN settings = Translations$settings$zh_CN.internal(_root);
+	@override late final Translations$credits$zh_CN credits = Translations$credits$zh_CN.internal(_root);
+	@override late final Translations$download$zh_CN download = Translations$download$zh_CN.internal(_root);
+	@override late final Translations$instance$zh_CN instance = Translations$instance$zh_CN.internal(_root);
+	@override late final Translations$status$zh_CN status = Translations$status$zh_CN.internal(_root);
+	@override late final Translations$location$zh_CN location = Translations$location$zh_CN.internal(_root);
+	@override late final Translations$reminder$zh_CN reminder = Translations$reminder$zh_CN.internal(_root);
+	@override late final Translations$friend$zh_CN friend = Translations$friend$zh_CN.internal(_root);
+	@override late final Translations$eventCalendarFilter$zh_CN eventCalendarFilter = Translations$eventCalendarFilter$zh_CN.internal(_root);
 }
 
 // Path: common
-class _TranslationsCommonZhCn implements TranslationsCommonJa {
-	_TranslationsCommonZhCn._(this._root);
+class Translations$common$zh_CN implements Translations$common$en {
+	Translations$common$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -102,8 +101,8 @@ class _TranslationsCommonZhCn implements TranslationsCommonJa {
 }
 
 // Path: termsAgreement
-class _TranslationsTermsAgreementZhCn implements TranslationsTermsAgreementJa {
-	_TranslationsTermsAgreementZhCn._(this._root);
+class Translations$termsAgreement$zh_CN implements Translations$termsAgreement$en {
+	Translations$termsAgreement$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -120,8 +119,8 @@ class _TranslationsTermsAgreementZhCn implements TranslationsTermsAgreementJa {
 }
 
 // Path: drawer
-class _TranslationsDrawerZhCn implements TranslationsDrawerJa {
-	_TranslationsDrawerZhCn._(this._root);
+class Translations$drawer$zh_CN implements Translations$drawer$en {
+	Translations$drawer$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -133,19 +132,18 @@ class _TranslationsDrawerZhCn implements TranslationsDrawerJa {
 	@override String get avatar => '虚拟形象';
 	@override String get group => '群组';
 	@override String get inventory => '物品栏';
-	@override String get vrcnsync => 'VRCNSync (β)';
 	@override String get review => '评价';
 	@override String get feedback => '反馈';
 	@override String get settings => '设置';
 	@override String get userLoading => '正在加载用户信息...';
 	@override String get userError => '加载用户信息失败';
 	@override String get retry => '重试';
-	@override late final _TranslationsDrawerSectionZhCn section = _TranslationsDrawerSectionZhCn._(_root);
+	@override late final Translations$drawer$section$zh_CN section = Translations$drawer$section$zh_CN.internal(_root);
 }
 
 // Path: login
-class _TranslationsLoginZhCn implements TranslationsLoginJa {
-	_TranslationsLoginZhCn._(this._root);
+class Translations$login$zh_CN implements Translations$login$en {
+	Translations$login$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -174,8 +172,8 @@ class _TranslationsLoginZhCn implements TranslationsLoginJa {
 }
 
 // Path: friends
-class _TranslationsFriendsZhCn implements TranslationsFriendsJa {
-	_TranslationsFriendsZhCn._(this._root);
+class Translations$friends$zh_CN implements Translations$friends$en {
+	Translations$friends$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -194,8 +192,8 @@ class _TranslationsFriendsZhCn implements TranslationsFriendsJa {
 }
 
 // Path: friendDetail
-class _TranslationsFriendDetailZhCn implements TranslationsFriendDetailJa {
-	_TranslationsFriendDetailZhCn._(this._root);
+class Translations$friendDetail$zh_CN implements Translations$friendDetail$en {
+	Translations$friendDetail$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -229,8 +227,8 @@ class _TranslationsFriendDetailZhCn implements TranslationsFriendDetailJa {
 }
 
 // Path: search
-class _TranslationsSearchZhCn implements TranslationsSearchJa {
-	_TranslationsSearchZhCn._(this._root);
+class Translations$search$zh_CN implements Translations$search$en {
+	Translations$search$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -239,12 +237,12 @@ class _TranslationsSearchZhCn implements TranslationsSearchJa {
 	@override String get worldTab => '世界';
 	@override String get avatarTab => '虚拟形象';
 	@override String get groupTab => '群组';
-	@override late final _TranslationsSearchTabsZhCn tabs = _TranslationsSearchTabsZhCn._(_root);
+	@override late final Translations$search$tabs$zh_CN tabs = Translations$search$tabs$zh_CN.internal(_root);
 }
 
 // Path: profile
-class _TranslationsProfileZhCn implements TranslationsProfileJa {
-	_TranslationsProfileZhCn._(this._root);
+class Translations$profile$zh_CN implements Translations$profile$en {
+	Translations$profile$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -296,8 +294,8 @@ class _TranslationsProfileZhCn implements TranslationsProfileJa {
 }
 
 // Path: engageCard
-class _TranslationsEngageCardZhCn implements TranslationsEngageCardJa {
-	_TranslationsEngageCardZhCn._(this._root);
+class Translations$engageCard$zh_CN implements Translations$engageCard$en {
+	Translations$engageCard$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -315,8 +313,8 @@ class _TranslationsEngageCardZhCn implements TranslationsEngageCardJa {
 }
 
 // Path: qrScanner
-class _TranslationsQrScannerZhCn implements TranslationsQrScannerJa {
-	_TranslationsQrScannerZhCn._(this._root);
+class Translations$qrScanner$zh_CN implements Translations$qrScanner$en {
+	Translations$qrScanner$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -329,8 +327,8 @@ class _TranslationsQrScannerZhCn implements TranslationsQrScannerJa {
 }
 
 // Path: favorites
-class _TranslationsFavoritesZhCn implements TranslationsFavoritesJa {
-	_TranslationsFavoritesZhCn._(this._root);
+class Translations$favorites$zh_CN implements Translations$favorites$en {
+	Translations$favorites$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -365,14 +363,27 @@ class _TranslationsFavoritesZhCn implements TranslationsFavoritesJa {
 }
 
 // Path: notifications
-class _TranslationsNotificationsZhCn implements TranslationsNotificationsJa {
-	_TranslationsNotificationsZhCn._(this._root);
+class Translations$notifications$zh_CN implements Translations$notifications$en {
+	Translations$notifications$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
 	// Translations
+	@override String get title => '通知';
 	@override String get emptyTitle => '没有通知';
 	@override String get emptyDescription => '好友请求、邀请等新通知\n将会显示在这里';
+	@override String get all => '全部';
+	@override String unread({required Object count}) => '未读 (${count})';
+	@override String get read => '已读';
+	@override String get activity => '好友日志';
+	@override String get onlineAlerts => '上线提醒';
+	@override String get markAllRead => '全部标为已读';
+	@override String get markAllReadDone => '所有通知已标为已读';
+	@override String get deleteConfirmTitle => '删除通知？';
+	@override String get emptyUnread => '没有未读通知';
+	@override String get emptyRead => '没有已读通知';
+	@override String get friendOnlineAlerts => '好友上线提醒';
+	@override String selectedCount({required Object count}) => '已选择 ${count} 人';
 	@override String friendRequest({required Object userName}) => '您收到了来自 ${userName} 的好友请求';
 	@override String invite({required Object userName, required Object worldName}) => '您收到了来自 ${userName} 前往 ${worldName} 的邀请';
 	@override String friendOnline({required Object userName}) => '${userName} 已上线';
@@ -395,8 +406,8 @@ class _TranslationsNotificationsZhCn implements TranslationsNotificationsJa {
 }
 
 // Path: eventCalendar
-class _TranslationsEventCalendarZhCn implements TranslationsEventCalendarJa {
-	_TranslationsEventCalendarZhCn._(this._root);
+class Translations$eventCalendar$zh_CN implements Translations$eventCalendar$en {
+	Translations$eventCalendar$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -427,8 +438,8 @@ class _TranslationsEventCalendarZhCn implements TranslationsEventCalendarJa {
 }
 
 // Path: avatars
-class _TranslationsAvatarsZhCn implements TranslationsAvatarsJa {
-	_TranslationsAvatarsZhCn._(this._root);
+class Translations$avatars$zh_CN implements Translations$avatars$en {
+	Translations$avatars$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -455,8 +466,8 @@ class _TranslationsAvatarsZhCn implements TranslationsAvatarsJa {
 }
 
 // Path: worldDetail
-class _TranslationsWorldDetailZhCn implements TranslationsWorldDetailJa {
-	_TranslationsWorldDetailZhCn._(this._root);
+class Translations$worldDetail$zh_CN implements Translations$worldDetail$en {
+	Translations$worldDetail$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -483,8 +494,8 @@ class _TranslationsWorldDetailZhCn implements TranslationsWorldDetailJa {
 }
 
 // Path: avatarDetail
-class _TranslationsAvatarDetailZhCn implements TranslationsAvatarDetailJa {
-	_TranslationsAvatarDetailZhCn._(this._root);
+class Translations$avatarDetail$zh_CN implements Translations$avatarDetail$en {
+	Translations$avatarDetail$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -510,8 +521,8 @@ class _TranslationsAvatarDetailZhCn implements TranslationsAvatarDetailJa {
 }
 
 // Path: groups
-class _TranslationsGroupsZhCn implements TranslationsGroupsJa {
-	_TranslationsGroupsZhCn._(this._root);
+class Translations$groups$zh_CN implements Translations$groups$en {
+	Translations$groups$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -530,8 +541,8 @@ class _TranslationsGroupsZhCn implements TranslationsGroupsJa {
 }
 
 // Path: groupDetail
-class _TranslationsGroupDetailZhCn implements TranslationsGroupDetailJa {
-	_TranslationsGroupDetailZhCn._(this._root);
+class Translations$groupDetail$zh_CN implements Translations$groupDetail$en {
+	Translations$groupDetail$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -547,13 +558,13 @@ class _TranslationsGroupDetailZhCn implements TranslationsGroupDetailJa {
 	@override String get rules => '规则';
 	@override String get languages => '语言';
 	@override String memberCount({required Object count}) => '${count} 成员';
-	@override late final _TranslationsGroupDetailPrivacyZhCn privacy = _TranslationsGroupDetailPrivacyZhCn._(_root);
-	@override late final _TranslationsGroupDetailRoleZhCn role = _TranslationsGroupDetailRoleZhCn._(_root);
+	@override late final Translations$groupDetail$privacy$zh_CN privacy = Translations$groupDetail$privacy$zh_CN.internal(_root);
+	@override late final Translations$groupDetail$role$zh_CN role = Translations$groupDetail$role$zh_CN.internal(_root);
 }
 
 // Path: inventory
-class _TranslationsInventoryZhCn implements TranslationsInventoryJa {
-	_TranslationsInventoryZhCn._(this._root);
+class Translations$inventory$zh_CN implements Translations$inventory$en {
+	Translations$inventory$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -564,6 +575,7 @@ class _TranslationsInventoryZhCn implements TranslationsInventoryJa {
 	@override String get emoji => '表情';
 	@override String get sticker => '贴纸';
 	@override String get print => '打印图';
+	@override String get item => '物品';
 	@override String get upload => '上传文件';
 	@override String get uploadGallery => '正在上传画廊图片...';
 	@override String get uploadIcon => '正在上传图标...';
@@ -580,57 +592,12 @@ class _TranslationsInventoryZhCn implements TranslationsInventoryJa {
 	@override String get uploadFailedSize => '文件太大。请选择更小的图片。';
 	@override String uploadFailedServer({required Object code}) => '发生服务器错误 (${code})';
 	@override String pickImageFailed({required Object error}) => '选择图片失败：${error}';
-	@override late final _TranslationsInventoryTabsZhCn tabs = _TranslationsInventoryTabsZhCn._(_root);
-}
-
-// Path: vrcnsync
-class _TranslationsVrcnsyncZhCn implements TranslationsVrcnsyncJa {
-	_TranslationsVrcnsyncZhCn._(this._root);
-
-	final TranslationsZhCn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'VRCNSync (β)';
-	@override String get betaTitle => '测试版功能';
-	@override String get betaDescription => '此功能为开发中的测试版，可能会出现意外问题。\n目前仅为本地实现，如果需求量大，将会实现云端版本。';
-	@override String get githubLink => 'VRCNSync的GitHub页面';
-	@override String get openGithub => '打开GitHub页面';
-	@override String get serverRunning => '服务器运行中';
-	@override String get serverStopped => '服务器已停止';
-	@override String get serverRunningDesc => '将PC上的照片保存到VRCN相册';
-	@override String get serverStoppedDesc => '服务器已停止';
-	@override String get photoSaved => '照片已保存到VRCN相册';
-	@override String get photoReceived => '已接收照片（保存到相册失败）';
-	@override String get openAlbum => '打开相册';
-	@override String get permissionErrorIos => '需要照片库的访问权限';
-	@override String get permissionErrorAndroid => '需要存储空间的访问权限';
-	@override String get openSettings => '打开设置';
-	@override String initError({required Object error}) => '初始化失败：${error}';
-	@override String get openPhotoAppError => '无法打开照片应用';
-	@override String get serverInfo => '服务器信息';
-	@override String ip({required Object ip}) => 'IP: ${ip}';
-	@override String port({required Object port}) => '端口: ${port}';
-	@override String address({required Object ip, required Object port}) => '${ip}:${port}';
-	@override String get autoSave => '接收到的照片将自动保存到“VRCN”相册';
-	@override String get usage => '使用方法';
-	@override List<dynamic> get usageSteps => [
-		_TranslationsVrcnsync$usageSteps$0i0$ZhCn._(_root),
-		_TranslationsVrcnsync$usageSteps$0i1$ZhCn._(_root),
-		_TranslationsVrcnsync$usageSteps$0i2$ZhCn._(_root),
-		_TranslationsVrcnsync$usageSteps$0i3$ZhCn._(_root),
-	];
-	@override String get stats => '连接状态';
-	@override String get statServer => '服务器状态';
-	@override String get statServerRunning => '运行中';
-	@override String get statServerStopped => '已停止';
-	@override String get statNetwork => '网络';
-	@override String get statNetworkConnected => '已连接';
-	@override String get statNetworkDisconnected => '未连接';
+	@override late final Translations$inventory$tabs$zh_CN tabs = Translations$inventory$tabs$zh_CN.internal(_root);
 }
 
 // Path: feedback
-class _TranslationsFeedbackZhCn implements TranslationsFeedbackJa {
-	_TranslationsFeedbackZhCn._(this._root);
+class Translations$feedback$zh_CN implements Translations$feedback$en {
+	Translations$feedback$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -656,8 +623,8 @@ class _TranslationsFeedbackZhCn implements TranslationsFeedbackJa {
 }
 
 // Path: settings
-class _TranslationsSettingsZhCn implements TranslationsSettingsJa {
-	_TranslationsSettingsZhCn._(this._root);
+class Translations$settings$zh_CN implements Translations$settings$en {
+	Translations$settings$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -720,54 +687,40 @@ class _TranslationsSettingsZhCn implements TranslationsSettingsJa {
 }
 
 // Path: credits
-class _TranslationsCreditsZhCn implements TranslationsCreditsJa {
-	_TranslationsCreditsZhCn._(this._root);
+class Translations$credits$zh_CN implements Translations$credits$en {
+	Translations$credits$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => '鸣谢';
-	@override late final _TranslationsCreditsSectionZhCn section = _TranslationsCreditsSectionZhCn._(_root);
+	@override late final Translations$credits$section$zh_CN section = Translations$credits$section$zh_CN.internal(_root);
 }
 
 // Path: download
-class _TranslationsDownloadZhCn implements TranslationsDownloadJa {
-	_TranslationsDownloadZhCn._(this._root);
+class Translations$download$zh_CN implements Translations$download$en {
+	Translations$download$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
 	// Translations
-	@override String get success => '下载完成';
-	@override String failure({required Object error}) => '下载失败：${error}';
 	@override String shareFailure({required Object error}) => '分享失败：${error}';
-	@override String get permissionTitle => '需要权限';
-	@override String permissionDenied({required Object permissionType}) => '保存到${permissionType}的权限已被拒绝。\n请从设置应用中启用权限。';
-	@override String get permissionCancel => '取消';
-	@override String get permissionOpenSettings => '打开设置';
-	@override String get permissionPhoto => '照片';
-	@override String get permissionPhotoLibrary => '照片库';
-	@override String get permissionStorage => '存储';
-	@override String get permissionPhotoRequired => '需要保存到照片的权限';
-	@override String get permissionPhotoLibraryRequired => '需要保存到照片库的权限';
-	@override String get permissionStorageRequired => '需要访问存储空间的权限';
-	@override String permissionError({required Object error}) => '检查权限时发生错误：${error}';
-	@override String downloading({required Object fileName}) => '正在下载 ${fileName}...';
 	@override String sharing({required Object fileName}) => '正在准备分享 ${fileName}...';
 }
 
 // Path: instance
-class _TranslationsInstanceZhCn implements TranslationsInstanceJa {
-	_TranslationsInstanceZhCn._(this._root);
+class Translations$instance$zh_CN implements Translations$instance$en {
+	Translations$instance$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
 	// Translations
-	@override late final _TranslationsInstanceTypeZhCn type = _TranslationsInstanceTypeZhCn._(_root);
+	@override late final Translations$instance$type$zh_CN type = Translations$instance$type$zh_CN.internal(_root);
 }
 
 // Path: status
-class _TranslationsStatusZhCn implements TranslationsStatusJa {
-	_TranslationsStatusZhCn._(this._root);
+class Translations$status$zh_CN implements Translations$status$en {
+	Translations$status$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -781,8 +734,8 @@ class _TranslationsStatusZhCn implements TranslationsStatusJa {
 }
 
 // Path: location
-class _TranslationsLocationZhCn implements TranslationsLocationJa {
-	_TranslationsLocationZhCn._(this._root);
+class Translations$location$zh_CN implements Translations$location$en {
+	Translations$location$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -805,8 +758,8 @@ class _TranslationsLocationZhCn implements TranslationsLocationJa {
 }
 
 // Path: reminder
-class _TranslationsReminderZhCn implements TranslationsReminderJa {
-	_TranslationsReminderZhCn._(this._root);
+class Translations$reminder$zh_CN implements Translations$reminder$en {
+	Translations$reminder$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -828,8 +781,8 @@ class _TranslationsReminderZhCn implements TranslationsReminderJa {
 }
 
 // Path: friend
-class _TranslationsFriendZhCn implements TranslationsFriendJa {
-	_TranslationsFriendZhCn._(this._root);
+class Translations$friend$zh_CN implements Translations$friend$en {
+	Translations$friend$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -850,8 +803,8 @@ class _TranslationsFriendZhCn implements TranslationsFriendJa {
 }
 
 // Path: eventCalendarFilter
-class _TranslationsEventCalendarFilterZhCn implements TranslationsEventCalendarFilterJa {
-	_TranslationsEventCalendarFilterZhCn._(this._root);
+class Translations$eventCalendarFilter$zh_CN implements Translations$eventCalendarFilter$en {
+	Translations$eventCalendarFilter$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -877,8 +830,8 @@ class _TranslationsEventCalendarFilterZhCn implements TranslationsEventCalendarF
 }
 
 // Path: drawer.section
-class _TranslationsDrawerSectionZhCn implements TranslationsDrawerSectionJa {
-	_TranslationsDrawerSectionZhCn._(this._root);
+class Translations$drawer$section$zh_CN implements Translations$drawer$section$en {
+	Translations$drawer$section$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -888,21 +841,21 @@ class _TranslationsDrawerSectionZhCn implements TranslationsDrawerSectionJa {
 }
 
 // Path: search.tabs
-class _TranslationsSearchTabsZhCn implements TranslationsSearchTabsJa {
-	_TranslationsSearchTabsZhCn._(this._root);
+class Translations$search$tabs$zh_CN implements Translations$search$tabs$en {
+	Translations$search$tabs$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
 	// Translations
-	@override late final _TranslationsSearchTabsUserSearchZhCn userSearch = _TranslationsSearchTabsUserSearchZhCn._(_root);
-	@override late final _TranslationsSearchTabsWorldSearchZhCn worldSearch = _TranslationsSearchTabsWorldSearchZhCn._(_root);
-	@override late final _TranslationsSearchTabsGroupSearchZhCn groupSearch = _TranslationsSearchTabsGroupSearchZhCn._(_root);
-	@override late final _TranslationsSearchTabsAvatarSearchZhCn avatarSearch = _TranslationsSearchTabsAvatarSearchZhCn._(_root);
+	@override late final Translations$search$tabs$userSearch$zh_CN userSearch = Translations$search$tabs$userSearch$zh_CN.internal(_root);
+	@override late final Translations$search$tabs$worldSearch$zh_CN worldSearch = Translations$search$tabs$worldSearch$zh_CN.internal(_root);
+	@override late final Translations$search$tabs$groupSearch$zh_CN groupSearch = Translations$search$tabs$groupSearch$zh_CN.internal(_root);
+	@override late final Translations$search$tabs$avatarSearch$zh_CN avatarSearch = Translations$search$tabs$avatarSearch$zh_CN.internal(_root);
 }
 
 // Path: groupDetail.privacy
-class _TranslationsGroupDetailPrivacyZhCn implements TranslationsGroupDetailPrivacyJa {
-	_TranslationsGroupDetailPrivacyZhCn._(this._root);
+class Translations$groupDetail$privacy$zh_CN implements Translations$groupDetail$privacy$en {
+	Translations$groupDetail$privacy$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -915,8 +868,8 @@ class _TranslationsGroupDetailPrivacyZhCn implements TranslationsGroupDetailPriv
 }
 
 // Path: groupDetail.role
-class _TranslationsGroupDetailRoleZhCn implements TranslationsGroupDetailRoleJa {
-	_TranslationsGroupDetailRoleZhCn._(this._root);
+class Translations$groupDetail$role$zh_CN implements Translations$groupDetail$role$en {
+	Translations$groupDetail$role$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -928,66 +881,23 @@ class _TranslationsGroupDetailRoleZhCn implements TranslationsGroupDetailRoleJa 
 }
 
 // Path: inventory.tabs
-class _TranslationsInventoryTabsZhCn implements TranslationsInventoryTabsJa {
-	_TranslationsInventoryTabsZhCn._(this._root);
+class Translations$inventory$tabs$zh_CN implements Translations$inventory$tabs$en {
+	Translations$inventory$tabs$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
 	// Translations
-	@override late final _TranslationsInventoryTabsEmojiInventoryZhCn emojiInventory = _TranslationsInventoryTabsEmojiInventoryZhCn._(_root);
-	@override late final _TranslationsInventoryTabsGalleryInventoryZhCn galleryInventory = _TranslationsInventoryTabsGalleryInventoryZhCn._(_root);
-	@override late final _TranslationsInventoryTabsIconInventoryZhCn iconInventory = _TranslationsInventoryTabsIconInventoryZhCn._(_root);
-	@override late final _TranslationsInventoryTabsPrintInventoryZhCn printInventory = _TranslationsInventoryTabsPrintInventoryZhCn._(_root);
-	@override late final _TranslationsInventoryTabsStickerInventoryZhCn stickerInventory = _TranslationsInventoryTabsStickerInventoryZhCn._(_root);
-}
-
-// Path: vrcnsync.usageSteps.0
-class _TranslationsVrcnsync$usageSteps$0i0$ZhCn implements TranslationsVrcnsync$usageSteps$0i0$Ja {
-	_TranslationsVrcnsync$usageSteps$0i0$ZhCn._(this._root);
-
-	final TranslationsZhCn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => '在PC上启动VRCNSync应用';
-	@override String get desc => '请在您的PC上启动VRCNSync应用';
-}
-
-// Path: vrcnsync.usageSteps.1
-class _TranslationsVrcnsync$usageSteps$0i1$ZhCn implements TranslationsVrcnsync$usageSteps$0i1$Ja {
-	_TranslationsVrcnsync$usageSteps$0i1$ZhCn._(this._root);
-
-	final TranslationsZhCn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => '连接到同一WiFi网络';
-	@override String get desc => '请将您的PC和移动设备连接到同一个WiFi网络';
-}
-
-// Path: vrcnsync.usageSteps.2
-class _TranslationsVrcnsync$usageSteps$0i2$ZhCn implements TranslationsVrcnsync$usageSteps$0i2$Ja {
-	_TranslationsVrcnsync$usageSteps$0i2$ZhCn._(this._root);
-
-	final TranslationsZhCn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => '将移动设备指定为连接目标';
-	@override String get desc => '请在PC应用中指定上述IP地址和端口';
-}
-
-// Path: vrcnsync.usageSteps.3
-class _TranslationsVrcnsync$usageSteps$0i3$ZhCn implements TranslationsVrcnsync$usageSteps$0i3$Ja {
-	_TranslationsVrcnsync$usageSteps$0i3$ZhCn._(this._root);
-
-	final TranslationsZhCn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => '发送照片';
-	@override String get desc => '从PC发送照片后，将自动保存到VRCN相册';
+	@override late final Translations$inventory$tabs$emojiInventory$zh_CN emojiInventory = Translations$inventory$tabs$emojiInventory$zh_CN.internal(_root);
+	@override late final Translations$inventory$tabs$galleryInventory$zh_CN galleryInventory = Translations$inventory$tabs$galleryInventory$zh_CN.internal(_root);
+	@override late final Translations$inventory$tabs$iconInventory$zh_CN iconInventory = Translations$inventory$tabs$iconInventory$zh_CN.internal(_root);
+	@override late final Translations$inventory$tabs$printInventory$zh_CN printInventory = Translations$inventory$tabs$printInventory$zh_CN.internal(_root);
+	@override late final Translations$inventory$tabs$stickerInventory$zh_CN stickerInventory = Translations$inventory$tabs$stickerInventory$zh_CN.internal(_root);
+	@override late final Translations$inventory$tabs$inventoryItem$zh_CN inventoryItem = Translations$inventory$tabs$inventoryItem$zh_CN.internal(_root);
 }
 
 // Path: credits.section
-class _TranslationsCreditsSectionZhCn implements TranslationsCreditsSectionJa {
-	_TranslationsCreditsSectionZhCn._(this._root);
+class Translations$credits$section$zh_CN implements Translations$credits$section$en {
+	Translations$credits$section$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -999,8 +909,8 @@ class _TranslationsCreditsSectionZhCn implements TranslationsCreditsSectionJa {
 }
 
 // Path: instance.type
-class _TranslationsInstanceTypeZhCn implements TranslationsInstanceTypeJa {
-	_TranslationsInstanceTypeZhCn._(this._root);
+class Translations$instance$type$zh_CN implements Translations$instance$type$en {
+	Translations$instance$type$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -1013,8 +923,8 @@ class _TranslationsInstanceTypeZhCn implements TranslationsInstanceTypeJa {
 }
 
 // Path: search.tabs.userSearch
-class _TranslationsSearchTabsUserSearchZhCn implements TranslationsSearchTabsUserSearchJa {
-	_TranslationsSearchTabsUserSearchZhCn._(this._root);
+class Translations$search$tabs$userSearch$zh_CN implements Translations$search$tabs$userSearch$en {
+	Translations$search$tabs$userSearch$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -1028,8 +938,8 @@ class _TranslationsSearchTabsUserSearchZhCn implements TranslationsSearchTabsUse
 }
 
 // Path: search.tabs.worldSearch
-class _TranslationsSearchTabsWorldSearchZhCn implements TranslationsSearchTabsWorldSearchJa {
-	_TranslationsSearchTabsWorldSearchZhCn._(this._root);
+class Translations$search$tabs$worldSearch$zh_CN implements Translations$search$tabs$worldSearch$en {
+	Translations$search$tabs$worldSearch$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -1048,8 +958,8 @@ class _TranslationsSearchTabsWorldSearchZhCn implements TranslationsSearchTabsWo
 }
 
 // Path: search.tabs.groupSearch
-class _TranslationsSearchTabsGroupSearchZhCn implements TranslationsSearchTabsGroupSearchJa {
-	_TranslationsSearchTabsGroupSearchZhCn._(this._root);
+class Translations$search$tabs$groupSearch$zh_CN implements Translations$search$tabs$groupSearch$en {
+	Translations$search$tabs$groupSearch$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -1068,8 +978,8 @@ class _TranslationsSearchTabsGroupSearchZhCn implements TranslationsSearchTabsGr
 }
 
 // Path: search.tabs.avatarSearch
-class _TranslationsSearchTabsAvatarSearchZhCn implements TranslationsSearchTabsAvatarSearchJa {
-	_TranslationsSearchTabsAvatarSearchZhCn._(this._root);
+class Translations$search$tabs$avatarSearch$zh_CN implements Translations$search$tabs$avatarSearch$en {
+	Translations$search$tabs$avatarSearch$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -1084,8 +994,8 @@ class _TranslationsSearchTabsAvatarSearchZhCn implements TranslationsSearchTabsA
 }
 
 // Path: inventory.tabs.emojiInventory
-class _TranslationsInventoryTabsEmojiInventoryZhCn implements TranslationsInventoryTabsEmojiInventoryJa {
-	_TranslationsInventoryTabsEmojiInventoryZhCn._(this._root);
+class Translations$inventory$tabs$emojiInventory$zh_CN implements Translations$inventory$tabs$emojiInventory$en {
+	Translations$inventory$tabs$emojiInventory$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -1098,8 +1008,8 @@ class _TranslationsInventoryTabsEmojiInventoryZhCn implements TranslationsInvent
 }
 
 // Path: inventory.tabs.galleryInventory
-class _TranslationsInventoryTabsGalleryInventoryZhCn implements TranslationsInventoryTabsGalleryInventoryJa {
-	_TranslationsInventoryTabsGalleryInventoryZhCn._(this._root);
+class Translations$inventory$tabs$galleryInventory$zh_CN implements Translations$inventory$tabs$galleryInventory$en {
+	Translations$inventory$tabs$galleryInventory$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -1112,8 +1022,8 @@ class _TranslationsInventoryTabsGalleryInventoryZhCn implements TranslationsInve
 }
 
 // Path: inventory.tabs.iconInventory
-class _TranslationsInventoryTabsIconInventoryZhCn implements TranslationsInventoryTabsIconInventoryJa {
-	_TranslationsInventoryTabsIconInventoryZhCn._(this._root);
+class Translations$inventory$tabs$iconInventory$zh_CN implements Translations$inventory$tabs$iconInventory$en {
+	Translations$inventory$tabs$iconInventory$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -1126,8 +1036,8 @@ class _TranslationsInventoryTabsIconInventoryZhCn implements TranslationsInvento
 }
 
 // Path: inventory.tabs.printInventory
-class _TranslationsInventoryTabsPrintInventoryZhCn implements TranslationsInventoryTabsPrintInventoryJa {
-	_TranslationsInventoryTabsPrintInventoryZhCn._(this._root);
+class Translations$inventory$tabs$printInventory$zh_CN implements Translations$inventory$tabs$printInventory$en {
+	Translations$inventory$tabs$printInventory$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -1140,8 +1050,8 @@ class _TranslationsInventoryTabsPrintInventoryZhCn implements TranslationsInvent
 }
 
 // Path: inventory.tabs.stickerInventory
-class _TranslationsInventoryTabsStickerInventoryZhCn implements TranslationsInventoryTabsStickerInventoryJa {
-	_TranslationsInventoryTabsStickerInventoryZhCn._(this._root);
+class Translations$inventory$tabs$stickerInventory$zh_CN implements Translations$inventory$tabs$stickerInventory$en {
+	Translations$inventory$tabs$stickerInventory$zh_CN.internal(this._root);
 
 	final TranslationsZhCn _root; // ignore: unused_field
 
@@ -1151,6 +1061,22 @@ class _TranslationsInventoryTabsStickerInventoryZhCn implements TranslationsInve
 	@override String get emptyTitle => '没有贴纸';
 	@override String get emptyDescription => '您在VRChat中上传的贴纸将显示在这里';
 	@override String get zoomHint => '双击缩放';
+}
+
+// Path: inventory.tabs.inventoryItem
+class Translations$inventory$tabs$inventoryItem$zh_CN implements Translations$inventory$tabs$inventoryItem$en {
+	Translations$inventory$tabs$inventoryItem$zh_CN.internal(this._root);
+
+	final TranslationsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get loading => '正在加载物品栏...';
+	@override String error({required Object error}) => '获取物品栏失败：${error}';
+	@override String get emptyTitle => '没有物品';
+	@override String get spawn => '生成';
+	@override String get unequip => '卸下';
+	@override String equipped({required Object slot}) => '已装备：${slot}';
+	@override String spawned({required Object name}) => '已生成 ${name}';
 }
 
 /// The flat map containing all translations for locale <zh-CN>.
@@ -1200,7 +1126,6 @@ extension on TranslationsZhCn {
 			'drawer.avatar' => '虚拟形象',
 			'drawer.group' => '群组',
 			'drawer.inventory' => '物品栏',
-			'drawer.vrcnsync' => 'VRCNSync (β)',
 			'drawer.review' => '评价',
 			'drawer.feedback' => '反馈',
 			'drawer.settings' => '设置',
@@ -1392,8 +1317,21 @@ extension on TranslationsZhCn {
 			'favorites.hidden' => '隐藏',
 			'favorites.unknown' => '未知',
 			'favorites.loadingError' => '加载错误',
+			'notifications.title' => '通知',
 			'notifications.emptyTitle' => '没有通知',
 			'notifications.emptyDescription' => '好友请求、邀请等新通知\n将会显示在这里',
+			'notifications.all' => '全部',
+			'notifications.unread' => ({required Object count}) => '未读 (${count})',
+			'notifications.read' => '已读',
+			'notifications.activity' => '好友日志',
+			'notifications.onlineAlerts' => '上线提醒',
+			'notifications.markAllRead' => '全部标为已读',
+			'notifications.markAllReadDone' => '所有通知已标为已读',
+			'notifications.deleteConfirmTitle' => '删除通知？',
+			'notifications.emptyUnread' => '没有未读通知',
+			'notifications.emptyRead' => '没有已读通知',
+			'notifications.friendOnlineAlerts' => '好友上线提醒',
+			'notifications.selectedCount' => ({required Object count}) => '已选择 ${count} 人',
 			'notifications.friendRequest' => ({required Object userName}) => '您收到了来自 ${userName} 的好友请求',
 			'notifications.invite' => ({required Object userName, required Object worldName}) => '您收到了来自 ${userName} 前往 ${worldName} 的邀请',
 			'notifications.friendOnline' => ({required Object userName}) => '${userName} 已上线',
@@ -1529,6 +1467,7 @@ extension on TranslationsZhCn {
 			'inventory.emoji' => '表情',
 			'inventory.sticker' => '贴纸',
 			'inventory.print' => '打印图',
+			'inventory.item' => '物品',
 			'inventory.upload' => '上传文件',
 			'inventory.uploadGallery' => '正在上传画廊图片...',
 			'inventory.uploadIcon' => '正在上传图标...',
@@ -1570,44 +1509,13 @@ extension on TranslationsZhCn {
 			'inventory.tabs.stickerInventory.emptyTitle' => '没有贴纸',
 			'inventory.tabs.stickerInventory.emptyDescription' => '您在VRChat中上传的贴纸将显示在这里',
 			'inventory.tabs.stickerInventory.zoomHint' => '双击缩放',
-			'vrcnsync.title' => 'VRCNSync (β)',
-			'vrcnsync.betaTitle' => '测试版功能',
-			'vrcnsync.betaDescription' => '此功能为开发中的测试版，可能会出现意外问题。\n目前仅为本地实现，如果需求量大，将会实现云端版本。',
-			'vrcnsync.githubLink' => 'VRCNSync的GitHub页面',
-			'vrcnsync.openGithub' => '打开GitHub页面',
-			'vrcnsync.serverRunning' => '服务器运行中',
-			'vrcnsync.serverStopped' => '服务器已停止',
-			'vrcnsync.serverRunningDesc' => '将PC上的照片保存到VRCN相册',
-			'vrcnsync.serverStoppedDesc' => '服务器已停止',
-			'vrcnsync.photoSaved' => '照片已保存到VRCN相册',
-			'vrcnsync.photoReceived' => '已接收照片（保存到相册失败）',
-			'vrcnsync.openAlbum' => '打开相册',
-			'vrcnsync.permissionErrorIos' => '需要照片库的访问权限',
-			'vrcnsync.permissionErrorAndroid' => '需要存储空间的访问权限',
-			'vrcnsync.openSettings' => '打开设置',
-			'vrcnsync.initError' => ({required Object error}) => '初始化失败：${error}',
-			'vrcnsync.openPhotoAppError' => '无法打开照片应用',
-			'vrcnsync.serverInfo' => '服务器信息',
-			'vrcnsync.ip' => ({required Object ip}) => 'IP: ${ip}',
-			'vrcnsync.port' => ({required Object port}) => '端口: ${port}',
-			'vrcnsync.address' => ({required Object ip, required Object port}) => '${ip}:${port}',
-			'vrcnsync.autoSave' => '接收到的照片将自动保存到“VRCN”相册',
-			'vrcnsync.usage' => '使用方法',
-			'vrcnsync.usageSteps.0.title' => '在PC上启动VRCNSync应用',
-			'vrcnsync.usageSteps.0.desc' => '请在您的PC上启动VRCNSync应用',
-			'vrcnsync.usageSteps.1.title' => '连接到同一WiFi网络',
-			'vrcnsync.usageSteps.1.desc' => '请将您的PC和移动设备连接到同一个WiFi网络',
-			'vrcnsync.usageSteps.2.title' => '将移动设备指定为连接目标',
-			'vrcnsync.usageSteps.2.desc' => '请在PC应用中指定上述IP地址和端口',
-			'vrcnsync.usageSteps.3.title' => '发送照片',
-			'vrcnsync.usageSteps.3.desc' => '从PC发送照片后，将自动保存到VRCN相册',
-			'vrcnsync.stats' => '连接状态',
-			'vrcnsync.statServer' => '服务器状态',
-			'vrcnsync.statServerRunning' => '运行中',
-			'vrcnsync.statServerStopped' => '已停止',
-			'vrcnsync.statNetwork' => '网络',
-			'vrcnsync.statNetworkConnected' => '已连接',
-			'vrcnsync.statNetworkDisconnected' => '未连接',
+			'inventory.tabs.inventoryItem.loading' => '正在加载物品栏...',
+			'inventory.tabs.inventoryItem.error' => ({required Object error}) => '获取物品栏失败：${error}',
+			'inventory.tabs.inventoryItem.emptyTitle' => '没有物品',
+			'inventory.tabs.inventoryItem.spawn' => '生成',
+			'inventory.tabs.inventoryItem.unequip' => '卸下',
+			'inventory.tabs.inventoryItem.equipped' => ({required Object slot}) => '已装备：${slot}',
+			'inventory.tabs.inventoryItem.spawned' => ({required Object name}) => '已生成 ${name}',
 			'feedback.title' => '反馈',
 			'feedback.type' => '反馈类型',
 			'feedback.types.bug' => '错误报告',
@@ -1673,8 +1581,6 @@ extension on TranslationsZhCn {
 			'settings.themeMode' => '主题模式',
 			'settings.themeModeDescription' => '您可以选择应用的显示主题',
 			'settings.themeLight' => '浅色',
-			_ => null,
-		} ?? switch (path) {
 			'settings.themeSystem' => '系统',
 			'settings.themeDark' => '深色',
 			'settings.appIconDefault' => '默认',
@@ -1686,27 +1592,15 @@ extension on TranslationsZhCn {
 			'credits.section.iconPeople' => '有趣的图标制作者们',
 			'credits.section.testFeedback' => '测试与反馈',
 			'credits.section.specialThanks' => '特别感谢',
-			'download.success' => '下载完成',
-			'download.failure' => ({required Object error}) => '下载失败：${error}',
 			'download.shareFailure' => ({required Object error}) => '分享失败：${error}',
-			'download.permissionTitle' => '需要权限',
-			'download.permissionDenied' => ({required Object permissionType}) => '保存到${permissionType}的权限已被拒绝。\n请从设置应用中启用权限。',
-			'download.permissionCancel' => '取消',
-			'download.permissionOpenSettings' => '打开设置',
-			'download.permissionPhoto' => '照片',
-			'download.permissionPhotoLibrary' => '照片库',
-			'download.permissionStorage' => '存储',
-			'download.permissionPhotoRequired' => '需要保存到照片的权限',
-			'download.permissionPhotoLibraryRequired' => '需要保存到照片库的权限',
-			'download.permissionStorageRequired' => '需要访问存储空间的权限',
-			'download.permissionError' => ({required Object error}) => '检查权限时发生错误：${error}',
-			'download.downloading' => ({required Object fileName}) => '正在下载 ${fileName}...',
 			'download.sharing' => ({required Object fileName}) => '正在准备分享 ${fileName}...',
 			'instance.type.public' => '公开',
 			'instance.type.hidden' => '好友+',
 			'instance.type.friends' => '好友',
 			'instance.type.private' => '邀请+',
 			'instance.type.unknown' => '未知',
+			_ => null,
+		} ?? switch (path) {
 			'status.active' => '在线',
 			'status.joinMe' => '欢迎加入',
 			'status.askMe' => '请问我',

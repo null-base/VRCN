@@ -1,10 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:vrchat/provider/auth_provider.dart' as auth_provider;
 import 'package:vrchat/provider/favorite_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
-import 'package:vrchat/router/app_router.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 // フレンド表示フィルター用の列挙型
 enum FriendFilter {
@@ -29,16 +29,18 @@ final friendsProvider =
 class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
   @override
   Future<List<LimitedUser>> build() async {
-    return await _loadFriends();
+    return _loadFriends();
   }
 
   // フレンドデータをロードするメソッド
   Future<List<LimitedUser>> _loadFriends() async {
     try {
       // 認証状態を確認 - ログインしていない場合は空リストを返す
-      final authState = await ref.watch(authStateProvider.future);
+      final authState = await ref.watch(
+        auth_provider.sessionAuthStateProvider.future,
+      );
       if (!authState) {
-        debugPrint('ログインしていないため、フレンドリストは空です');
+        appLogger.d('ログインしていないため、フレンドリストは空です');
         return [];
       }
 
@@ -48,172 +50,107 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
       // currentUserを確認（ログイン完了の確実な判断）
       final auth = await ref.watch(vrchatAuthProvider.future);
       if (auth.currentUser == null) {
-        debugPrint('現在のユーザー情報がnullです - ログインが完全に完了していません');
+        appLogger.d('現在のユーザー情報がnullです - ログインが完全に完了していません');
         return [];
       }
 
       final filter = ref.watch(friendFilterProvider);
-      final allFriends = <LimitedUser>[];
+      final allFriends = switch (filter) {
+        FriendFilter.online => await _tryLoadFriendGroup(
+          rawApi,
+          offline: false,
+        ),
+        FriendFilter.offline => await _tryLoadFriendGroup(
+          rawApi,
+          offline: true,
+        ),
+        FriendFilter.all => (await Future.wait([
+          _tryLoadFriendGroup(rawApi, offline: false),
+          _tryLoadFriendGroup(rawApi, offline: true),
+        ])).expand((friends) => friends).toList(),
+        FriendFilter.favorite => await _loadFavoriteFriends(rawApi),
+      };
 
-      // オンラインフレンド取得（filter.all または filter.online の場合）
-      if (filter == FriendFilter.all || filter == FriendFilter.online) {
-        try {
-          final onlineFriends = <LimitedUser>[];
-          var offset = 0;
-          var hasMore = true;
-
-          // offsetを使ってすべてのオンラインフレンドを取得
-          while (hasMore) {
-            final (friendsSuccess, friendsFailure) =
-                await rawApi
-                    .getFriendsApi()
-                    .getFriends(offline: false, n: 100, offset: offset)
-                    .validateVrc();
-
-            if (friendsSuccess == null) {
-              debugPrint('オンラインフレンド取得でnull結果: $friendsFailure');
-              break;
-            }
-
-            final batch = friendsSuccess.data;
-            // LimitedUserFriend から LimitedUser に変換
-            final convertedBatch = batch.map(_convertToLimitedUser).toList();
-            onlineFriends.addAll(convertedBatch);
-
-            if (batch.length < 100) {
-              hasMore = false;
-            } else {
-              offset += 100;
-            }
-          }
-
-          allFriends.addAll(onlineFriends);
-          debugPrint('オンラインフレンド: ${onlineFriends.length}人');
-        } catch (e) {
-          debugPrint('オンラインフレンド取得エラー: $e');
-          // エラーがあっても処理を続行（オフラインフレンドは取得できる可能性あり）
-        }
-      }
-
-      // オフラインフレンド取得（filter.all または filter.offline の場合）
-      if (filter == FriendFilter.all || filter == FriendFilter.offline) {
-        try {
-          final offlineFriends = <LimitedUser>[];
-          var offset = 0;
-          var hasMore = true;
-
-          // offsetを使ってすべてのオフラインフレンドを取得
-          while (hasMore) {
-            final (friendsSuccess, friendsFailure) =
-                await rawApi
-                    .getFriendsApi()
-                    .getFriends(offline: true, n: 100, offset: offset)
-                    .validateVrc();
-
-            if (friendsSuccess == null) {
-              debugPrint('オフラインフレンド取得でnull結果: $friendsFailure');
-              break;
-            }
-
-            final batch = friendsSuccess.data;
-            // LimitedUserFriend から LimitedUser に変換
-            final convertedBatch = batch.map(_convertToLimitedUser).toList();
-            offlineFriends.addAll(convertedBatch);
-
-            // 100件未満なら終了、そうでなければ次の100件を取得
-            if (batch.length < 100) {
-              hasMore = false;
-            } else {
-              offset += 100;
-            }
-          }
-
-          allFriends.addAll(offlineFriends);
-          debugPrint('オフラインフレンド: ${offlineFriends.length}人');
-        } catch (e) {
-          debugPrint('オフラインフレンド取得エラー: $e');
-        }
-      }
-
-      // --- お気に入りのみ ---
-      if (filter == FriendFilter.favorite) {
-        // すべてのフレンドを取得
-        final allFriends = <LimitedUser>[];
-
-        // オンライン
-        try {
-          final onlineFriends = <LimitedUser>[];
-          var offset = 0;
-          var hasMore = true;
-          while (hasMore) {
-            final (friendsSuccess, friendsFailure) =
-                await rawApi
-                    .getFriendsApi()
-                    .getFriends(offline: false, n: 100, offset: offset)
-                    .validateVrc();
-            if (friendsSuccess == null) break;
-            final batch = friendsSuccess.data;
-            onlineFriends.addAll(batch.map(_convertToLimitedUser));
-            if (batch.length < 100) {
-              hasMore = false;
-            } else {
-              offset += 100;
-            }
-          }
-          allFriends.addAll(onlineFriends);
-        } catch (_) {}
-
-        // オフライン
-        try {
-          final offlineFriends = <LimitedUser>[];
-          var offset = 0;
-          var hasMore = true;
-          while (hasMore) {
-            final (friendsSuccess, friendsFailure) =
-                await rawApi
-                    .getFriendsApi()
-                    .getFriends(offline: true, n: 100, offset: offset)
-                    .validateVrc();
-            if (friendsSuccess == null) break;
-            final batch = friendsSuccess.data;
-            offlineFriends.addAll(batch.map(_convertToLimitedUser));
-            if (batch.length < 100) {
-              hasMore = false;
-            } else {
-              offset += 100;
-            }
-          }
-          allFriends.addAll(offlineFriends);
-        } catch (_) {}
-
-        // お気に入りIDリスト取得
-        final favoriteFriendsAsync = await ref.watch(
-          favoriteFriendsProvider.future,
-        );
-        final favoriteIds =
-            favoriteFriendsAsync.map((f) => f.favoriteId).toSet();
-
-        // フレンドリストをお気に入りIDでフィルタ
-        final filtered =
-            allFriends.where((u) => favoriteIds.contains(u.id)).toList();
-        debugPrint('お気に入りフレンド: ${filtered.length}人');
-        return filtered;
-      }
-
-      debugPrint('フレンド取得完了: 合計${allFriends.length}人');
+      appLogger.d('フレンド取得完了: 合計${allFriends.length}人');
       return allFriends;
     } catch (e, stack) {
-      debugPrint('フレンドリスト取得中のエラー: $e');
-      debugPrint('スタックトレース: $stack');
+      appLogger.d('フレンドリスト取得中のエラー: $e');
+      appLogger.d('スタックトレース: $stack');
       rethrow;
     }
+  }
+
+  Future<List<LimitedUser>> _loadFavoriteFriends(
+    VrchatDartGenerated rawApi,
+  ) async {
+    final allFriendsFuture = Future.wait([
+      _tryLoadFriendGroup(rawApi, offline: false),
+      _tryLoadFriendGroup(rawApi, offline: true),
+    ]);
+    final favoriteFriendsFuture = ref.watch(favoriteFriendsProvider.future);
+
+    final allFriends = (await allFriendsFuture)
+        .expand((friends) => friends)
+        .toList();
+    final favoriteIds = (await favoriteFriendsFuture)
+        .map((favorite) => favorite.favoriteId)
+        .toSet();
+    final filtered = allFriends
+        .where((friend) => favoriteIds.contains(friend.id))
+        .toList();
+
+    appLogger.d('お気に入りフレンド: ${filtered.length}人');
+    return filtered;
+  }
+
+  Future<List<LimitedUser>> _tryLoadFriendGroup(
+    VrchatDartGenerated rawApi, {
+    required bool offline,
+  }) async {
+    final label = offline ? 'オフライン' : 'オンライン';
+    try {
+      final friends = await _loadFriendGroup(rawApi, offline: offline);
+      appLogger.d('$labelフレンド: ${friends.length}人');
+      return friends;
+    } catch (e) {
+      appLogger.d('$labelフレンド取得エラー: $e');
+      return [];
+    }
+  }
+
+  Future<List<LimitedUser>> _loadFriendGroup(
+    VrchatDartGenerated rawApi, {
+    required bool offline,
+  }) async {
+    final friends = <LimitedUser>[];
+    var offset = 0;
+
+    while (true) {
+      final (friendsSuccess, friendsFailure) = await rawApi
+          .getFriendsApi()
+          .getFriends(offline: offline, n: 100, offset: offset)
+          .validateVrc();
+
+      if (friendsSuccess == null) {
+        final label = offline ? 'オフライン' : 'オンライン';
+        appLogger.d('$labelフレンド取得でnull結果: $friendsFailure');
+        break;
+      }
+
+      final batch = friendsSuccess.data;
+      friends.addAll(batch.map(_convertToLimitedUser));
+      if (batch.length < 100) break;
+      offset += 100;
+    }
+
+    return friends;
   }
 
   // LimitedUserFriend を LimitedUser に変換するヘルパーメソッド
   LimitedUser _convertToLimitedUser(LimitedUserFriend friend) {
     return LimitedUser(
       bio: friend.bio,
-      currentAvatarImageUrl: friend.currentAvatarImageUrl!,
+      currentAvatarImageUrl: friend.currentAvatarImageUrl,
       currentAvatarThumbnailImageUrl: friend.currentAvatarThumbnailImageUrl,
       developerType: friend.developerType,
       displayName: friend.displayName,
@@ -377,19 +314,20 @@ final friendLocationUpdaterProvider =
     });
 
 // フレンド情報を更新するハンドラー
-final friendInfoUpdaterProvider = Provider<
-  void Function(String, {UserStatus? status, String? statusDescription})
->((ref) {
-  return (String userId, {UserStatus? status, String? statusDescription}) {
-    ref
-        .read(friendsProvider.notifier)
-        .updateFriendInfo(
-          userId,
-          status: status,
-          statusDescription: statusDescription,
-        );
-  };
-});
+final friendInfoUpdaterProvider =
+    Provider<
+      void Function(String, {UserStatus? status, String? statusDescription})
+    >((ref) {
+      return (String userId, {UserStatus? status, String? statusDescription}) {
+        ref
+            .read(friendsProvider.notifier)
+            .updateFriendInfo(
+              userId,
+              status: status,
+              statusDescription: statusDescription,
+            );
+      };
+    });
 
 // フレンド追加ハンドラー
 final friendAddHandlerProvider = Provider<void Function(String)>((ref) {
@@ -413,7 +351,7 @@ final notificationHandlerProvider = Provider<void Function(Notification)>((
   return (Notification notification) {
     // 通知の処理（通知プロバイダーが実装されている場合）
     // ref.read(notificationsProvider.notifier).addNotification(notification);
-    debugPrint('新しい通知: ${notification.type}');
+    appLogger.d('新しい通知: ${notification.type}');
   };
 });
 

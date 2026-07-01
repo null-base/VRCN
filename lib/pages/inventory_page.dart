@@ -1,19 +1,19 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vrchat/controllers/inventory_upload_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/pages/tabs/inventory/emoji_inventory_tab.dart';
 import 'package:vrchat/pages/tabs/inventory/gallery_inventory_tab.dart';
 import 'package:vrchat/pages/tabs/inventory/icon_inventory_tab.dart';
+import 'package:vrchat/pages/tabs/inventory/inventory_item_tab.dart';
 import 'package:vrchat/pages/tabs/inventory/print_inventory_tab.dart';
 import 'package:vrchat/pages/tabs/inventory/sticker_inventory_tab.dart';
-import 'package:vrchat/provider/files_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
+import 'package:vrchat/utils/snack_bar_utils.dart';
 
 class InventoryPage extends ConsumerStatefulWidget {
   const InventoryPage({super.key});
@@ -23,25 +23,23 @@ class InventoryPage extends ConsumerStatefulWidget {
 }
 
 class _InventoryPageState extends ConsumerState<InventoryPage>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-    _animationController.forward();
+    _tabController = TabController(length: 6, vsync: this)
+      ..addListener(() {
+        if (!_tabController.indexIsChanging) {
+          setState(() {});
+        }
+      });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    _animationController.dispose();
     super.dispose();
   }
 
@@ -51,110 +49,38 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
 
     switch (currentIndex) {
       case 0: // ギャラリー
-        await _uploadGallery();
+        await _uploadImageWithTag(
+          title: t.inventory.uploadGallery,
+          tag: 'gallery',
+        );
       case 1: // アイコン
-        await _uploadIcon();
+        await _uploadImageWithTag(title: t.inventory.uploadIcon, tag: 'icon');
       case 2: // 絵文字
-        await _uploadEmoji();
+        await _uploadImageWithTag(title: t.inventory.uploadEmoji, tag: 'emoji');
       case 3: // ステッカー
-        await _uploadSticker();
+        await _uploadImageWithTag(
+          title: t.inventory.uploadSticker,
+          tag: 'sticker',
+        );
       case 4: // プリント
-        await _uploadPrint();
+        await _uploadImageWithTag(title: t.inventory.uploadPrint, tag: 'print');
+      case 5:
+        return;
     }
   }
 
-  // ギャラリー画像をアップロード
-  Future<void> _uploadGallery() async {
+  Future<void> _uploadImageWithTag({
+    required String title,
+    required String tag,
+  }) async {
     final file = await _pickImage();
     if (file == null) return;
 
     await _showUploadDialog(
-      title: t.inventory.uploadGallery,
-      future: () async {
-        final multipartFile = await MultipartFile.fromFile(
-          file.path,
-          filename: file.name,
-          contentType: MediaType.parse('image/png'),
-        );
-        final params = UploadImageParams(file: multipartFile, tag: 'gallery');
-        return ref.read(uploadImageProvider(params).future);
-      },
-    );
-  }
-
-  // アイコンをアップロード
-  Future<void> _uploadIcon() async {
-    final file = await _pickImage();
-    if (file == null) return;
-
-    await _showUploadDialog(
-      title: t.inventory.uploadIcon,
-      future: () async {
-        final multipartFile = await MultipartFile.fromFile(
-          file.path,
-          filename: file.name,
-          contentType: MediaType.parse('image/png'),
-        );
-        final params = UploadImageParams(file: multipartFile, tag: 'icon');
-        return ref.read(uploadImageProvider(params).future);
-      },
-    );
-  }
-
-  // 絵文字をアップロード
-  Future<void> _uploadEmoji() async {
-    final file = await _pickImage();
-    if (file == null) return;
-
-    await _showUploadDialog(
-      title: t.inventory.uploadEmoji,
-      future: () async {
-        final multipartFile = await MultipartFile.fromFile(
-          file.path,
-          filename: file.name,
-          contentType: MediaType.parse('image/png'),
-        );
-        final params = UploadImageParams(file: multipartFile, tag: 'emoji');
-        return ref.read(uploadImageProvider(params).future);
-      },
-    );
-  }
-
-  // ステッカーをアップロード
-  Future<void> _uploadSticker() async {
-    final file = await _pickImage();
-    if (file == null) return;
-
-    await _showUploadDialog(
-      title: t.inventory.uploadSticker,
-      future: () async {
-        final multipartFile = await MultipartFile.fromFile(
-          file.path,
-          filename: file.name,
-          contentType: MediaType.parse('image/png'),
-        );
-        final params = UploadImageParams(file: multipartFile, tag: 'sticker');
-        return ref.read(uploadImageProvider(params).future);
-      },
-    );
-  }
-
-  // プリント画像をアップロード
-  Future<void> _uploadPrint() async {
-    final file = await _pickImage();
-    if (file == null) return;
-
-    await _showUploadDialog(
-      title: t.inventory.uploadPrint,
-      future: () async {
-        final multipartFile = await MultipartFile.fromFile(
-          file.path,
-          filename: file.name,
-          contentType: MediaType.parse('image/png'),
-        );
-        final params = UploadImageParams(file: multipartFile, tag: 'print');
-        return ref.read(uploadImageProvider(params).future);
-      },
+      title: title,
+      future: () => ref
+          .read(inventoryUploadControllerProvider)
+          .uploadImage(file: file, tag: tag),
     );
   }
 
@@ -165,34 +91,33 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
     // 画像選択方法を選択するダイアログ
     final source = await showDialog<ImageSource>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              t.inventory.selectImage,
-              style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
+      builder: (context) => AlertDialog(
+        title: Text(
+          t.inventory.selectImage,
+          style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: Text(
+                t.inventory.selectFromGallery,
+                style: GoogleFonts.notoSans(),
+              ),
+              onTap: () => Navigator.pop(context, ImageSource.gallery),
             ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.photo_library),
-                  title: Text(
-                    t.inventory.selectFromGallery,
-                    style: GoogleFonts.notoSans(),
-                  ),
-                  onTap: () => Navigator.pop(context, ImageSource.gallery),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.camera_alt),
-                  title: Text(
-                    t.inventory.takePhoto,
-                    style: GoogleFonts.notoSans(),
-                  ),
-                  onTap: () => Navigator.pop(context, ImageSource.camera),
-                ),
-              ],
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: Text(
+                t.inventory.takePhoto,
+                style: GoogleFonts.notoSans(),
+              ),
+              onTap: () => Navigator.pop(context, ImageSource.camera),
             ),
-          ),
+          ],
+        ),
+      ),
     );
 
     if (source == null) return null;
@@ -200,7 +125,10 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
     try {
       return await picker.pickImage(source: source);
     } catch (e) {
-      _showErrorSnackBar(t.inventory.pickImageFailed(error: e.toString()));
+      SnackBarUtils.showError(
+        context,
+        t.inventory.pickImageFailed(error: e.toString()),
+      );
       return null;
     }
   }
@@ -215,17 +143,16 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder:
-            (context) => AlertDialog(
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
-                  Text(title, style: GoogleFonts.notoSans()),
-                ],
-              ),
-            ),
+        builder: (context) => AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(title, style: GoogleFonts.notoSans()),
+            ],
+          ),
+        ),
       ),
     );
 
@@ -235,182 +162,159 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
 
       if (mounted) {
         Navigator.pop(context); // プログレスダイアログを閉じる
-        _showSuccessSnackBar(Translations.of(context).inventory.uploadSuccess);
+        SnackBarUtils.showSuccess(
+          context,
+          Translations.of(context).inventory.uploadSuccess,
+        );
       }
     } catch (e) {
       if (mounted) {
         Navigator.pop(context); // プログレスダイアログを閉じる
 
-        var errorMessage = t.inventory.uploadFailed;
-        if (e is DioException) {
-          if (e.response?.statusCode == 400) {
-            errorMessage = t.inventory.uploadFailedFormat;
-          } else if (e.response?.statusCode == 401) {
-            errorMessage = t.inventory.uploadFailedAuth;
-          } else if (e.response?.statusCode == 413) {
-            errorMessage = t.inventory.uploadFailedSize;
-          } else {
-            errorMessage = t.inventory.uploadFailedServer(
-              code: int.parse(e.response!.statusCode.toString()),
-            );
-          }
-        }
-        _showErrorSnackBar(errorMessage);
+        SnackBarUtils.showError(context, _uploadErrorMessage(e));
       }
     }
   }
 
-  // 成功メッセージ
-  void _showSuccessSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.check_circle, color: Colors.white),
-            const SizedBox(width: 12),
-            Text(message, style: GoogleFonts.notoSans()),
-          ],
-        ),
-        backgroundColor: Colors.green.shade600,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
-  }
+  String _uploadErrorMessage(Object error) {
+    if (error is! InventoryUploadException) {
+      return t.inventory.uploadFailed;
+    }
 
-  // エラーメッセージ
-  void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.error, color: Colors.white),
-            const SizedBox(width: 12),
-            Expanded(child: Text(message, style: GoogleFonts.notoSans())),
-          ],
-        ),
-        backgroundColor: Colors.red.shade600,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        duration: const Duration(seconds: 5), // エラーメッセージは長めに表示
-      ),
-    );
+    return switch (error.statusCode) {
+      400 => t.inventory.uploadFailedFormat,
+      401 => t.inventory.uploadFailedAuth,
+      413 => t.inventory.uploadFailedSize,
+      final int code => t.inventory.uploadFailedServer(code: code),
+      null => t.inventory.uploadFailed,
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final canUpload = _tabController.index < 5;
 
     return Scaffold(
       backgroundColor: isDarkMode ? const Color(0xFF151515) : Colors.grey[50],
       body: NestedScrollView(
-        headerSliverBuilder:
-            (context, innerBoxIsScrolled) => [
-              SliverAppBar(
-                expandedHeight: 100,
-                pinned: true,
-                floating: true,
-                forceElevated: innerBoxIsScrolled,
-                backgroundColor:
-                    isDarkMode ? const Color(0xFF1A1A1A) : Colors.white,
-                title: Text(
-                  t.inventory.title,
-                  style: GoogleFonts.notoSans(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: isDarkMode ? Colors.white : Colors.black87,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverAppBar(
+            expandedHeight: 100,
+            pinned: true,
+            floating: true,
+            forceElevated: innerBoxIsScrolled,
+            backgroundColor: isDarkMode
+                ? const Color(0xFF1A1A1A)
+                : Colors.white,
+            title: Text(
+              t.inventory.title,
+              style: GoogleFonts.notoSans(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: isDarkMode ? Colors.white : Colors.black87,
+              ),
+            ),
+            centerTitle: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: isDarkMode
+                        ? [
+                            Colors.deepPurple.withValues(alpha: 0.3),
+                            Colors.indigo.withValues(alpha: 0.2),
+                          ]
+                        : [
+                            Colors.deepPurple.withValues(alpha: 0.1),
+                            Colors.indigo.withValues(alpha: 0.05),
+                          ],
                   ),
-                ),
-                centerTitle: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors:
-                            isDarkMode
-                                ? [
-                                  Colors.deepPurple.withValues(alpha: 0.3),
-                                  Colors.indigo.withValues(alpha: 0.2),
-                                ]
-                                : [
-                                  Colors.deepPurple.withValues(alpha: 0.1),
-                                  Colors.indigo.withValues(alpha: 0.05),
-                                ],
-                      ),
-                    ),
-                  ),
-                ),
-                bottom: TabBar(
-                  controller: _tabController,
-                  labelStyle: GoogleFonts.notoSans(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                  unselectedLabelStyle: GoogleFonts.notoSans(fontSize: 12),
-                  indicatorColor: AppTheme.primaryColor,
-                  indicatorWeight: 3,
-                  labelColor: isDarkMode ? Colors.white : Colors.black87,
-                  unselectedLabelColor:
-                      isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                  indicatorSize: TabBarIndicatorSize.label,
-                  isScrollable: true,
-                  tabs: [
-                    Tab(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.photo_library, size: 18),
-                          const SizedBox(width: 4),
-                          Text(t.inventory.gallery),
-                        ],
-                      ),
-                    ),
-                    Tab(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.account_circle, size: 18),
-                          const SizedBox(width: 4),
-                          Text(t.inventory.icon),
-                        ],
-                      ),
-                    ),
-                    Tab(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.emoji_emotions, size: 18),
-                          const SizedBox(width: 4),
-                          Text(t.inventory.emoji),
-                        ],
-                      ),
-                    ),
-                    Tab(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.sticky_note_2, size: 18),
-                          const SizedBox(width: 4),
-                          Text(t.inventory.sticker),
-                        ],
-                      ),
-                    ),
-                    Tab(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.print, size: 18),
-                          const SizedBox(width: 4),
-                          Text(t.inventory.print),
-                        ],
-                      ),
-                    ),
-                  ],
                 ),
               ),
-            ],
+            ),
+            bottom: TabBar(
+              controller: _tabController,
+              labelStyle: GoogleFonts.notoSans(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+              unselectedLabelStyle: GoogleFonts.notoSans(fontSize: 12),
+              indicatorColor: AppTheme.primaryColor,
+              indicatorWeight: 3,
+              labelColor: isDarkMode ? Colors.white : Colors.black87,
+              unselectedLabelColor: isDarkMode
+                  ? Colors.grey[400]
+                  : Colors.grey[600],
+              indicatorSize: TabBarIndicatorSize.label,
+              isScrollable: true,
+              tabs: [
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.photo_library, size: 18),
+                      const SizedBox(width: 4),
+                      Text(t.inventory.gallery),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.account_circle, size: 18),
+                      const SizedBox(width: 4),
+                      Text(t.inventory.icon),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.emoji_emotions, size: 18),
+                      const SizedBox(width: 4),
+                      Text(t.inventory.emoji),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.sticky_note_2, size: 18),
+                      const SizedBox(width: 4),
+                      Text(t.inventory.sticker),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.print, size: 18),
+                      const SizedBox(width: 4),
+                      Text(t.inventory.print),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.inventory_2, size: 18),
+                      const SizedBox(width: 4),
+                      Text(t.inventory.item),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         body: TabBarView(
           controller: _tabController,
           children: const [
@@ -419,16 +323,19 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
             EmojiInventoryTab(),
             StickerInventoryTab(),
             PrintInventoryTab(),
+            InventoryItemTab(),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _handleUpload,
-        backgroundColor: AppTheme.primaryColor,
-        foregroundColor: Colors.white,
-        tooltip: t.inventory.upload,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: canUpload
+          ? FloatingActionButton(
+              onPressed: _handleUpload,
+              backgroundColor: AppTheme.primaryColor,
+              foregroundColor: Colors.white,
+              tooltip: t.inventory.upload,
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

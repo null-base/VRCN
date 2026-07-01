@@ -5,18 +5,20 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/provider/auth_refresh_provider.dart';
 import 'package:vrchat/provider/auth_storage_provider.dart';
 import 'package:vrchat/provider/cache_provider.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
+import 'package:vrchat/provider/package_info_provider.dart';
 import 'package:vrchat/provider/settings_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
-import 'package:vrchat/router/app_router.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/url_launcher_utils.dart';
 import 'package:vrchat/widgets/reminder_management_dialog.dart';
+
+bool get _isAppIconChangeEnabled => false;
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -28,7 +30,6 @@ class SettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<SettingsPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  PackageInfo? _packageInfo;
 
   @override
   void initState() {
@@ -39,7 +40,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
     );
 
     _animationController.forward();
-    _loadPackageInfo();
   }
 
   @override
@@ -48,37 +48,30 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
     super.dispose();
   }
 
-  Future<void> _loadPackageInfo() async {
-    final info = await PackageInfo.fromPlatform();
-    if (mounted) {
-      setState(() {
-        _packageInfo = info;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final packageInfo = ref.watch(packageInfoProvider).value;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     // 背景色グラデーション
-    final gradientColors =
-        isDarkMode
-            ? [const Color(0xFF1C1C1E), const Color(0xFF121214)]
-            : [Colors.white, const Color(0xFFF8F9FA)];
+    final gradientColors = isDarkMode
+        ? [const Color(0xFF1C1C1E), const Color(0xFF121214)]
+        : [Colors.white, const Color(0xFFF8F9FA)];
 
     // セクション背景色
     final sectionBgColor = isDarkMode ? const Color(0xFF252528) : Colors.white;
 
     // ボタン色
-    final buttonColor =
-        isDarkMode ? const Color(0xFF2E2E36) : const Color(0xFFF0F0F5);
+    final buttonColor = isDarkMode
+        ? const Color(0xFF2E2E36)
+        : const Color(0xFFF0F0F5);
 
     // テキスト色
     final textColor = isDarkMode ? Colors.white : const Color(0xFF2A2A2A);
-    final secondaryTextColor =
-        isDarkMode ? Colors.white70 : const Color(0xFF6E6E73);
+    final secondaryTextColor = isDarkMode
+        ? Colors.white70
+        : const Color(0xFF6E6E73);
 
     return Scaffold(
       body: DecoratedBox(
@@ -151,7 +144,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
 
                         const SizedBox(height: 24),
 
-                        if (Platform.isIOS) ...[
+                        if (Platform.isIOS && _isAppIconChangeEnabled) ...[
                           // アプリアイコン設定 (iOS限定)
                           _buildSettingsSection(
                                 title: t.settings.appIcon,
@@ -288,7 +281,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                         const SizedBox(height: 24),
 
                         // アプリ情報
-                        if (_packageInfo != null)
+                        if (packageInfo != null)
                           _buildSettingsSection(
                                 title: t.settings.appInfo,
                                 icon: Icons.info_outline,
@@ -304,7 +297,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                     iconColor: const Color(0xFF9381FF),
                                     title: t.settings.version,
                                     value:
-                                        '${_packageInfo!.version} (${_packageInfo!.buildNumber})',
+                                        '${packageInfo.version} (${packageInfo.buildNumber})',
                                     textColor: textColor,
                                     secondaryTextColor: secondaryTextColor,
                                   ),
@@ -312,7 +305,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                     icon: Icons.code,
                                     iconColor: const Color(0xFF9381FF),
                                     title: t.settings.packageName,
-                                    value: _packageInfo!.packageName,
+                                    value: packageInfo.packageName,
                                     textColor: textColor,
                                     secondaryTextColor: secondaryTextColor,
                                   ),
@@ -331,10 +324,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                     iconColor: const Color(0xFF9381FF),
                                     title: t.settings.contact,
                                     subtitle: t.settings.contactDescription,
-                                    onTap:
-                                        () => UrlLauncherUtils.launchURL(
-                                          'https://discord.gg/wNgbkdXq6M',
-                                        ),
+                                    onTap: () => UrlLauncherUtils.launchURL(
+                                      'https://discord.gg/wNgbkdXq6M',
+                                    ),
                                     textColor: textColor,
                                     secondaryTextColor: secondaryTextColor,
                                   ),
@@ -344,10 +336,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                     title: t.settings.privacyPolicy,
                                     subtitle:
                                         t.settings.privacyPolicyDescription,
-                                    onTap:
-                                        () => UrlLauncherUtils.launchURL(
-                                          'https://null-base.com/vrcn/privacy-policy/',
-                                        ),
+                                    onTap: () => UrlLauncherUtils.launchURL(
+                                      'https://null-base.com/vrcn/privacy-policy/',
+                                    ),
                                     textColor: textColor,
                                     secondaryTextColor: secondaryTextColor,
                                   ),
@@ -357,10 +348,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                     title: t.settings.termsOfService,
                                     subtitle:
                                         t.settings.termsOfServiceDescription,
-                                    onTap:
-                                        () => UrlLauncherUtils.launchURL(
-                                          'https://null-base.com/vrcn/terms-of-service',
-                                        ),
+                                    onTap: () => UrlLauncherUtils.launchURL(
+                                      'https://null-base.com/vrcn/terms-of-service',
+                                    ),
                                     textColor: textColor,
                                     secondaryTextColor: secondaryTextColor,
                                   ),
@@ -369,7 +359,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                     iconColor: const Color(0xFF9381FF),
                                     title: t.settings.openSource,
                                     subtitle: t.settings.openSourceDescription,
-                                    onTap: _showLicenses,
+                                    onTap: () =>
+                                        _showLicenses(packageInfo.version),
                                     textColor: textColor,
                                     secondaryTextColor: secondaryTextColor,
                                   ),
@@ -378,10 +369,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                     iconColor: const Color(0xFF9381FF),
                                     title: t.settings.github,
                                     subtitle: t.settings.githubDescription,
-                                    onTap:
-                                        () => UrlLauncherUtils.launchURL(
-                                          'https://github.com/null-base/vrcn',
-                                        ),
+                                    onTap: () => UrlLauncherUtils.launchURL(
+                                      'https://github.com/null-base/vrcn',
+                                    ),
                                     textColor: textColor,
                                     secondaryTextColor: secondaryTextColor,
                                   ),
@@ -446,10 +436,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color:
-                isDarkMode
-                    ? Colors.black.withValues(alpha: .2)
-                    : Colors.black.withValues(alpha: 0.05),
+            color: isDarkMode
+                ? Colors.black.withValues(alpha: .2)
+                : Colors.black.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -623,22 +612,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           decoration: BoxDecoration(
-            color:
-                isSelected
-                    ? AppTheme.primaryColor.withValues(
-                      alpha: isDarkMode ? 0.3 : 0.2,
-                    )
-                    : Colors.transparent,
+            color: isSelected
+                ? AppTheme.primaryColor.withValues(
+                    alpha: isDarkMode ? 0.3 : 0.2,
+                  )
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
             children: [
               Icon(
                 icon,
-                color:
-                    isSelected
-                        ? AppTheme.primaryColor
-                        : textColor.withValues(alpha: 0.7),
+                color: isSelected
+                    ? AppTheme.primaryColor
+                    : textColor.withValues(alpha: 0.7),
                 size: 24,
               ),
               const SizedBox(height: 8),
@@ -647,10 +634,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                 style: GoogleFonts.notoSans(
                   fontSize: 12,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  color:
-                      isSelected
-                          ? AppTheme.primaryColor
-                          : textColor.withValues(alpha: 0.7),
+                  color: isSelected
+                      ? AppTheme.primaryColor
+                      : textColor.withValues(alpha: 0.7),
                 ),
               ),
             ],
@@ -818,57 +804,56 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
 
           showDialog(
             context: context,
-            builder:
-                (context) => AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+            builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: Text(
+                t.settings.apiSetting,
+                style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
+              ),
+              content: TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  hintText: 'https://null-base.com/',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  title: Text(
-                    t.settings.apiSetting,
-                    style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
-                  ),
-                  content: TextField(
-                    controller: controller,
-                    decoration: InputDecoration(
-                      hintText: 'https://null-base.com/',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    autofocus: true,
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text('キャンセル', style: GoogleFonts.notoSans()),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        final url = controller.text.trim();
-                        ref
-                            .read(settingsProvider.notifier)
-                            .setAvatarSearchApiUrl(url);
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(t.settings.apiSettingSaveUrl),
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
+                ),
+                autofocus: true,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('キャンセル', style: GoogleFonts.notoSans()),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    final url = controller.text.trim();
+                    ref
+                        .read(settingsProvider.notifier)
+                        .setAvatarSearchApiUrl(url);
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(t.settings.apiSettingSaveUrl),
+                        behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        backgroundColor: AppTheme.primaryColor,
                       ),
-                      child: Text(t.common.save, style: GoogleFonts.notoSans()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  ],
+                    backgroundColor: AppTheme.primaryColor,
+                  ),
+                  child: Text(t.common.save, style: GoogleFonts.notoSans()),
                 ),
+              ],
+            ),
           );
         },
         borderRadius: BorderRadius.circular(10),
@@ -983,7 +968,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
-                width: 1,
               ),
             ),
             child: DropdownButtonHideUnderline(
@@ -1000,8 +984,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                   color: textColor,
                   fontWeight: FontWeight.w500,
                 ),
-                dropdownColor:
-                    isDarkMode ? const Color(0xFF2E2E36) : Colors.white,
+                dropdownColor: isDarkMode
+                    ? const Color(0xFF2E2E36)
+                    : Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 items: [
                   DropdownMenuItem(
@@ -1159,7 +1144,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               padding: const EdgeInsets.all(8),
@@ -1235,16 +1219,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color:
-                    isDarkMode
-                        ? Colors.red.withValues(alpha: 0.1)
-                        : Colors.red.withValues(alpha: 0.05),
+                color: isDarkMode
+                    ? Colors.red.withValues(alpha: 0.1)
+                    : Colors.red.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color:
-                      isDarkMode
-                          ? Colors.red.withValues(alpha: 0.3)
-                          : Colors.red.withValues(alpha: 0.2),
+                  color: isDarkMode
+                      ? Colors.red.withValues(alpha: 0.3)
+                      : Colors.red.withValues(alpha: 0.2),
                 ),
               ),
               child: Row(
@@ -1598,20 +1580,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color:
-                      isSelected ? AppTheme.primaryColor : Colors.transparent,
+                  color: isSelected
+                      ? AppTheme.primaryColor
+                      : Colors.transparent,
                   width: 3,
                 ),
-                boxShadow:
-                    isSelected
-                        ? [
-                          BoxShadow(
-                            color: AppTheme.primaryColor.withValues(alpha: 0.3),
-                            blurRadius: 10,
-                            spreadRadius: 1,
-                          ),
-                        ]
-                        : null,
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ]
+                    : null,
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(17),
@@ -1754,40 +1736,34 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
   Future<void> _showLogoutConfirmation() async {
     final shouldLogout = await showDialog<bool>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          t.common.logout,
+          style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
+        ),
+        content: Text(t.settings.logoutConfirm, style: GoogleFonts.notoSans()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              t.common.cancel,
+              style: GoogleFonts.notoSans(color: Colors.grey[600]),
             ),
-            title: Text(
-              t.common.logout,
-              style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
-            ),
-            content: Text(
-              t.settings.logoutConfirm,
-              style: GoogleFonts.notoSans(),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text(
-                  t.common.cancel,
-                  style: GoogleFonts.notoSans(color: Colors.grey[600]),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Text(t.common.logout, style: GoogleFonts.notoSans()),
-              ),
-            ],
           ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text(t.common.logout, style: GoogleFonts.notoSans()),
+          ),
+        ],
+      ),
     );
 
     if (shouldLogout == true) {
@@ -1822,11 +1798,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
   }
 
   // ライセンス表示メソッド
-  void _showLicenses() {
+  void _showLicenses(String version) {
     showLicensePage(
       context: context,
       applicationName: 'VRCN',
-      applicationVersion: _packageInfo?.version ?? '',
+      applicationVersion: version,
       applicationIcon: Padding(
         padding: const EdgeInsets.all(8),
         child: Image.asset(Assets.icons.vrcn.path, width: 64, height: 64),
@@ -1880,30 +1856,27 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                   ),
                   const SizedBox(height: 4),
                   cacheSizeAsync.when(
-                    data:
-                        (size) => Text(
-                          t.settings.cacheSize(size: size),
-                          style: GoogleFonts.notoSans(
-                            fontSize: 13,
-                            color: secondaryTextColor,
-                          ),
-                        ),
-                    loading:
-                        () => Text(
-                          t.settings.calculatingCache,
-                          style: GoogleFonts.notoSans(
-                            fontSize: 13,
-                            color: secondaryTextColor,
-                          ),
-                        ),
-                    error:
-                        (_, _) => Text(
-                          t.settings.cacheError,
-                          style: GoogleFonts.notoSans(
-                            fontSize: 13,
-                            color: Colors.red[300],
-                          ),
-                        ),
+                    data: (size) => Text(
+                      t.settings.cacheSize(size: size),
+                      style: GoogleFonts.notoSans(
+                        fontSize: 13,
+                        color: secondaryTextColor,
+                      ),
+                    ),
+                    loading: () => Text(
+                      t.settings.calculatingCache,
+                      style: GoogleFonts.notoSans(
+                        fontSize: 13,
+                        color: secondaryTextColor,
+                      ),
+                    ),
+                    error: (_, _) => Text(
+                      t.settings.cacheError,
+                      style: GoogleFonts.notoSans(
+                        fontSize: 13,
+                        color: Colors.red[300],
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -1919,46 +1892,43 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
   Future<void> _showClearCacheConfirmation() async {
     final shouldClear = await showDialog<bool>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.amber[700]),
+            const SizedBox(width: 12),
+            Text(
+              t.settings.clearCache,
+              style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
             ),
-            title: Row(
-              children: [
-                Icon(Icons.warning_amber_rounded, color: Colors.amber[700]),
-                const SizedBox(width: 12),
-                Text(
-                  t.settings.clearCache,
-                  style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
-                ),
-              ],
+          ],
+        ),
+        content: Text(
+          t.settings.confirmClearCache,
+          style: GoogleFonts.notoSans(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              t.common.cancel,
+              style: GoogleFonts.notoSans(color: Colors.grey[600]),
             ),
-            content: Text(
-              t.settings.confirmClearCache,
-              style: GoogleFonts.notoSans(),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text(
-                  t.common.cancel,
-                  style: GoogleFonts.notoSans(color: Colors.grey[600]),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2A9D8F),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Text(t.settings.delete, style: GoogleFonts.notoSans()),
-              ),
-            ],
           ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF2A9D8F),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text(t.settings.delete, style: GoogleFonts.notoSans()),
+          ),
+        ],
+      ),
     );
 
     if (shouldClear == true) {

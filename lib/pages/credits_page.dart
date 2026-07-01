@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/utils/url_launcher_utils.dart';
 
 class CreditsPage extends StatelessWidget {
   const CreditsPage({super.key});
@@ -12,10 +12,12 @@ class CreditsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor =
-        isDarkMode ? const Color(0xFF151515) : const Color(0xFFF7F9FA);
-    final accentColor =
-        isDarkMode ? const Color(0xFF4CAF50) : const Color(0xFF2E7D32);
+    final backgroundColor = isDarkMode
+        ? const Color(0xFF151515)
+        : const Color(0xFFF7F9FA);
+    final accentColor = isDarkMode
+        ? const Color(0xFF4CAF50)
+        : const Color(0xFF2E7D32);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -277,8 +279,8 @@ class CreditsPage extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
-                        launchUrl(
-                          Uri.parse('https://booth.pm/ja/items/5020157'),
+                        UrlLauncherUtils.launchURL(
+                          'https://booth.pm/ja/items/5020157',
                         );
                       },
                     ),
@@ -292,8 +294,8 @@ class CreditsPage extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
-                        launchUrl(
-                          Uri.parse('https://triples.booth.pm/items/6567379'),
+                        UrlLauncherUtils.launchURL(
+                          'https://triples.booth.pm/items/6567379',
                         );
                       },
                     ),
@@ -317,8 +319,9 @@ class CreditsPage extends StatelessWidget {
     required bool isDarkMode,
     required double delay,
   }) {
-    final accentColor =
-        isDarkMode ? const Color(0xFF4CAF50) : const Color(0xFF2E7D32);
+    final accentColor = isDarkMode
+        ? const Color(0xFF4CAF50)
+        : const Color(0xFF2E7D32);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,15 +417,15 @@ class CreditsPage extends StatelessWidget {
                   child:
                       credit.icon ??
                       CircleAvatar(
-                        backgroundColor:
-                            isDarkMode ? Colors.green[900] : Colors.green[100],
+                        backgroundColor: isDarkMode
+                            ? Colors.green[900]
+                            : Colors.green[100],
                         child: Text(
                           credit.name.substring(0, 1).toUpperCase(),
                           style: TextStyle(
-                            color:
-                                isDarkMode
-                                    ? Colors.green[300]
-                                    : Colors.green[800],
+                            color: isDarkMode
+                                ? Colors.green[300]
+                                : Colors.green[800],
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -446,8 +449,9 @@ class CreditsPage extends StatelessWidget {
                         credit.role,
                         style: GoogleFonts.notoSans(
                           fontSize: 14,
-                          color:
-                              isDarkMode ? Colors.grey[400] : Colors.grey[700],
+                          color: isDarkMode
+                              ? Colors.grey[400]
+                              : Colors.grey[700],
                           letterSpacing: 0.1,
                         ),
                       ),
@@ -460,17 +464,17 @@ class CreditsPage extends StatelessWidget {
                     height: 36,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color:
-                          isDarkMode
-                              ? Colors.green.withValues(alpha: .1)
-                              : Colors.green.withValues(alpha: .08),
+                      color: isDarkMode
+                          ? Colors.green.withValues(alpha: .1)
+                          : Colors.green.withValues(alpha: .08),
                     ),
                     child: Center(
                       child: Icon(
                         Icons.arrow_forward_ios,
                         size: 16,
-                        color:
-                            isDarkMode ? Colors.green[300] : Colors.green[700],
+                        color: isDarkMode
+                            ? Colors.green[300]
+                            : Colors.green[700],
                       ),
                     ),
                   ),
@@ -493,15 +497,14 @@ class CreditsPage extends StatelessWidget {
 
 @immutable
 class CreditItem {
-  final String name;
-  final String role;
-  final Widget? icon;
-  final VoidCallback? onTap;
-
   const CreditItem({
     required this.name,
     required this.role,
     this.icon,
     this.onTap,
   });
+  final String name;
+  final String role;
+  final Widget? icon;
+  final VoidCallback? onTap;
 }
