@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:app_links/app_links.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_messaging/firebase_messaging.dart'; // 追加
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +14,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:vrchat/analytics_repository.dart';
 import 'package:vrchat/config/app_config.dart';
 import 'package:vrchat/firebase_options.dart';
@@ -29,55 +26,9 @@ import 'package:vrchat/provider/version_check_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/router/app_router.dart';
 import 'package:vrchat/theme/app_theme.dart';
-import 'package:vrchat/utils/url_launcher_utils.dart';
+import 'package:vrchat/utils/app_logger.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat/widgets/update_dialog.dart';
-import 'package:vrchat/utils/app_logger.dart';
-
-// FCMバックグラウンドメッセージハンドラー
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Firebase の初期化が必要
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  appLogger.d('🔔 バックグラウンドメッセージを受信:');
-  appLogger.d('📱 Message ID: ${message.messageId}');
-  appLogger.d('📰 Title: ${message.notification?.title}');
-  appLogger.d('📝 Body: ${message.notification?.body}');
-  appLogger.d('📊 Data: ${message.data}');
-
-  // バックグラウンドでローカル通知を表示
-  await _showLocalNotification(message);
-}
-
-// ローカル通知を表示するヘルパー関数
-Future<void> _showLocalNotification(RemoteMessage message) async {
-  const androidDetails = AndroidNotificationDetails(
-    'fcm_default_channel',
-    'FCM通知',
-    channelDescription: 'Firebase Cloud Messagingからの通知',
-    importance: Importance.high,
-    priority: Priority.high,
-  );
-
-  const notificationDetails = NotificationDetails(
-    android: androidDetails,
-    iOS: DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    ),
-  );
-
-  final notifications = FlutterLocalNotificationsPlugin();
-
-  await notifications.show(
-    id: message.hashCode,
-    title: message.notification?.title ?? 'VRCNからの通知',
-    body: message.notification?.body ?? 'メッセージを受信しました',
-    notificationDetails: notificationDetails,
-    payload: message.data.toString(),
-  );
-}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -92,9 +43,6 @@ Future<void> main() async {
   // Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // FCMバックグラウンドメッセージハンドラーを設定
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
   // クラッシュハンドラ
   if (!kDebugMode) {
     FlutterError.onError = (errorDetails) {
@@ -105,9 +53,6 @@ Future<void> main() async {
       return true;
     };
   }
-
-  // FCMの初期化とデバッグ情報表示
-  await _initializeFCM();
 
   // AppConfig初期化（Firebase初期化後）
   await AppConfig.initialize();
@@ -175,77 +120,6 @@ Future<void> main() async {
   );
 }
 
-/// FCMの初期化とデバッグ情報表示
-Future<void> _initializeFCM() async {
-  final messaging = FirebaseMessaging.instance;
-
-  try {
-    // 通知権限をリクエスト
-    final settings = await messaging.requestPermission(
-      announcement: false,
-    );
-
-    appLogger.d('🔔 ========== FCM設定情報 ==========');
-    appLogger.d('📱 通知権限ステータス: ${settings.authorizationStatus}');
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      appLogger.d('✅ 通知権限が許可されています');
-    } else if (settings.authorizationStatus ==
-        AuthorizationStatus.provisional) {
-      appLogger.d('⚠️ 通知権限が仮許可されています');
-    } else {
-      appLogger.d('❌ 通知権限が拒否されています');
-    }
-
-    // FCMトークンを取得してデバッグ出力
-
-    final token = await messaging.getToken();
-    appLogger.d('🔑 FCMトークン: $token');
-
-    // トークンの更新を監視
-    messaging.onTokenRefresh.listen((newToken) {
-      appLogger.d('🔄 FCMトークンが更新されました: $newToken');
-    });
-
-    // フォアグラウンドメッセージを処理
-    FirebaseMessaging.onMessage.listen((message) {
-      appLogger.d('📬 フォアグラウンドメッセージを受信:');
-      appLogger.d('📱 Message ID: ${message.messageId}');
-      appLogger.d('📰 Title: ${message.notification?.title}');
-      appLogger.d('📝 Body: ${message.notification?.body}');
-      appLogger.d('📊 Data: ${message.data}');
-
-      // フォアグラウンドでもローカル通知を表示
-      _showLocalNotification(message);
-      _handleFcmMessageUrl(message.data);
-    });
-
-    // アプリが終了状態から通知タップで起動された場合
-    messaging.getInitialMessage().then((message) {
-      if (message != null) {
-        appLogger.d('🚀 アプリが通知から起動されました:');
-        appLogger.d('📱 Message ID: ${message.messageId}');
-        appLogger.d('📊 Data: ${message.data}');
-
-        _handleFcmMessageUrl(message.data);
-      }
-    });
-
-    // アプリがバックグラウンドから通知タップで復帰した場合
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      appLogger.d('📱 バックグラウンドから通知タップで復帰:');
-      appLogger.d('📱 Message ID: ${message.messageId}');
-      appLogger.d('📊 Data: ${message.data}');
-
-      _handleFcmMessageUrl(message.data);
-    });
-
-    appLogger.d('🔔 ========== FCM初期化完了 ==========');
-  } catch (e) {
-    appLogger.d('❌ FCM初期化エラー: $e');
-  }
-}
-
 /// 通知の初期化
 Future<FlutterLocalNotificationsPlugin> initializeNotifications() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -272,20 +146,6 @@ Future<FlutterLocalNotificationsPlugin> initializeNotifications() async {
     onDidReceiveNotificationResponse: _handleNotificationResponse,
   );
 
-  // FCM用のAndroid通知チャンネルを作成
-  const channel = AndroidNotificationChannel(
-    'fcm_default_channel',
-    'FCM通知',
-    description: 'Firebase Cloud Messagingからの通知',
-    importance: Importance.high,
-  );
-
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin
-      >()
-      ?.createNotificationChannel(channel);
-
   return flutterLocalNotificationsPlugin;
 }
 
@@ -301,65 +161,6 @@ void _handleNotificationResponse(NotificationResponse details) {
   }
 
   appLogger.d('🔔 通知がタップされました: ${details.payload}');
-
-  _handleNotificationUrl(details.payload);
-}
-
-void _handleNotificationUrl(String? payload) {
-  if (payload == null || payload.isEmpty) return;
-
-  try {
-    // payloadをMapとして解析
-    final data = <String, dynamic>{};
-
-    // payload文字列からデータを抽出（FCMのdataは文字列として渡される）
-    if (payload.startsWith('{') && payload.endsWith('}')) {
-      // JSON形式の場合
-      final jsonData = jsonDecode(payload) as Map<String, dynamic>;
-      data.addAll(jsonData);
-    } else {
-      // key=value形式の場合（FCMのデフォルト形式）
-      final pairs = payload.split(', ');
-      for (final pair in pairs) {
-        if (pair.contains('=')) {
-          final parts = pair.split('=');
-          if (parts.length == 2) {
-            data[parts[0].trim()] = parts[1].trim();
-          }
-        }
-      }
-    }
-
-    // urlキーが存在する場合、URLを開く
-    final url = data['url'] as String?;
-    if (url != null && url.isNotEmpty) {
-      unawaited(_launchExternalUrl(url, source: '通知'));
-    }
-  } catch (e) {
-    appLogger.d('❌ 通知データの解析エラー: $e');
-  }
-}
-
-void _handleFcmMessageUrl(Map<String, dynamic> data) {
-  final url = data['url'] as String?;
-  if (url != null && url.isNotEmpty) {
-    unawaited(_launchExternalUrl(url, source: 'FCMメッセージ'));
-  }
-}
-
-Future<void> _launchExternalUrl(
-  String url, {
-  required String source,
-}) async {
-  appLogger.d('$sourceからURLを開きます: $url');
-
-  final success = await UrlLauncherUtils.launchURL(
-    url,
-    mode: LaunchMode.externalApplication,
-  );
-  if (!success) {
-    appLogger.d('URLを開けませんでした: $url');
-  }
 }
 
 class VRChatApp extends ConsumerStatefulWidget {

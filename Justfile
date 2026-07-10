@@ -1,8 +1,4 @@
-set shell := ["zsh", "-uc"]
 
-flutter := env_var_or_default("FLUTTER", "/Users/null/.local/share/mise/installs/flutter/latest/bin/flutter")
-dart := env_var_or_default("DART", "/Users/null/.local/share/mise/installs/flutter/latest/bin/dart")
-pod := env_var_or_default("POD", "/Users/null/.gem/bin/pod")
 
 default:
   @just --list
@@ -70,3 +66,9 @@ ios-build-generic:
     CODE_SIGNING_ALLOWED=NO \
     CODE_SIGNING_REQUIRED=NO \
     CODE_SIGN_IDENTITY=
+
+splash:
+  dart run flutter_native_splash:create
+
+icon:
+  dart run flutter_launcher_icons

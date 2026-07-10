@@ -419,7 +419,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                                       headers: headers,
                                       cacheManager: JsonCacheManager(),
                                     )
-                                  : AssetImage(Assets.icons.vrcn.path)
+                                  : AssetImage(Assets.icons.icon.path)
                                         as ImageProvider,
                               child: user.currentAvatarThumbnailImageUrl.isEmpty
                                   ? const Icon(
@@ -451,7 +451,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                                     headers: headers,
                                     cacheManager: JsonCacheManager(),
                                   )
-                                : AssetImage(Assets.icons.vrcn.path)
+                                : AssetImage(Assets.icons.icon.path)
                                       as ImageProvider,
                             child: user.currentAvatarThumbnailImageUrl.isEmpty
                                 ? const Icon(

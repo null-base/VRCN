@@ -297,46 +297,31 @@ class FriendLocationGroup extends ConsumerWidget {
 
                       const SizedBox(height: 4),
 
-                      // 人数情報を横並びに表示
-                      Row(
+                      // 人数情報。長いインスタンス名では折り返して overflow を避ける。
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 6,
                         children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                // ワールドにいるフレンド数/総人数バッジ
-                                if (occupantCount != null &&
-                                    !isPrivate &&
-                                    !isOffline)
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: _buildFriendsAndOccupantsBadge(
-                                      '$occupantCount/$capacityCount (${friends.length})',
-                                      dominantColor,
-                                      isDarkMode,
-                                      Icons.group,
-                                    ),
-                                  ),
-                                // インスタンス名
-                                if (instanceName != null)
-                                  Container(
-                                    child: _buildFriendsAndOccupantsBadge(
-                                      '$instanceName ${InstanceHelper.getInstanceTypeText(instanceType)} ${InstanceHelper.regionEmoji(instanceRegion ?? '')}',
-                                      dominantColor,
-                                      isDarkMode,
-                                      Icons.tag_sharp,
-                                    ),
-                                  ),
-                                if (occupantCount == null ||
-                                    isPrivate ||
-                                    isOffline)
-                                  _buildStatusBadge(
-                                    statusText,
-                                    dominantColor,
-                                    isDarkMode,
-                                  ),
-                              ],
+                          if (occupantCount != null && !isPrivate && !isOffline)
+                            _buildFriendsAndOccupantsBadge(
+                              '$occupantCount/$capacityCount (${friends.length})',
+                              dominantColor,
+                              isDarkMode,
+                              Icons.group,
                             ),
-                          ),
+                          if (instanceName != null)
+                            _buildFriendsAndOccupantsBadge(
+                              '$instanceName ${InstanceHelper.getInstanceTypeText(instanceType)} ${InstanceHelper.regionEmoji(instanceRegion ?? '')}',
+                              dominantColor,
+                              isDarkMode,
+                              Icons.tag_sharp,
+                            ),
+                          if (occupantCount == null || isPrivate || isOffline)
+                            _buildStatusBadge(
+                              statusText,
+                              dominantColor,
+                              isDarkMode,
+                            ),
                         ],
                       ),
                     ],
@@ -543,18 +528,20 @@ class FriendLocationGroup extends ConsumerWidget {
             ).withLightness(isDarkMode ? 0.75 : 0.35).toColor(),
           ),
           const SizedBox(width: 4),
-          Text(
-            message,
-            style: GoogleFonts.notoSans(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: HSLColor.fromColor(
-                accentColor,
-              ).withLightness(isDarkMode ? 0.75 : 0.35).toColor(),
-              letterSpacing: 0.1,
+          Flexible(
+            child: Text(
+              message,
+              style: GoogleFonts.notoSans(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: HSLColor.fromColor(
+                  accentColor,
+                ).withLightness(isDarkMode ? 0.75 : 0.35).toColor(),
+                letterSpacing: 0.1,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
           ),
         ],
       ),

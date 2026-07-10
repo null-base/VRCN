@@ -74,7 +74,7 @@ class CreditsPage extends StatelessWidget {
                     CreditItem(
                       name: 'null_base',
                       role: 'じゃあね黙って',
-                      icon: Assets.icons.vrcn.image(),
+                      icon: Assets.icons.icon.image(),
                       onTap: () {
                         context.push(
                           '/user/usr_1d67de93-8afb-48dc-af7d-da7a33834f52',

@@ -1314,7 +1314,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                     ref: ref,
                     iconType: AppIconType.nullbase,
                     label: t.settings.appIconDefault,
-                    assetPath: Assets.icons.vrcn.path,
+                    assetPath: Assets.icons.icon.path,
                     isSelected: settings.appIcon == AppIconType.nullbase,
                     isDarkMode: isDarkMode,
                     textColor: textColor,
@@ -1805,7 +1805,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
       applicationVersion: version,
       applicationIcon: Padding(
         padding: const EdgeInsets.all(8),
-        child: Image.asset(Assets.icons.vrcn.path, width: 64, height: 64),
+        child: Image.asset(Assets.icons.icon.path, width: 64, height: 64),
       ),
       applicationLegalese: '© 2025 null_base',
     );

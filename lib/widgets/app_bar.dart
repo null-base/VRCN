@@ -63,7 +63,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     ),
                   )
                 : CircleAvatar(
-                    backgroundImage: AssetImage(Assets.icons.vrcn.path),
+                    backgroundImage: AssetImage(Assets.icons.icon.path),
                     backgroundColor: theme.colorScheme.surface,
                   )),
       iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
@@ -88,7 +88,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                             headers: headers,
                             cacheManager: JsonCacheManager(),
                           )
-                        : AssetImage(Assets.icons.vrcn.path),
+                        : AssetImage(Assets.icons.icon.path),
                   ),
                 ),
                 loading: () => GestureDetector(
@@ -114,7 +114,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 error: (_, _) => GestureDetector(
                   onTap: onAvatarPressed ?? openDrawer,
                   child: _HeaderAvatar(
-                    imageProvider: AssetImage(Assets.icons.vrcn.path),
+                    imageProvider: AssetImage(Assets.icons.icon.path),
                   ),
                 ),
               ),

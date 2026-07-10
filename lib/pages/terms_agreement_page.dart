@@ -111,7 +111,7 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(20),
                                       child: Image.asset(
-                                        Assets.icons.vrcn.path,
+                                        Assets.icons.icon.path,
                                         fit: BoxFit.cover,
                                         errorBuilder:
                                             (

@@ -32,6 +32,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/hare.png
   AssetGenImage get hare => const AssetGenImage('assets/icons/hare.png');
 
+  /// File path: assets/icons/icon.png
+  AssetGenImage get icon => const AssetGenImage('assets/icons/icon.png');
+
   /// File path: assets/icons/kabi_lun.png
   AssetGenImage get kabiLun => const AssetGenImage('assets/icons/kabi_lun.png');
 
@@ -95,6 +98,7 @@ class $AssetsIconsGen {
     enadori,
     etoeto,
     hare,
+    icon,
     kabiLun,
     kazkiller,
     le0yuki,
@@ -135,9 +139,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
 
-  /// File path: assets/images/splash.png
-  AssetGenImage get splash => const AssetGenImage('assets/images/splash.png');
-
   /// File path: assets/images/standing.png
   AssetGenImage get standing =>
       const AssetGenImage('assets/images/standing.png');
@@ -149,7 +150,6 @@ class $AssetsImagesGen {
     anomeaWalk2,
     icon,
     logo,
-    splash,
     standing,
   ];
 }

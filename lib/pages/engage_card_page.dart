@@ -287,7 +287,7 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage> {
                                   headers: headers,
                                   cacheManager: JsonCacheManager(),
                                 )
-                              : AssetImage(Assets.icons.vrcn.path)
+                              : AssetImage(Assets.icons.icon.path)
                                     as ImageProvider,
                           backgroundColor: Colors.white24,
                         ),

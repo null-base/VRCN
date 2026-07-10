@@ -1,18 +1,23 @@
 flutter_native_splash:
-  color: "#262626"
-  image: assets/images/splash.png
+  android: true
+  ios: true
+  web: false
 
-  branding: "assets/launcher_icon/branding.png"
-  branding_mode: bottom
-  branding_bottom_padding: 46
+  color: "#f2f2f2"
+  color_dark: "#262626"
+
+  image: assets/splash/splash_anomea_minimal.png
+  image_android: assets/splash/splash_anomea_minimal.png
+
+  branding: "assets/splash/branding.png"
   fullscreen: false
 
   android_12:
-    image: assets/images/splash.png
-    color: "#262626"
-    icon_background_color: "#262626"
-    branding: "assets/launcher_icon/branding.png"
-    fullscreen: false
+    color: "#f2f2f2"
+    color_dark: "#262626"
 
-  android: true
-  ios: true
+    image: assets/splash/splash_anomea_minimal.png
+
+    branding: "assets/splash/branding.png"
+
+    fullscreen: false

@@ -429,7 +429,7 @@ class AppDrawer extends ConsumerWidget {
                               headers: headers,
                               cacheManager: JsonCacheManager(),
                             )
-                          : AssetImage(Assets.icons.vrcn.path) as ImageProvider,
+                          : AssetImage(Assets.icons.icon.path) as ImageProvider,
                       child:
                           user.currentAvatarThumbnailImageUrl.isEmpty &&
                               user.userIcon.isEmpty
