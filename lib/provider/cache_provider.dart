@@ -7,7 +7,7 @@ final cacheServiceProvider = Provider<CacheService>((ref) {
 });
 
 // キャッシュサイズのプロバイダー
-final cacheSizeProvider = FutureProvider<String>((ref)  {
+final cacheSizeProvider = FutureProvider<String>((ref) {
   final cacheService = ref.watch(cacheServiceProvider);
   return cacheService.getCacheSize();
 });

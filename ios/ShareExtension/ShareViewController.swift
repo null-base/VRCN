@@ -1,8 +1,13 @@
 import UIKit
 import UniformTypeIdentifiers
 import Social
+import os
 
 class ShareViewController: UIViewController {
+    private let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "VRCN.ShareExtension",
+        category: "ShareExtension"
+    )
 
     // キャンセル時のエラー定義
     enum ShareError: Error {
@@ -45,7 +50,7 @@ class ShareViewController: UIViewController {
     @MainActor
     private func processSharedContent() async {
         do {
-            let success = try await extractAndHandleURL()
+            _ = try await extractAndHandleURL()
 
             // 処理完了を短い遅延の後に通知
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -53,7 +58,7 @@ class ShareViewController: UIViewController {
             }
 
         } catch {
-            print("共有処理エラー: \(error)")
+            logger.error("共有処理エラー: \(String(describing: error), privacy: .public)")
 
             // エラー時も拡張を終了
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -66,13 +71,13 @@ class ShareViewController: UIViewController {
         // 1. 共有されたアイテムの取得
         guard let item = extensionContext?.inputItems.first as? NSExtensionItem,
               let itemProvider = item.attachments?.first else {
-            print("共有アイテムが見つかりませんでした")
+            logger.error("共有アイテムが見つかりませんでした")
             throw ShareError.urlProcessingFailed
         }
 
         // 2. 共有アイテムがURLタイプかチェック
         guard itemProvider.hasItemConformingToTypeIdentifier(UTType.url.identifier) else {
-            print("URLタイプではありません")
+            logger.error("URLタイプではありません")
             throw ShareError.urlProcessingFailed
         }
 
@@ -81,11 +86,11 @@ class ShareViewController: UIViewController {
 
         // 4. URLの処理
         guard let url = data as? URL else {
-            print("URL変換に失敗しました")
+            logger.error("URL変換に失敗しました")
             throw ShareError.urlProcessingFailed
         }
 
-        print("共有されたURL: \(url.absoluteString)")
+        logger.info("共有されたURL: \(url.absoluteString, privacy: .public)")
 
         // 5. カスタムURLスキームでメインアプリに渡す
         return try await openMainApp(with: url)
@@ -95,15 +100,15 @@ class ShareViewController: UIViewController {
         // URLをエンコード（特殊文字を安全に扱えるように）
         guard let encodedUrl = url.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let openAppUrl = URL(string: "vrcn://share?url=\(encodedUrl)") else {
-            print("URL処理に失敗しました")
+            logger.error("URL処理に失敗しました")
             throw ShareError.urlProcessingFailed
         }
 
-        print("アプリを開きます: \(openAppUrl)")
+        logger.info("アプリを開きます: \(openAppUrl.absoluteString, privacy: .public)")
 
         return await withCheckedContinuation { continuation in
             self.extensionContext?.open(openAppUrl, completionHandler: { success in
-                print("アプリオープン結果: \(success)")
+                self.logger.info("アプリオープン結果: \(success, privacy: .public)")
                 continuation.resume(returning: success)
             })
         }

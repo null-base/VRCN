@@ -43,7 +43,6 @@
     "avatar": "虛擬化身",
     "group": "群組",
     "inventory": "物品欄",
-    "vrcnsync": "VRCNSync (β)",
     "review": "評價",
     "feedback": "意見回饋",
     "settings": "設定",
@@ -265,8 +264,21 @@
     "loadingError": "載入錯誤"
   },
   "notifications": {
+    "title": "通知",
     "emptyTitle": "沒有通知",
     "emptyDescription": "好友請求、邀請等\n新通知將會顯示在此處",
+    "all": "全部",
+    "unread": "未讀 (${count})",
+    "read": "已讀",
+    "activity": "好友紀錄",
+    "onlineAlerts": "上線提醒",
+    "markAllRead": "全部標為已讀",
+    "markAllReadDone": "所有通知已標為已讀",
+    "deleteConfirmTitle": "刪除通知？",
+    "emptyUnread": "沒有未讀通知",
+    "emptyRead": "沒有已讀通知",
+    "friendOnlineAlerts": "好友上線提醒",
+    "selectedCount": "已選擇 ${count} 人",
     "friendRequest": "您收到了來自 ${userName} 的好友請求",
     "invite": "您收到了 ${userName} 邀請您前往 ${worldName} 的邀請",
     "friendOnline": "${userName} 已上線",
@@ -301,6 +313,7 @@
     "reminderSet": "設定提醒",
     "reminderSetDone": "已設定提醒",
     "reminderDeleted": "已刪除提醒",
+    "eventName": "活動名稱",
     "organizer": "主辦方",
     "description": "說明",
     "genre": "類型",
@@ -419,6 +432,7 @@
     "emoji": "表情符號",
     "sticker": "貼圖",
     "print": "列印圖",
+    "item": "物品",
     "upload": "上傳檔案",
     "uploadGallery": "正在上傳圖片庫圖片...",
     "uploadIcon": "正在上傳圖示...",
@@ -470,58 +484,17 @@
         "emptyTitle": "沒有貼圖",
         "emptyDescription": "在 VRChat 上傳的貼圖會顯示在這裡",
         "zoomHint": "雙擊放大"
+      },
+      "inventoryItem": {
+        "loading": "正在載入物品欄...",
+        "error": "獲取物品欄失敗：${error}",
+        "emptyTitle": "沒有物品",
+        "spawn": "生成",
+        "unequip": "卸下",
+        "equipped": "已裝備：${slot}",
+        "spawned": "已生成 ${name}"
       }
     }
-  },
-  "vrcnsync": {
-    "title": "VRCNSync (β)",
-    "betaTitle": "Beta 版功能",
-    "betaDescription": "此功能為開發中的 Beta 版，可能會發生非預期的問題。\n目前僅實作本機版本，若有雲端版需求將會實作。",
-    "githubLink": "VRCNSync 的 GitHub 頁面",
-    "openGithub": "開啟 GitHub 頁面",
-    "serverRunning": "伺服器執行中",
-    "serverStopped": "伺服器已停止",
-    "serverRunningDesc": "將來自 PC 的照片儲存到 VRCN 相簿",
-    "serverStoppedDesc": "伺服器已停止",
-    "photoSaved": "照片已儲存至 VRCN 相簿",
-    "photoReceived": "已接收照片（儲存至相簿失敗）",
-    "openAlbum": "開啟相簿",
-    "permissionErrorIos": "需要存取照片圖庫的權限",
-    "permissionErrorAndroid": "需要存取儲存空間的權限",
-    "openSettings": "開啟設定",
-    "initError": "初始化失敗：${error}",
-    "openPhotoAppError": "無法開啟相簿應用程式",
-    "serverInfo": "伺服器資訊",
-    "ip": "IP: ${ip}",
-    "port": "連接埠: ${port}",
-    "address": "${ip}:${port}",
-    "autoSave": "接收到的照片將自動儲存到「VRCN」相簿",
-    "usage": "使用方法",
-    "usageSteps": [
-      {
-        "title": "在 PC 上啟動 VRCNSync 應用程式",
-        "desc": "請在您的 PC 上啟動 VRCNSync 應用程式"
-      },
-      {
-        "title": "連接到相同的 WiFi 網路",
-        "desc": "請將您的 PC 和行動裝置連接到相同的 WiFi 網路"
-      },
-      {
-        "title": "指定行動裝置為連線目標",
-        "desc": "請在 PC 應用程式中指定上述的 IP 位址和連接埠"
-      },
-      {
-        "title": "傳送照片",
-        "desc": "從 PC 傳送照片後，將自動儲存到 VRCN 相簿"
-      }
-    ],
-    "stats": "連線狀態",
-    "statServer": "伺服器狀態",
-    "statServerRunning": "執行中",
-    "statServerStopped": "已停止",
-    "statNetwork": "網路",
-    "statNetworkConnected": "已連線",
-    "statNetworkDisconnected": "未連線"
   },
   "feedback": {
     "title": "意見回饋",
@@ -610,21 +583,7 @@
     }
   },
   "download": {
-    "success": "下載完成",
-    "failure": "下載失敗：${error}",
     "shareFailure": "分享失敗：${error}",
-    "permissionTitle": "需要權限",
-    "permissionDenied": "已拒絕存取 ${permissionType} 的權限。\n請從設定應用程式中啟用權限。",
-    "permissionCancel": "取消",
-    "permissionOpenSettings": "開啟設定",
-    "permissionPhoto": "照片",
-    "permissionPhotoLibrary": "照片圖庫",
-    "permissionStorage": "儲存空間",
-    "permissionPhotoRequired": "需要存取照片的權限",
-    "permissionPhotoLibraryRequired": "需要存取照片圖庫的權限",
-    "permissionStorageRequired": "需要存取儲存空間的權限",
-    "permissionError": "檢查權限時發生錯誤：${error}",
-    "downloading": "正在下載 ${fileName}...",
     "sharing": "正在準備分享 ${fileName}..."
   },
   "instance": {

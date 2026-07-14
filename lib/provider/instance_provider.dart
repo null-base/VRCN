@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
-final vrchatInstanceProvider = FutureProvider((ref) async {
+final FutureProvider<InstancesApi> vrchatInstanceProvider = FutureProvider((
+  ref,
+) async {
   try {
     final rawApi = await ref.watch(vrchatRawApiProvider);
     return rawApi.getInstancesApi();
@@ -15,9 +19,6 @@ final vrchatInstanceProvider = FutureProvider((ref) async {
 // インスタンスのパラメータを格納するクラス
 @immutable
 class InstanceParams {
-  final String worldId;
-  final String instanceId;
-
   const InstanceParams({required this.worldId, required this.instanceId});
 
   // インスタンス文字列（location）をパースするファクトリメソッド
@@ -53,6 +54,8 @@ class InstanceParams {
 
     return InstanceParams(worldId: worldId, instanceId: instanceId);
   }
+  final String worldId;
+  final String instanceId;
 
   @override
   String toString() {
@@ -72,58 +75,60 @@ class InstanceParams {
 }
 
 // インスタンス情報 - 文字列から直接パース
-final instanceDetailProvider = FutureProvider.family<Instance, String>((
-  ref,
-  location,
-) async {
-  try {
-    // 入力値の検証
-    if (location.isEmpty) {
-      throw Exception('インスタンス文字列が空です');
-    }
+final FutureProviderFamily<Instance, String> instanceDetailProvider =
+    FutureProvider.family<Instance, String>((
+      ref,
+      location,
+    ) async {
+      try {
+        // 入力値の検証
+        if (location.isEmpty) {
+          throw Exception('インスタンス文字列が空です');
+        }
 
-    // 特殊なケースのハンドリング
-    if (location == 'private' || location == 'offline') {
-      throw Exception('プライベートまたはオフラインのインスタンスは取得できません');
-    }
+        // 特殊なケースのハンドリング
+        if (location == 'private' || location == 'offline') {
+          throw Exception('プライベートまたはオフラインのインスタンスは取得できません');
+        }
 
-    // インスタンス文字列をパース
-    final params = InstanceParams.fromLocation(location);
+        // インスタンス文字列をパース
+        final params = InstanceParams.fromLocation(location);
 
-    // APIを取得（.valueではなく.futureを使用）
-    final instanceApi = await ref.watch(vrchatInstanceProvider.future);
+        // APIを取得（.valueではなく.futureを使用）
+        final instanceApi = await ref.watch(vrchatInstanceProvider.future);
 
-    debugPrint('インスタンス情報を取得中: ${params.worldId}:${params.instanceId}');
+        appLogger.d('インスタンス情報を取得中: ${params.worldId}:${params.instanceId}');
 
-    // APIを使用してインスタンス情報を取得
-    final response = await instanceApi.getInstance(
-      worldId: params.worldId,
-      instanceId: params.instanceId,
-    );
+        // APIを使用してインスタンス情報を取得
+        final response = await instanceApi.getInstance(
+          worldId: params.worldId,
+          instanceId: params.instanceId,
+        );
 
-    if (response.data == null) {
-      throw Exception('インスタンスデータが見つかりません: $location');
-    }
+        if (response.data == null) {
+          throw Exception('インスタンスデータが見つかりません: $location');
+        }
 
-    debugPrint('インスタンス情報取得成功: ${response.data!.name}');
-    return response.data!;
-  } catch (e) {
-    debugPrint('インスタンス情報取得エラー: $e');
-    if (e is Exception) {
-      rethrow;
-    }
-    throw Exception('インスタンス情報の取得中にエラーが発生しました: $e');
-  }
-});
+        appLogger.d('インスタンス情報取得成功: ${response.data!.name}');
+        return response.data!;
+      } catch (e) {
+        appLogger.d('インスタンス情報取得エラー: $e');
+        if (e is Exception) {
+          rethrow;
+        }
+        throw Exception('インスタンス情報の取得中にエラーが発生しました: $e');
+      }
+    });
 
 // パラメータクラスを直接使用するバージョン
-final instanceDetailWithParamsProvider =
+final FutureProviderFamily<Instance, InstanceParams>
+instanceDetailWithParamsProvider =
     FutureProvider.family<Instance, InstanceParams>((ref, params) async {
       try {
         // APIを取得（.valueではなく.futureを使用）
         final instanceApi = await ref.watch(vrchatInstanceProvider.future);
 
-        debugPrint('インスタンス情報を取得中: ${params.worldId}:${params.instanceId}');
+        appLogger.d('インスタンス情報を取得中: ${params.worldId}:${params.instanceId}');
 
         final response = await instanceApi.getInstance(
           worldId: params.worldId,
@@ -131,13 +136,13 @@ final instanceDetailWithParamsProvider =
         );
 
         if (response.data == null) {
-          throw Exception('インスタンスデータが見つかりません: ${params.toString()}');
+          throw Exception('インスタンスデータが見つかりません: ${params}');
         }
 
-        debugPrint('インスタンス情報取得成功: ${response.data!.name}');
+        appLogger.d('インスタンス情報取得成功: ${response.data!.name}');
         return response.data!;
       } catch (e) {
-        debugPrint('インスタンス情報取得エラー: $e');
+        appLogger.d('インスタンス情報取得エラー: $e');
         if (e is Exception) {
           rethrow;
         }
@@ -146,7 +151,8 @@ final instanceDetailWithParamsProvider =
     });
 
 // インスタンスの基本情報のみを取得するプロバイダー（軽量版）
-final instanceBasicInfoProvider = FutureProvider.family<String?, String>((
+final FutureProviderFamily<String?, String>
+instanceBasicInfoProvider = FutureProvider.family<String?, String>((
   ref,
   location,
 ) async {
@@ -160,25 +166,28 @@ final instanceBasicInfoProvider = FutureProvider.family<String?, String>((
     return instance.name;
   } catch (e) {
     // エラーの場合はnullを返す（UI側でハンドリング）
-    debugPrint('インスタンス基本情報取得失敗: $e');
+    appLogger.d('インスタンス基本情報取得失敗: $e');
     return null;
   }
 });
 
 // インスタンスが存在するかどうかをチェックするプロバイダー
-final instanceExistsProvider = FutureProvider.family<bool, String>((
-  ref,
-  location,
-) async {
-  try {
-    if (location.isEmpty || location == 'private' || location == 'offline') {
-      return false;
-    }
+final FutureProviderFamily<bool, String> instanceExistsProvider =
+    FutureProvider.family<bool, String>((
+      ref,
+      location,
+    ) async {
+      try {
+        if (location.isEmpty ||
+            location == 'private' ||
+            location == 'offline') {
+          return false;
+        }
 
-    await ref.watch(instanceDetailProvider(location).future);
-    return true;
-  } catch (e) {
-    debugPrint('インスタンス存在確認失敗: $e');
-    return false;
-  }
-});
+        await ref.watch(instanceDetailProvider(location).future);
+        return true;
+      } catch (e) {
+        appLogger.d('インスタンス存在確認失敗: $e');
+        return false;
+      }
+    });

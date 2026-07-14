@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/friend_sort_provider.dart';
 import 'package:vrchat/provider/friends_provider.dart';
-import 'package:vrchat/provider/instance_provider.dart';
 import 'package:vrchat/widgets/app_drawer.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/friend_location_group.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class FriendsPage extends ConsumerWidget {
@@ -17,16 +16,12 @@ class FriendsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final friendsAsync = ref.watch(friendsProvider);
-    ref.watch(friendFilterProvider);
-    final sortedFriends = ref.watch(sortedFriendsProvider);
+    final friendsAsync = ref.watch(sortedFriendsProvider);
 
     return Scaffold(
       drawer: const AppDrawer(),
       body: friendsAsync.when(
-        data: (friends) {
-          return _buildFriendsList(context, sortedFriends, ref);
-        },
+        data: (friends) => _buildFriendsList(context, friends, ref),
         loading: () => LoadingIndicator(message: t.friends.loading),
         error: (error, stackTrace) => ErrorContainer(
           message: t.friends.error(error: error.toString()),
@@ -51,14 +46,10 @@ class FriendsPage extends ConsumerWidget {
     }
 
     return RefreshIndicator(
-      onRefresh: () async {
-        await Future.delayed(const Duration(milliseconds: 300));
-        return await ref.refresh(friendsProvider.future);
-      },
+      onRefresh: () => ref.refresh(friendsProvider.future).then((_) {}),
       color: Theme.of(context).colorScheme.primary,
       backgroundColor: Theme.of(context).colorScheme.surface,
-      strokeWidth: 2.5,
-      child: _buildGroupedFriendsList(context, friends, ref),
+      child: _buildGroupedFriendsList(context, friends),
     );
   }
 
@@ -66,7 +57,6 @@ class FriendsPage extends ConsumerWidget {
   Widget _buildGroupedFriendsList(
     BuildContext context,
     List<LimitedUser> friends,
-    WidgetRef ref,
   ) {
     final friendGroups = <String, List<LimitedUser>>{};
     final offlineFriends = <LimitedUser>[];
@@ -96,14 +86,10 @@ class FriendsPage extends ConsumerWidget {
       friendGroups[location]!.add(friend);
     }
 
-    for (final location in friendGroups.keys) {
-      ref.read(instanceDetailProvider(location));
-    }
-
-    final sortedLocations =
-        friendGroups.keys.toList()..sort(
-          (a, b) => friendGroups[b]!.length.compareTo(friendGroups[a]!.length),
-        );
+    final sortedLocations = friendGroups.keys.toList()
+      ..sort(
+        (a, b) => friendGroups[b]!.length.compareTo(friendGroups[a]!.length),
+      );
 
     final groupWidgets = <Widget>[];
 
@@ -118,8 +104,6 @@ class FriendsPage extends ConsumerWidget {
           onTapFriend: (friend) => context.push('/user/${friend.id}'),
           iconColor: Colors.green,
           location: location,
-          isOffline: false,
-          compact: false,
         ),
       );
     }
@@ -134,7 +118,6 @@ class FriendsPage extends ConsumerWidget {
           onTapFriend: (friend) => context.push('/user/${friend.id}'),
           iconColor: Colors.redAccent,
           isPrivate: true,
-          compact: false,
         ),
       );
     }
@@ -150,7 +133,6 @@ class FriendsPage extends ConsumerWidget {
           iconColor: Colors.green,
           isOffline: true,
           isActive: true,
-          compact: false,
         ),
       );
     }
@@ -165,7 +147,6 @@ class FriendsPage extends ConsumerWidget {
           onTapFriend: (friend) => context.push('/user/${friend.id}'),
           iconColor: Colors.grey,
           isOffline: true,
-          compact: false,
         ),
       );
     }

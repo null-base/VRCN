@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 // イベントフィルターの状態を管理するクラス
 @immutable
 class EventFilter {
-  final DateTime? startDate;
-  final DateTime? endDate;
-  final TimeOfDay? startTime;
-  final TimeOfDay? endTime;
-  final String searchQuery;
-  final List<String> selectedGenres;
-
   const EventFilter({
     this.startDate,
     this.endDate,
@@ -19,6 +12,12 @@ class EventFilter {
     this.searchQuery = '',
     this.selectedGenres = const [],
   });
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final TimeOfDay? startTime;
+  final TimeOfDay? endTime;
+  final String searchQuery;
+  final List<String> selectedGenres;
 
   EventFilter copyWith({
     DateTime? startDate,

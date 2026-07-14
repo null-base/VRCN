@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
-import 'package:vrchat/provider/Instance_provider.dart';
+import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/provider/instance_provider.dart';
 import 'package:vrchat/provider/invite_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/provider/world_provider.dart';
@@ -10,14 +10,13 @@ import 'package:vrchat/widgets/world_instance_view.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class LocationInfoCard extends ConsumerWidget {
-  final User user;
-  final bool isDarkMode;
-
   const LocationInfoCard({
     super.key,
     required this.user,
     required this.isDarkMode,
   });
+  final User user;
+  final bool isDarkMode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,10 +25,9 @@ class LocationInfoCard extends ConsumerWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color:
-              isDarkMode
-                  ? Colors.red.shade900.withValues(alpha: 0.2)
-                  : Colors.red.shade50,
+          color: isDarkMode
+              ? Colors.red.shade900.withValues(alpha: 0.2)
+              : Colors.red.shade50,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
         ),
@@ -53,15 +51,14 @@ class LocationInfoCard extends ConsumerWidget {
     }
 
     // 必要なデータソースの取得
-    final worldDetailAsync =
-        user.worldId != null
-            ? ref.watch(worldDetailProvider(user.worldId!))
-            : null;
+    final worldDetailAsync = user.worldId != null
+        ? ref.watch(worldDetailProvider(user.worldId!))
+        : null;
 
     final instanceDetailAsync =
         (user.worldId != null && user.instanceId != null)
-            ? ref.watch(instanceDetailProvider(user.location.toString()))
-            : null;
+        ? ref.watch(instanceDetailProvider(user.location.toString()))
+        : null;
 
     final vrchatApi = ref.watch(vrchatProvider).value;
     final headers = {'User-Agent': vrchatApi?.userAgent.toString() ?? 'VRCN'};

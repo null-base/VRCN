@@ -1,16 +1,14 @@
-// ignore_for_file: document_ignores
-
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vrchat/pages/notifications_page.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:vrchat/provider/friends_provider.dart';
 import 'package:vrchat/provider/instance_provider.dart';
 import 'package:vrchat/provider/notification_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart' as vrc;
+import 'package:vrchat/utils/app_logger.dart';
 
 // ストリーミング接続の状態を管理するプロバイダー
 final streamingStateProvider = StateProvider<bool>((ref) => false);
@@ -22,10 +20,9 @@ final streamingControllerProvider = Provider<StreamingController>((ref) {
 
 // ストリーミング接続を制御するクラス
 class StreamingController {
+  StreamingController(this.ref);
   final Ref ref;
   var _isInitialized = false;
-
-  StreamingController(this.ref);
 
   // ストリーミング接続を開始するメソッド
   Future<void> startConnection() async {
@@ -34,9 +31,9 @@ class StreamingController {
     final vrchatAsync = ref.read(vrchatProvider);
 
     // AsyncValueから安全に値を取得
-    final api = vrchatAsync.valueOrNull;
+    final api = vrchatAsync.value;
     if (api == null) {
-      debugPrint('API接続が初期化されていないため、ストリーミングを開始できません');
+      appLogger.d('API接続が初期化されていないため、ストリーミングを開始できません');
       return;
     }
 
@@ -56,37 +53,37 @@ class StreamingController {
       ref.read(streamingStateProvider.notifier).state = true;
       _isInitialized = true;
 
-      debugPrint('VRChatストリーミング接続を開始しました');
+      appLogger.d('VRChatストリーミング接続を開始しました');
     } catch (e) {
-      debugPrint('ストリーミング接続の開始に失敗しました: $e');
+      appLogger.d('ストリーミング接続の開始に失敗しました: $e');
     }
   }
 
   // 接続を停止するメソッド
   void stopConnection() {
     final vrchatAsync = ref.read(vrchatProvider);
-    final api = vrchatAsync.valueOrNull;
+    final api = vrchatAsync.value;
     if (api != null) {
       try {
         api.streaming.stop();
         ref.read(streamingStateProvider.notifier).state = false;
-        debugPrint('VRChatストリーミング接続を停止しました');
+        appLogger.d('VRChatストリーミング接続を停止しました');
       } catch (e) {
-        debugPrint('ストリーミング接続の停止に失敗しました: $e');
+        appLogger.d('ストリーミング接続の停止に失敗しました: $e');
       }
     }
   }
 }
 
 // ストリーミングイベントハンドラー
-void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
+Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
   // イベント受信のログ
-  debugPrint('======= VRC EVENT RECEIVED: ${event.type} =======');
+  appLogger.d('======= VRC EVENT RECEIVED: ${event.type} =======');
 
   switch (event.type) {
     case vrc.VrcStreamingEventType.friendOnline:
       final friendOnlineEvent = event as vrc.FriendOnlineEvent;
-      debugPrint('フレンドオンライン: ${friendOnlineEvent.user.displayName}');
+      appLogger.d('フレンドオンライン: ${friendOnlineEvent.user.displayName}');
 
       ref.read(friendStateUpdaterProvider)(
         friendOnlineEvent.userId,
@@ -107,7 +104,7 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
 
     case vrc.VrcStreamingEventType.friendOffline:
       final friendOfflineEvent = event as vrc.FriendOfflineEvent;
-      debugPrint('フレンドオフライン: ${friendOfflineEvent.userId}');
+      appLogger.d('フレンドオフライン: ${friendOfflineEvent.userId}');
 
       ref.read(friendStateUpdaterProvider)(
         friendOfflineEvent.userId,
@@ -124,7 +121,7 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
           .addNotification(
             NotificationItem(
               type: NotificationType.friendOffline,
-              userName: friend.displayName,
+              userName: friend.displayName.toString(),
               timestamp: DateTime.timestamp(),
               isRead: false,
             ),
@@ -132,7 +129,7 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
 
     case vrc.VrcStreamingEventType.friendActive:
       final friendActiveEvent = event as vrc.FriendActiveEvent;
-      debugPrint('フレンドアクティブ: ${friendActiveEvent.user.displayName}');
+      appLogger.d('フレンドアクティブ: ${friendActiveEvent.user.displayName}');
 
       //通知の追加
       ref
@@ -148,7 +145,7 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
 
     case vrc.VrcStreamingEventType.friendAdd:
       final friendAddEvent = event as vrc.FriendAddEvent;
-      debugPrint('フレンド追加: ${friendAddEvent.user.displayName}');
+      appLogger.d('フレンド追加: ${friendAddEvent.user.displayName}');
 
       ref.read(friendAddHandlerProvider)(friendAddEvent.userId);
 
@@ -166,7 +163,7 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
 
     case vrc.VrcStreamingEventType.friendDelete:
       final friendDeleteEvent = event as vrc.FriendDeleteEvent;
-      debugPrint('フレンド削除: ${friendDeleteEvent.userId}');
+      appLogger.d('フレンド削除: ${friendDeleteEvent.userId}');
 
       ref.read(friendDeleteHandlerProvider)(friendDeleteEvent.userId);
 
@@ -180,7 +177,7 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
           .addNotification(
             NotificationItem(
               type: NotificationType.friendRemove,
-              userName: friend.displayName,
+              userName: friend.displayName.toString(),
               timestamp: DateTime.timestamp(),
               isRead: false,
             ),
@@ -188,7 +185,7 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
 
     case vrc.VrcStreamingEventType.friendUpdate:
       final friendUpdateEvent = event as vrc.FriendUpdateEvent;
-      debugPrint('フレンド情報更新: ${friendUpdateEvent.user.displayName}');
+      appLogger.d('フレンド情報更新: ${friendUpdateEvent.user.displayName}');
 
       ref.read(friendInfoUpdaterProvider)(
         friendUpdateEvent.userId,
@@ -212,8 +209,8 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
 
     case vrc.VrcStreamingEventType.friendLocation:
       final friendLocationEvent = event as vrc.FriendLocationEvent;
-      debugPrint('フレンド位置変更: ${friendLocationEvent.user.displayName}');
-      debugPrint('ロケーション: ${friendLocationEvent.location}');
+      appLogger.d('フレンド位置変更: ${friendLocationEvent.user.displayName}');
+      appLogger.d('ロケーション: ${friendLocationEvent.location}');
 
       ref.read(friendLocationUpdaterProvider)(
         friendLocationEvent.userId,
@@ -221,7 +218,7 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
         null,
       );
 
-      dynamic worldName;
+      String? worldName;
 
       if (friendLocationEvent.location != null &&
           friendLocationEvent.location != 'private' &&
@@ -232,9 +229,9 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
               friendLocationEvent.location.toString(),
             ).future,
           );
-          worldName = location.world.name;
+          worldName = location.world.name.toString();
         } catch (e) {
-          debugPrint('ワールド情報の取得に失敗: $e');
+          appLogger.d('ワールド情報の取得に失敗: $e');
           worldName = 'Unknown World';
         }
       } else {
@@ -255,10 +252,10 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
           );
 
     case vrc.VrcStreamingEventType.userUpdate:
-      debugPrint('詳細: ${jsonEncode(event)}');
+      appLogger.d('詳細: ${jsonEncode(event)}');
       try {
         final userUpdateEvent = event as vrc.UserUpdateEvent;
-        debugPrint('ユーザー更新イベント: ${userUpdateEvent.user.displayName}');
+        appLogger.d('ユーザー更新イベント: ${userUpdateEvent.user.displayName}');
 
         ref.refresh(currentUserProvider);
 
@@ -273,30 +270,30 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
           statusDescription: statusDescription,
         );
       } catch (e) {
-        debugPrint('UserUpdateEventの処理中にエラーが発生: $e');
-        debugPrint(
+        appLogger.d('UserUpdateEventの処理中にエラーが発生: $e');
+        appLogger.d(
           '生データ: ${event is vrc.UnknownEvent ? event.rawString : "不明"}',
         );
       }
 
     case vrc.VrcStreamingEventType.userLocation:
-      debugPrint('詳細: ${jsonEncode(event)}');
+      appLogger.d('詳細: ${jsonEncode(event)}');
       try {
         final userLocationEvent = event as vrc.UserLocationEvent;
 
-        debugPrint('ユーザー位置変更イベント: ${userLocationEvent.userId}');
-        debugPrint('新しい位置: ${userLocationEvent.location}');
+        appLogger.d('ユーザー位置変更イベント: ${userLocationEvent.userId}');
+        appLogger.d('新しい位置: ${userLocationEvent.location}');
       } catch (e) {
-        debugPrint('UserLocationEventの処理中にエラーが発生: $e');
-        debugPrint(
+        appLogger.d('UserLocationEventの処理中にエラーが発生: $e');
+        appLogger.d(
           '生データ: ${event is vrc.UnknownEvent ? event.rawString : "不明"}',
         );
       }
 
     case vrc.VrcStreamingEventType.notificationReceived:
       final notificationEvent = event as vrc.NotificationReceivedEvent;
-      debugPrint('通知受信: タイプ=${notificationEvent.notification.type}');
-      debugPrint('送信者: ${notificationEvent.notification.senderUserId}');
+      appLogger.d('通知受信: タイプ=${notificationEvent.notification.type}');
+      appLogger.d('送信者: ${notificationEvent.notification.senderUserId}');
 
       ref.read(notificationHandlerProvider)(notificationEvent.notification);
 
@@ -327,27 +324,27 @@ void _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
 
     case vrc.VrcStreamingEventType.notificationSeen:
       event as vrc.NotificationSeenEvent;
-      debugPrint('NotificationSeen : ${event.notificationId}');
+      appLogger.d('NotificationSeen : ${event.notificationId}');
 
     case vrc.VrcStreamingEventType.notificationResponse:
-      debugPrint('詳細: ${jsonEncode(event)}');
+      appLogger.d('詳細: ${jsonEncode(event)}');
 
     case vrc.VrcStreamingEventType.notificationHide:
-      debugPrint('${event.type.name} ${jsonEncode(event)}');
+      appLogger.d('${event.type.name} ${jsonEncode(event)}');
 
     case vrc.VrcStreamingEventType.notificationClear:
-      debugPrint('詳細: NotificationClear');
+      appLogger.d('詳細: NotificationClear');
 
     case vrc.VrcStreamingEventType.error:
       final errorEvent = event as vrc.ErrorEvent;
-      debugPrint('エラーイベント: ${errorEvent.message}');
-      debugPrint('詳細: ${jsonEncode(event)}');
+      appLogger.d('エラーイベント: ${errorEvent.message}');
+      appLogger.d('詳細: ${jsonEncode(event)}');
 
     case vrc.VrcStreamingEventType.unknown:
       final unknownEvent = event as vrc.UnknownEvent;
-      debugPrint('不明なイベント');
-      debugPrint('詳細: ${unknownEvent.rawString}');
+      appLogger.d('不明なイベント');
+      appLogger.d('詳細: ${unknownEvent.rawString}');
   }
 
-  debugPrint('=========================================');
+  appLogger.d('=========================================');
 }

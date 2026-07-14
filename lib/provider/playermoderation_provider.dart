@@ -1,14 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
-final vrchatPlayermoderationProvider = FutureProvider((ref) async {
-  final rawApi = await ref.watch(vrchatRawApiProvider);
-  return rawApi.getPlayermoderationApi();
-});
+final FutureProvider<PlayermoderationApi> vrchatPlayermoderationProvider =
+    FutureProvider((ref) async {
+      final rawApi = await ref.watch(vrchatRawApiProvider);
+      return rawApi.getPlayermoderationApi();
+    });
 
 // ユーザーをモデレートするためのプロバイダー
-final moderateUserProvider =
+final FutureProviderFamily<PlayerModeration, ModerateUserRequest>
+moderateUserProvider =
     FutureProvider.family<PlayerModeration, ModerateUserRequest>((
       ref,
       request,
@@ -30,11 +33,17 @@ final moderateUserProvider =
 class PlayerModerationUtil {
   // ユーザーをブロックする
   static ModerateUserRequest blockUser(String userId) {
-    return ModerateUserRequest(moderated: userId, type: PlayerModerationType.block);
+    return ModerateUserRequest(
+      moderated: userId,
+      type: PlayerModerationType.block,
+    );
   }
 
   // ユーザーをミュートする
   static ModerateUserRequest muteUser(String userId) {
-    return ModerateUserRequest(moderated: userId, type: PlayerModerationType.mute);
+    return ModerateUserRequest(
+      moderated: userId,
+      type: PlayerModerationType.mute,
+    );
   }
 }

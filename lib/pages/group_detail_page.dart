@@ -2,20 +2,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/group_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
+import 'package:vrchat/utils/share_utils.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/info_card.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class GroupDetailPage extends ConsumerWidget {
-  final String groupId;
-
   const GroupDetailPage({super.key, required this.groupId});
+  final String groupId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,16 +29,14 @@ class GroupDetailPage extends ConsumerWidget {
       body: groupDetailAsync.when(
         data: (group) => _buildGroupDetail(context, group, ref, isDarkMode),
         loading: () => LoadingIndicator(message: t.groupDetail.loading),
-        error:
-            (error, stackTrace) => ErrorContainer(
-              message: t.groupDetail.error(error: error.toString()),
-              onRetry:
-                  () => ref.refresh(
-                    groupDetailProvider(
-                      GroupDetailParams(groupId: groupId, includeRoles: true),
-                    ),
-                  ),
+        error: (error, stackTrace) => ErrorContainer(
+          message: t.groupDetail.error(error: error.toString()),
+          onRetry: () => ref.refresh(
+            groupDetailProvider(
+              GroupDetailParams(groupId: groupId, includeRoles: true),
             ),
+          ),
+        ),
       ),
     );
   }
@@ -63,8 +60,6 @@ class GroupDetailPage extends ConsumerWidget {
       },
       color: Colors.indigo,
       backgroundColor: isDarkMode ? Colors.grey[850] : Colors.white,
-      strokeWidth: 2.5,
-      displacement: 40,
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
@@ -73,10 +68,9 @@ class GroupDetailPage extends ConsumerWidget {
             expandedHeight: 200,
             pinned: true,
             stretch: true,
-            backgroundColor:
-                isDarkMode
-                    ? Colors.indigo.withValues(alpha: .8)
-                    : Colors.indigo,
+            backgroundColor: isDarkMode
+                ? Colors.indigo.withValues(alpha: .8)
+                : Colors.indigo,
             actions: [
               IconButton(
                 icon: const Icon(Icons.share_outlined, color: Colors.white),
@@ -94,23 +88,21 @@ class GroupDetailPage extends ConsumerWidget {
                       fit: BoxFit.cover,
                       httpHeaders: headers,
                       cacheManager: JsonCacheManager(),
-                      placeholder:
-                          (context, url) => const ColoredBox(
-                            color: Colors.indigo,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
-                            ),
+                      placeholder: (context, url) => const ColoredBox(
+                        color: Colors.indigo,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
                           ),
-                      errorWidget:
-                          (context, url, error) => const ColoredBox(
-                            color: Colors.indigo,
-                            child: Icon(
-                              Icons.image_not_supported,
-                              color: Colors.white,
-                            ),
-                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => const ColoredBox(
+                        color: Colors.indigo,
+                        child: Icon(
+                          Icons.image_not_supported,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   Container(color: Colors.black.withValues(alpha: 0.3)),
                 ],
@@ -121,7 +113,6 @@ class GroupDetailPage extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                   shadows: [
                     const Shadow(
-                      color: Colors.black,
                       offset: Offset(0, 1),
                       blurRadius: 3,
                     ),
@@ -145,56 +136,50 @@ class GroupDetailPage extends ConsumerWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color:
-                            isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
-                        width: 1,
+                        color: isDarkMode
+                            ? Colors.grey[700]!
+                            : Colors.grey[300]!,
                       ),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(14),
-                      child:
-                          group.iconUrl != null
-                              ? CachedNetworkImage(
-                                imageUrl: group.iconUrl!,
-                                fit: BoxFit.cover,
-                                httpHeaders: headers,
-                                cacheManager: JsonCacheManager(),
-                                placeholder:
-                                    (context, url) => Container(
-                                      color:
-                                          isDarkMode
-                                              ? Colors.grey[800]
-                                              : Colors.grey[200],
-                                      child: const Icon(
-                                        Icons.group,
-                                        color: Colors.grey,
-                                        size: 40,
-                                      ),
-                                    ),
-                                errorWidget:
-                                    (context, url, error) => Container(
-                                      color:
-                                          isDarkMode
-                                              ? Colors.grey[800]
-                                              : Colors.grey[200],
-                                      child: const Icon(
-                                        Icons.group,
-                                        color: Colors.grey,
-                                        size: 40,
-                                      ),
-                                    ),
-                              )
-                              : Container(
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[800]
-                                        : Colors.grey[200],
+                      child: group.iconUrl != null
+                          ? CachedNetworkImage(
+                              imageUrl: group.iconUrl!,
+                              fit: BoxFit.cover,
+                              httpHeaders: headers,
+                              cacheManager: JsonCacheManager(),
+                              placeholder: (context, url) => Container(
+                                color: isDarkMode
+                                    ? Colors.grey[800]
+                                    : Colors.grey[200],
                                 child: const Icon(
                                   Icons.group,
                                   color: Colors.grey,
                                   size: 40,
                                 ),
                               ),
+                              errorWidget: (context, url, error) => Container(
+                                color: isDarkMode
+                                    ? Colors.grey[800]
+                                    : Colors.grey[200],
+                                child: const Icon(
+                                  Icons.group,
+                                  color: Colors.grey,
+                                  size: 40,
+                                ),
+                              ),
+                            )
+                          : Container(
+                              color: isDarkMode
+                                  ? Colors.grey[800]
+                                  : Colors.grey[200],
+                              child: const Icon(
+                                Icons.group,
+                                color: Colors.grey,
+                                size: 40,
+                              ),
+                            ),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -218,10 +203,9 @@ class GroupDetailPage extends ConsumerWidget {
                             '@${group.shortCode}',
                             style: GoogleFonts.notoSans(
                               fontSize: 16,
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[400]
-                                      : Colors.grey[600],
+                              color: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                             ),
                           ),
                         ],
@@ -254,10 +238,9 @@ class GroupDetailPage extends ConsumerWidget {
                             Icon(
                               Icons.people,
                               size: 16,
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[400]
-                                      : Colors.grey[600],
+                              color: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                             ),
                             const SizedBox(width: 4),
                             Text(
@@ -266,10 +249,9 @@ class GroupDetailPage extends ConsumerWidget {
                               ),
                               style: GoogleFonts.notoSans(
                                 fontSize: 14,
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[300]
-                                        : Colors.grey[700],
+                                color: isDarkMode
+                                    ? Colors.grey[300]
+                                    : Colors.grey[700],
                               ),
                             ),
                           ],
@@ -299,18 +281,18 @@ class GroupDetailPage extends ConsumerWidget {
                         color: isDarkMode ? Colors.grey[850] : Colors.grey[100],
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color:
-                              isDarkMode
-                                  ? Colors.grey[700]!
-                                  : Colors.grey[300]!,
+                          color: isDarkMode
+                              ? Colors.grey[700]!
+                              : Colors.grey[300]!,
                         ),
                       ),
                       child: Text(
                         group.description!,
                         style: GoogleFonts.notoSans(
                           fontSize: 16,
-                          color:
-                              isDarkMode ? Colors.grey[300] : Colors.grey[800],
+                          color: isDarkMode
+                              ? Colors.grey[300]
+                              : Colors.grey[800],
                         ),
                       ),
                     ),
@@ -469,7 +451,7 @@ class GroupDetailPage extends ConsumerWidget {
     required bool isDarkMode,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -576,13 +558,8 @@ class GroupDetailPage extends ConsumerWidget {
 
 // グループ情報を共有するメソッド
 Future<void> _shareGroup(Group group) async {
-  final url = 'https://vrchat.com/home/group/${group.id}';
-
-  try {
-    await SharePlus.instance.share(
-      ShareParams(uri: Uri.parse(url), subject: group.name),
-    );
-  } catch (e) {
-    debugPrint('共有中にエラーが発生しました: $e');
-  }
+  await ShareUtils.shareUrl(
+    'https://vrchat.com/home/group/${group.id}',
+    subject: group.name,
+  );
 }

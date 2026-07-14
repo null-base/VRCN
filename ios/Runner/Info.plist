@@ -426,9 +426,12 @@
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>vrcn</string>
+					<string>SharingMedia-$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 				</array>
 			</dict>
 		</array>
@@ -440,20 +443,20 @@
 		<false/>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
-		<key>NSBonjourServices</key>
-		<array>
-			<string>_vrcnsync._tcp.</string>
-		</array>
 		<key>NSCameraUsageDescription</key>
 		<string>QRコードをスキャンするためにカメラを使用します</string>
 		<key>NSFaceIDUsageDescription</key>
 		<string>アプリへのアクセスを安全に保つために生体認証を使用します</string>
 		<key>NSLocalNetworkUsageDescription</key>
-		<string>写真を保存するために使用します</string>
+		<string>OSCコントローラーでローカルネットワーク上の機器へ接続するために使用します</string>
 		<key>NSPhotoLibraryAddUsageDescription</key>
 		<string>写真を保存するために使用します</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>画像を選択するために写真ライブラリにアクセスします</string>
+		<key>NSUserActivityTypes</key>
+		<array>
+			<string>INSendMessageIntent</string>
+		</array>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>UIBackgroundModes</key>
@@ -482,5 +485,31 @@
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>com.apple.developer.associated-domains</key>
+		<array>
+			<string>applinks:vrchat.onelink.me</string>
+			<string>applinks:vrcn.onelink.me</string>
+		</array>
+		<key>UIApplicationSceneManifest</key>
+		<dict>
+			<key>UIApplicationSupportsMultipleScenes</key>
+			<false/>
+			<key>UISceneConfigurations</key>
+			<dict>
+				<key>UIWindowSceneSessionRoleApplication</key>
+				<array>
+					<dict>
+						<key>UISceneClassName</key>
+						<string>UIWindowScene</string>
+						<key>UISceneDelegateClassName</key>
+						<string>FlutterSceneDelegate</string>
+						<key>UISceneConfigurationName</key>
+						<string>flutter</string>
+						<key>UISceneStoryboardFile</key>
+						<string>Main</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
 	</dict>
 </plist>

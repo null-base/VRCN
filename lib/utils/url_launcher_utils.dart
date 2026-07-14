@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 class UrlLauncherUtils {
   UrlLauncherUtils._();
@@ -10,17 +10,19 @@ class UrlLauncherUtils {
   }) async {
     try {
       final url = Uri.parse(urlString);
-
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: mode);
-        return true;
-      } else {
-        debugPrint('URLを開けませんでした: $urlString');
-        return false;
+      final launched = await launchUrl(url, mode: mode);
+      if (!launched) {
+        appLogger.d('URLを開けませんでした: $urlString');
       }
+
+      return launched;
     } catch (e) {
-      debugPrint('URL起動エラー: $e');
+      appLogger.d('URL起動エラー: $e');
       return false;
     }
+  }
+
+  static Future<bool> launchExternalURL(String urlString) {
+    return launchURL(urlString, mode: LaunchMode.externalApplication);
   }
 }

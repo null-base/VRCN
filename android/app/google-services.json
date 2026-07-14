@@ -12,7 +12,12 @@
           "package_name": "com.nullbase.vrchat"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "456787667895-nnnq2o54e7v49eqiing7thopdeqova51.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDPXuSa3ftm_5PXuZLhl5BAoMuXPdqfnaw"
@@ -20,7 +25,20 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "456787667895-nnnq2o54e7v49eqiing7thopdeqova51.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "456787667895-4becvo8daeavdo54vjb63sbd59bpqpfs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.null-base.vrchat",
+                "app_store_id": "6745178606"
+              }
+            }
+          ]
         }
       }
     }

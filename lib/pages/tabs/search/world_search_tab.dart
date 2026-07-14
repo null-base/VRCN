@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/search_providers.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/provider/world_provider.dart';
@@ -50,13 +49,7 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
   }
 
   void _loadMoreResults() {
-    if (ref.read(searchingProvider)) return;
-
-    final currentOffset = ref.read(worldSearchOffsetProvider);
-    ref.read(worldSearchOffsetProvider.notifier).state = currentOffset + 60;
-
-    // 検索実行のトリガー
-    setState(() {});
+    advanceSearchOffset(ref, worldSearchOffsetProvider);
   }
 
   void _toggleViewMode() {
@@ -80,55 +73,27 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
     // 累積された結果を取得
     final cachedResults = ref.watch(worldSearchResultsProvider);
 
-    final searchState = ref.watch(
-      worldSearchProvider(
-        WorldSearchParams(search: query, n: 60, offset: offset),
-      ),
+    final searchProvider = worldSearchProvider(
+      WorldSearchParams(search: query, offset: offset),
     );
+    final searchState = ref.watch(searchProvider);
 
-    // クエリが空の場合は、遅延して結果をクリア
     if (query.isEmpty) {
-      if (cachedResults.isNotEmpty) {
-        Future.microtask(() {
-          ref.read(worldSearchResultsProvider.notifier).state = [];
-        });
-      }
       return _buildEmptySearchPrompt(isDarkMode);
     }
 
     // searchStateが変化したときの処理
     ref.listen<AsyncValue<List<LimitedWorld>>>(
-      worldSearchProvider(
-        WorldSearchParams(search: query, n: 60, offset: offset),
-      ),
+      searchProvider,
       (previous, current) {
-        Future.microtask(() {
-          if (current.isLoading) {
-            ref.read(searchingProvider.notifier).state = true;
-          } else if (current.hasValue) {
-            ref.read(searchingProvider.notifier).state = false;
-
-            final newResults = current.value ?? [];
-
-            if (offset == 0) {
-              ref.read(worldSearchResultsProvider.notifier).state = newResults;
-            } else if (newResults.isNotEmpty) {
-              final combinedResults = <LimitedWorld>[...cachedResults];
-
-              final existingIds = cachedResults.map((w) => w.id).toSet();
-              for (final world in newResults) {
-                if (!existingIds.contains(world.id)) {
-                  combinedResults.add(world);
-                }
-              }
-
-              ref.read(worldSearchResultsProvider.notifier).state =
-                  combinedResults;
-            }
-          } else {
-            ref.read(searchingProvider.notifier).state = false;
-          }
-        });
+        handlePagedSearchResults(
+          ref: ref,
+          state: current,
+          offset: offset,
+          cachedResults: cachedResults,
+          resultsProvider: worldSearchResultsProvider,
+          idOf: (world) => world.id,
+        );
       },
     );
 
@@ -152,44 +117,32 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
     }
 
     // ビューモード切替ボタン
-    final viewToggleButton =
-        !isMobileSize
-            ? Positioned(
-              top: 16,
-              right: 16,
-              child: FloatingActionButton.small(
-                onPressed: _toggleViewMode,
-                tooltip:
-                    effectiveIsGridView
-                        ? t.search.tabs.worldSearch.listView
-                        : t.search.tabs.worldSearch.gridView,
-                elevation: 2,
-                backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
-                foregroundColor: isDarkMode ? Colors.white : Colors.grey[800],
-                child: Icon(
-                  effectiveIsGridView ? Icons.view_list : Icons.grid_view,
-                ),
+    final viewToggleButton = !isMobileSize
+        ? Positioned(
+            top: 16,
+            right: 16,
+            child: FloatingActionButton.small(
+              onPressed: _toggleViewMode,
+              tooltip: effectiveIsGridView
+                  ? t.search.tabs.worldSearch.listView
+                  : t.search.tabs.worldSearch.gridView,
+              elevation: 2,
+              backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
+              foregroundColor: isDarkMode ? Colors.white : Colors.grey[800],
+              child: Icon(
+                effectiveIsGridView ? Icons.view_list : Icons.grid_view,
               ),
-            )
-            : const SizedBox.shrink();
+            ),
+          )
+        : const SizedBox.shrink();
 
     // キャッシュされた結果を表示
     return Stack(
       children: [
-        AnimationLimiter(
-          child:
-              effectiveIsGridView
-                  ? _buildWorldGrid(
-                    cachedResults,
-                    searchState.isLoading,
-                    isDarkMode,
-                  )
-                  : _buildWorldList(
-                    cachedResults,
-                    searchState.isLoading,
-                    isDarkMode,
-                  ),
-        ),
+        if (effectiveIsGridView)
+          _buildWorldGrid(cachedResults, searchState.isLoading, isDarkMode)
+        else
+          _buildWorldList(cachedResults, searchState.isLoading, isDarkMode),
         viewToggleButton,
       ],
     );
@@ -272,28 +225,18 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
       itemBuilder: (context, index) {
         if (index == worlds.length) {
           return Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Center(
-              child:
-                  isLoading
-                      ? const CircularProgressIndicator()
-                      : const SizedBox(height: 40),
+              child: isLoading
+                  ? const CircularProgressIndicator()
+                  : const SizedBox(height: 40),
             ),
           );
         }
 
-        return AnimationConfiguration.staggeredList(
-          position: index,
-          duration: const Duration(milliseconds: 375),
-          child: SlideAnimation(
-            verticalOffset: 50.0,
-            child: FadeInAnimation(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: _buildWorldCard(worlds[index], isDarkMode, false),
-              ),
-            ),
-          ),
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: _buildWorldCard(worlds[index], isDarkMode, false),
         );
       },
     );
@@ -317,23 +260,13 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
       itemBuilder: (context, index) {
         if (index == worlds.length) {
           return Center(
-            child:
-                isLoading
-                    ? const CircularProgressIndicator()
-                    : const SizedBox(),
+            child: isLoading
+                ? const CircularProgressIndicator()
+                : const SizedBox(),
           );
         }
 
-        return AnimationConfiguration.staggeredGrid(
-          position: index,
-          duration: const Duration(milliseconds: 375),
-          columnCount: 2,
-          child: ScaleAnimation(
-            child: FadeInAnimation(
-              child: _buildWorldCard(worlds[index], isDarkMode, true),
-            ),
-          ),
-        );
+        return _buildWorldCard(worlds[index], isDarkMode, true);
       },
     );
   }
@@ -358,42 +291,36 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
               children: [
                 AspectRatio(
                   aspectRatio: isGrid ? 16 / 12 : 16 / 9,
-                  child:
-                      world.thumbnailImageUrl.isNotEmpty
-                          ? CachedNetworkImage(
-                            imageUrl: world.thumbnailImageUrl,
-                            fit: BoxFit.cover,
-                            httpHeaders: headers,
-                            placeholder:
-                                (context, url) => Container(
-                                  color:
-                                      isDarkMode
-                                          ? const Color(0xFF262626)
-                                          : Colors.grey[200],
-                                  child: const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                ),
-                            errorWidget:
-                                (context, url, error) => Container(
-                                  color:
-                                      isDarkMode
-                                          ? const Color(0xFF262626)
-                                          : Colors.grey[200],
-                                  child: const Icon(
-                                    Icons.broken_image,
-                                    size: 40,
-                                  ),
-                                ),
-                            cacheManager: JsonCacheManager(),
-                          )
-                          : Container(
-                            color:
-                                isDarkMode
-                                    ? const Color(0xFF262626)
-                                    : Colors.grey[200],
-                            child: const Icon(Icons.image, size: 40),
+                  child: world.thumbnailImageUrl.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: world.thumbnailImageUrl,
+                          fit: BoxFit.cover,
+                          httpHeaders: headers,
+                          placeholder: (context, url) => Container(
+                            color: isDarkMode
+                                ? const Color(0xFF262626)
+                                : Colors.grey[200],
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
+                          errorWidget: (context, url, error) => Container(
+                            color: isDarkMode
+                                ? const Color(0xFF262626)
+                                : Colors.grey[200],
+                            child: const Icon(
+                              Icons.broken_image,
+                              size: 40,
+                            ),
+                          ),
+                          cacheManager: JsonCacheManager(),
+                        )
+                      : Container(
+                          color: isDarkMode
+                              ? const Color(0xFF262626)
+                              : Colors.grey[200],
+                          child: const Icon(Icons.image, size: 40),
+                        ),
                 ),
                 // 人気度バッジ
                 Positioned(
@@ -429,7 +356,7 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
             ),
             // ワールド情報
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -471,40 +398,37 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
   }
 
   Widget _buildWorldTags(List<String> tags, bool isDarkMode) {
-    final displayTags =
-        tags
-            .where((tag) => !tag.startsWith('author_'))
-            .where((tag) => !tag.startsWith('hidden_'))
-            .take(3)
-            .toList();
+    final displayTags = tags
+        .where((tag) => !tag.startsWith('author_'))
+        .where((tag) => !tag.startsWith('hidden_'))
+        .take(3)
+        .toList();
 
     return Wrap(
       spacing: 6,
       runSpacing: 6,
-      children:
-          displayTags.map((tag) {
-            final tagColor = _getTagColor(tag, isDarkMode);
+      children: displayTags.map((tag) {
+        final tagColor = _getTagColor(tag, isDarkMode);
 
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: tagColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: tagColor.withValues(alpha: 0.3),
-                  width: 1,
-                ),
-              ),
-              child: Text(
-                SearchUtils.formatTag(tag),
-                style: GoogleFonts.notoSans(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  color: tagColor,
-                ),
-              ),
-            );
-          }).toList(),
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: tagColor.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: tagColor.withValues(alpha: 0.3),
+            ),
+          ),
+          child: Text(
+            SearchUtils.formatTag(tag),
+            style: GoogleFonts.notoSans(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: tagColor,
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 

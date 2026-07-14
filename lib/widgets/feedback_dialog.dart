@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/services/feedback_service.dart';
 import 'package:vrchat/theme/app_theme.dart';
 
@@ -89,25 +89,25 @@ class _FeedbackDialogState extends ConsumerState<FeedbackDialog> {
                     style: GoogleFonts.notoSans(
                       color: isDarkMode ? Colors.white : Colors.black87,
                     ),
-                    dropdownColor:
-                        isDarkMode ? const Color(0xFF3A3A3A) : Colors.white,
-                    items:
-                        _feedbackTypes.map((type) {
-                          return DropdownMenuItem<String>(
-                            value: type,
-                            child: Row(
-                              children: [
-                                Icon(
-                                  _getIconForType(type),
-                                  size: 20,
-                                  color: _getColorForType(type),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(t.feedback.types[type] ?? type),
-                              ],
+                    dropdownColor: isDarkMode
+                        ? const Color(0xFF3A3A3A)
+                        : Colors.white,
+                    items: _feedbackTypes.map((type) {
+                      return DropdownMenuItem<String>(
+                        value: type,
+                        child: Row(
+                          children: [
+                            Icon(
+                              _getIconForType(type),
+                              size: 20,
+                              color: _getColorForType(type),
                             ),
-                          );
-                        }).toList(),
+                            const SizedBox(width: 8),
+                            Text(t.feedback.types[type] ?? type),
+                          ],
+                        ),
+                      );
+                    }).toList(),
                     onChanged: (newValue) {
                       if (newValue != null) {
                         setState(() {
@@ -138,8 +138,9 @@ class _FeedbackDialogState extends ConsumerState<FeedbackDialog> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   filled: true,
-                  fillColor:
-                      isDarkMode ? const Color(0xFF3A3A3A) : Colors.grey[100],
+                  fillColor: isDarkMode
+                      ? const Color(0xFF3A3A3A)
+                      : Colors.grey[100],
                 ),
                 style: GoogleFonts.notoSans(
                   color: isDarkMode ? Colors.white : Colors.black87,
@@ -166,8 +167,9 @@ class _FeedbackDialogState extends ConsumerState<FeedbackDialog> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   filled: true,
-                  fillColor:
-                      isDarkMode ? const Color(0xFF3A3A3A) : Colors.grey[100],
+                  fillColor: isDarkMode
+                      ? const Color(0xFF3A3A3A)
+                      : Colors.grey[100],
                 ),
                 style: GoogleFonts.notoSans(
                   color: isDarkMode ? Colors.white : Colors.black87,
@@ -196,20 +198,19 @@ class _FeedbackDialogState extends ConsumerState<FeedbackDialog> {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          child:
-              _isLoading
-                  ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                  : Text(
-                    t.feedback.send,
-                    style: GoogleFonts.notoSans(fontWeight: FontWeight.w600),
+          child: _isLoading
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
+                )
+              : Text(
+                  t.feedback.send,
+                  style: GoogleFonts.notoSans(fontWeight: FontWeight.w600),
+                ),
         ),
       ],
     );

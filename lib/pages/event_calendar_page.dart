@@ -1,119 +1,23 @@
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:vrchat/config/app_config.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/models/event_calendar_models.dart';
+import 'package:vrchat/provider/event_calendar_provider.dart';
 import 'package:vrchat/provider/event_filter_provider.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
 import 'package:vrchat/provider/settings_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
+import 'package:vrchat/utils/url_launcher_utils.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/event_filter_sheet.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat/widgets/reminder_dialog.dart';
-
-// イベントデータを取得するためのプロバイダー
-final eventDataProvider = FutureProvider<EventData>((ref) async {
-  final response = await http.get(Uri.parse(AppConfig.eventCalender));
-  if (response.statusCode == 200) {
-    return EventData.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('イベントデータの取得に失敗しました');
-  }
-});
-
-// 日本時間のDateTimeを作成するヘルパー関数
-DateTime _parseJapanTime(String dateString) {
-  try {
-    // タイムゾーン情報を含む日時文字列をパース
-    final parsedDateTime = DateTime.parse(dateString);
-
-    // パースされた時間がUTCの場合、日本時間に変換
-    if (parsedDateTime.isUtc) {
-      // UTCとして解釈された場合、9時間を加算して日本時間に戻す
-      return parsedDateTime.add(const Duration(hours: 9));
-    } else {
-      // ローカル時間として解釈された場合はそのまま返す
-      return parsedDateTime;
-    }
-  } catch (e) {
-    debugPrint('日時解析エラー: $e, 入力: $dateString');
-    // フォールバック: 現在時刻を返す
-    return DateTime.timestamp();
-  }
-}
-
-// イベントデータモデル
-@immutable
-class EventData {
-  final Map<String, int> genres;
-  final List<Event> events;
-
-  const EventData({required this.genres, required this.events});
-
-  factory EventData.fromJson(Map<String, dynamic> json) {
-    return EventData(
-      genres: Map<String, int>.from(json['genres'] ?? {}),
-      events:
-          (json['events'] as List? ?? [])
-              .map((event) => Event.fromJson(event))
-              .toList(),
-    );
-  }
-}
-
-// イベントモデル
-@immutable
-class Event {
-  final String id;
-  final bool quest;
-  final String title;
-  final DateTime start;
-  final DateTime end;
-  final String author;
-  final String body;
-  final List<String> genres;
-  final String condition;
-  final String way;
-  final String note;
-
-  const Event({
-    required this.id,
-    required this.quest,
-    required this.title,
-    required this.start,
-    required this.end,
-    required this.author,
-    required this.body,
-    required this.genres,
-    required this.condition,
-    required this.way,
-    required this.note,
-  });
-
-  factory Event.fromJson(Map<String, dynamic> json) {
-    return Event(
-      id: json['id'] ?? '',
-      quest: json['quest'] ?? false,
-      title: json['title'] ?? '',
-      start: _parseJapanTime(json['start'] ?? ''),
-      end: _parseJapanTime(json['end'] ?? ''),
-      author: json['author'] ?? '',
-      body: json['body'] ?? '',
-      genres: List<String>.from(json['genres'] ?? []),
-      condition: json['condition'] ?? '',
-      way: json['way'] ?? '',
-      note: json['note'] ?? '',
-    );
-  }
-}
+import 'package:vrchat_dart/vrchat_dart.dart' as vrc;
 
 class EventCalendarPage extends ConsumerStatefulWidget {
   const EventCalendarPage({super.key});
@@ -151,10 +55,8 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
     // アニメーションを開始
     await _animationController.forward(from: 0);
 
-    // データをリフレッシュ
-    final _ = ref.refresh(eventDataProvider);
-
-    await Future.delayed(const Duration(milliseconds: 800));
+    final refreshedEvents = ref.refresh(eventDataProvider.future);
+    await refreshedEvents;
 
     if (mounted) {
       setState(() {
@@ -247,9 +149,8 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder:
-          (context) =>
-              FilterBottomSheet(isDarkMode: isDarkMode, genres: genres),
+      builder: (context) =>
+          FilterBottomSheet(isDarkMode: isDarkMode, genres: genres),
     );
   }
 
@@ -266,14 +167,14 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
     };
 
     // 背景グラデーション
-    final backgroundColor =
-        isDarkMode ? const Color(0xFF121212) : const Color(0xFFF9F9F9);
+    final backgroundColor = isDarkMode
+        ? const Color(0xFF121212)
+        : const Color(0xFFF9F9F9);
 
     const accentColor = AppTheme.primaryColor;
-    final secondaryColor =
-        isDarkMode
-            ? HSLColor.fromColor(accentColor).withLightness(0.3).toColor()
-            : HSLColor.fromColor(accentColor).withLightness(0.8).toColor();
+    final secondaryColor = isDarkMode
+        ? HSLColor.fromColor(accentColor).withLightness(0.3).toColor()
+        : HSLColor.fromColor(accentColor).withLightness(0.8).toColor();
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -295,16 +196,14 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               decoration: BoxDecoration(
-                color:
-                    isDarkMode
-                        ? Colors.black.withValues(alpha: 0.2)
-                        : Colors.white.withValues(alpha: 0.8),
+                color: isDarkMode
+                    ? Colors.black.withValues(alpha: 0.2)
+                    : Colors.white.withValues(alpha: 0.8),
                 border: Border(
                   bottom: BorderSide(
-                    color:
-                        isDarkMode
-                            ? Colors.white.withValues(alpha: 0.1)
-                            : Colors.black.withValues(alpha: 0.05),
+                    color: isDarkMode
+                        ? Colors.white.withValues(alpha: 0.1)
+                        : Colors.black.withValues(alpha: 0.05),
                   ),
                 ),
               ),
@@ -315,20 +214,18 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
           // フィルターボタン
           IconButton(
             icon: const Icon(Icons.filter_list_rounded),
-            color:
-                _isRefreshing
-                    ? Colors.grey
-                    : isDarkMode
-                    ? Colors.white
-                    : Colors.black87,
-            onPressed:
-                _isRefreshing || !eventDataAsync.hasValue
-                    ? null
-                    : () => _showFilterDialog(
-                      context,
-                      isDarkMode,
-                      eventDataAsync.value!.genres,
-                    ),
+            color: _isRefreshing
+                ? Colors.grey
+                : isDarkMode
+                ? Colors.white
+                : Colors.black87,
+            onPressed: _isRefreshing || !eventDataAsync.hasValue
+                ? null
+                : () => _showFilterDialog(
+                    context,
+                    isDarkMode,
+                    eventDataAsync.value!.genres,
+                  ),
             tooltip: t.eventCalendar.filter,
           ),
 
@@ -341,12 +238,11 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 child: IconButton(
                   icon: Icon(
                     Icons.refresh_rounded,
-                    color:
-                        _isRefreshing
-                            ? Colors.grey
-                            : isDarkMode
-                            ? Colors.white
-                            : Colors.black87,
+                    color: _isRefreshing
+                        ? Colors.grey
+                        : isDarkMode
+                        ? Colors.white
+                        : Colors.black87,
                   ),
                   onPressed: _isRefreshing ? null : _refreshEvents,
                   tooltip: t.eventCalendar.refresh,
@@ -363,34 +259,31 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
             end: Alignment.bottomCenter,
             colors: [
               backgroundColor,
-              isDarkMode ? const Color(0xFF1A1A1A) : Colors.white,
+              if (isDarkMode) const Color(0xFF1A1A1A) else Colors.white,
             ],
           ),
         ),
         child: SafeArea(
           child: eventDataAsync.when(
-            data:
-                (eventData) => _buildEventList(
-                  context,
-                  eventData,
-                  isDarkMode,
-                  accentColor,
-                  secondaryColor,
-                  t,
-                ),
+            data: (eventData) => _buildEventList(
+              context,
+              eventData,
+              isDarkMode,
+              accentColor,
+              secondaryColor,
+              t,
+            ),
             loading: () => LoadingIndicator(message: t.eventCalendar.loading),
-            error:
-                (error, stack) => ErrorContainer(
-                  message: t.eventCalendar.error(error: error.toString()),
-                  onRetry: _refreshEvents,
-                ),
+            error: (error, stack) => ErrorContainer(
+              message: t.eventCalendar.error(error: error.toString()),
+              onRetry: _refreshEvents,
+            ),
           ),
         ),
       ),
     );
   }
 
-  // 以下のメソッドは変更なし（_buildEventListから最後まで）
   Widget _buildEventList(
     BuildContext context,
     EventData eventData,
@@ -401,6 +294,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
   ) {
     // フィルターを取得
     final filter = ref.watch(eventFilterProvider);
+    final vrchatEventsAsync = ref.watch(vrchatCalendarEventsProvider);
 
     // イベントにフィルターを適用
     final filteredEvents = _getFilteredEvents(eventData.events, filter);
@@ -431,22 +325,21 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
 
     return Column(
       children: [
+        _buildVrchatCalendarSection(vrchatEventsAsync, isDarkMode),
         // フィルター状態バー
         if (hasActiveFilter)
           Container(
             margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color:
-                  isDarkMode
-                      ? Colors.blue.withValues(alpha: 0.2)
-                      : Colors.blue.withValues(alpha: 0.1),
+              color: isDarkMode
+                  ? Colors.blue.withValues(alpha: 0.2)
+                  : Colors.blue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color:
-                    isDarkMode
-                        ? Colors.blue.withValues(alpha: 0.3)
-                        : Colors.blue.withValues(alpha: 0.2),
+                color: isDarkMode
+                    ? Colors.blue.withValues(alpha: 0.3)
+                    : Colors.blue.withValues(alpha: 0.2),
               ),
             ),
             child: Row(
@@ -465,8 +358,8 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                   ),
                 ),
                 TextButton(
-                  onPressed:
-                      () => ref.read(eventFilterProvider.notifier).clearAll(),
+                  onPressed: () =>
+                      ref.read(eventFilterProvider.notifier).clearAll(),
                   child: Text(
                     t.eventCalendar.clear,
                     style: GoogleFonts.notoSans(
@@ -501,8 +394,8 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                   ),
                   const SizedBox(height: 8),
                   OutlinedButton.icon(
-                    onPressed:
-                        () => ref.read(eventFilterProvider.notifier).clearAll(),
+                    onPressed: () =>
+                        ref.read(eventFilterProvider.notifier).clearAll(),
                     icon: const Icon(Icons.filter_list_off),
                     label: Text(t.eventCalendar.clearFilter),
                   ),
@@ -540,6 +433,63 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
     );
   }
 
+  Widget _buildVrchatCalendarSection(
+    AsyncValue<List<vrc.CalendarEvent>> eventsAsync,
+    bool isDarkMode,
+  ) {
+    return eventsAsync.when(
+      data: (events) {
+        if (events.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        final visibleEvents = events.take(12).toList();
+        return SizedBox(
+          height: 168,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: Row(
+                  children: [
+                    const Icon(Icons.public, size: 18),
+                    const SizedBox(width: 8),
+                    Text(
+                      'VRChat Calendar',
+                      style: GoogleFonts.notoSans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: visibleEvents.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 10),
+                  itemBuilder: (context, index) {
+                    return _VrchatCalendarEventCard(
+                      event: visibleEvents[index],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      loading: () => const SizedBox(
+        height: 72,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      ),
+      error: (_, _) => const SizedBox.shrink(),
+    );
+  }
+
   Widget _buildDateSection(
     BuildContext context,
     String dateKey,
@@ -561,8 +511,9 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
     return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color:
-                isDarkMode ? Colors.black.withValues(alpha: 0.3) : Colors.white,
+            color: isDarkMode
+                ? Colors.black.withValues(alpha: 0.3)
+                : Colors.white,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
@@ -572,12 +523,11 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
               ),
             ],
             border: Border.all(
-              color:
-                  isToday
-                      ? accentColor.withValues(alpha: isDarkMode ? 0.5 : 0.3)
-                      : isDarkMode
-                      ? Colors.white.withValues(alpha: 0.1)
-                      : Colors.grey.withValues(alpha: 0.2),
+              color: isToday
+                  ? accentColor.withValues(alpha: isDarkMode ? 0.5 : 0.3)
+                  : isDarkMode
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.grey.withValues(alpha: 0.2),
               width: isToday ? 2 : 1,
             ),
           ),
@@ -591,21 +541,20 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors:
-                        isToday
-                            ? [
-                              accentColor.withValues(alpha: 0.8),
-                              accentColor.withValues(alpha: 0.6),
-                            ]
-                            : isDarkMode
-                            ? [
-                              Colors.grey[850]!.withValues(alpha: 0.5),
-                              Colors.grey[900]!.withValues(alpha: 0.5),
-                            ]
-                            : [
-                              secondaryColor.withValues(alpha: 0.3),
-                              secondaryColor.withValues(alpha: 0.1),
-                            ],
+                    colors: isToday
+                        ? [
+                            accentColor.withValues(alpha: 0.8),
+                            accentColor.withValues(alpha: 0.6),
+                          ]
+                        : isDarkMode
+                        ? [
+                            Colors.grey[850]!.withValues(alpha: 0.5),
+                            Colors.grey[900]!.withValues(alpha: 0.5),
+                          ]
+                        : [
+                            secondaryColor.withValues(alpha: 0.3),
+                            secondaryColor.withValues(alpha: 0.1),
+                          ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -618,12 +567,9 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                     Icon(
                       isToday ? Icons.calendar_today : Icons.calendar_month,
                       size: 18,
-                      color:
-                          isToday
-                              ? (isDarkMode ? Colors.white : accentColor)
-                              : (isDarkMode
-                                  ? Colors.grey[300]
-                                  : Colors.grey[700]),
+                      color: isToday
+                          ? (isDarkMode ? Colors.white : accentColor)
+                          : (isDarkMode ? Colors.grey[300] : Colors.grey[700]),
                     ),
                     const SizedBox(width: 8),
                     Text(
@@ -631,10 +577,9 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                       style: GoogleFonts.notoSans(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color:
-                            isToday
-                                ? (isDarkMode ? Colors.white : accentColor)
-                                : (isDarkMode ? Colors.white : Colors.black87),
+                        color: isToday
+                            ? (isDarkMode ? Colors.white : accentColor)
+                            : (isDarkMode ? Colors.white : Colors.black87),
                       ),
                     ),
                     if (isToday) ...[
@@ -719,10 +664,9 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
     final endTime = DateFormat('HH:mm').format(event.end);
 
     // イベントの種類に基づいて色を選択
-    final eventColor =
-        event.genres.isNotEmpty
-            ? _getGenreColor(event.genres.first, accentColor, isDarkMode)
-            : accentColor;
+    final eventColor = event.genres.isNotEmpty
+        ? _getGenreColor(event.genres.first, accentColor, isDarkMode)
+        : accentColor;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -730,11 +674,9 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color:
-              isDarkMode
-                  ? Colors.white.withValues(alpha: 0.1)
-                  : Colors.grey.withValues(alpha: 0.2),
-          width: 1,
+          color: isDarkMode
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
       ),
       color: isDarkMode ? Colors.black.withValues(alpha: 0.2) : Colors.white,
@@ -807,11 +749,10 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                   if (event.quest) _buildQuestBadge(isDarkMode, t),
                   Consumer(
                     builder: (context, ref, child) {
-                      final reminders =
-                          ref
-                              .watch(eventReminderProvider)
-                              .where((r) => r.eventId == event.id)
-                              .toList();
+                      final reminders = ref
+                          .watch(eventReminderProvider)
+                          .where((r) => r.eventId == event.id)
+                          .toList();
 
                       if (reminders.isEmpty) return const SizedBox.shrink();
 
@@ -887,12 +828,20 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 // 区切り線
                 Container(
                   height: 1,
-                  color:
-                      isDarkMode
-                          ? Colors.white.withValues(alpha: 0.1)
-                          : Colors.grey.withValues(alpha: 0.1),
+                  color: isDarkMode
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : Colors.grey.withValues(alpha: 0.1),
                   margin: const EdgeInsets.symmetric(vertical: 16),
                 ),
+
+                _buildInfoSection(
+                  t.eventCalendar.eventName,
+                  event.title,
+                  Icons.calendar_month,
+                  isDarkMode,
+                  eventColor,
+                ),
+                const SizedBox(height: 16),
 
                 _buildInfoSection(
                   t.eventCalendar.organizer,
@@ -946,8 +895,8 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 // 通知設定ボタン
                 Center(
                   child: OutlinedButton.icon(
-                    onPressed:
-                        () => _showReminderDialog(context, event, isDarkMode),
+                    onPressed: () =>
+                        _showReminderDialog(context, event, isDarkMode),
                     icon: const Icon(Icons.notifications_active_outlined),
                     label: Text(t.eventCalendar.reminderSet),
                     style: OutlinedButton.styleFrom(
@@ -984,8 +933,8 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
   void _showReminderDialog(BuildContext context, Event event, bool isDarkMode) {
     showDialog(
       context: context,
-      builder:
-          (context) => ReminderDialog(event: event, isDarkMode: isDarkMode),
+      builder: (context) =>
+          ReminderDialog(event: event, isDarkMode: isDarkMode),
     );
   }
 
@@ -999,11 +948,10 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
   ) {
     return Consumer(
       builder: (context, ref, child) {
-        final reminders =
-            ref
-                .watch(eventReminderProvider)
-                .where((r) => r.eventId == event.id)
-                .toList();
+        final reminders = ref
+            .watch(eventReminderProvider)
+            .where((r) => r.eventId == event.id)
+            .toList();
 
         if (reminders.isEmpty) {
           return const SizedBox.shrink();
@@ -1105,7 +1053,6 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: Colors.green.withValues(alpha: isDarkMode ? 0.5 : 0.3),
-          width: 1,
         ),
       ),
       child: Row(
@@ -1218,7 +1165,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
             onTap: () {
               final url = matches.first.group(0);
               if (url != null) {
-                _launchUrl(url);
+                UrlLauncherUtils.launchExternalURL(url);
               }
             },
             child: Text(
@@ -1269,34 +1216,31 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
           child: Wrap(
             spacing: 8,
             runSpacing: 8,
-            children:
-                genres.map((genre) {
-                  final color = _getGenreColor(genre, baseColor, isDarkMode);
+            children: genres.map((genre) {
+              final color = _getGenreColor(genre, baseColor, isDarkMode);
 
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: isDarkMode ? 0.2 : 0.1),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: color.withValues(alpha: isDarkMode ? 0.4 : 0.3),
-                        width: 1,
-                      ),
-                    ),
-                    child: Text(
-                      genre,
-                      style: GoogleFonts.notoSans(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color:
-                            isDarkMode ? color.withValues(alpha: 0.9) : color,
-                      ),
-                    ),
-                  );
-                }).toList(),
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: isDarkMode ? 0.2 : 0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: color.withValues(alpha: isDarkMode ? 0.4 : 0.3),
+                  ),
+                ),
+                child: Text(
+                  genre,
+                  style: GoogleFonts.notoSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: isDarkMode ? color.withValues(alpha: 0.9) : color,
+                  ),
+                ),
+              );
+            }).toList(),
           ),
         ),
       ],
@@ -1317,13 +1261,76 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
 
     return fallbackColors[hash];
   }
+}
 
-  void _launchUrl(String urlString) async {
-    final url = Uri.tryParse(urlString);
-    if (url != null) {
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
-      }
-    }
+class _VrchatCalendarEventCard extends StatelessWidget {
+  const _VrchatCalendarEventCard({required this.event});
+
+  final vrc.CalendarEvent event;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final time = DateFormat('MM/dd HH:mm').format(event.startsAt);
+
+    return SizedBox(
+      width: 260,
+      child: Card(
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        color: theme.colorScheme.surfaceContainerLow,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: theme.colorScheme.outlineVariant),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                event.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.notoSans(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(
+                    Icons.schedule,
+                    size: 14,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    time,
+                    style: GoogleFonts.notoSans(
+                      fontSize: 12,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                event.description.isNotEmpty
+                    ? event.description
+                    : event.category.toString(),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.notoSans(
+                  fontSize: 12,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

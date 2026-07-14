@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:apple_product_name/apple_product_name.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:vrchat/config/app_config.dart';
+import 'package:vrchat/provider/package_info_provider.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 final feedbackServiceProvider = Provider<FeedbackService>((ref) {
   return FeedbackService(ref);
@@ -15,9 +14,8 @@ final feedbackServiceProvider = Provider<FeedbackService>((ref) {
 
 @immutable
 class FeedbackService {
-  final Ref ref;
-
   const FeedbackService(this.ref);
+  final Ref ref;
 
   Future<bool> sendFeedback({
     required String type,
@@ -27,7 +25,7 @@ class FeedbackService {
   }) async {
     try {
       // アプリ情報を取得
-      final packageInfo = await PackageInfo.fromPlatform();
+      final packageInfo = await ref.read(packageInfoProvider.future);
       // デバイス情報を取得
       final deviceInfo = await _getPlatformInfo();
 
@@ -61,36 +59,26 @@ class FeedbackService {
       );
 
       if (response.statusCode == 204) {
-        debugPrint('フィードバック送信成功');
+        appLogger.d('フィードバック送信成功');
         return true;
       } else {
-        debugPrint('フィードバック送信失敗: ${response.statusCode}');
+        appLogger.d('フィードバック送信失敗: ${response.statusCode}');
         return false;
       }
     } catch (e) {
-      debugPrint('フィードバック送信エラー: $e');
+      appLogger.d('フィードバック送信エラー: $e');
       return false;
     }
   }
 
   Future<String> _getPlatformInfo() async {
-    final deviceInfo = DeviceInfoPlugin();
     try {
-      if (Platform.isAndroid) {
-        final androidInfo = await deviceInfo.androidInfo;
-        return 'OS: Android ${androidInfo.version.release}\n'
-            '端末: ${androidInfo.model}\n';
-      } else if (Platform.isIOS) {
-        final iosInfo = await deviceInfo.iosInfo;
-        return 'OS: iOS ${iosInfo.systemVersion}\n'
-            '端末: ${iosInfo.utsname.productName}\n';
-      } else {
-        return 'OS: ${defaultTargetPlatform.name}\n'
-            'バージョン: ${Platform.operatingSystemVersion}';
-      }
+      return 'OS: ${Platform.operatingSystem}\n'
+          'バージョン: ${Platform.operatingSystemVersion}\n'
+          'ターゲット: ${defaultTargetPlatform.name}';
     } catch (e) {
       return '${defaultTargetPlatform.name}\n'
-          'プラットフォーム情報取得エラー: ${e.toString()}';
+          'プラットフォーム情報取得エラー: ${e}';
     }
   }
 

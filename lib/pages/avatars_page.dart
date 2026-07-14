@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/avatar_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
@@ -14,6 +14,7 @@ import 'package:vrchat/utils/cache_manager.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 class AvatarsPage extends ConsumerStatefulWidget {
   const AvatarsPage({super.key});
@@ -22,8 +23,7 @@ class AvatarsPage extends ConsumerStatefulWidget {
   ConsumerState<AvatarsPage> createState() => _AvatarsPageState();
 }
 
-class _AvatarsPageState extends ConsumerState<AvatarsPage>
-    with SingleTickerProviderStateMixin {
+class _AvatarsPageState extends ConsumerState<AvatarsPage> {
   final _scrollController = ScrollController();
   var _currentOffset = 0;
   final _pageSize = 100;
@@ -33,28 +33,21 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
   final _searchController = TextEditingController();
   var _isSearching = false;
   var _searchQuery = '';
-  List<Avatar> _filteredAvatarList = [];
 
   AvatarViewMode _viewMode = AvatarViewMode.grid;
 
   SortOption _sortOption = SortOption.updated;
-  final _orderOption = OrderOption.descending;
+  final OrderOption _orderOption = OrderOption.descending;
   var _sortByName = false;
-
-  late AnimationController _animationController;
 
   List<Avatar> _avatarList = [];
   var _isInitialized = false;
+  String? _loadError;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
 
     // 検索コントローラーのリスナー設定
     _searchController.addListener(_onSearchChanged);
@@ -68,7 +61,6 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
   void dispose() {
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
-    _animationController.dispose();
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
     super.dispose();
@@ -105,7 +97,6 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
         setState(() {
           _avatarList.addAll(newAvatars);
           _isLoadingMore = false;
-          _filterAvatars(); // 検索結果も更新
         });
       }
     } catch (e) {
@@ -124,7 +115,6 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
       sort: _sortOption,
       order: _orderOption,
       user: 'me',
-      releaseStatus: null,
     );
   }
 
@@ -134,13 +124,8 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
       _currentOffset = 0;
       _avatarList = [];
       _isInitialized = false;
+      _loadError = null;
     });
-
-    if (_animationController.isAnimating) {
-      await _animationController.forward(from: 0);
-    } else {
-      _animationController.reset();
-    }
 
     try {
       final params = _getSearchParams();
@@ -154,17 +139,16 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
         setState(() {
           _avatarList = avatars;
           _isInitialized = true;
-          _filterAvatars(); // 検索結果も更新
         });
-        await _animationController.forward();
       }
     } catch (e) {
       if (mounted) {
         setState(() {
           _isInitialized = true;
+          _loadError = e.toString();
         });
       }
-      debugPrint('アバターの更新に失敗: $e');
+      appLogger.d('アバターの更新に失敗: $e');
     }
   }
 
@@ -179,23 +163,20 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
   void _onSearchChanged() {
     setState(() {
       _searchQuery = _searchController.text.toLowerCase();
-      _filterAvatars();
     });
   }
 
-  // 検索クエリに基づいてアバターをフィルタリング
-  void _filterAvatars() {
+  List<Avatar> get _displayAvatarList {
+    if (!_isSearching) return _avatarList;
     if (_searchQuery.isEmpty) {
-      _filteredAvatarList = _avatarList;
-      return;
+      return _avatarList;
     }
 
-    _filteredAvatarList =
-        _avatarList.where((avatar) {
-          return avatar.name.toLowerCase().contains(_searchQuery) ||
-              avatar.authorName.toLowerCase().contains(_searchQuery) ||
-              (avatar.description.toLowerCase().contains(_searchQuery));
-        }).toList();
+    return _avatarList.where((avatar) {
+      return avatar.name.toLowerCase().contains(_searchQuery) ||
+          avatar.authorName.toLowerCase().contains(_searchQuery) ||
+          (avatar.description.toLowerCase().contains(_searchQuery));
+    }).toList();
   }
 
   // 検索モードの切り替え
@@ -214,14 +195,12 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor =
-        isDarkMode ? const Color(0xFF121212) : const Color(0xFFF8F8F8);
+    final backgroundColor = isDarkMode
+        ? const Color(0xFF121212)
+        : const Color(0xFFF8F8F8);
     final vrchatApi = ref.watch(vrchatProvider).value;
 
     final headers = {'User-Agent': vrchatApi?.userAgent.toString() ?? 'VRCN'};
-
-    // 初期ロード用のプロバイダー - キャッシュは使うが状態管理は手動で行う
-    final avatarsAsync = ref.watch(avatarSearchProvider(_getSearchParams()));
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -237,43 +216,18 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
                 onRefresh: _refreshAvatars,
                 child: Builder(
                   builder: (context) {
-                    // 初期化前ならプロバイダーの状態を使用
                     if (!_isInitialized) {
-                      return avatarsAsync.when(
-                        data: (avatars) {
-                          if (avatars.isEmpty) {
-                            return _buildEmptyState(isDarkMode, t);
-                          }
+                      return LoadingIndicator(message: t.avatars.loading);
+                    }
 
-                          // データが取得できたら状態も更新
-                          if (mounted && _avatarList.isEmpty) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              setState(() {
-                                _avatarList = avatars;
-                                _filteredAvatarList = avatars; // 検索結果初期化
-                                _isInitialized = true;
-                              });
-                              _animationController.forward();
-                            });
-                          }
-
-                          return _viewMode == AvatarViewMode.grid
-                              ? _buildMasonryGrid(isDarkMode, headers, t)
-                              : _buildListView(isDarkMode, headers, t);
-                        },
-                        loading:
-                            () => LoadingIndicator(message: t.avatars.loading),
-                        error:
-                            (error, stack) => ErrorContainer(
-                              message: t.avatars.error(error: error.toString()),
-                              onRetry: _refreshAvatars,
-                            ),
+                    if (_loadError case final error? when _avatarList.isEmpty) {
+                      return ErrorContainer(
+                        message: t.avatars.error(error: error),
+                        onRetry: _refreshAvatars,
                       );
                     }
 
-                    // 初期化後は内部状態を使用
-                    final displayList =
-                        _isSearching ? _filteredAvatarList : _avatarList;
+                    final displayList = _displayAvatarList;
 
                     if (displayList.isEmpty) {
                       return _isSearching
@@ -382,16 +336,14 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             decoration: BoxDecoration(
-              color:
-                  isDarkMode
-                      ? Colors.black.withAlpha(128)
-                      : Colors.white.withAlpha(153),
+              color: isDarkMode
+                  ? Colors.black.withAlpha(128)
+                  : Colors.white.withAlpha(153),
               border: Border(
                 bottom: BorderSide(
-                  color:
-                      isDarkMode
-                          ? Colors.white.withAlpha(25)
-                          : Colors.black.withAlpha(13),
+                  color: isDarkMode
+                      ? Colors.white.withAlpha(25)
+                      : Colors.black.withAlpha(13),
                   width: 0.5,
                 ),
               ),
@@ -427,10 +379,9 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
           ),
           onPressed: () {
             setState(() {
-              _viewMode =
-                  _viewMode == AvatarViewMode.grid
-                      ? AvatarViewMode.list
-                      : AvatarViewMode.grid;
+              _viewMode = _viewMode == AvatarViewMode.grid
+                  ? AvatarViewMode.list
+                  : AvatarViewMode.grid;
             });
           },
           tooltip: t.avatars.viewModeTooltip,
@@ -451,14 +402,13 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
             });
             _refreshAvatars();
           },
-          itemBuilder:
-              (context) => [
-                PopupMenuItem(
-                  value: 'updated',
-                  child: Text(t.avatars.sortUpdated),
-                ),
-                PopupMenuItem(value: 'name', child: Text(t.avatars.sortName)),
-              ],
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: 'updated',
+              child: Text(t.avatars.sortUpdated),
+            ),
+            PopupMenuItem(value: 'name', child: Text(t.avatars.sortName)),
+          ],
         ),
       ],
     );
@@ -493,29 +443,14 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
 
           final avatar = avatars[index];
 
-          final animation = CurvedAnimation(
-            parent: _animationController,
-            curve: Interval(
-              (index / 20).clamp(0.0, 1.0),
-              ((index + 5) / 20).clamp(0.1, 1.0),
-              curve: Curves.easeInOut,
-            ),
-          );
-
           final heightFactor = 0.9 + ((avatar.id.hashCode % 30) / 100);
 
-          return SizeTransition(
-            sizeFactor: animation,
-            child: FadeTransition(
-              opacity: animation,
-              child: _buildAvatarCard(
-                avatar: avatar,
-                isDarkMode: isDarkMode,
-                headers: headers,
-                heightFactor: heightFactor,
-                t: t,
-              ),
-            ),
+          return _buildAvatarCard(
+            avatar: avatar,
+            isDarkMode: isDarkMode,
+            headers: headers,
+            heightFactor: heightFactor,
+            t: t,
           );
         },
       ),
@@ -547,22 +482,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
 
         final avatar = avatars[index];
 
-        final animation = CurvedAnimation(
-          parent: _animationController,
-          curve: Interval(
-            (index / 20).clamp(0.0, 1.0),
-            ((index + 5) / 20).clamp(0.1, 1.0),
-            curve: Curves.easeInOut,
-          ),
-        );
-
-        return SizeTransition(
-          sizeFactor: animation,
-          child: FadeTransition(
-            opacity: animation,
-            child: _buildListItem(avatar, isDarkMode, headers, t),
-          ),
-        );
+        return _buildListItem(avatar, isDarkMode, headers, t);
       },
     );
   }
@@ -604,26 +524,22 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
                         httpHeaders: headers,
                         cacheManager: JsonCacheManager(),
                         fit: BoxFit.cover,
-                        placeholder:
-                            (context, url) => Container(
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[850]
-                                      : Colors.grey[200],
-                              child: const Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              ),
+                        placeholder: (context, url) => Container(
+                          color: isDarkMode
+                              ? Colors.grey[850]
+                              : Colors.grey[200],
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
                             ),
-                        errorWidget:
-                            (context, url, error) => Container(
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[850]
-                                      : Colors.grey[200],
-                              child: const Icon(Icons.broken_image),
-                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: isDarkMode
+                              ? Colors.grey[850]
+                              : Colors.grey[200],
+                          child: const Icon(Icons.broken_image),
+                        ),
                       ),
                       Positioned(
                         bottom: 0,
@@ -722,7 +638,6 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
                                 fontWeight: FontWeight.bold,
                                 shadows: [
                                   const Shadow(
-                                    color: Colors.black,
                                     offset: Offset(0, 1),
                                     blurRadius: 3,
                                   ),
@@ -748,7 +663,6 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
                                       fontSize: 12,
                                       shadows: [
                                         const Shadow(
-                                          color: Colors.black,
                                           offset: Offset(0, 1),
                                           blurRadius: 2,
                                         ),
@@ -815,26 +729,22 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
                           httpHeaders: headers,
                           cacheManager: JsonCacheManager(),
                           fit: BoxFit.cover,
-                          placeholder:
-                              (context, url) => Container(
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[850]
-                                        : Colors.grey[200],
-                                child: const Center(
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                ),
+                          placeholder: (context, url) => Container(
+                            color: isDarkMode
+                                ? Colors.grey[850]
+                                : Colors.grey[200],
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
                               ),
-                          errorWidget:
-                              (context, url, error) => Container(
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[850]
-                                        : Colors.grey[200],
-                                child: const Icon(Icons.broken_image),
-                              ),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            color: isDarkMode
+                                ? Colors.grey[850]
+                                : Colors.grey[200],
+                            child: const Icon(Icons.broken_image),
+                          ),
                         ),
                       ),
                       if (avatar.tags.contains('currentAvatar'))
@@ -879,8 +789,9 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
                         Icon(
                           Icons.person,
                           size: 14,
-                          color:
-                              isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          color: isDarkMode
+                              ? Colors.grey[400]
+                              : Colors.grey[600],
                         ),
                         const SizedBox(width: 4),
                         Expanded(
@@ -890,10 +801,9 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage>
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.notoSans(
                               fontSize: 14,
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[400]
-                                      : Colors.grey[600],
+                              color: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                             ),
                           ),
                         ),

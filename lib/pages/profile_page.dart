@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/avatar_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
@@ -90,65 +91,60 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
             tooltip: t.profile.engageCard,
           ),
           currentUserAsync.when(
-            data:
-                (user) => IconButton(
-                  icon: const Icon(Icons.edit_outlined),
-                  onPressed: () async {
-                    ref.invalidate(currentUserProvider);
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(t.profile.loading),
-                          duration: const Duration(milliseconds: 1000),
-                        ),
-                      );
-                    }
-                    final updatedUser = await ref.read(
-                      currentUserProvider.future,
-                    );
-                    if (!context.mounted) return;
-                    final result = await showModalBottomSheet<bool>(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      enableDrag: true,
-                      isDismissible: true,
-                      builder: (context) {
-                        return ProfileEditSheet(user: updatedUser);
-                      },
-                    );
-                    if (result == true && context.mounted) {
-                      await _refreshProfile();
-                    }
+            data: (user) => IconButton(
+              icon: const Icon(Icons.edit_outlined),
+              onPressed: () async {
+                ref.invalidate(currentUserProvider);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(t.profile.loading),
+                      duration: const Duration(milliseconds: 1000),
+                    ),
+                  );
+                }
+                final updatedUser = await ref.read(
+                  currentUserProvider.future,
+                );
+                if (!context.mounted) return;
+                final result = await showModalBottomSheet<bool>(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) {
+                    return ProfileEditSheet(user: updatedUser);
                   },
-                  tooltip: t.profile.edit,
-                ),
+                );
+                if (result == true && context.mounted) {
+                  await _refreshProfile();
+                }
+              },
+              tooltip: t.profile.edit,
+            ),
             loading: () => const SizedBox.shrink(),
             error: (_, _) => const SizedBox.shrink(),
           ),
         ],
       ),
       body: currentUserAsync.when(
-        data:
-            (user) => FadeTransition(
-              opacity: _fadeInAnimation,
-              child: _buildProfileContent(
-                context,
-                ref,
-                user,
-                headers,
-                isDarkMode,
-              ),
-            ),
+        data: (user) => FadeTransition(
+          opacity: _fadeInAnimation,
+          child: _buildProfileContent(
+            context,
+            ref,
+            user,
+            headers,
+            isDarkMode,
+          ),
+        ),
         loading: () => LoadingIndicator(message: t.profile.loading),
-        error:
-            (error, stackTrace) => ErrorContainer(
-              message: t.profile.error.replaceFirst(
-                '{error}',
-                error.toString(),
-              ),
-              onRetry: _refreshProfile,
-            ),
+        error: (error, stackTrace) => ErrorContainer(
+          message: t.profile.error.replaceFirst(
+            '{error}',
+            error.toString(),
+          ),
+          onRetry: _refreshProfile,
+        ),
       ),
     );
   }
@@ -170,10 +166,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
 
     // アクセントカラーの設定
     const accentColor = AppTheme.primaryColor;
-    final secondaryColor =
-        isDarkMode
-            ? HSLColor.fromColor(accentColor).withLightness(0.4).toColor()
-            : HSLColor.fromColor(accentColor).withLightness(0.6).toColor();
+    final secondaryColor = isDarkMode
+        ? HSLColor.fromColor(accentColor).withLightness(0.4).toColor()
+        : HSLColor.fromColor(accentColor).withLightness(0.6).toColor();
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -188,46 +183,41 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
               Container(
                 height: 260,
                 decoration: BoxDecoration(
-                  gradient:
-                      userRepresentedGroupAsync.valueOrNull?.bannerUrl == null
-                          ? LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [accentColor, secondaryColor],
-                          )
-                          : null,
+                  gradient: userRepresentedGroupAsync.value?.bannerUrl == null
+                      ? LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [accentColor, secondaryColor],
+                        )
+                      : null,
                 ),
                 child: Stack(
                   children: [
-                    if (userRepresentedGroupAsync.valueOrNull?.bannerUrl !=
-                        null)
+                    if (userRepresentedGroupAsync.value?.bannerUrl != null)
                       Positioned.fill(
                         child: CachedNetworkImage(
-                          imageUrl:
-                              userRepresentedGroupAsync.valueOrNull!.bannerUrl!,
+                          imageUrl: userRepresentedGroupAsync.value!.bannerUrl!,
                           httpHeaders: headers,
                           cacheManager: JsonCacheManager(),
                           fit: BoxFit.cover,
-                          placeholder:
-                              (context, url) => Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [accentColor, secondaryColor],
-                                  ),
-                                ),
+                          placeholder: (context, url) => Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [accentColor, secondaryColor],
                               ),
-                          errorWidget:
-                              (context, url, error) => Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [accentColor, secondaryColor],
-                                  ),
-                                ),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [accentColor, secondaryColor],
                               ),
+                            ),
+                          ),
                         ),
                       ),
 
@@ -297,10 +287,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                                 '@${user.username}',
                                 style: GoogleFonts.notoSans(
                                   fontSize: 14,
-                                  color:
-                                      isDarkMode
-                                          ? Colors.grey[400]
-                                          : Colors.grey[600],
+                                  color: isDarkMode
+                                      ? Colors.grey[400]
+                                      : Colors.grey[600],
                                   letterSpacing: 0.5,
                                 ),
                                 maxLines: 1,
@@ -383,7 +372,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 left: 40,
                 child: TweenAnimationBuilder<double>(
                   duration: const Duration(milliseconds: 600),
-                  tween: Tween<double>(begin: 0.8, end: 1.0),
+                  tween: Tween<double>(begin: 0.8, end: 1),
                   curve: Curves.easeOutBack,
                   builder: (context, value, child) {
                     return Transform.scale(
@@ -392,10 +381,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color:
-                                isDarkMode
-                                    ? const Color(0xFF1E1E1E)
-                                    : Colors.white,
+                            color: isDarkMode
+                                ? const Color(0xFF1E1E1E)
+                                : Colors.white,
                             width: 5,
                           ),
                           boxShadow: [
@@ -407,86 +395,72 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                           ],
                         ),
                         child: ownAvatarAsync.when(
-                          data:
-                              (avatar) => GestureDetector(
-                                onTap: () {
-                                  // アバター詳細ページに遷移
-                                  if (avatar.id.isNotEmpty) {
-                                    context.push('/avatar/${avatar.id}');
-                                  }
-                                },
-                                child: CircleAvatar(
-                                  radius: 50,
-                                  backgroundColor: Colors.grey[300],
-                                  backgroundImage:
-                                      user.userIcon.isNotEmpty
-                                          ? CachedNetworkImageProvider(
-                                            user.userIcon,
-                                            headers: headers,
-                                            cacheManager: JsonCacheManager(),
-                                          )
-                                          : user
-                                              .currentAvatarThumbnailImageUrl
-                                              .isNotEmpty
-                                          ? CachedNetworkImageProvider(
-                                            user.currentAvatarThumbnailImageUrl,
-                                            headers: headers,
-                                            cacheManager: JsonCacheManager(),
-                                          )
-                                          : const AssetImage(
-                                                'assets/icons/default.png',
-                                              )
-                                              as ImageProvider,
-                                  child:
-                                      user
-                                              .currentAvatarThumbnailImageUrl
-                                              .isEmpty
-                                          ? const Icon(
-                                            Icons.person,
-                                            size: 30,
-                                            color: Colors.white70,
-                                          )
-                                          : null,
-                                ),
-                              ),
+                          data: (avatar) => GestureDetector(
+                            onTap: () {
+                              // アバター詳細ページに遷移
+                              if (avatar.id.isNotEmpty) {
+                                context.push('/avatar/${avatar.id}');
+                              }
+                            },
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.grey[300],
+                              backgroundImage: user.userIcon.isNotEmpty
+                                  ? CachedNetworkImageProvider(
+                                      user.userIcon,
+                                      headers: headers,
+                                      cacheManager: JsonCacheManager(),
+                                    )
+                                  : user
+                                        .currentAvatarThumbnailImageUrl
+                                        .isNotEmpty
+                                  ? CachedNetworkImageProvider(
+                                      user.currentAvatarThumbnailImageUrl,
+                                      headers: headers,
+                                      cacheManager: JsonCacheManager(),
+                                    )
+                                  : AssetImage(Assets.icons.icon.path)
+                                        as ImageProvider,
+                              child: user.currentAvatarThumbnailImageUrl.isEmpty
+                                  ? const Icon(
+                                      Icons.person,
+                                      size: 30,
+                                      color: Colors.white70,
+                                    )
+                                  : null,
+                            ),
+                          ),
 
-                          loading:
-                              () => CircleAvatar(
-                                radius: 50,
-                                backgroundColor: Colors.grey[300],
-                                child: const CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    AppTheme.primaryColor,
-                                  ),
-                                ),
+                          loading: () => CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.grey[300],
+                            child: const CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppTheme.primaryColor,
                               ),
-                          error:
-                              (_, _) => CircleAvatar(
-                                radius: 50,
-                                backgroundColor: Colors.grey[300],
-                                backgroundImage:
-                                    user
-                                            .currentAvatarThumbnailImageUrl
-                                            .isNotEmpty
-                                        ? CachedNetworkImageProvider(
-                                          user.currentAvatarThumbnailImageUrl,
-                                          headers: headers,
-                                          cacheManager: JsonCacheManager(),
-                                        )
-                                        : const AssetImage(
-                                              'assets/icons/default.png',
-                                            )
-                                            as ImageProvider,
-                                child:
-                                    user.currentAvatarThumbnailImageUrl.isEmpty
-                                        ? const Icon(
-                                          Icons.person,
-                                          size: 30,
-                                          color: Colors.white70,
-                                        )
-                                        : null,
-                              ),
+                            ),
+                          ),
+                          error: (_, _) => CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.grey[300],
+                            backgroundImage:
+                                user.currentAvatarThumbnailImageUrl.isNotEmpty
+                                ? CachedNetworkImageProvider(
+                                    user.currentAvatarThumbnailImageUrl,
+                                    headers: headers,
+                                    cacheManager: JsonCacheManager(),
+                                  )
+                                : AssetImage(Assets.icons.icon.path)
+                                      as ImageProvider,
+                            child: user.currentAvatarThumbnailImageUrl.isEmpty
+                                ? const Icon(
+                                    Icons.person,
+                                    size: 30,
+                                    color: Colors.white70,
+                                  )
+                                : null,
+                          ),
                         ),
                       ),
                     );
@@ -514,14 +488,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                   context: context,
                   title: t.profile.title,
                   icon: Icons.person_outline,
-                  backgroundColor:
-                      isDarkMode
-                          ? HSLColor.fromColor(
-                            AppTheme.primaryColor,
-                          ).withLightness(0.15).toColor()
-                          : HSLColor.fromColor(
-                            AppTheme.primaryColor,
-                          ).withLightness(0.95).toColor(),
+                  backgroundColor: isDarkMode
+                      ? HSLColor.fromColor(
+                          AppTheme.primaryColor,
+                        ).withLightness(0.15).toColor()
+                      : HSLColor.fromColor(
+                          AppTheme.primaryColor,
+                        ).withLightness(0.95).toColor(),
                   iconColor: AppTheme.primaryColor,
                   isDarkMode: isDarkMode,
                   children: [
@@ -537,9 +510,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                       label: t.profile.dateJoined,
                       value:
                           user.dateJoined !=
-                                  DateTime.fromMillisecondsSinceEpoch(0)
-                              ? _formatDate(user.dateJoined)
-                              : t.profile.unknown,
+                              DateTime.fromMillisecondsSinceEpoch(0)
+                          ? _formatDate(user.dateJoined)
+                          : t.profile.unknown,
                       isDarkMode: isDarkMode,
                       iconColor: AppTheme.primaryColor,
                     ),
@@ -557,21 +530,19 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 // 現在のアバター
                 const SizedBox(height: 24),
                 ownAvatarAsync.when(
-                  data:
-                      (avatar) => _buildAvatarCard(
-                        context: context,
-                        avatar: avatar,
-                        headers: headers,
-                        isDarkMode: isDarkMode,
-                        accentColor: Colors.purple,
-                      ),
-                  loading:
-                      () => const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
+                  data: (avatar) => _buildAvatarCard(
+                    context: context,
+                    avatar: avatar,
+                    headers: headers,
+                    isDarkMode: isDarkMode,
+                    accentColor: Colors.purple,
+                  ),
+                  loading: () => const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
                   error: (_, _) => const SizedBox.shrink(),
                 ),
 
@@ -582,14 +553,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                     context: context,
                     title: t.profile.statusMessage,
                     icon: Icons.message_outlined,
-                    backgroundColor:
-                        isDarkMode
-                            ? HSLColor.fromColor(
-                              Colors.teal,
-                            ).withLightness(0.15).toColor()
-                            : HSLColor.fromColor(
-                              Colors.teal,
-                            ).withLightness(0.95).toColor(),
+                    backgroundColor: isDarkMode
+                        ? HSLColor.fromColor(
+                            Colors.teal,
+                          ).withLightness(0.15).toColor()
+                        : HSLColor.fromColor(
+                            Colors.teal,
+                          ).withLightness(0.95).toColor(),
                     iconColor: Colors.teal,
                     isDarkMode: isDarkMode,
                     children: [
@@ -597,16 +567,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         width: double.infinity,
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color:
-                              isDarkMode
-                                  ? Colors.teal.withValues(alpha: 0.1)
-                                  : Colors.teal.withValues(alpha: 0.05),
+                          color: isDarkMode
+                              ? Colors.teal.withValues(alpha: 0.1)
+                              : Colors.teal.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: Colors.teal.withValues(
                               alpha: isDarkMode ? 0.2 : 0.1,
                             ),
-                            width: 1,
                           ),
                         ),
                         child: Text(
@@ -614,10 +582,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                           style: GoogleFonts.notoSans(
                             fontSize: 16,
                             height: 1.5,
-                            color:
-                                isDarkMode
-                                    ? Colors.teal.withValues(alpha: 0.9)
-                                    : Colors.teal.withValues(alpha: 0.8),
+                            color: isDarkMode
+                                ? Colors.teal.withValues(alpha: 0.9)
+                                : Colors.teal.withValues(alpha: 0.8),
                           ),
                         ),
                       ),
@@ -632,14 +599,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                     context: context,
                     title: t.profile.bio,
                     icon: Icons.info_outline,
-                    backgroundColor:
-                        isDarkMode
-                            ? HSLColor.fromColor(
-                              Colors.blue,
-                            ).withLightness(0.15).toColor()
-                            : HSLColor.fromColor(
-                              Colors.blue,
-                            ).withLightness(0.95).toColor(),
+                    backgroundColor: isDarkMode
+                        ? HSLColor.fromColor(
+                            Colors.blue,
+                          ).withLightness(0.15).toColor()
+                        : HSLColor.fromColor(
+                            Colors.blue,
+                          ).withLightness(0.95).toColor(),
                     iconColor: Colors.blue,
                     isDarkMode: isDarkMode,
                     children: [
@@ -647,16 +613,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         width: double.infinity,
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color:
-                              isDarkMode
-                                  ? Colors.blue.withValues(alpha: 0.1)
-                                  : Colors.blue.withValues(alpha: 0.05),
+                          color: isDarkMode
+                              ? Colors.blue.withValues(alpha: 0.1)
+                              : Colors.blue.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: Colors.blue.withValues(
                               alpha: isDarkMode ? 0.2 : 0.1,
                             ),
-                            width: 1,
                           ),
                         ),
                         child: Text(
@@ -664,10 +628,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                           style: GoogleFonts.notoSans(
                             fontSize: 16,
                             height: 1.5,
-                            color:
-                                isDarkMode
-                                    ? Colors.blue.withValues(alpha: 0.9)
-                                    : Colors.blue.withValues(alpha: .8),
+                            color: isDarkMode
+                                ? Colors.blue.withValues(alpha: 0.9)
+                                : Colors.blue.withValues(alpha: .8),
                           ),
                         ),
                       ),
@@ -701,13 +664,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                       return const SizedBox.shrink();
                     }
                   },
-                  loading:
-                      () => const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
+                  loading: () => const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
                   error: (_, _) => const SizedBox.shrink(),
                 ),
 
@@ -829,40 +791,34 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         httpHeaders: headers,
                         cacheManager: JsonCacheManager(),
                         fit: BoxFit.cover,
-                        placeholder:
-                            (context, url) => Container(
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[800]
-                                      : Colors.grey[200],
-                              child: Center(
-                                child: Icon(
-                                  Icons.group,
-                                  color:
-                                      isDarkMode
-                                          ? Colors.grey[600]
-                                          : Colors.grey[400],
-                                  size: 30,
-                                ),
-                              ),
+                        placeholder: (context, url) => Container(
+                          color: isDarkMode
+                              ? Colors.grey[800]
+                              : Colors.grey[200],
+                          child: Center(
+                            child: Icon(
+                              Icons.group,
+                              color: isDarkMode
+                                  ? Colors.grey[600]
+                                  : Colors.grey[400],
+                              size: 30,
                             ),
-                        errorWidget:
-                            (context, url, error) => Container(
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[800]
-                                      : Colors.grey[200],
-                              child: Center(
-                                child: Icon(
-                                  Icons.group,
-                                  color:
-                                      isDarkMode
-                                          ? Colors.grey[600]
-                                          : Colors.grey[400],
-                                  size: 30,
-                                ),
-                              ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: isDarkMode
+                              ? Colors.grey[800]
+                              : Colors.grey[200],
+                          child: Center(
+                            child: Icon(
+                              Icons.group,
+                              color: isDarkMode
+                                  ? Colors.grey[600]
+                                  : Colors.grey[400],
+                              size: 30,
                             ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -891,10 +847,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                             Icon(
                               Icons.tag,
                               size: 14,
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[400]
-                                      : Colors.grey[600],
+                              color: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                             ),
                             const SizedBox(width: 6),
                             Text(
@@ -902,10 +857,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                               style: GoogleFonts.notoSans(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[300]
-                                        : Colors.grey[700],
+                                color: isDarkMode
+                                    ? Colors.grey[300]
+                                    : Colors.grey[700],
                                 letterSpacing: 0.5,
                               ),
                             ),
@@ -921,10 +875,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                             Icon(
                               Icons.people,
                               size: 14,
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[400]
-                                      : Colors.grey[600],
+                              color: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                             ),
                             const SizedBox(width: 6),
                             Text(
@@ -933,10 +886,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                               ),
                               style: GoogleFonts.notoSans(
                                 fontSize: 14,
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[300]
-                                        : Colors.grey[700],
+                                color: isDarkMode
+                                    ? Colors.grey[300]
+                                    : Colors.grey[700],
                               ),
                             ),
                           ],
@@ -1077,30 +1029,21 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                       httpHeaders: headers,
                       cacheManager: JsonCacheManager(),
                       fit: BoxFit.cover,
-                      placeholder:
-                          (context, url) => Container(
-                            color:
-                                isDarkMode
-                                    ? Colors.grey[800]
-                                    : Colors.grey[200],
-                            child: const Center(
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          ),
-                      errorWidget:
-                          (context, url, error) => Container(
-                            color:
-                                isDarkMode
-                                    ? Colors.grey[800]
-                                    : Colors.grey[200],
-                            child: Icon(
-                              Icons.broken_image,
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[600]
-                                      : Colors.grey[400],
-                            ),
-                          ),
+                      placeholder: (context, url) => Container(
+                        color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                        child: const Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                        child: Icon(
+                          Icons.broken_image,
+                          color: isDarkMode
+                              ? Colors.grey[600]
+                              : Colors.grey[400],
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -1124,20 +1067,18 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                           Icon(
                             Icons.person_outline,
                             size: 14,
-                            color:
-                                isDarkMode
-                                    ? Colors.grey[400]
-                                    : Colors.grey[600],
+                            color: isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
                           ),
                           const SizedBox(width: 6),
                           Text(
                             avatar.authorName,
                             style: GoogleFonts.notoSans(
                               fontSize: 14,
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey[300]
-                                      : Colors.grey[700],
+                              color: isDarkMode
+                                  ? Colors.grey[300]
+                                  : Colors.grey[700],
                             ),
                           ),
                         ],
@@ -1209,7 +1150,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
   ) {
     return TweenAnimationBuilder<double>(
       duration: const Duration(milliseconds: 800),
-      tween: Tween<double>(begin: 0.95, end: 1.0),
+      tween: Tween<double>(begin: 0.95, end: 1),
       curve: Curves.elasticOut,
       builder: (context, value, child) {
         return Transform.scale(
@@ -1530,12 +1471,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
           icon: Icons.link,
           isDarkMode: isDarkMode,
           customColor: Colors.teal,
-          children:
-              linkData.isEmpty
-                  ? [_buildLoadingLinksIndicator(isDarkMode)]
-                  : linkData
-                      .map((data) => _buildLinkItem(context, data, isDarkMode))
-                      .toList(),
+          children: linkData.isEmpty
+              ? [_buildLoadingLinksIndicator(isDarkMode)]
+              : linkData
+                    .map((data) => _buildLinkItem(context, data, isDarkMode))
+                    .toList(),
         );
       },
     );
@@ -1572,30 +1512,29 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
                 borderRadius: BorderRadius.circular(4),
               ),
-              child:
-                  faviconUrl != null
-                      ? ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: Image.network(
-                          faviconUrl,
-                          width: 16,
-                          height: 16,
-                          errorBuilder:
-                              (context, error, stackTrace) => Icon(
-                                Icons.language,
-                                size: 16,
-                                color:
-                                    isDarkMode
-                                        ? Colors.grey[400]
-                                        : Colors.grey[600],
-                              ),
+              child: faviconUrl != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: CachedNetworkImage(
+                        imageUrl: faviconUrl,
+                        cacheManager: JsonCacheManager(),
+                        width: 16,
+                        height: 16,
+                        fit: BoxFit.contain,
+                        errorWidget: (context, error, stackTrace) => Icon(
+                          Icons.language,
+                          size: 16,
+                          color: isDarkMode
+                              ? Colors.grey[400]
+                              : Colors.grey[600],
                         ),
-                      )
-                      : Icon(
-                        Icons.language,
-                        size: 16,
-                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                       ),
+                    )
+                  : Icon(
+                      Icons.language,
+                      size: 16,
+                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                    ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -1654,7 +1593,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
     );
   }
 
-
   String _ensureHttpPrefix(String url) {
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return url;
@@ -1663,7 +1601,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
   }
 
   String _extractDomain(String url) {
-    var processedUrl = url.replaceAll(RegExp(r'https?://'), '');
+    var processedUrl = url.replaceAll(RegExp('https?://'), '');
     processedUrl = processedUrl.split('/')[0];
     processedUrl = processedUrl.split('?')[0].split('#')[0];
     return processedUrl;

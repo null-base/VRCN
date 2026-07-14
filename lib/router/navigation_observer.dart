@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 // ナビゲーションインデックス管理用プロバイダー（まだ定義されていない場合）
 final navigationIndexProvider = StateProvider<int>((ref) => 0);
 
 @immutable
 class VRChatNavigationObserver extends NavigatorObserver {
-  final StateController<int> navigationController;
-
   VRChatNavigationObserver(this.navigationController);
+  final StateController<int> navigationController;
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
@@ -44,6 +43,7 @@ class VRChatNavigationObserver extends NavigatorObserver {
     }
 
     Future.microtask(() {
+      if (navigationController.state == index) return;
       navigationController.state = index;
     });
   }

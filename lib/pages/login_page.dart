@@ -1,18 +1,14 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
-import 'package:vrchat/provider/auth_storage_provider.dart';
-import 'package:vrchat/provider/user_provider.dart';
-import 'package:vrchat/provider/vrchat_api_provider.dart';
-import 'package:vrchat/router/app_router.dart';
+import 'package:vrchat/controllers/login_controller.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/utils/url_launcher_utils.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -54,44 +50,17 @@ class _LoginPageState extends ConsumerState<LoginPage>
       duration: const Duration(milliseconds: 800),
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.1),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
+          CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+        );
 
     // アニメーション開始
     _animationController.forward();
-
-    // デバッグモードの場合は環境変数から認証情報を読み込む
-    if (kDebugMode) {
-      _loadCredentialsFromEnv();
-    }
-  }
-
-  // 環境変数から認証情報を読み込む
-  void _loadCredentialsFromEnv() {
-    try {
-      final username = dotenv.env['VRCHAT_USERNAME'];
-      final password = dotenv.env['VRCHAT_PASSWORD'];
-
-      if (username != null && username.isNotEmpty) {
-        _usernameController.text = username;
-      }
-
-      if (password != null && password.isNotEmpty) {
-        _passwordController.text = password;
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('環境変数からの認証情報読み込みに失敗しました: $e');
-      }
-    }
   }
 
   @override
@@ -109,8 +78,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
   }
 
   Future<void> _login() async {
-    final auth = ref.watch(vrchatAuthProvider).value!;
-    if (!_formKey.currentState!.validate()) return;
+    if (!(_formKey.currentState?.validate() ?? false)) return;
 
     setState(() {
       _isLoading = true;
@@ -118,38 +86,29 @@ class _LoginPageState extends ConsumerState<LoginPage>
     });
 
     try {
-      final result = await auth.login(
-        username: _usernameController.text,
-        password: _passwordController.text,
-      );
+      final result = await ref
+          .read(loginControllerProvider)
+          .login(
+            username: _usernameController.text,
+            password: _passwordController.text,
+            rememberLogin: _rememberLogin,
+          );
 
       if (!mounted) return;
 
-      if (result.failure != null) {
-        setState(() {
-          _errorMessage = t.login.errorLoginFailed;
-        });
-      } else if (result.success?.data.requiresTwoFactorAuth == true) {
-        // 二段階認証が必要な場合
-        setState(() {
-          _showTwoFactorAuth = true;
-        });
-        // 新しい画面のアニメーションをリセットして再生
-        _animationController.reset();
-        await _animationController.forward();
-
-        // 自動OTP入力を試行
-        // _tryAutoOtpInput();
-      } else {
-        if (_rememberLogin) {
-          // ログイン情報を安全に保存
-          final authStorage = ref.read(authStorageProvider);
-          await authStorage.saveCredentials(
-            _usernameController.text,
-            _passwordController.text,
-          );
-        }
-        await _handleLoginSuccess();
+      switch (result.status) {
+        case LoginFlowStatus.success:
+          context.go('/');
+        case LoginFlowStatus.requiresTwoFactor:
+          setState(() {
+            _showTwoFactorAuth = true;
+          });
+          _animationController.reset();
+          await _animationController.forward();
+        case LoginFlowStatus.failure:
+          setState(() {
+            _errorMessage = t.login.errorLoginFailed;
+          });
       }
     } catch (e) {
       if (!mounted) return;
@@ -179,17 +138,26 @@ class _LoginPageState extends ConsumerState<LoginPage>
     });
 
     try {
-      final auth = ref.watch(vrchatAuthProvider).value!;
-      final result = await auth.verify2fa(_twoFactorCodeController.text);
+      final result = await ref
+          .read(loginControllerProvider)
+          .verifyTwoFactorCode(
+            code: _twoFactorCodeController.text,
+            username: _usernameController.text,
+            password: _passwordController.text,
+            rememberLogin: _rememberLogin,
+          );
 
       if (!mounted) return;
 
-      if (result.failure != null) {
-        setState(() {
-          _errorMessage = t.login.error2faFailed;
-        });
-      } else {
-        await _handleLoginSuccess();
+      switch (result.status) {
+        case LoginFlowStatus.success:
+          context.go('/');
+        case LoginFlowStatus.requiresTwoFactor:
+          break;
+        case LoginFlowStatus.failure:
+          setState(() {
+            _errorMessage = t.login.error2faFailed;
+          });
       }
     } catch (e) {
       if (!mounted) return;
@@ -205,23 +173,11 @@ class _LoginPageState extends ConsumerState<LoginPage>
     }
   }
 
-  // ログイン成功時の処理
-  Future<void> _handleLoginSuccess() async {
-    // 認証状態を更新
-    ref.read(authRefreshProvider.notifier).state++;
-
-    try {
-      // ユーザー情報を先に取得してキャッシュしておく
-      await ref.read(currentUserProvider.future);
-    } catch (e) {
-      debugPrint('ログイン後のユーザー情報取得でエラー: $e');
-      // エラーがあっても続行（後でリトライする）
+  void _setTwoFactorCodeDigits(String value) {
+    for (var i = 0; i < _twoFactorCodeValue.length; i++) {
+      _twoFactorCodeValue[i] = i < value.length ? value[i] : '';
     }
-
-    // ホーム画面に遷移
-    if (mounted) {
-      context.go('/');
-    }
+    _twoFactorCodeController.text = _twoFactorCodeValue.join();
   }
 
   @override
@@ -243,14 +199,13 @@ class _LoginPageState extends ConsumerState<LoginPage>
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors:
-                    isDarkMode
-                        ? [Colors.grey[900]!, Colors.black, Colors.grey[850]!]
-                        : [
-                          Colors.blue[50]!,
-                          Colors.indigo[50]!,
-                          Colors.purple[50]!,
-                        ],
+                colors: isDarkMode
+                    ? [Colors.grey[900]!, Colors.black, Colors.grey[850]!]
+                    : [
+                        Colors.blue[50]!,
+                        Colors.indigo[50]!,
+                        Colors.purple[50]!,
+                      ],
               ),
             ),
           ),
@@ -258,7 +213,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
           // あのめあ
           Center(
             child: Image.asset(
-              'assets/images/立ち絵.png',
+              Assets.images.standing.path,
               height: size.height * 0.85,
               fit: BoxFit.contain,
             ),
@@ -267,11 +222,11 @@ class _LoginPageState extends ConsumerState<LoginPage>
           // ログインフォーム
           SafeArea(
             child: Align(
-              alignment: const Alignment(0.0, 0.3),
+              alignment: const Alignment(0, 0.3),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 32.0,
-                  vertical: 24.0,
+                  horizontal: 32,
+                  vertical: 24,
                 ),
                 child: FadeTransition(
                   opacity: _fadeAnimation,
@@ -281,10 +236,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       width: min(450, size.width * 0.85),
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        color:
-                            isDarkMode
-                                ? Colors.black.withValues(alpha: 0.75)
-                                : Colors.white.withValues(alpha: 0.9),
+                        color: isDarkMode
+                            ? Colors.black.withValues(alpha: 0.75)
+                            : Colors.white.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
@@ -294,11 +248,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           ),
                         ],
                         border: Border.all(
-                          color:
-                              isDarkMode
-                                  ? Colors.white.withValues(alpha: 0.1)
-                                  : Colors.black.withValues(alpha: 0.05),
-                          width: 1,
+                          color: isDarkMode
+                              ? Colors.white.withValues(alpha: 0.1)
+                              : Colors.black.withValues(alpha: 0.05),
                         ),
                       ),
                       child: Form(
@@ -316,10 +268,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                 style: GoogleFonts.notoSans(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
-                                  color:
-                                      isDarkMode
-                                          ? Colors.white
-                                          : secondaryColor,
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : secondaryColor,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -396,10 +347,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
                                     onPressed: () {
-                                      final url = Uri.parse(
+                                      UrlLauncherUtils.launchURL(
                                         'https://vrchat.com/home/password',
                                       );
-                                      launchUrl(url);
                                     },
                                     style: TextButton.styleFrom(
                                       foregroundColor: primaryColor,
@@ -420,10 +370,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
                                     onPressed: () {
-                                      final url = Uri.parse(
+                                      UrlLauncherUtils.launchURL(
                                         'https://vrchat.com/home/register',
                                       );
-                                      launchUrl(url);
                                     },
                                     style: TextButton.styleFrom(
                                       foregroundColor: primaryColor,
@@ -470,10 +419,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                 // ログインボタン
                                 _buildGradientButton(
                                   onPressed: _isLoading ? null : _login,
-                                  text:
-                                      _isLoading
-                                          ? t.login.loggingIn
-                                          : t.common.login,
+                                  text: _isLoading
+                                      ? t.login.loggingIn
+                                      : t.common.login,
                                   isLoading: _isLoading,
                                 ),
                               ] else ...[
@@ -494,12 +442,12 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
                                 // 認証ボタン
                                 _buildGradientButton(
-                                  onPressed:
-                                      _isLoading ? null : _verifyTwoFactorCode,
-                                  text:
-                                      _isLoading
-                                          ? t.login.verifying
-                                          : t.login.verify,
+                                  onPressed: _isLoading
+                                      ? null
+                                      : _verifyTwoFactorCode,
+                                  text: _isLoading
+                                      ? t.login.verifying
+                                      : t.login.verify,
                                   isLoading: _isLoading,
                                 ),
 
@@ -508,17 +456,16 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                 // ログイン画面に戻るボタン
                                 Center(
                                   child: TextButton.icon(
-                                    onPressed:
-                                        !_isLoading
-                                            ? () {
-                                              setState(() {
-                                                _showTwoFactorAuth = false;
-                                                _errorMessage = null;
-                                              });
-                                              _animationController.reset();
-                                              _animationController.forward();
-                                            }
-                                            : null,
+                                    onPressed: !_isLoading
+                                        ? () {
+                                            setState(() {
+                                              _showTwoFactorAuth = false;
+                                              _errorMessage = null;
+                                            });
+                                            _animationController.reset();
+                                            _animationController.forward();
+                                          }
+                                        : null,
                                     icon: const Icon(Icons.arrow_back_rounded),
                                     label: Text(
                                       t.login.backToLogin,
@@ -537,26 +484,23 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                 Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color:
-                                        isDarkMode
-                                            ? Colors.red.shade900.withAlpha(50)
-                                            : Colors.red.withAlpha(25),
+                                    color: isDarkMode
+                                        ? Colors.red.shade900.withAlpha(50)
+                                        : Colors.red.withAlpha(25),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color:
-                                          isDarkMode
-                                              ? Colors.red.shade800
-                                              : Colors.red.withAlpha(75),
+                                      color: isDarkMode
+                                          ? Colors.red.shade800
+                                          : Colors.red.withAlpha(75),
                                     ),
                                   ),
                                   child: Row(
                                     children: [
                                       Icon(
                                         Icons.error_outline_rounded,
-                                        color:
-                                            isDarkMode
-                                                ? Colors.red.shade300
-                                                : Colors.red,
+                                        color: isDarkMode
+                                            ? Colors.red.shade300
+                                            : Colors.red,
                                       ),
                                       const SizedBox(width: 12),
                                       Expanded(
@@ -564,45 +508,10 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                           _errorMessage!,
                                           style: GoogleFonts.notoSans(
                                             fontSize: 14,
-                                            color:
-                                                isDarkMode
-                                                    ? Colors.red.shade200
-                                                    : Colors.red,
+                                            color: isDarkMode
+                                                ? Colors.red.shade200
+                                                : Colors.red,
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-
-                              // デバッグ情報
-                              if (kDebugMode && !_showTwoFactorAuth) ...[
-                                const SizedBox(height: 32),
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withAlpha(5),
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                      color: Colors.black.withAlpha(10),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.bug_report_rounded,
-                                        size: 16,
-                                        color: Colors.grey,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        'デバッグモード：.env認証情報を使用',
-                                        style: GoogleFonts.notoSans(
-                                          fontSize: 12,
-                                          color: Colors.grey,
                                         ),
                                       ),
                                     ],
@@ -645,23 +554,16 @@ class _LoginPageState extends ConsumerState<LoginPage>
             onChanged: (value) {
               if (value.isNotEmpty) {
                 setState(() {
-                  for (var i = 0; i < 6; i++) {
-                    if (i < value.length) {
-                      _twoFactorCodeValue[i] = value[i];
-                    } else {
-                      _twoFactorCodeValue[i] = '';
-                    }
-                  }
+                  _setTwoFactorCodeDigits(value);
                 });
 
                 if (value.length == 6) {
-                  _twoFactorCodeController.text = value;
                   _verifyTwoFactorCode();
                 } else if (value.isNotEmpty) {
                   _focusNodes[value.length - 1].requestFocus();
                 }
 
-                Future.delayed(Duration.zero, _hiddenController.clear);
+                _hiddenController.clear();
               }
             },
           ),
@@ -690,7 +592,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
         ),
 
         Padding(
-          padding: const EdgeInsets.only(top: 20.0),
+          padding: const EdgeInsets.only(top: 20),
           child: Center(
             child: TextButton.icon(
               onPressed: _pasteFromClipboard,
@@ -720,18 +622,14 @@ class _LoginPageState extends ConsumerState<LoginPage>
       width: 40,
       height: 50,
       decoration: BoxDecoration(
-        color:
-            hasValue
-                ? primaryColor.withAlpha(isDarkMode ? 75 : 25)
-                : (isDarkMode ? Colors.grey[700] : Colors.grey[100]),
+        color: hasValue
+            ? primaryColor.withAlpha(isDarkMode ? 75 : 25)
+            : (isDarkMode ? Colors.grey[700] : Colors.grey[100]),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color:
-              hasValue
-                  ? primaryColor
-                  : (isDarkMode
-                      ? Colors.grey[600]!
-                      : Colors.grey.withAlpha(75)),
+          color: hasValue
+              ? primaryColor
+              : (isDarkMode ? Colors.grey[600]! : Colors.grey.withAlpha(75)),
           width: hasValue ? 2 : 1,
         ),
       ),
@@ -754,16 +652,19 @@ class _LoginPageState extends ConsumerState<LoginPage>
         ),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         onChanged: (value) {
-          if (value.isNotEmpty) {
+          setState(() {
             _twoFactorCodeValue[index] = value;
-            if (index < 5) {
-              FocusScope.of(context).nextFocus();
-            } else {
-              if (_twoFactorCodeValue.join().length == 6) {
-                _twoFactorCodeController.text = _twoFactorCodeValue.join();
-                _verifyTwoFactorCode();
-              }
-            }
+            _twoFactorCodeController.text = _twoFactorCodeValue.join();
+          });
+
+          if (value.isNotEmpty && index < 5) {
+            FocusScope.of(context).nextFocus();
+          } else if (value.isEmpty && index > 0) {
+            FocusScope.of(context).previousFocus();
+          }
+
+          if (_twoFactorCodeController.text.length == 6) {
+            _verifyTwoFactorCode();
           }
         },
       ),
@@ -779,15 +680,12 @@ class _LoginPageState extends ConsumerState<LoginPage>
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors:
-              onPressed == null
-                  ? [Colors.grey, Colors.grey.shade400]
-                  : [
-                    Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.secondary,
-                  ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
+          colors: onPressed == null
+              ? [Colors.grey, Colors.grey.shade400]
+              : [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.secondary,
+                ],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
@@ -809,24 +707,23 @@ class _LoginPageState extends ConsumerState<LoginPage>
           ),
           padding: const EdgeInsets.symmetric(vertical: 16),
         ),
-        child:
-            isLoading
-                ? const SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.0,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                )
-                : Text(
-                  text,
-                  style: GoogleFonts.notoSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+        child: isLoading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
+              )
+            : Text(
+                text,
+                style: GoogleFonts.notoSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
       ),
     );
   }
@@ -881,21 +778,19 @@ class _LoginPageState extends ConsumerState<LoginPage>
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: isDarkMode ? Colors.grey[600]! : Colors.grey.withAlpha(75),
-              width: 1.0,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: Theme.of(context).colorScheme.primary,
-              width: 2.0,
+              width: 2,
             ),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: isDarkMode ? Colors.redAccent : Colors.red,
-              width: 1.0,
             ),
           ),
           contentPadding: const EdgeInsets.symmetric(
@@ -930,29 +825,19 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
     if (text != null && text.isNotEmpty) {
       // 数字のみを抽出
-      final digitsOnly = text.replaceAll(RegExp(r'[^0-9]'), '');
+      final digitsOnly = text.replaceAll(RegExp('[^0-9]'), '');
 
       if (digitsOnly.isNotEmpty) {
-        // 各桁に値を設定
+        final otpCode = digitsOnly.length >= 6
+            ? digitsOnly.substring(0, 6)
+            : digitsOnly;
+
         setState(() {
-          for (var i = 0; i < 6; i++) {
-            if (i < digitsOnly.length) {
-              _twoFactorCodeValue[i] = digitsOnly[i];
-            } else {
-              _twoFactorCodeValue[i] = '';
-            }
-          }
+          _setTwoFactorCodeDigits(otpCode);
         });
 
-        // 6桁のコードを変数に設定
-        if (digitsOnly.length >= 6) {
-          final otpCode = digitsOnly.substring(0, 6);
-          _twoFactorCodeController.text = otpCode;
-
-          // 少し遅延してから認証処理を実行
-          Future.delayed(const Duration(milliseconds: 300), () {
-            if (mounted) _verifyTwoFactorCode();
-          });
+        if (otpCode.length == 6 && mounted) {
+          await _verifyTwoFactorCode();
         }
       }
     }

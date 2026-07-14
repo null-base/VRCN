@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/first_launch_utils.dart';
 import 'package:vrchat/utils/url_launcher_utils.dart';
@@ -33,16 +34,17 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
       duration: const Duration(milliseconds: 1000),
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.1),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-    );
+    _slideAnimation =
+        Tween<Offset>(
+          begin: const Offset(0, 0.1),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+        );
 
     _animationController.forward();
   }
@@ -63,14 +65,13 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors:
-                isDarkMode
-                    ? [Colors.grey[900]!, Colors.black, Colors.grey[850]!]
-                    : [
-                      Colors.blue[50]!,
-                      Colors.indigo[50]!,
-                      Colors.purple[50]!,
-                    ],
+            colors: isDarkMode
+                ? [Colors.grey[900]!, Colors.black, Colors.grey[850]!]
+                : [
+                    Colors.blue[50]!,
+                    Colors.indigo[50]!,
+                    Colors.purple[50]!,
+                  ],
           ),
         ),
         child: SafeArea(
@@ -79,7 +80,7 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
             child: SlideTransition(
               position: _slideAnimation,
               child: Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(24),
                 child: Column(
                   children: [
                     Expanded(
@@ -110,26 +111,27 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(20),
                                       child: Image.asset(
-                                        'assets/icons/default.png',
+                                        Assets.icons.icon.path,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (
-                                          context,
-                                          error,
-                                          stackTrace,
-                                        ) {
-                                          return DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              color: AppTheme.primaryColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: const Icon(
-                                              Icons.vrpano,
-                                              color: Colors.white,
-                                              size: 40,
-                                            ),
-                                          );
-                                        },
+                                        errorBuilder:
+                                            (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) {
+                                              return DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                  color: AppTheme.primaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.vrpano,
+                                                  color: Colors.white,
+                                                  size: 40,
+                                                ),
+                                              );
+                                            },
                                       ),
                                     ),
                                   ),
@@ -139,10 +141,9 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
                                     style: TextStyle(
                                       fontSize: 28,
                                       fontWeight: FontWeight.bold,
-                                      color:
-                                          isDarkMode
-                                              ? Colors.white
-                                              : Colors.black87,
+                                      color: isDarkMode
+                                          ? Colors.white
+                                          : Colors.black87,
                                     ),
                                   ),
                                   const SizedBox(height: 8),
@@ -150,10 +151,9 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
                                     t.termsAgreement.welcomeMessage,
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color:
-                                          isDarkMode
-                                              ? Colors.grey[300]
-                                              : Colors.grey[600],
+                                      color: isDarkMode
+                                          ? Colors.grey[300]
+                                          : Colors.grey[600],
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
@@ -191,16 +191,14 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color:
-            isDarkMode
-                ? Colors.black.withValues(alpha: .3)
-                : Colors.white.withValues(alpha: 0.8),
+        color: isDarkMode
+            ? Colors.black.withValues(alpha: .3)
+            : Colors.white.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color:
-              isDarkMode
-                  ? Colors.white.withValues(alpha: 0.1)
-                  : Colors.black.withValues(alpha: 0.1),
+          color: isDarkMode
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.black.withValues(alpha: 0.1),
         ),
       ),
       child: Column(
@@ -210,12 +208,11 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
             title: t.termsAgreement.termsTitle,
             subtitle: t.termsAgreement.termsSubtitle,
             value: _termsAccepted,
-            onChanged:
-                (value) => setState(() => _termsAccepted = value ?? false),
-            onLinkTap:
-                () => UrlLauncherUtils.launchURL(
-                  'https://null-base.com/vrcn/terms-of-service',
-                ),
+            onChanged: (value) =>
+                setState(() => _termsAccepted = value ?? false),
+            onLinkTap: () => UrlLauncherUtils.launchURL(
+              'https://null-base.com/vrcn/terms-of-service',
+            ),
             isDarkMode: isDarkMode,
             t: t,
           ),
@@ -227,12 +224,11 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
             title: t.termsAgreement.privacyTitle,
             subtitle: t.termsAgreement.privacySubtitle,
             value: _privacyAccepted,
-            onChanged:
-                (value) => setState(() => _privacyAccepted = value ?? false),
-            onLinkTap:
-                () => UrlLauncherUtils.launchURL(
-                  'https://null-base.com/vrcn/privacy-policy/',
-                ),
+            onChanged: (value) =>
+                setState(() => _privacyAccepted = value ?? false),
+            onLinkTap: () => UrlLauncherUtils.launchURL(
+              'https://null-base.com/vrcn/privacy-policy/',
+            ),
             isDarkMode: isDarkMode,
             t: t,
           ),
@@ -346,23 +342,22 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
               ),
               elevation: canProceed ? 8 : 0,
             ),
-            child:
-                _isLoading
-                    ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                    : Text(
-                      t.common.agree,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+            child: _isLoading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
+                  )
+                : Text(
+                    t.common.agree,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
           ),
         ),
         const SizedBox(height: 16),

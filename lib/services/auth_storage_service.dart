@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 /// 認証情報を安全に保存するためのクラス
 class AuthStorageService {
@@ -24,17 +24,17 @@ class AuthStorageService {
     await saveUsername(username);
     await savePassword(password);
     await setRememberLogin(true);
-    debugPrint('認証情報を安全に保存しました');
+    appLogger.d('認証情報を安全に保存しました');
   }
 
   // ユーザー名を取得
   Future<String?> getUsername() async {
-    return await _secureStorage.read(key: _usernameKey);
+    return _secureStorage.read(key: _usernameKey);
   }
 
   // パスワードを取得
   Future<String?> getPassword() async {
-    return await _secureStorage.read(key: _passwordKey);
+    return _secureStorage.read(key: _passwordKey);
   }
 
   // 認証情報を取得（ユーザー名とパスワードの両方）
@@ -49,7 +49,7 @@ class AuthStorageService {
     await _secureStorage.delete(key: _usernameKey);
     await _secureStorage.delete(key: _passwordKey);
     await setRememberLogin(false);
-    debugPrint('保存された認証情報を削除しました');
+    appLogger.d('保存された認証情報を削除しました');
   }
 
   // 自動ログインの設定を保存

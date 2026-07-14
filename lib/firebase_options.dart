@@ -65,5 +65,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'null-vrchat.firebasestorage.app',
     iosBundleId: 'com.null-base.vrchat',
   );
-
 }

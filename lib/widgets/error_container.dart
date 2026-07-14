@@ -1,25 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/theme/app_theme.dart';
 
 class ErrorContainer extends StatelessWidget {
+  const ErrorContainer({super.key, required this.message, this.onRetry});
   final String message;
   final VoidCallback? onRetry;
-
-  const ErrorContainer({super.key, required this.message, this.onRetry});
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 48,
-              color: Theme.of(context).colorScheme.error,
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: AppTheme.dangerColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.error_outline,
+                size: 32,
+                color: AppTheme.dangerColor,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
@@ -32,9 +40,26 @@ class ErrorContainer extends StatelessWidget {
             ),
             if (onRetry != null) ...[
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: onRetry,
-                child: Text(t.common.retry,style: GoogleFonts.notoSans()),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onRetry,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    t.common.retry,
+                    style: GoogleFonts.notoSans(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
               ),
             ],
           ],

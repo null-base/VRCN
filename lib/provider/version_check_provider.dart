@@ -1,35 +1,54 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:new_version_plus/new_version_plus.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:vrchat/provider/package_info_provider.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
-// バージョンチェック結果を管理するプロバイダー
-final versionCheckProvider = FutureProvider<VersionStatus?>((ref) async {
+@immutable
+class AppVersionStatus {
+  const AppVersionStatus({
+    required this.localVersion,
+    required this.storeVersion,
+    required this.appStoreLink,
+    this.releaseNotes,
+  });
+  final String localVersion;
+  final String storeVersion;
+  final String? releaseNotes;
+  final String appStoreLink;
+
+  bool get canUpdate => _compareVersions(storeVersion, localVersion) > 0;
+}
+
+final versionCheckProvider = FutureProvider<AppVersionStatus?>((ref) async {
   try {
-    final newVersionPlus = NewVersionPlus(
-      iOSId: 'com.null-base.vrchat',
-      androidId: 'com.nullbase.vrchat',
-    );
-
-    // 現在のバージョン情報を取得
-    final packageInfo = await PackageInfo.fromPlatform();
-    debugPrint('現在のバージョン: ${packageInfo.version}');
-
-    // ストアから最新バージョン情報を取得
-    final status = await newVersionPlus.getVersionStatus();
-
-    if (status != null) {
-      debugPrint('ストアの最新バージョン: ${status.storeVersion}');
-      debugPrint('アップデート可能: ${status.canUpdate}');
-
-      return status;
-    }
-
+    final packageInfo = await ref.watch(packageInfoProvider.future);
+    appLogger.d('現在のバージョン: ${packageInfo.version}');
     return null;
   } catch (e) {
-    debugPrint('バージョンチェックエラー: $e');
+    appLogger.d('バージョンチェックエラー: $e');
     return null;
   }
 });
 
 final updateDialogShownProvider = StateProvider<bool>((ref) => false);
+
+int _compareVersions(String left, String right) {
+  final leftParts = left.split('.').map((value) => int.tryParse(value) ?? 0);
+  final rightParts = right.split('.').map((value) => int.tryParse(value) ?? 0);
+  final maxLength = leftParts.length > rightParts.length
+      ? leftParts.length
+      : rightParts.length;
+
+  for (var index = 0; index < maxLength; index++) {
+    final leftValue = index < leftParts.length ? leftParts.elementAt(index) : 0;
+    final rightValue = index < rightParts.length
+        ? rightParts.elementAt(index)
+        : 0;
+    if (leftValue != rightValue) {
+      return leftValue.compareTo(rightValue);
+    }
+  }
+
+  return 0;
+}

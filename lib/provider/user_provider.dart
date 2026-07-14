@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:vrchat/provider/auth_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
-final vrchatUserProvider = FutureProvider((ref) async {
+final FutureProvider<UsersApi> vrchatUserProvider = FutureProvider((ref) async {
   try {
     final rawApi = await ref.watch(vrchatRawApiProvider);
     return rawApi.getUsersApi();
@@ -14,43 +15,47 @@ final vrchatUserProvider = FutureProvider((ref) async {
 });
 
 // 特定のユーザーの詳細情報を取得するプロバイダー
-final userDetailProvider = FutureProvider.family<User, String>((
-  ref,
-  userId,
-) async {
-  final usersApi = await ref.watch(vrchatUserProvider.future);
-  try {
-    final response = await usersApi.getUser(userId: userId);
-
-    if (response.data == null) {
-      throw Exception('ユーザーデータが取得できませんでした: $userId');
-    }
-    return response.data!;
-  } catch (e) {
-    throw Exception('ユーザー情報の取得に失敗しました: $e');
-  }
-});
-
-// ユーザーの代表グループを取得するプロバイダー
-final userRepresentedGroupProvider =
-    FutureProvider.family<RepresentedGroup?, String>((ref, userId) async {
+final FutureProviderFamily<User, String> userDetailProvider =
+    FutureProvider.family<User, String>((
+      ref,
+      userId,
+    ) async {
       final usersApi = await ref.watch(vrchatUserProvider.future);
       try {
-        final response = await usersApi.getUserRepresentedGroup(userId: userId);
-        return response.data;
+        final response = await usersApi.getUser(userId: userId);
+
+        if (response.data == null) {
+          throw Exception('ユーザーデータが取得できませんでした: $userId');
+        }
+        return response.data!;
       } catch (e) {
-        return null;
+        throw Exception('ユーザー情報の取得に失敗しました: $e');
       }
     });
+
+// ユーザーの代表グループを取得するプロバイダー
+final FutureProviderFamily<RepresentedGroup?, String>
+userRepresentedGroupProvider = FutureProvider.family<RepresentedGroup?, String>(
+  (ref, userId) async {
+    final usersApi = await ref.watch(vrchatUserProvider.future);
+    try {
+      final response = await usersApi.getUserRepresentedGroup(
+        userId: userId,
+      );
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  },
+);
 
 // ユーザー検索パラメータクラス
 @immutable
 class UserSearchParams {
+  const UserSearchParams({this.search, this.n = 60, this.offset = 0});
   final String? search;
   final int? n;
   final int? offset;
-
-  const UserSearchParams({this.search, this.n = 60, this.offset = 0});
 
   @override
   bool operator ==(Object other) {
@@ -81,39 +86,36 @@ LimitedUser _convertSearchUserToLimitedUser(LimitedUserSearch searchUser) {
     statusDescription: searchUser.statusDescription,
     tags: searchUser.tags,
     userIcon: searchUser.userIcon,
-    location: null, // LimitedUserSearchにはlocationフィールドがない場合
-    friendKey: null, // LimitedUserSearchにはfriendKeyフィールドがない場合
-    lastLogin: null, // LimitedUserSearchにはlastLoginフィールドがない場合
   );
 }
 
 // ユーザー検索プロバイダー
-final userSearchProvider =
-    FutureProvider.family<List<LimitedUser>, UserSearchParams>((
-      ref,
-      params,
-    ) async {
-      final usersApi = await ref.watch(vrchatUserProvider.future);
+final FutureProviderFamily<List<LimitedUser>, UserSearchParams>
+userSearchProvider = FutureProvider.family<List<LimitedUser>, UserSearchParams>(
+  (
+    ref,
+    params,
+  ) async {
+    final usersApi = await ref.watch(vrchatUserProvider.future);
 
-      try {
-        final response = await usersApi.searchUsers(
-          search: params.search,
-          n: params.n,
-          offset: params.offset,
-        );
+    try {
+      final response = await usersApi.searchUsers(
+        search: params.search,
+        n: params.n,
+        offset: params.offset,
+      );
 
-        if (response.data == null) {
-          return [];
-        }
-
-        // LimitedUserSearchをLimitedUserに変換
-        return response.data!
-            .map(_convertSearchUserToLimitedUser)
-            .toList();
-      } catch (e) {
-        throw Exception('ユーザー検索に失敗しました: $e');
+      if (response.data == null) {
+        return [];
       }
-    });
+
+      // LimitedUserSearchをLimitedUserに変換
+      return response.data!.map(_convertSearchUserToLimitedUser).toList();
+    } catch (e) {
+      throw Exception('ユーザー検索に失敗しました: $e');
+    }
+  },
+);
 
 // 現在のユーザー（自分自身）の情報を取得するプロバイダー
 final currentUserProvider = FutureProvider<CurrentUser>((ref) async {
@@ -126,7 +128,7 @@ final currentUserProvider = FutureProvider<CurrentUser>((ref) async {
     // 認証情報があるが、ユーザー情報がない場合は再取得を試みる
     if (currentUser == null) {
       // 認証状態を確認
-      final isLoggedIn = await ref.watch(authStateProvider.future);
+      final isLoggedIn = await ref.watch(sessionAuthStateProvider.future);
       if (!isLoggedIn) {
         throw Exception('ログインしていません');
       }
@@ -141,7 +143,7 @@ final currentUserProvider = FutureProvider<CurrentUser>((ref) async {
 });
 
 // ユーザー情報を更新するプロバイダー
-final updateUserProvider =
+final FutureProviderFamily<CurrentUser, UpdateUserRequest> updateUserProvider =
     FutureProvider.family<CurrentUser, UpdateUserRequest>((
       ref,
       updateUserRequest,
@@ -168,7 +170,7 @@ final updateUserProvider =
     });
 
 // ユーザーのグループ一覧を取得するプロバイダー
-final userGroupsProvider =
+final FutureProviderFamily<List<LimitedUserGroups>, String> userGroupsProvider =
     FutureProvider.family<List<LimitedUserGroups>, String>((ref, userId) async {
       final usersApi = await ref.watch(vrchatUserProvider.future);
 

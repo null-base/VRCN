@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/pages/search_page.dart';
 import 'package:vrchat/provider/navigation_provider.dart';
 import 'package:vrchat/provider/notification_provider.dart';
 import 'package:vrchat/provider/search_providers.dart';
 import 'package:vrchat/provider/settings_provider.dart';
+import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/widgets/app_bar.dart';
 import 'package:vrchat/widgets/app_drawer.dart';
 import 'package:vrchat/widgets/friend_sort_dialog.dart';
 
 class Navigation extends ConsumerWidget {
+  Navigation({super.key, required this.child, required this.currentIndex});
   final Widget child;
   final int currentIndex;
 
   // 検索ページへのアクセス用のキー
   final searchPageKey = GlobalKey<SearchPageState>();
 
-  Navigation({super.key, required this.child, required this.currentIndex});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final scaffoldKey = ref.watch(scaffoldKeyProvider);
+    ref.watch(friendOnlineWatcherProvider);
 
     return Scaffold(
       key: scaffoldKey,
       appBar: _buildAppBarForPage(context, scaffoldKey, ref),
       drawer: const AppDrawer(),
-      body: SafeArea(top: true, bottom: false, child: child),
+      body: SafeArea(bottom: false, child: child),
       bottomNavigationBar: _buildTwitterStyleNavBar(context, isDarkMode, ref),
     );
   }
@@ -71,7 +73,6 @@ class Navigation extends ConsumerWidget {
               // すべてのタブのオフセットをリセット
               ref.read(userSearchOffsetProvider.notifier).state = 0;
               ref.read(worldSearchOffsetProvider.notifier).state = 0;
-              ref.read(avatarSearchOffsetProvider.notifier).state = 0;
               ref.read(groupSearchOffsetProvider.notifier).state = 0;
               // 検索クエリを更新
               ref.read(searchQueryProvider.notifier).state = query;
@@ -90,21 +91,19 @@ class Navigation extends ConsumerWidget {
         );
       case 2:
         return CustomAppBar(
-          title: '通知',
+          title: t.notifications.title,
           onAvatarPressed: () => scaffoldKey.currentState?.openDrawer(),
           actions: [
             IconButton(
               icon: const Icon(Icons.done_all),
-              tooltip: 'すべて既読にする',
-              onPressed: () {
-                // 通知をすべて既読にする
-                ref.read(notificationsProvider.notifier).markAllAsRead();
-
-                // フィードバックを表示
+              tooltip: t.notifications.markAllRead,
+              onPressed: () async {
+                await ref.read(notificationActionsProvider).markAllAsRead();
+                if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('すべての通知を既読にしました'),
-                    duration: Duration(seconds: 2),
+                  SnackBar(
+                    content: Text(t.notifications.markAllReadDone),
+                    duration: const Duration(seconds: 2),
                   ),
                 );
               },
@@ -113,7 +112,7 @@ class Navigation extends ConsumerWidget {
         );
       default:
         return CustomAppBar(
-          title: 'VRChat',
+          title: 'VRCN',
           onAvatarPressed: () => scaffoldKey.currentState?.openDrawer(),
         );
     }
@@ -124,8 +123,9 @@ class Navigation extends ConsumerWidget {
     bool isDarkMode,
     WidgetRef ref,
   ) {
-    final backgroundColor = isDarkMode ? Colors.black : Colors.white;
-    final borderColor = isDarkMode ? Colors.grey[900] : Colors.grey[200];
+    final theme = Theme.of(context);
+    final backgroundColor = theme.colorScheme.surface;
+    final borderColor = theme.colorScheme.outlineVariant;
     final allowNsfw = ref.watch(settingsProvider).allowNsfw;
 
     // 表示するタブのインデックスと設定
@@ -152,7 +152,7 @@ class Navigation extends ConsumerWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: backgroundColor,
-        border: Border(top: BorderSide(color: borderColor!, width: 0.5)),
+        border: Border(top: BorderSide(color: borderColor, width: 0.5)),
       ),
       child: SafeArea(
         top: false,
@@ -160,19 +160,18 @@ class Navigation extends ConsumerWidget {
           height: 56,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children:
-                tabs
-                    .map(
-                      (tab) => _buildNavItem(
-                        context,
-                        tab.index,
-                        tab.icon,
-                        tab.activeIcon,
-                        isDarkMode,
-                        ref,
-                      ),
-                    )
-                    .toList(),
+            children: tabs
+                .map(
+                  (tab) => _buildNavItem(
+                    context,
+                    tab.index,
+                    tab.icon,
+                    tab.activeIcon,
+                    isDarkMode,
+                    ref,
+                  ),
+                )
+                .toList(),
           ),
         ),
       ),
@@ -188,13 +187,13 @@ class Navigation extends ConsumerWidget {
     WidgetRef ref,
   ) {
     final isActive = currentIndex == index;
-    final allowNsfw = ref.watch(settingsProvider).allowNsfw;
 
-    const twitterBlue = Color(0xFF1DA1F2);
-    const activeColor = twitterBlue;
-    final inactiveColor = isDarkMode ? Colors.grey[600] : Colors.grey[700];
+    final theme = Theme.of(context);
+    const activeColor = AppTheme.primaryColor;
+    final inactiveColor = theme.colorScheme.onSurfaceVariant;
 
-    return InkWell(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         if (currentIndex == index) return;
 
@@ -211,7 +210,7 @@ class Navigation extends ConsumerWidget {
           case 1:
             destination = '/search';
           case 2:
-            destination = allowNsfw ? '/notifications' : '/notifications';
+            destination = '/notifications';
           default:
             destination = '/';
         }
@@ -220,16 +219,24 @@ class Navigation extends ConsumerWidget {
       },
       child: SizedBox(
         width: 70,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
+        child: Center(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 160),
+            width: 44,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isActive
+                  ? activeColor.withValues(alpha: isDarkMode ? 0.18 : 0.1)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
               isActive ? activeIcon : icon,
               color: isActive ? activeColor : inactiveColor,
-              size: 26,
+              size: 24,
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -239,13 +246,12 @@ class Navigation extends ConsumerWidget {
 // NavigationTabInfoクラスを追加
 @immutable
 class NavigationTabInfo {
-  final int index;
-  final IconData icon;
-  final IconData activeIcon;
-
   const NavigationTabInfo({
     required this.index,
     required this.icon,
     required this.activeIcon,
   });
+  final int index;
+  final IconData icon;
+  final IconData activeIcon;
 }

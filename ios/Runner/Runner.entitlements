@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-  <dict>
-    <key>aps-environment</key>
-    <string>development</string>
-    <key>com.apple.developer.associated-domains</key>
-    <array>
-      <string>vrchat.onelink.me</string>
-    </array>
-    <key>com.apple.developer.pass-type-identifiers</key>
-    <array>
-      <string>$(TeamIdentifierPrefix)pass.com.null-base.vrchat</string>
-    </array>
-    <key>com.apple.security.application-groups</key>
-    <array>
-      <string>group.com.null-base.vrchat</string>
-    </array>
-  </dict>
+<dict>
+	<key>aps-environment</key>
+	<string>development</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:vrchat.onelink.me</string>
+		<string>applinks:vrcn.onelink.me</string>
+	</array>
+	<key>com.apple.developer.pass-type-identifiers</key>
+	<array>
+		<string>$(TeamIdentifierPrefix)pass.com.null-base.vrchat</string>
+	</array>
+	<key>com.apple.developer.usernotifications.communication</key>
+	<true/>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.null-base.vrchat</string>
+	</array>
+</dict>
 </plist>

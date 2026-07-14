@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vrchat/analytics_repository.dart';
 import 'package:vrchat/pages/avatar_detail_page.dart';
@@ -24,8 +25,8 @@ import 'package:vrchat/pages/qr_scanner_page.dart';
 import 'package:vrchat/pages/search_page.dart';
 import 'package:vrchat/pages/settings_page.dart';
 import 'package:vrchat/pages/terms_agreement_page.dart';
-import 'package:vrchat/pages/vrcnsync_page.dart';
 import 'package:vrchat/pages/world_detail_page.dart';
+import 'package:vrchat/provider/auth_refresh_provider.dart';
 import 'package:vrchat/provider/search_providers.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
@@ -33,12 +34,10 @@ import 'package:vrchat/router/navigation_observer.dart';
 import 'package:vrchat/utils/first_launch_utils.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat/widgets/navigation_bar.dart';
+import 'package:vrchat/utils/app_logger.dart';
 
 // スプラッシュ画面が表示されているかを追跡
 final splashActiveProvider = StateProvider<bool>((ref) => true);
-
-// 認証状態の変更を監視するためのStateProvider
-final authRefreshProvider = StateProvider<int>((ref) => 0);
 
 // 自動ログイン状態を追跡するプロバイダー
 final autoLoginStateProvider = StateProvider<AutoLoginState>(
@@ -66,8 +65,8 @@ final removeSplashProvider = Provider<void>((ref) {
   }
 });
 
-// 認証状態を明示的に提供するプロバイダー
-final authStateProvider = FutureProvider<bool>((ref) async {
+// アプリ起動/ルーティング用の認証状態を明示的に提供するプロバイダー
+final appAuthStateProvider = FutureProvider<bool>((ref) async {
   // スプラッシュ削除プロバイダーを監視
   ref.watch(removeSplashProvider);
 
@@ -108,14 +107,14 @@ final performAutoLoginProvider = FutureProvider<void>((ref) async {
 });
 
 // スプラッシュ画面を削除するヘルパー関数
-void _removeSplashScreen(Ref ref) async {
+Future<void> _removeSplashScreen(Ref ref) async {
   // スプラッシュが表示されている場合
   if (ref.read(splashActiveProvider)) {
     // ユーザー情報を先に取得しておく（エラー時も続行）
     try {
       await ref.read(currentUserProvider.future);
     } catch (e) {
-      debugPrint('初期ユーザー情報取得でエラー: $e');
+      appLogger.d('初期ユーザー情報取得でエラー: $e');
       // エラーがあってもスプラッシュは消す
     }
 
@@ -132,7 +131,7 @@ void _setCurrentScreen(Ref ref, String screenName) {
 
 final routerProvider = Provider<GoRouter>((ref) {
   final isInitializing = ref.watch(apiInitializingProvider);
-  final authState = ref.watch(authStateProvider);
+  final authState = ref.watch(appAuthStateProvider);
   final autoLoginState = ref.watch(autoLoginStateProvider);
 
   // 自動ログイン処理を開始（状態を監視）
@@ -333,19 +332,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           return const FavoritesPage();
         },
       ),
-      // GoRoute(
-      //   path: '/notifications',
-      //   name: 'notifications',
-      //   pageBuilder: (context, state) {
-      //     _setCurrentScreen(ref, '通知画面');
-      //     final immediate =
-      //         (state.extra as Map<String, dynamic>?)?['immediate'] == true;
-      //     if (immediate) {
-      //       return const NoTransitionPage(child: NotificationsPage());
-      //     }
-      //     return const MaterialPage(child: NotificationsPage());
-      //   },
-      // ),
       GoRoute(
         path: '/groups',
         name: 'groups',
@@ -387,14 +373,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/vrcnsync',
-        name: 'vrcnsync',
-        builder: (context, state) {
-          _setCurrentScreen(ref, 'VRCNSync');
-          return const VrcnSyncPage();
-        },
-      ),
-      GoRoute(
         path: '/credits',
         name: 'credits',
         builder: (context, state) {
@@ -424,9 +402,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 
 // NoTransitionPageクラス - アニメーションなしの遷移ページ
 class NoTransitionPage<T> extends Page<T> {
-  final Widget child;
-
   const NoTransitionPage({required this.child, super.key});
+  final Widget child;
 
   @override
   Route<T> createRoute(BuildContext context) {

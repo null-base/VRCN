@@ -21,7 +21,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.nullbase.vrchat"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "29.0.13113456"
 
     compileOptions {
@@ -37,7 +37,7 @@ android {
     defaultConfig {
         applicationId = "com.nullbase.vrchat"
         multiDexEnabled = true
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

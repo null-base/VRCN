@@ -43,7 +43,6 @@
     "avatar": "아바타",
     "group": "그룹",
     "inventory": "인벤토리",
-    "vrcnsync": "VRCNSync (β)",
     "review": "리뷰",
     "feedback": "피드백",
     "settings": "설정",
@@ -265,8 +264,21 @@
     "loadingError": "로딩 오류"
   },
   "notifications": {
+    "title": "알림",
     "emptyTitle": "알림이 없습니다",
     "emptyDescription": "친구 요청이나 초대 등\n새로운 알림이 여기에 표시됩니다",
+    "all": "전체",
+    "unread": "읽지 않음 (${count})",
+    "read": "읽음",
+    "activity": "친구 로그",
+    "onlineAlerts": "온라인 알림",
+    "markAllRead": "모두 읽음으로 표시",
+    "markAllReadDone": "모든 알림을 읽음으로 표시했습니다",
+    "deleteConfirmTitle": "알림을 삭제할까요?",
+    "emptyUnread": "읽지 않은 알림이 없습니다",
+    "emptyRead": "읽은 알림이 없습니다",
+    "friendOnlineAlerts": "친구 온라인 알림",
+    "selectedCount": "${count}명 선택됨",
     "friendRequest": "${userName}님으로부터 친구 요청이 도착했습니다",
     "invite": "${userName}님으로부터 ${worldName}(으)로 초대가 도착했습니다",
     "friendOnline": "${userName}님이 온라인 상태가 되었습니다",
@@ -301,6 +313,7 @@
     "reminderSet": "리마인더 설정",
     "reminderSetDone": "리마인더 설정됨",
     "reminderDeleted": "리마인더를 삭제했습니다",
+    "eventName": "이벤트 이름",
     "organizer": "주최자",
     "description": "설명",
     "genre": "장르",
@@ -419,6 +432,7 @@
     "emoji": "이모지",
     "sticker": "스티커",
     "print": "프린트",
+    "item": "아이템",
     "upload": "파일 업로드",
     "uploadGallery": "갤러리 이미지 업로드 중...",
     "uploadIcon": "아이콘 업로드 중...",
@@ -470,58 +484,17 @@
         "emptyTitle": "스티커가 없습니다",
         "emptyDescription": "VRChat에서 업로드한 스티커가 여기에 표시됩니다",
         "zoomHint": "더블 탭으로 확대"
+      },
+      "inventoryItem": {
+        "loading": "인벤토리를 불러오는 중...",
+        "error": "인벤토리를 가져오지 못했습니다: ${error}",
+        "emptyTitle": "인벤토리 아이템이 없습니다",
+        "spawn": "스폰",
+        "unequip": "장착 해제",
+        "equipped": "장착 중: ${slot}",
+        "spawned": "${name} 스폰됨"
       }
     }
-  },
-  "vrcnsync": {
-    "title": "VRCNSync (β)",
-    "betaTitle": "베타 기능",
-    "betaDescription": "이 기능은 개발 중인 베타 버전입니다. 예기치 않은 문제가 발생할 수 있습니다.\n현재는 로컬에서만 구현되어 있지만, 수요가 있으면 클라우드 버전을 구현할 예정입니다.",
-    "githubLink": "VRCNSync GitHub 페이지",
-    "openGithub": "GitHub 페이지 열기",
-    "serverRunning": "서버 실행 중",
-    "serverStopped": "서버 중지됨",
-    "serverRunningDesc": "PC의 사진을 VRCN 앨범에 저장합니다",
-    "serverStoppedDesc": "서버가 중지되었습니다",
-    "photoSaved": "사진을 VRCN 앨범에 저장했습니다",
-    "photoReceived": "사진을 수신했습니다 (앨범 저장 실패)",
-    "openAlbum": "앨범 열기",
-    "permissionErrorIos": "사진 라이브러리에 대한 접근 권한이 필요합니다",
-    "permissionErrorAndroid": "저장소에 대한 접근 권한이 필요합니다",
-    "openSettings": "설정 열기",
-    "initError": "초기화에 실패했습니다: ${error}",
-    "openPhotoAppError": "사진 앱을 열 수 없었습니다",
-    "serverInfo": "서버 정보",
-    "ip": "IP: ${ip}",
-    "port": "포트: ${port}",
-    "address": "${ip}:${port}",
-    "autoSave": "수신된 사진은 'VRCN' 앨범에 자동 저장됩니다",
-    "usage": "사용 방법",
-    "usageSteps": [
-      {
-        "title": "PC에서 VRCNSync 앱 실행",
-        "desc": "PC에서 VRCNSync 앱을 실행해 주세요"
-      },
-      {
-        "title": "동일한 WiFi 네트워크에 연결",
-        "desc": "PC와 모바일 기기를 동일한 WiFi 네트워크에 연결해 주세요"
-      },
-      {
-        "title": "연결 대상으로 모바일 기기 지정",
-        "desc": "PC 앱에서 위의 IP 주소와 포트를 지정해 주세요"
-      },
-      {
-        "title": "사진 전송",
-        "desc": "PC에서 사진을 전송하면 자동으로 VRCN 앨범에 저장됩니다"
-      }
-    ],
-    "stats": "연결 상태",
-    "statServer": "서버 상태",
-    "statServerRunning": "실행 중",
-    "statServerStopped": "중지됨",
-    "statNetwork": "네트워크",
-    "statNetworkConnected": "연결됨",
-    "statNetworkDisconnected": "연결 안 됨"
   },
   "feedback": {
     "title": "피드백",
@@ -610,21 +583,7 @@
     }
   },
   "download": {
-    "success": "다운로드가 완료되었습니다",
-    "failure": "다운로드에 실패했습니다: ${error}",
     "shareFailure": "공유에 실패했습니다: ${error}",
-    "permissionTitle": "권한이 필요합니다",
-    "permissionDenied": "${permissionType}에 대한 저장 권한이 거부되었습니다.\n설정 앱에서 권한을 활성화해 주세요.",
-    "permissionCancel": "취소",
-    "permissionOpenSettings": "설정 열기",
-    "permissionPhoto": "사진",
-    "permissionPhotoLibrary": "사진 라이브러리",
-    "permissionStorage": "저장 공간",
-    "permissionPhotoRequired": "사진에 대한 저장 권한이 필요합니다",
-    "permissionPhotoLibraryRequired": "사진 라이브러리에 대한 저장 권한이 필요합니다",
-    "permissionStorageRequired": "저장 공간에 대한 접근 권한이 필요합니다",
-    "permissionError": "권한 확인 중 오류가 발생했습니다: ${error}",
-    "downloading": "${fileName} 다운로드 중...",
     "sharing": "${fileName} 공유 준비 중..."
   },
   "instance": {

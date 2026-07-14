@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -7,24 +7,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/provider/engage_card_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
+import 'package:vrchat/services/engage_card_service.dart';
 import 'package:vrchat/utils/cache_manager.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
-
-const _backgroundImageKey = 'business_card_background_image';
-
-final backgroundImageProvider = StateProvider<File?>((ref) => null);
-
-enum CardExtraInfo { none, qr, userId }
+import 'package:vrchat_dart/vrchat_dart.dart' hide File;
 
 class EngageCardPage extends ConsumerStatefulWidget {
   const EngageCardPage({super.key});
@@ -33,11 +26,9 @@ class EngageCardPage extends ConsumerStatefulWidget {
   ConsumerState<EngageCardPage> createState() => _EngageCardPageState();
 }
 
-class _EngageCardPageState extends ConsumerState<EngageCardPage>
-    with SingleTickerProviderStateMixin {
+class _EngageCardPageState extends ConsumerState<EngageCardPage> {
   double? _oldBrightness;
-  late AnimationController _controller;
-  final _extraInfo = CardExtraInfo.none;
+  final _engageCardService = EngageCardService();
   var _showAppBar = true;
   Timer? _hideAppBarTimer;
   var _showAvatar = true; // アバター表示/非表示フラグ
@@ -47,10 +38,6 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
     super.initState();
     _loadBackgroundImage();
     _setMaxBrightness();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
     _startHideAppBarTimer();
 
     // ステータスバー等を非表示
@@ -70,7 +57,6 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
 
   @override
   void dispose() {
-    _controller.dispose();
     _hideAppBarTimer?.cancel();
     if (_oldBrightness != null) {
       ScreenBrightness().setApplicationScreenBrightness(_oldBrightness!);
@@ -83,42 +69,27 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
   Future<void> _setMaxBrightness() async {
     try {
       _oldBrightness = await ScreenBrightness.instance.system;
-      await ScreenBrightness().setApplicationScreenBrightness(1.0);
+      await ScreenBrightness().setApplicationScreenBrightness(1);
     } catch (_) {}
   }
 
   Future<void> _loadBackgroundImage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final path = prefs.getString(_backgroundImageKey);
-    if (path != null && mounted) {
-      ref.read(backgroundImageProvider.notifier).state = File(path);
+    final image = await _engageCardService.loadBackgroundImage();
+    if (mounted) {
+      ref.read(backgroundImageProvider.notifier).state = image;
     }
   }
 
   Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      final appDir = await getApplicationDocumentsDirectory();
-      final fileName = p.basename(pickedFile.path);
-      final savedImage = await File(
-        pickedFile.path,
-      ).copy('${appDir.path}/$fileName');
-
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_backgroundImageKey, savedImage.path);
-
-      if (mounted) {
-        ref.read(backgroundImageProvider.notifier).state = savedImage;
-      }
+    final savedImage = await _engageCardService.pickAndPersistBackgroundImage();
+    if (savedImage != null && mounted) {
+      ref.read(backgroundImageProvider.notifier).state = savedImage;
     }
   }
 
   // 背景画像削除
   Future<void> _removeBackgroundImage() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_backgroundImageKey);
+    await _engageCardService.removeBackgroundImage();
     if (mounted) {
       ref.read(backgroundImageProvider.notifier).state = null;
     }
@@ -147,57 +118,55 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
       onPanDown: (_) => _onUserInteraction(),
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        appBar:
-            _showAppBar
-                ? AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  iconTheme: const IconThemeData(color: Colors.white),
-                  actions: [
+        appBar: _showAppBar
+            ? AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                iconTheme: const IconThemeData(color: Colors.white),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.photo_library_outlined),
+                    onPressed: _pickImage,
+                    tooltip: t.engageCard.pickBackground,
+                  ),
+                  if (backgroundImage != null)
                     IconButton(
-                      icon: const Icon(Icons.photo_library_outlined),
-                      onPressed: _pickImage,
-                      tooltip: t.engageCard.pickBackground,
-                    ),
-                    if (backgroundImage != null)
-                      IconButton(
-                        icon: const Icon(
-                          Icons.delete_outline,
-                          color: Colors.redAccent,
-                        ),
-                        onPressed: _removeBackgroundImage,
-                        tooltip: t.engageCard.removeBackground,
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.redAccent,
                       ),
-                    IconButton(
-                      icon: const Icon(Icons.qr_code_scanner),
-                      onPressed: () => context.push('/qr_scanner'),
-                      tooltip: t.engageCard.scanQr,
+                      onPressed: _removeBackgroundImage,
+                      tooltip: t.engageCard.removeBackground,
                     ),
-                    IconButton(
-                      icon: Icon(
-                        _showAvatar ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.white,
-                      ),
-                      tooltip:
-                          _showAvatar
-                              ? t.engageCard.hideAvatar
-                              : t.engageCard.showAvatar,
-                      onPressed: () {
-                        setState(() {
-                          _showAvatar = !_showAvatar;
-                        });
-                      },
+                  IconButton(
+                    icon: const Icon(Icons.qr_code_scanner),
+                    onPressed: () => context.push('/qr_scanner'),
+                    tooltip: t.engageCard.scanQr,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      _showAvatar ? Icons.visibility : Icons.visibility_off,
+                      color: Colors.white,
                     ),
-                  ],
-                )
-                : null,
+                    tooltip: _showAvatar
+                        ? t.engageCard.hideAvatar
+                        : t.engageCard.showAvatar,
+                    onPressed: () {
+                      setState(() {
+                        _showAvatar = !_showAvatar;
+                      });
+                    },
+                  ),
+                ],
+              )
+            : null,
         body: currentUserAsync.when(
           data: (user) {
             return Stack(
               children: [
                 // 背景
                 if (backgroundImage != null)
-                  Container(
+                  DecoratedBox(
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: FileImage(backgroundImage),
@@ -230,38 +199,25 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
                 SafeArea(
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: _buildEngageCardFront(
-                      context,
-                      user,
-                      headers,
-                      backgroundImage,
-                      _extraInfo,
-                    ),
+                    child: _buildEngageCardFront(user, headers),
                   ),
                 ),
               ],
             );
           },
           loading: () => const LoadingIndicator(),
-          error:
-              (err, stack) => Center(
-                child: Text(
-                  t.engageCard.error(error: err.toString()),
-                  style: const TextStyle(color: Colors.redAccent),
-                ),
-              ),
+          error: (err, stack) => Center(
+            child: Text(
+              t.engageCard.error(error: err.toString()),
+              style: const TextStyle(color: Colors.redAccent),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildEngageCardFront(
-    BuildContext context,
-    user,
-    Map<String, String> headers,
-    File? backgroundImage,
-    CardExtraInfo extraInfo,
-  ) {
+  Widget _buildEngageCardFront(CurrentUser user, Map<String, String> headers) {
     return Container(
       width: 370,
       height: 120,
@@ -277,21 +233,23 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: LiquidGlass(
-          settings: const LiquidGlassSettings(
-            thickness: 12,
-            glassColor: Color(0x22FFFFFF),
-            lightIntensity: 2.0,
-            blend: 60,
-          ),
-          shape: const LiquidRoundedSuperellipse(
-            borderRadius: Radius.circular(30),
-          ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 28, sigmaY: 28),
           child: Stack(
             children: [
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.12),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.24),
+                    ),
+                  ),
+                ),
+              ),
               // グラデーションオーバーレイ
               Positioned.fill(
-                child: Container(
+                child: DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -308,43 +266,37 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16),
                   child: Row(
-                    mainAxisAlignment:
-                        _showAvatar
-                            ? MainAxisAlignment.center
-                            : MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: _showAvatar
+                        ? MainAxisAlignment.center
+                        : MainAxisAlignment.spaceEvenly,
                     children: [
                       if (_showAvatar)
                         CircleAvatar(
                           radius: 32,
-                          backgroundImage:
-                              user.userIcon.isNotEmpty
-                                  ? CachedNetworkImageProvider(
-                                    user.userIcon,
-                                    headers: headers,
-                                    cacheManager: JsonCacheManager(),
-                                  )
-                                  : user
-                                      .currentAvatarThumbnailImageUrl
-                                      .isNotEmpty
-                                  ? CachedNetworkImageProvider(
-                                    user.currentAvatarThumbnailImageUrl,
-                                    headers: headers,
-                                    cacheManager: JsonCacheManager(),
-                                  )
-                                  : const AssetImage('assets/icons/default.png')
-                                      as ImageProvider,
+                          backgroundImage: user.userIcon.isNotEmpty
+                              ? CachedNetworkImageProvider(
+                                  user.userIcon,
+                                  headers: headers,
+                                  cacheManager: JsonCacheManager(),
+                                )
+                              : user.currentAvatarThumbnailImageUrl.isNotEmpty
+                              ? CachedNetworkImageProvider(
+                                  user.currentAvatarThumbnailImageUrl,
+                                  headers: headers,
+                                  cacheManager: JsonCacheManager(),
+                                )
+                              : AssetImage(Assets.icons.icon.path)
+                                    as ImageProvider,
                           backgroundColor: Colors.white24,
                         ),
                       if (_showAvatar) const SizedBox(width: 16),
                       Expanded(
                         child: Column(
-                          crossAxisAlignment:
-                              _showAvatar
-                                  ? CrossAxisAlignment.start
-                                  : CrossAxisAlignment.center,
+                          crossAxisAlignment: _showAvatar
+                              ? CrossAxisAlignment.start
+                              : CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             FittedBox(
@@ -356,7 +308,9 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
                                   color: Colors.white,
                                   shadows: [
                                     Shadow(
-                                      color: Colors.black.withValues(alpha: .3),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.3,
+                                      ),
                                       blurRadius: 8,
                                     ),
                                   ],
@@ -373,13 +327,10 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage>
                         // QRコードの色
                         // ignore: deprecated_member_use
                         foregroundColor: Colors.white,
-                        version: QrVersions.auto,
                         size: 90,
-                        embeddedImage: const AssetImage(
-                          'assets/images/logo.png',
-                        ),
+                        embeddedImage: AssetImage(Assets.images.logo.path),
                         embeddedImageStyle: const QrEmbeddedImageStyle(
-                          size: Size(20, 20)
+                          size: Size(20, 20),
                         ),
                       ),
                     ],

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:new_version_plus/new_version_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/provider/version_check_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
+import 'package:vrchat/utils/app_logger.dart';
+import 'package:vrchat/utils/url_launcher_utils.dart';
 
 class UpdateDialog extends StatelessWidget {
-  final VersionStatus versionStatus;
-
   const UpdateDialog({super.key, required this.versionStatus});
+  final AppVersionStatus versionStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class UpdateDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.1),
+                color: AppTheme.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(
@@ -56,10 +56,9 @@ class UpdateDialog extends StatelessWidget {
                           '現在のバージョン:',
                           style: GoogleFonts.notoSans(
                             fontSize: 14,
-                            color:
-                                isDarkMode
-                                    ? Colors.grey[300]
-                                    : Colors.grey[600],
+                            color: isDarkMode
+                                ? Colors.grey[300]
+                                : Colors.grey[600],
                           ),
                         ),
                         Text(
@@ -80,10 +79,9 @@ class UpdateDialog extends StatelessWidget {
                           '最新バージョン:',
                           style: GoogleFonts.notoSans(
                             fontSize: 14,
-                            color:
-                                isDarkMode
-                                    ? Colors.grey[300]
-                                    : Colors.grey[600],
+                            color: isDarkMode
+                                ? Colors.grey[300]
+                                : Colors.grey[600],
                           ),
                         ),
                         Text(
@@ -166,14 +164,11 @@ class UpdateDialog extends StatelessWidget {
     );
   }
 
-  void _launchStore(VersionStatus versionStatus) async {
+  Future<void> _launchStore(AppVersionStatus versionStatus) async {
     try {
-      final uri = Uri.parse(versionStatus.appStoreLink);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      }
+      await UrlLauncherUtils.launchExternalURL(versionStatus.appStoreLink);
     } catch (e) {
-      debugPrint('ストア起動エラー: $e');
+      appLogger.d('ストア起動エラー: $e');
     }
   }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrchat/i18n/gen/strings.g.dart';
+import 'package:vrchat/gen/assets.gen.dart';
+import 'package:vrchat/gen/strings.g.dart';
 
 class LoadingIndicator extends StatefulWidget {
-  final String message;
-
   const LoadingIndicator({super.key, this.message = ''});
+  final String message;
 
   @override
   State<LoadingIndicator> createState() => _LoadingIndicatorState();
@@ -34,7 +34,7 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
         _controller.forward();
       }
     });
-    
+
     // アニメーションを開始
     _controller.forward();
   }
@@ -48,8 +48,9 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final displayMessage =
-        widget.message.isEmpty ? t.common.loading : widget.message;
+    final displayMessage = widget.message.isEmpty
+        ? t.common.loading
+        : widget.message;
 
     return Center(
       child: Column(
@@ -60,20 +61,20 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
             alignment: Alignment.center,
             children: [
               SizedBox(
-                width: 250,
-                height: 250,
+                width: 180,
+                height: 180,
 
                 child: Image.asset(
                   _showFirstImage
-                      ? 'assets/images/anomea_walk.png'
-                      : 'assets/images/anomea_walk2.png',
+                      ? Assets.images.anomeaWalk.path
+                      : Assets.images.anomeaWalk2.path,
                   fit: BoxFit.contain,
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: 18),
 
           // メッセージテキスト
           Text(
@@ -82,7 +83,6 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
               fontSize: 16,
               fontWeight: FontWeight.w500,
               color: primaryColor,
-              letterSpacing: 0.5,
             ),
             textAlign: TextAlign.center,
           ),
