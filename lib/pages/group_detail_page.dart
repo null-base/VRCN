@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/group_detail_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/group_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
-import 'package:vrchat/utils/share_utils.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/info_card.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
@@ -31,11 +31,8 @@ class GroupDetailPage extends ConsumerWidget {
         loading: () => LoadingIndicator(message: t.groupDetail.loading),
         error: (error, stackTrace) => ErrorContainer(
           message: t.groupDetail.error(error: error.toString()),
-          onRetry: () => ref.refresh(
-            groupDetailProvider(
-              GroupDetailParams(groupId: groupId, includeRoles: true),
-            ),
-          ),
+          onRetry: () =>
+              ref.read(groupDetailControllerProvider).refresh(groupId),
         ),
       ),
     );
@@ -51,13 +48,7 @@ class GroupDetailPage extends ConsumerWidget {
     final headers = {'User-Agent': vrchatApi?.userAgent.toString() ?? 'VRCN'};
 
     return RefreshIndicator(
-      onRefresh: () async {
-        return ref.refresh(
-          groupDetailProvider(
-            GroupDetailParams(groupId: groupId, includeRoles: true),
-          ),
-        );
-      },
+      onRefresh: () => ref.read(groupDetailControllerProvider).refresh(groupId),
       color: Colors.indigo,
       backgroundColor: isDarkMode ? Colors.grey[850] : Colors.white,
       child: CustomScrollView(
@@ -75,7 +66,8 @@ class GroupDetailPage extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.share_outlined, color: Colors.white),
                 tooltip: t.groupDetail.share,
-                onPressed: () => _shareGroup(group),
+                onPressed: () =>
+                    ref.read(groupDetailControllerProvider).shareGroup(group),
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
@@ -554,12 +546,4 @@ class GroupDetailPage extends ConsumerWidget {
 
     return '$year年$month月$day日';
   }
-}
-
-// グループ情報を共有するメソッド
-Future<void> _shareGroup(Group group) async {
-  await ShareUtils.shareUrl(
-    'https://vrchat.com/home/group/${group.id}',
-    subject: group.name,
-  );
 }

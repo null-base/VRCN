@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/friend_list_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/friend_sort_provider.dart';
 import 'package:vrchat/provider/friends_provider.dart';
@@ -25,7 +26,7 @@ class FriendsPage extends ConsumerWidget {
         loading: () => LoadingIndicator(message: t.friends.loading),
         error: (error, stackTrace) => ErrorContainer(
           message: t.friends.error(error: error.toString()),
-          onRetry: () => ref.refresh(friendsProvider),
+          onRetry: () => ref.read(friendsActionsProvider).refreshFriends(),
         ),
       ),
     );
@@ -46,7 +47,7 @@ class FriendsPage extends ConsumerWidget {
     }
 
     return RefreshIndicator(
-      onRefresh: () => ref.refresh(friendsProvider.future).then((_) {}),
+      onRefresh: () => ref.read(friendsActionsProvider).refreshFriends(),
       color: Theme.of(context).colorScheme.primary,
       backgroundColor: Theme.of(context).colorScheme.surface,
       child: _buildGroupedFriendsList(context, friends),
@@ -58,44 +59,12 @@ class FriendsPage extends ConsumerWidget {
     BuildContext context,
     List<LimitedUser> friends,
   ) {
-    final friendGroups = <String, List<LimitedUser>>{};
-    final offlineFriends = <LimitedUser>[];
-    final activeOfflineFriends = <LimitedUser>[];
-    final privateFriends = <LimitedUser>[];
-    final onlineFriends = <LimitedUser>[];
-
-    for (final friend in friends) {
-      if (friend.location == 'offline' &&
-          friend.status != UserStatus.offline &&
-          friend.status.toString().isNotEmpty) {
-        activeOfflineFriends.add(friend);
-      } else if (friend.location == null || friend.location == 'offline') {
-        offlineFriends.add(friend);
-      } else if (friend.location == 'private') {
-        privateFriends.add(friend);
-      } else {
-        onlineFriends.add(friend);
-      }
-    }
-
-    for (final friend in onlineFriends) {
-      final location = friend.location ?? 'unknown';
-      if (!friendGroups.containsKey(location)) {
-        friendGroups[location] = [];
-      }
-      friendGroups[location]!.add(friend);
-    }
-
-    final sortedLocations = friendGroups.keys.toList()
-      ..sort(
-        (a, b) => friendGroups[b]!.length.compareTo(friendGroups[a]!.length),
-      );
-
+    final groupedFriends = friendListController.groupByLocation(friends);
     final groupWidgets = <Widget>[];
 
     // オンラインワールドグループ
-    for (final location in sortedLocations) {
-      final locationFriends = friendGroups[location]!;
+    for (final location in groupedFriends.sortedLocations) {
+      final locationFriends = groupedFriends.onlineByLocation[location]!;
       groupWidgets.add(
         FriendLocationGroup(
           locationName: location,
@@ -109,12 +78,12 @@ class FriendsPage extends ConsumerWidget {
     }
 
     // プライベートグループ
-    if (privateFriends.isNotEmpty) {
+    if (groupedFriends.privateFriends.isNotEmpty) {
       groupWidgets.add(
         FriendLocationGroup(
           locationName: t.friends.private,
           locationIcon: Icons.lock_outline,
-          friends: privateFriends,
+          friends: groupedFriends.privateFriends,
           onTapFriend: (friend) => context.push('/user/${friend.id}'),
           iconColor: Colors.redAccent,
           isPrivate: true,
@@ -123,12 +92,12 @@ class FriendsPage extends ConsumerWidget {
     }
 
     // アクティブオフライン
-    if (activeOfflineFriends.isNotEmpty) {
+    if (groupedFriends.activeOfflineFriends.isNotEmpty) {
       groupWidgets.add(
         FriendLocationGroup(
           locationName: t.friends.active,
           locationIcon: Icons.circle,
-          friends: activeOfflineFriends,
+          friends: groupedFriends.activeOfflineFriends,
           onTapFriend: (friend) => context.push('/user/${friend.id}'),
           iconColor: Colors.green,
           isOffline: true,
@@ -138,12 +107,12 @@ class FriendsPage extends ConsumerWidget {
     }
 
     // オフライン
-    if (offlineFriends.isNotEmpty) {
+    if (groupedFriends.offlineFriends.isNotEmpty) {
       groupWidgets.add(
         FriendLocationGroup(
           locationName: t.friends.offline,
           locationIcon: Icons.offline_bolt,
-          friends: offlineFriends,
+          friends: groupedFriends.offlineFriends,
           onTapFriend: (friend) => context.push('/user/${friend.id}'),
           iconColor: Colors.grey,
           isOffline: true,

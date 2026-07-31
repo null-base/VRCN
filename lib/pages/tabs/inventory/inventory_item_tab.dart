@@ -20,8 +20,7 @@ class InventoryItemTab extends ConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: () async {
-        ref.invalidate(inventoryItemsProvider);
-        await ref.read(inventoryItemsProvider.future);
+        await ref.read(inventoryActionsProvider).refreshItems();
       },
       child: itemsAsync.when(
         data: (items) {
@@ -45,7 +44,7 @@ class InventoryItemTab extends ConsumerWidget {
           message: t.inventory.tabs.inventoryItem.error(
             error: error.toString(),
           ),
-          onRetry: () => ref.invalidate(inventoryItemsProvider),
+          onRetry: () => ref.read(inventoryActionsProvider).refreshItems(),
         ),
       ),
     );

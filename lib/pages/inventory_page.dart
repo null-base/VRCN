@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart' show ImageSource, XFile;
 import 'package:vrchat/controllers/inventory_upload_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/pages/tabs/inventory/emoji_inventory_tab.dart';
@@ -45,49 +45,24 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
 
   // 現在のタブに応じたアップロード処理
   Future<void> _handleUpload() async {
-    final currentIndex = _tabController.index;
+    final uploadController = ref.read(inventoryUploadControllerProvider);
+    final target = uploadController.targetForTab(
+      _tabController.index,
+      Translations.of(context),
+    );
+    if (target == null) return;
 
-    switch (currentIndex) {
-      case 0: // ギャラリー
-        await _uploadImageWithTag(
-          title: t.inventory.uploadGallery,
-          tag: 'gallery',
-        );
-      case 1: // アイコン
-        await _uploadImageWithTag(title: t.inventory.uploadIcon, tag: 'icon');
-      case 2: // 絵文字
-        await _uploadImageWithTag(title: t.inventory.uploadEmoji, tag: 'emoji');
-      case 3: // ステッカー
-        await _uploadImageWithTag(
-          title: t.inventory.uploadSticker,
-          tag: 'sticker',
-        );
-      case 4: // プリント
-        await _uploadImageWithTag(title: t.inventory.uploadPrint, tag: 'print');
-      case 5:
-        return;
-    }
-  }
-
-  Future<void> _uploadImageWithTag({
-    required String title,
-    required String tag,
-  }) async {
     final file = await _pickImage();
     if (file == null) return;
 
     await _showUploadDialog(
-      title: title,
-      future: () => ref
-          .read(inventoryUploadControllerProvider)
-          .uploadImage(file: file, tag: tag),
+      title: target.title,
+      future: () => uploadController.uploadImage(file: file, tag: target.tag),
     );
   }
 
   // 画像選択
   Future<XFile?> _pickImage() async {
-    final picker = ImagePicker();
-
     // 画像選択方法を選択するダイアログ
     final source = await showDialog<ImageSource>(
       context: context,
@@ -123,7 +98,9 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
     if (source == null) return null;
 
     try {
-      return await picker.pickImage(source: source);
+      return await ref
+          .read(inventoryUploadControllerProvider)
+          .pickImage(source);
     } catch (e) {
       SnackBarUtils.showError(
         context,
@@ -171,23 +148,14 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
       if (mounted) {
         Navigator.pop(context); // プログレスダイアログを閉じる
 
-        SnackBarUtils.showError(context, _uploadErrorMessage(e));
+        SnackBarUtils.showError(
+          context,
+          ref
+              .read(inventoryUploadControllerProvider)
+              .uploadErrorMessage(e, Translations.of(context)),
+        );
       }
     }
-  }
-
-  String _uploadErrorMessage(Object error) {
-    if (error is! InventoryUploadException) {
-      return t.inventory.uploadFailed;
-    }
-
-    return switch (error.statusCode) {
-      400 => t.inventory.uploadFailedFormat,
-      401 => t.inventory.uploadFailedAuth,
-      413 => t.inventory.uploadFailedSize,
-      final int code => t.inventory.uploadFailedServer(code: code),
-      null => t.inventory.uploadFailed,
-    };
   }
 
   @override

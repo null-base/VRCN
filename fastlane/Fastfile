@@ -1,0 +1,52 @@
+default_platform(:ios)
+
+def app_store_connect_options
+  options = {}
+  options[:api_key_path] = ENV["APP_STORE_CONNECT_API_KEY_PATH"] if ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+  options
+end
+
+platform :ios do
+  desc "Build and upload the iOS app to TestFlight"
+  lane :beta do
+    build_app(
+      workspace: "ios/Runner.xcworkspace",
+      scheme: "Runner",
+      configuration: "Release",
+      export_method: ENV.fetch("IOS_EXPORT_METHOD", "app-store")
+    )
+
+    upload_to_testflight(**app_store_connect_options)
+  end
+
+  desc "Build and upload the iOS app to App Store Connect"
+  lane :release do
+    build_app(
+      workspace: "ios/Runner.xcworkspace",
+      scheme: "Runner",
+      configuration: "Release",
+      export_method: ENV.fetch("IOS_EXPORT_METHOD", "app-store")
+    )
+
+    upload_to_app_store(
+      submit_for_review: ENV["APP_STORE_SUBMIT_FOR_REVIEW"] == "true",
+      automatic_release: ENV["APP_STORE_AUTOMATIC_RELEASE"] == "true",
+      **app_store_connect_options
+    )
+  end
+end
+
+platform :android do
+  desc "Build and upload the Android app bundle to Google Play"
+  lane :release do
+    sh("flutter", "build", "appbundle", "--release")
+
+    upload_to_play_store(
+      aab: ENV.fetch("ANDROID_AAB_PATH", "build/app/outputs/bundle/release/app-release.aab"),
+      track: ENV.fetch("ANDROID_TRACK", "internal"),
+      skip_upload_metadata: ENV.fetch("ANDROID_SKIP_METADATA", "true") == "true",
+      skip_upload_images: ENV.fetch("ANDROID_SKIP_IMAGES", "true") == "true",
+      skip_upload_screenshots: ENV.fetch("ANDROID_SKIP_SCREENSHOTS", "true") == "true"
+    )
+  end
+end

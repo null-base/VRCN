@@ -1,5 +1,11 @@
 
 
+set shell := ["bash", "-cu"]
+
+flutter := "mise exec -- flutter"
+dart := "mise exec -- dart"
+pod := "bundle exec pod"
+
 default:
   @just --list
 

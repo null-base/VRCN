@@ -5,7 +5,6 @@ plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
     id("com.google.gms.google-services")
-    id("com.google.firebase.firebase-perf")
     id("com.google.firebase.crashlytics")
     // END: FlutterFire Configuration
     id("kotlin-android")
@@ -15,14 +14,15 @@ plugins {
 
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
-if (keystorePropertiesFile.exists()) {
+val hasReleaseKeystore = keystorePropertiesFile.exists()
+if (hasReleaseKeystore) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 android {
     namespace = "com.nullbase.vrchat"
     compileSdk = 36
-    ndkVersion = "29.0.13113456"
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -43,36 +43,27 @@ android {
         versionName = flutter.versionName
     }
 
-   signingConfigs {
-       create("release") {
-           keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-            storePassword = keystoreProperties["storePassword"] as String
-       }
-   }
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+                storePassword = keystoreProperties["storePassword"] as String
+            }
+        }
+    }
 
     buildTypes {
         getByName("debug") {
         }
 
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
-
+            if (hasReleaseKeystore) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
-
-    flavorDimensions += "default"
-    productFlavors{
-      create("dev"){
-          dimension = "default"
-            // applicationIdSuffix = ".debug"
-          }
-
-      create("production") {
-        dimension = "default"
-        }
-        }
 }
 
 flutter {

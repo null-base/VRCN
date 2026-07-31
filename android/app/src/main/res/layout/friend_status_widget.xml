@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/widget_root"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@drawable/friend_status_widget_background"
+  android:orientation="vertical">
+
+  <TextView
+    android:id="@+id/widget_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ellipsize="end"
+    android:maxLines="1"
+    android:text="VRCN"
+    android:textColor="#0F172A"
+    android:textSize="14sp"
+    android:textStyle="bold" />
+
+  <TextView
+    android:id="@+id/widget_empty"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:gravity="center_vertical"
+    android:text="Select online alert friends"
+    android:textColor="#64748B"
+    android:textSize="12sp" />
+
+  <LinearLayout
+    android:id="@+id/widget_rows"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginTop="8dp"
+    android:layout_weight="1"
+    android:orientation="vertical">
+
+    <TextView
+      android:id="@+id/widget_row_1"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:ellipsize="end"
+      android:gravity="center_vertical"
+      android:maxLines="1"
+      android:textColor="#0F172A"
+      android:textSize="12sp"
+      android:textStyle="bold" />
+
+    <TextView
+      android:id="@+id/widget_row_2"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:ellipsize="end"
+      android:gravity="center_vertical"
+      android:maxLines="1"
+      android:textColor="#0F172A"
+      android:textSize="12sp"
+      android:textStyle="bold" />
+
+    <TextView
+      android:id="@+id/widget_row_3"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:ellipsize="end"
+      android:gravity="center_vertical"
+      android:maxLines="1"
+      android:textColor="#0F172A"
+      android:textSize="12sp"
+      android:textStyle="bold" />
+  </LinearLayout>
+
+  <TextView
+    android:id="@+id/widget_updated_at"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ellipsize="end"
+    android:gravity="end"
+    android:maxLines="1"
+    android:textColor="#94A3B8"
+    android:textSize="10sp" />
+</LinearLayout>

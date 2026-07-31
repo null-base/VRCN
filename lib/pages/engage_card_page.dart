@@ -9,12 +9,12 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'package:vrchat/controllers/engage_card_controller.dart';
 import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/engage_card_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
-import 'package:vrchat/services/engage_card_service.dart';
 import 'package:vrchat/utils/cache_manager.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat_dart/vrchat_dart.dart' hide File;
@@ -28,7 +28,6 @@ class EngageCardPage extends ConsumerStatefulWidget {
 
 class _EngageCardPageState extends ConsumerState<EngageCardPage> {
   double? _oldBrightness;
-  final _engageCardService = EngageCardService();
   var _showAppBar = true;
   Timer? _hideAppBarTimer;
   var _showAvatar = true; // アバター表示/非表示フラグ
@@ -74,25 +73,16 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage> {
   }
 
   Future<void> _loadBackgroundImage() async {
-    final image = await _engageCardService.loadBackgroundImage();
-    if (mounted) {
-      ref.read(backgroundImageProvider.notifier).state = image;
-    }
+    await ref.read(engageCardControllerProvider).loadBackgroundImage();
   }
 
   Future<void> _pickImage() async {
-    final savedImage = await _engageCardService.pickAndPersistBackgroundImage();
-    if (savedImage != null && mounted) {
-      ref.read(backgroundImageProvider.notifier).state = savedImage;
-    }
+    await ref.read(engageCardControllerProvider).pickBackgroundImage();
   }
 
   // 背景画像削除
   Future<void> _removeBackgroundImage() async {
-    await _engageCardService.removeBackgroundImage();
-    if (mounted) {
-      ref.read(backgroundImageProvider.notifier).state = null;
-    }
+    await ref.read(engageCardControllerProvider).removeBackgroundImage();
   }
 
   // タップや操作時にAppBarを再表示

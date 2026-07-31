@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/search_state_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/pages/tabs/search/avatar_search_tab.dart';
 import 'package:vrchat/pages/tabs/search/group_search_tab.dart';
 import 'package:vrchat/pages/tabs/search/user_search_tab.dart';
 import 'package:vrchat/pages/tabs/search/world_search_tab.dart';
-import 'package:vrchat/provider/search_providers.dart';
 import 'package:vrchat/provider/settings_provider.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
@@ -91,19 +91,7 @@ class SearchPageState extends ConsumerState<SearchPage>
   }
 
   void _onSearchChanged(String query) {
-    // 検索クエリが変わったら各タブのオフセットをリセットし、キャッシュをクリア
-    if (query != ref.read(searchQueryProvider)) {
-      ref.read(userSearchOffsetProvider.notifier).state = 0;
-      ref.read(worldSearchOffsetProvider.notifier).state = 0;
-      ref.read(groupSearchOffsetProvider.notifier).state = 0;
-
-      // 結果キャッシュもクリア
-      ref.read(worldSearchResultsProvider.notifier).state = [];
-      ref.read(userSearchResultsProvider.notifier).state = [];
-      ref.read(groupSearchResultsProvider.notifier).state = [];
-    }
-
-    ref.read(searchQueryProvider.notifier).state = query;
+    ref.read(searchStateControllerProvider).updateQuery(query);
   }
 
   @override

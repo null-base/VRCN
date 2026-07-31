@@ -31,6 +31,16 @@ class InventoryActions {
     await api.spawnInventoryItem(id: itemId);
   }
 
+  Future<void> refreshItems() async {
+    _ref.invalidate(inventoryItemsProvider);
+    await _ref.read(inventoryItemsProvider.future);
+  }
+
+  Future<void> refreshPrints() async {
+    _ref.invalidate(ownPrintsProvider);
+    await _ref.read(ownPrintsProvider.future);
+  }
+
   Future<void> unequipSlot(InventoryEquipSlot slot) async {
     final api = await _ref.read(vrchatInventoryApiProvider.future);
     await api.unequipOwnInventorySlot(inventoryItemId: slot);

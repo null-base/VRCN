@@ -37,8 +37,14 @@ enum AppIconType {
 }
 
 AppLocale _parseLocalePreference(String? value) {
-  if (value == null) {
+  if (value == null || value.isEmpty) {
     return AppLocale.en;
+  }
+
+  for (final locale in AppLocale.values) {
+    if (locale.name == value) {
+      return locale;
+    }
   }
 
   try {
@@ -49,7 +55,7 @@ AppLocale _parseLocalePreference(String? value) {
 }
 
 String _localePreferenceValue(AppLocale locale) {
-  return locale.flutterLocale.toLanguageTag();
+  return locale.name;
 }
 
 // 設定データモデル

@@ -23,8 +23,7 @@ class PrintInventoryTab extends ConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: () async {
-        ref.invalidate(ownPrintsProvider);
-        await ref.read(ownPrintsProvider.future);
+        await ref.read(inventoryActionsProvider).refreshPrints();
       },
       child: printsAsync.when(
         data: (prints) {
@@ -51,7 +50,7 @@ class PrintInventoryTab extends ConsumerWidget {
           message: t.inventory.tabs.printInventory.error(
             error: error.toString(),
           ),
-          onRetry: () => ref.invalidate(ownPrintsProvider),
+          onRetry: () => ref.read(inventoryActionsProvider).refreshPrints(),
         ),
       ),
     );

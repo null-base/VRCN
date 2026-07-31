@@ -5,10 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:vrchat/controllers/external_link_controller.dart';
 import 'package:vrchat/controllers/login_controller.dart';
 import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart';
-import 'package:vrchat/utils/url_launcher_utils.dart';
+import 'package:vrchat/provider/auth_storage_provider.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -27,10 +29,12 @@ class _LoginPageState extends ConsumerState<LoginPage>
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
   final _hiddenController = TextEditingController();
   final _hiddenFocusNode = FocusNode();
+  final _localAuth = LocalAuthentication();
   var _isLoading = false;
   String? _errorMessage;
   var _obscurePassword = true;
   var _showTwoFactorAuth = false;
+  var _canUseBiometricLogin = false;
 
   // ログイン状態を保存するかどうか
   var _rememberLogin = true;
@@ -61,6 +65,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
     // アニメーション開始
     _animationController.forward();
+    _loadBiometricAvailability();
   }
 
   @override
@@ -110,6 +115,100 @@ class _LoginPageState extends ConsumerState<LoginPage>
             _errorMessage = t.login.errorLoginFailed;
           });
       }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = t.common.error(error: e.toString());
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadBiometricAvailability() async {
+    try {
+      final storage = ref.read(authStorageProvider);
+      final credentials = await storage.getCredentials();
+      final hasCredentials =
+          await storage.getRememberLogin() &&
+          credentials.username != null &&
+          credentials.password != null &&
+          credentials.username!.isNotEmpty &&
+          credentials.password!.isNotEmpty;
+      final canUseBiometrics = await _localAuth.canCheckBiometrics;
+
+      if (!mounted) return;
+      setState(() {
+        _canUseBiometricLogin = hasCredentials && canUseBiometrics;
+      });
+    } on PlatformException {
+      if (!mounted) return;
+      setState(() {
+        _canUseBiometricLogin = false;
+      });
+    }
+  }
+
+  Future<void> _loginWithBiometrics() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final authenticated = await _localAuth.authenticate(
+        localizedReason: 'Authenticate to use your saved VRChat login.',
+        biometricOnly: true,
+        persistAcrossBackgrounding: true,
+      );
+
+      if (!authenticated) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        return;
+      }
+
+      final credentials = await ref.read(authStorageProvider).getCredentials();
+      final username = credentials.username;
+      final password = credentials.password;
+      if (username == null || password == null) {
+        throw StateError('Saved login is missing.');
+      }
+
+      final result = await ref
+          .read(loginControllerProvider)
+          .login(username: username, password: password, rememberLogin: true);
+
+      if (!mounted) return;
+
+      switch (result.status) {
+        case LoginFlowStatus.success:
+          context.go('/');
+        case LoginFlowStatus.requiresTwoFactor:
+          _usernameController.text = username;
+          _passwordController.text = password;
+          setState(() {
+            _showTwoFactorAuth = true;
+          });
+          _animationController.reset();
+          await _animationController.forward();
+        case LoginFlowStatus.failure:
+          setState(() {
+            _errorMessage = t.login.errorLoginFailed;
+          });
+      }
+    } on PlatformException catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = t.common.error(error: e.message ?? e.code);
+      });
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -347,7 +446,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
                                     onPressed: () {
-                                      UrlLauncherUtils.launchURL(
+                                      externalLinkController.launch(
                                         'https://vrchat.com/home/password',
                                       );
                                     },
@@ -370,7 +469,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
                                     onPressed: () {
-                                      UrlLauncherUtils.launchURL(
+                                      externalLinkController.launch(
                                         'https://vrchat.com/home/register',
                                       );
                                     },
@@ -424,6 +523,28 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                       : t.common.login,
                                   isLoading: _isLoading,
                                 ),
+                                if (_canUseBiometricLogin) ...[
+                                  const SizedBox(height: 12),
+                                  OutlinedButton.icon(
+                                    onPressed: _isLoading
+                                        ? null
+                                        : _loginWithBiometrics,
+                                    icon: const Icon(
+                                      Icons.fingerprint_rounded,
+                                    ),
+                                    label: const Text('Login with biometrics'),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: primaryColor,
+                                      side: BorderSide(color: primaryColor),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ] else ...[
                                 // 二段階認証のUI
                                 Text(
@@ -821,25 +942,17 @@ class _LoginPageState extends ConsumerState<LoginPage>
   Future<void> _pasteFromClipboard() async {
     // クリップボードからテキストを取得
     final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-    final text = clipboardData?.text;
+    final otpCode = ref
+        .read(loginControllerProvider)
+        .extractTwoFactorCode(clipboardData?.text);
+    if (otpCode == null) return;
 
-    if (text != null && text.isNotEmpty) {
-      // 数字のみを抽出
-      final digitsOnly = text.replaceAll(RegExp('[^0-9]'), '');
+    setState(() {
+      _setTwoFactorCodeDigits(otpCode);
+    });
 
-      if (digitsOnly.isNotEmpty) {
-        final otpCode = digitsOnly.length >= 6
-            ? digitsOnly.substring(0, 6)
-            : digitsOnly;
-
-        setState(() {
-          _setTwoFactorCodeDigits(otpCode);
-        });
-
-        if (otpCode.length == 6 && mounted) {
-          await _verifyTwoFactorCode();
-        }
-      }
+    if (otpCode.length == 6 && mounted) {
+      await _verifyTwoFactorCode();
     }
   }
 }

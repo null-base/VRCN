@@ -1,21 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:favicon/favicon.dart';
 import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/external_link_controller.dart';
+import 'package:vrchat/controllers/friend_action_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
-import 'package:vrchat/provider/instance_provider.dart';
-import 'package:vrchat/provider/playermoderation_provider.dart';
+import 'package:vrchat/provider/user_note_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
-import 'package:vrchat/provider/world_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
+import 'package:vrchat/utils/bio_link_utils.dart';
 import 'package:vrchat/utils/cache_manager.dart';
 import 'package:vrchat/utils/date_formatter.dart';
-import 'package:vrchat/utils/share_utils.dart';
 import 'package:vrchat/utils/status_helpers.dart';
-import 'package:vrchat/utils/url_launcher_utils.dart';
 import 'package:vrchat/utils/user_type_helpers.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/info_card.dart';
@@ -40,7 +38,11 @@ class FriendDetailPage extends ConsumerWidget {
         loading: () => LoadingIndicator(message: t.friendDetail.loading),
         error: (error, stackTrace) => ErrorContainer(
           message: t.friendDetail.error(error: error.toString()),
-          onRetry: () => ref.refresh(userDetailProvider(userId)),
+          onRetry: () => ref
+              .read(friendActionControllerProvider)
+              .refreshUserDetailById(
+                userId,
+              ),
         ),
       ),
     );
@@ -69,21 +71,7 @@ class FriendDetailPage extends ConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: () async {
-        ref.invalidate(userDetailProvider(userId));
-        if (user.worldId != null) {
-          ref.invalidate(worldDetailProvider(user.worldId!));
-        }
-        if (user.worldId != null && user.instanceId != null) {
-          ref.invalidate(
-            instanceDetailWithParamsProvider(
-              InstanceParams(
-                worldId: user.worldId!,
-                instanceId: user.instanceId!,
-              ),
-            ),
-          );
-        }
-        ref.invalidate(userRepresentedGroupProvider(user.id));
+        ref.read(friendActionControllerProvider).refreshUserDetail(user);
       },
       color: statusColor,
       backgroundColor: isDarkMode ? Colors.grey[850] : Colors.white,
@@ -236,6 +224,8 @@ class FriendDetailPage extends ConsumerWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
+                  _buildUserNoteCard(context, ref, user, isDarkMode),
                   const SizedBox(height: 16),
                   _buildUserBioCard(user, isDarkMode),
                   const SizedBox(height: 16),
@@ -481,6 +471,101 @@ class FriendDetailPage extends ConsumerWidget {
     );
   }
 
+  Widget _buildUserNoteCard(
+    BuildContext context,
+    WidgetRef ref,
+    User user,
+    bool isDarkMode,
+  ) {
+    final note = ref.watch(userNoteProvider(user.id));
+
+    return InfoCard(
+      title: 'Note',
+      icon: Icons.sticky_note_2_outlined,
+      isDarkMode: isDarkMode,
+      customColor: Colors.amber,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                note.isEmpty ? 'No note saved.' : note,
+                style: GoogleFonts.notoSans(
+                  fontSize: 15,
+                  height: 1.5,
+                  color: note.isEmpty
+                      ? Theme.of(context).colorScheme.onSurfaceVariant
+                      : Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            IconButton.filledTonal(
+              onPressed: () => _showNoteDialog(context, ref, user),
+              icon: const Icon(Icons.edit_outlined),
+              tooltip: 'Edit note',
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Future<void> _showNoteDialog(
+    BuildContext context,
+    WidgetRef ref,
+    User user,
+  ) async {
+    final controller = TextEditingController(
+      text: ref.read(userNoteProvider(user.id)),
+    );
+
+    try {
+      await showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Note: ${user.displayName}'),
+            content: TextField(
+              controller: controller,
+              autofocus: true,
+              maxLines: 6,
+              decoration: const InputDecoration(
+                hintText: 'Write a private local note',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(t.common.cancel),
+              ),
+              TextButton(
+                onPressed: () async {
+                  await ref.read(userNoteProvider(user.id).notifier).save('');
+                  if (context.mounted) Navigator.of(context).pop();
+                },
+                child: const Text('Delete'),
+              ),
+              FilledButton(
+                onPressed: () async {
+                  await ref
+                      .read(userNoteProvider(user.id).notifier)
+                      .save(controller.text);
+                  if (context.mounted) Navigator.of(context).pop();
+                },
+                child: Text(t.common.save),
+              ),
+            ],
+          );
+        },
+      );
+    } finally {
+      controller.dispose();
+    }
+  }
+
   Widget _buildUserBioCard(User user, bool isDarkMode) {
     if (user.bio.isEmpty) return const SizedBox.shrink();
 
@@ -519,38 +604,9 @@ class FriendDetailPage extends ConsumerWidget {
     bool isDarkMode,
   ) {
     return FutureBuilder(
-      future: Future.wait(
-        bioLinks.map((link) async {
-          try {
-            final uri = Uri.parse(_ensureHttpPrefix(link));
-
-            // ファビコン取得を強化
-            Favicon? favicon;
-            try {
-              favicon = await FaviconFinder.getBest(link);
-            } catch (e) {
-              // ファビコンが取得できなくても代替手段があるので無視
-            }
-
-            String? faviconUrl;
-            if (favicon != null && favicon.url.isNotEmpty) {
-              faviconUrl = favicon.url;
-            } else {
-              faviconUrl = '${uri.scheme}://${uri.host}/favicon.ico';
-            }
-
-            return {'url': link, 'favicon': faviconUrl, 'domain': uri.host};
-          } catch (e) {
-            return {
-              'url': link,
-              'favicon': null,
-              'domain': _extractDomain(link),
-            };
-          }
-        }).toList(),
-      ),
+      future: BioLinkUtils.loadAll(bioLinks),
       builder: (context, snapshot) {
-        final linkData = snapshot.data as List<Map<String, dynamic>>? ?? [];
+        final linkData = snapshot.data ?? <BioLinkData>[];
 
         return InfoCard(
           title: t.friendDetail.links,
@@ -569,15 +625,11 @@ class FriendDetailPage extends ConsumerWidget {
 
   Widget _buildLinkItem(
     BuildContext context,
-    Map<String, dynamic> linkData,
+    BioLinkData linkData,
     bool isDarkMode,
   ) {
-    final url = linkData['url'] as String;
-    final faviconUrl = linkData['favicon'] as String?;
-    final domain = linkData['domain'] as String;
-
     return InkWell(
-      onTap: () => UrlLauncherUtils.launchURL(url),
+      onTap: () => externalLinkController.launch(linkData.url),
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -598,11 +650,11 @@ class FriendDetailPage extends ConsumerWidget {
                 color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: faviconUrl != null
+              child: linkData.faviconUrl != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(4),
                       child: CachedNetworkImage(
-                        imageUrl: faviconUrl,
+                        imageUrl: linkData.faviconUrl!,
                         cacheManager: JsonCacheManager(),
                         width: 16,
                         height: 16,
@@ -628,14 +680,14 @@ class FriendDetailPage extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    domain,
+                    linkData.domain,
                     style: GoogleFonts.notoSans(
                       fontWeight: FontWeight.w500,
                       color: Colors.teal,
                     ),
                   ),
                   Text(
-                    _truncateUrl(url),
+                    BioLinkUtils.truncateUrl(linkData.url),
                     style: GoogleFonts.notoSans(
                       fontSize: 14,
                       color: isDarkMode ? Colors.grey[300] : Colors.grey[800],
@@ -677,25 +729,6 @@ class FriendDetailPage extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  String _ensureHttpPrefix(String url) {
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      return url;
-    }
-    return 'https://$url';
-  }
-
-  String _extractDomain(String url) {
-    var processedUrl = url.replaceAll(RegExp('https?://'), '');
-    processedUrl = processedUrl.split('/')[0];
-    processedUrl = processedUrl.split('?')[0].split('#')[0];
-    return processedUrl;
-  }
-
-  String _truncateUrl(String url) {
-    const maxLength = 40;
-    return url.length > maxLength ? '${url.substring(0, maxLength)}...' : url;
   }
 
   Widget _buildUserGroupCard(
@@ -875,7 +908,7 @@ class FriendDetailPage extends ConsumerWidget {
               t.friendDetail.confirmBlockMessage,
               () => _moderateUser(
                 ref,
-                PlayerModerationUtil.blockUser(user.id),
+                (controller) => controller.blockUser(user.id),
                 t.friendDetail.blockSuccess,
               ),
               isDarkMode,
@@ -888,15 +921,19 @@ class FriendDetailPage extends ConsumerWidget {
               t.friendDetail.confirmMuteMessage,
               () => _moderateUser(
                 ref,
-                PlayerModerationUtil.muteUser(user.id),
+                (controller) => controller.muteUser(user.id),
                 t.friendDetail.muteSuccess,
               ),
               isDarkMode,
             );
           case 'website':
-            await _openUserWebsite(user.id);
+            await ref
+                .read(friendActionControllerProvider)
+                .openUserWebsite(user.id);
           case 'share':
-            await _shareUserProfile(user);
+            await ref
+                .read(friendActionControllerProvider)
+                .shareUserProfile(user);
         }
       },
       itemBuilder: (context) => [
@@ -1006,11 +1043,11 @@ class FriendDetailPage extends ConsumerWidget {
   // ユーザーモデレーションを実行するメソッド
   Future<void> _moderateUser(
     WidgetRef ref,
-    ModerateUserRequest request,
+    Future<void> Function(FriendActionController controller) action,
     String successMessage,
   ) async {
     try {
-      await ref.read(moderateUserProvider(request).future);
+      await action(ref.read(friendActionControllerProvider));
       if (ref.context.mounted) {
         ScaffoldMessenger.of(ref.context).showSnackBar(
           SnackBar(
@@ -1031,21 +1068,6 @@ class FriendDetailPage extends ConsumerWidget {
         );
       }
     }
-  }
-
-  // ユーザーのVRChatウェブサイトページを開くメソッド
-  Future<void> _openUserWebsite(String userId) async {
-    await UrlLauncherUtils.launchExternalURL(
-      'https://vrchat.com/home/user/$userId',
-    );
-  }
-
-  // ユーザーのプロフィールを共有するメソッド
-  Future<void> _shareUserProfile(User user) async {
-    await ShareUtils.shareUrl(
-      'https://vrchat.com/home/user/${user.id}',
-      title: user.displayName,
-    );
   }
 }
 

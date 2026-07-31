@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:vrchat/controllers/profile_controller.dart';
 import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart'; // 多言語化パッケージ
 import 'package:vrchat/provider/package_info_provider.dart';
@@ -114,6 +115,17 @@ class AppDrawer extends ConsumerWidget {
                                     ).uri.path.startsWith('/event_calendar'),
                                     onTap: () {
                                       context.push('/event_calendar');
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  _MenuItem(
+                                    icon: Icons.notifications_rounded,
+                                    title: t.notifications.title,
+                                    isSelected: GoRouterState.of(
+                                      context,
+                                    ).uri.path.startsWith('/notifications'),
+                                    onTap: () {
+                                      context.push('/notifications');
                                       Navigator.pop(context);
                                     },
                                   ),
@@ -679,7 +691,8 @@ class AppDrawer extends ConsumerWidget {
               const SizedBox(height: 16),
               // スタイリッシュなリトライボタン
               ElevatedButton.icon(
-                onPressed: () => ref.invalidate(currentUserProvider),
+                onPressed: () =>
+                    ref.read(profileControllerProvider).reloadCurrentUser(),
                 icon: const Icon(Icons.refresh_rounded),
                 label: Text(t.drawer.retry, style: GoogleFonts.notoSans()),
                 style: ElevatedButton.styleFrom(

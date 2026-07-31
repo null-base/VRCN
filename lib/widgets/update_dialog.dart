@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/external_link_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/version_check_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/app_logger.dart';
-import 'package:vrchat/utils/url_launcher_utils.dart';
 
 class UpdateDialog extends StatelessWidget {
   const UpdateDialog({super.key, required this.versionStatus});
@@ -166,7 +166,7 @@ class UpdateDialog extends StatelessWidget {
 
   Future<void> _launchStore(AppVersionStatus versionStatus) async {
     try {
-      await UrlLauncherUtils.launchExternalURL(versionStatus.appStoreLink);
+      await externalLinkController.launchExternal(versionStatus.appStoreLink);
     } catch (e) {
       appLogger.d('ストア起動エラー: $e');
     }

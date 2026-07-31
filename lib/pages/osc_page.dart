@@ -3,11 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/osc_controller.dart';
 import 'package:vrchat/models/osc_models.dart';
 import 'package:vrchat/provider/osc_settings_provider.dart';
-import 'package:vrchat/services/osc_service.dart';
 import 'package:vrchat/theme/app_theme.dart';
-import 'package:vrchat/utils/app_logger.dart';
 
 // OSCページ
 class OscPage extends ConsumerStatefulWidget {
@@ -21,7 +20,6 @@ class _OscPageState extends ConsumerState<OscPage> {
   var _isConnected = false;
   var _statusMessage = 'OSC未接続';
   Timer? _connectionCheckTimer;
-  final _oscService = const OscService();
 
   // 現在編集中のパラメータ値
   final Map<int, Object?> _currentValues = {};
@@ -49,22 +47,11 @@ class _OscPageState extends ConsumerState<OscPage> {
 
   // 接続処理を修正
   Future<void> _connect() async {
-    final settings = ref.read(oscSettingsProvider);
-
-    try {
-      // テスト送信してみる
-      await _oscService.sendTestMessage(settings);
-
-      setState(() {
-        _isConnected = true;
-        _statusMessage = '${settings.ipAddress}:${settings.port} に接続しました';
-      });
-    } catch (e) {
-      setState(() {
-        _isConnected = false;
-        _statusMessage = '接続エラー: $e';
-      });
-    }
+    final result = await ref.read(oscControllerProvider).connect();
+    setState(() {
+      _isConnected = result.isConnected;
+      _statusMessage = result.message;
+    });
   }
 
   // 切断処理を修正
@@ -77,11 +64,8 @@ class _OscPageState extends ConsumerState<OscPage> {
 
   // テストメッセージ送信
   Future<void> _sendTestMessage() async {
-    try {
-      final settings = ref.read(oscSettingsProvider);
-      await _oscService.sendTestMessage(settings);
-    } catch (e) {
-      appLogger.d('テストメッセージエラー: $e');
+    final isConnected = await ref.read(oscControllerProvider).checkConnection();
+    if (!isConnected) {
       setState(() {
         _isConnected = false;
         _statusMessage = '接続が切れました';
@@ -99,12 +83,12 @@ class _OscPageState extends ConsumerState<OscPage> {
     }
 
     try {
-      final settings = ref.read(oscSettingsProvider);
-      await _oscService.sendParameter(
-        settings: settings,
-        param: param,
-        value: value,
-      );
+      await ref
+          .read(oscControllerProvider)
+          .sendParameter(
+            param: param,
+            value: value,
+          );
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${param.name}: $value を送信しました')),
@@ -205,9 +189,7 @@ class _OscPageState extends ConsumerState<OscPage> {
                       ),
                     ),
                     onChanged: (value) {
-                      ref
-                          .read(oscSettingsProvider.notifier)
-                          .updateIpAddress(value);
+                      ref.read(oscControllerProvider).updateIpAddress(value);
                     },
                   ),
                 ),
@@ -232,7 +214,7 @@ class _OscPageState extends ConsumerState<OscPage> {
                     onChanged: (value) {
                       final port = int.tryParse(value);
                       if (port != null) {
-                        ref.read(oscSettingsProvider.notifier).updatePort(port);
+                        ref.read(oscControllerProvider).updatePort(port);
                       }
                     },
                   ),
@@ -644,20 +626,14 @@ class _OscPageState extends ConsumerState<OscPage> {
                 return;
               }
 
-              final defaultValue = selectedType == OscParamType.float
-                  ? 0.0
-                  : selectedType == OscParamType.int
-                  ? 0
-                  : false;
-
-              final newParam = OscParam(
+              final oscController = ref.read(oscControllerProvider);
+              final newParam = oscController.createParam(
                 name: nameController.text,
                 address: addressController.text,
                 type: selectedType,
-                defaultValue: defaultValue,
               );
 
-              ref.read(oscSettingsProvider.notifier).addParam(newParam);
+              oscController.addParam(newParam);
               Navigator.pop(context);
             },
             child: const Text('追加'),
@@ -765,29 +741,19 @@ class _OscPageState extends ConsumerState<OscPage> {
                 return;
               }
 
-              // 種類が変わった場合はデフォルト値も更新
-              final defaultValue = selectedType == param.type
-                  ? param.defaultValue
-                  : selectedType == OscParamType.float
-                  ? 0.0
-                  : selectedType == OscParamType.int
-                  ? 0
-                  : false;
-
-              final updatedParam = OscParam(
+              final oscController = ref.read(oscControllerProvider);
+              final updatedParam = oscController.editParam(
+                current: param,
                 name: nameController.text,
                 address: addressController.text,
                 type: selectedType,
-                defaultValue: defaultValue,
               );
 
-              ref
-                  .read(oscSettingsProvider.notifier)
-                  .updateParam(index, updatedParam);
+              oscController.updateParam(index, updatedParam);
 
               // 現在値も更新
               setState(() {
-                _currentValues[index] = defaultValue;
+                _currentValues[index] = updatedParam.defaultValue;
               });
 
               Navigator.pop(context);
@@ -818,7 +784,7 @@ class _OscPageState extends ConsumerState<OscPage> {
           ),
           TextButton(
             onPressed: () {
-              ref.read(oscSettingsProvider.notifier).removeParam(index);
+              ref.read(oscControllerProvider).removeParam(index);
               Navigator.pop(context);
 
               // 現在値も削除

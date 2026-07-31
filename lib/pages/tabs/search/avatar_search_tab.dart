@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/avatar_search_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/models/avtrdb_search_result.dart';
 import 'package:vrchat/provider/avtrdb_provider.dart';
@@ -43,7 +44,7 @@ class AvatarSearchTab extends ConsumerWidget {
           LoadingIndicator(message: t.search.tabs.avatarSearch.searching),
       error: (error, stack) => ErrorContainer(
         message: error.toString(),
-        onRetry: () => ref.refresh(avtrDbSearchProvider(query)),
+        onRetry: () => ref.read(avatarSearchControllerProvider).refresh(query),
       ),
     );
   }

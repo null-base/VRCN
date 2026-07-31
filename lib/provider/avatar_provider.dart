@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
+import 'package:vrchat/provider/local_avatar_database_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
@@ -56,6 +57,9 @@ final FutureProviderFamily<Avatar, String> avatarDetailProvider =
           throw Exception('アバター情報が取得できませんでした');
         }
 
+        await ref
+            .read(localAvatarDatabaseProvider.notifier)
+            .saveAvatar(response.data!);
         return response.data!;
       } catch (e) {
         throw Exception('アバターの詳細取得に失敗しました: $e');
@@ -129,6 +133,9 @@ avatarSearchProvider = FutureProvider.family<List<Avatar>, AvatarSearchParams>((
       return [];
     }
 
+    await ref
+        .read(localAvatarDatabaseProvider.notifier)
+        .saveAll(response.data!);
     return response.data!;
   } catch (e) {
     throw Exception('アバターの検索に失敗しました: $e');

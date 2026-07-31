@@ -25,6 +25,18 @@ final friendsProvider =
       FriendsNotifier.new,
     );
 
+final friendsActionsProvider = Provider<FriendsActions>(FriendsActions.new);
+
+class FriendsActions {
+  const FriendsActions(this._ref);
+
+  final Ref _ref;
+
+  Future<void> refreshFriends() {
+    return _ref.read(friendsProvider.notifier).refreshFriends();
+  }
+}
+
 // フレンドリストを管理するNotifier
 class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
   @override

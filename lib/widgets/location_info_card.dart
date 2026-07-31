@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/location_invite_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/instance_provider.dart';
-import 'package:vrchat/provider/invite_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/provider/world_provider.dart';
 import 'package:vrchat/widgets/world_instance_view.dart';
@@ -98,7 +98,6 @@ class LocationInfoCard extends ConsumerWidget {
                   child: ElevatedButton.icon(
                     onPressed: () async {
                       try {
-                        // ローディング表示
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(t.location.inviteSending),
@@ -106,17 +105,10 @@ class LocationInfoCard extends ConsumerWidget {
                           ),
                         );
 
-                        // 招待プロバイダーを呼び出し、結果を待つ
-                        await ref.read(
-                          inviteMyselfProvider(
-                            InviteParams(
-                              worldId: user.worldId!,
-                              instanceId: user.instanceId!,
-                            ),
-                          ).future,
-                        );
+                        await ref
+                            .read(locationInviteControllerProvider)
+                            .inviteMyself(user);
 
-                        // 招待が成功した場合
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -136,7 +128,6 @@ class LocationInfoCard extends ConsumerWidget {
                           );
                         }
                       } catch (e) {
-                        // エラーが発生した場合
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

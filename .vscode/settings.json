@@ -1,0 +1,16 @@
+{
+  "dart.analysisExcludedFolders": [
+    "build",
+    "ios/build",
+    "**/build/**",
+    "**/SourcePackages/**"
+  ],
+  "files.exclude": {
+    "**/build": true,
+    "**/ios/build": true
+  },
+  "search.exclude": {
+    "**/build": true,
+    "**/ios/build": true
+  }
+}

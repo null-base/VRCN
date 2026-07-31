@@ -13,18 +13,23 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker_android/image_picker_android.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrchat/analytics_repository.dart';
 import 'package:vrchat/config/app_config.dart';
 import 'package:vrchat/firebase_options.dart';
 import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/provider/auth_refresh_provider.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
 import 'package:vrchat/provider/package_info_provider.dart';
 import 'package:vrchat/provider/settings_provider.dart';
 import 'package:vrchat/provider/streaming_provider.dart';
+import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/version_check_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/router/app_router.dart';
+import 'package:vrchat/services/friend_status_widget_service.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/app_logger.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
@@ -39,6 +44,7 @@ Future<void> main() async {
 
   // Google Fontsの設定
   GoogleFonts.config.allowRuntimeFetching = kDebugMode;
+  _configureAndroidPhotoPicker();
 
   // Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -79,7 +85,7 @@ Future<void> main() async {
 
   if (hasLocaleOverride && savedLocale != null) {
     // ユーザーが明示的に選択した言語設定がある場合
-    await LocaleSettings.setLocaleRaw(savedLocale);
+    await LocaleSettings.setLocale(_parseStoredLocale(savedLocale));
   } else {
     // 端末の言語を優先する。未対応言語の場合は slang の baseLocale(en) に戻る。
     await LocaleSettings.useDeviceLocale();
@@ -118,6 +124,29 @@ Future<void> main() async {
       child: TranslationProvider(child: const VRChatApp()),
     ),
   );
+}
+
+void _configureAndroidPhotoPicker() {
+  if (defaultTargetPlatform != TargetPlatform.android) return;
+
+  final imagePickerImplementation = ImagePickerPlatform.instance;
+  if (imagePickerImplementation is ImagePickerAndroid) {
+    imagePickerImplementation.useAndroidPhotoPicker = true;
+  }
+}
+
+AppLocale _parseStoredLocale(String value) {
+  for (final locale in AppLocale.values) {
+    if (locale.name == value) {
+      return locale;
+    }
+  }
+
+  try {
+    return AppLocaleUtils.parse(value);
+  } catch (_) {
+    return AppLocale.en;
+  }
 }
 
 /// 通知の初期化
@@ -239,9 +268,11 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
       if (isLoggedIn && !_didStartLoggedInTasks) {
         _didStartLoggedInTasks = true;
         ref.read(streamingControllerProvider).startConnection();
+        ref.read(friendStatusWidgetSyncProvider);
         ref.read(versionCheckProvider);
       } else if (!isLoggedIn) {
         _didStartLoggedInTasks = false;
+        unawaited(ref.read(friendStatusWidgetServiceProvider).clear());
       }
     });
   }
@@ -260,6 +291,22 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       appLogger.d('アプリがフォアグラウンドに戻りました');
+      unawaited(_refreshAuthSession());
+    }
+  }
+
+  Future<void> _refreshAuthSession() async {
+    if (!_didStartLoggedInTasks) return;
+
+    try {
+      ref.invalidate(autoLoginProvider);
+      final isLoggedIn = await ref.read(autoLoginProvider.future);
+      if (!isLoggedIn) return;
+
+      ref.invalidate(currentUserProvider);
+      ref.read(authRefreshProvider.notifier).state++;
+    } catch (e) {
+      appLogger.d('認証セッション再検証でエラー: $e');
     }
   }
 

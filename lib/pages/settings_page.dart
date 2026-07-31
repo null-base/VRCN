@@ -5,17 +5,15 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/event_reminder_controller.dart';
+import 'package:vrchat/controllers/external_link_controller.dart';
+import 'package:vrchat/controllers/settings_controller.dart';
 import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart';
-import 'package:vrchat/provider/auth_refresh_provider.dart';
-import 'package:vrchat/provider/auth_storage_provider.dart';
 import 'package:vrchat/provider/cache_provider.dart';
-import 'package:vrchat/provider/event_reminder_provider.dart';
 import 'package:vrchat/provider/package_info_provider.dart';
 import 'package:vrchat/provider/settings_provider.dart';
-import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
-import 'package:vrchat/utils/url_launcher_utils.dart';
 import 'package:vrchat/widgets/reminder_management_dialog.dart';
 
 bool get _isAppIconChangeEnabled => false;
@@ -191,7 +189,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                   value: settings.allowNsfw,
                                   onChanged: (value) {
                                     ref
-                                        .read(settingsProvider.notifier)
+                                        .read(settingsControllerProvider)
                                         .setAllowNsfw(value);
                                     _showNsfwToast(context, value, t);
                                   },
@@ -233,7 +231,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                   value: settings.enableEventReminders,
                                   onChanged: (value) {
                                     ref
-                                        .read(settingsProvider.notifier)
+                                        .read(settingsControllerProvider)
                                         .setEnableEventReminders(value);
                                     _toggleReminders(ref, value);
                                   },
@@ -324,7 +322,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                     iconColor: const Color(0xFF9381FF),
                                     title: t.settings.contact,
                                     subtitle: t.settings.contactDescription,
-                                    onTap: () => UrlLauncherUtils.launchURL(
+                                    onTap: () => externalLinkController.launch(
                                       'https://discord.gg/wNgbkdXq6M',
                                     ),
                                     textColor: textColor,
@@ -336,7 +334,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                     title: t.settings.privacyPolicy,
                                     subtitle:
                                         t.settings.privacyPolicyDescription,
-                                    onTap: () => UrlLauncherUtils.launchURL(
+                                    onTap: () => externalLinkController.launch(
                                       'https://null-base.com/vrcn/privacy-policy/',
                                     ),
                                     textColor: textColor,
@@ -348,7 +346,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                     title: t.settings.termsOfService,
                                     subtitle:
                                         t.settings.termsOfServiceDescription,
-                                    onTap: () => UrlLauncherUtils.launchURL(
+                                    onTap: () => externalLinkController.launch(
                                       'https://null-base.com/vrcn/terms-of-service',
                                     ),
                                     textColor: textColor,
@@ -369,7 +367,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                                     iconColor: const Color(0xFF9381FF),
                                     title: t.settings.github,
                                     subtitle: t.settings.githubDescription,
-                                    onTap: () => UrlLauncherUtils.launchURL(
+                                    onTap: () => externalLinkController.launch(
                                       'https://github.com/null-base/vrcn',
                                     ),
                                     textColor: textColor,
@@ -557,7 +555,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                   isSelected: currentThemeMode == AppThemeMode.light,
                   onTap: () {
                     ref
-                        .read(settingsProvider.notifier)
+                        .read(settingsControllerProvider)
                         .setThemeMode(AppThemeMode.light);
                   },
                   isDarkMode: isDarkMode,
@@ -569,7 +567,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                   isSelected: currentThemeMode == AppThemeMode.system,
                   onTap: () {
                     ref
-                        .read(settingsProvider.notifier)
+                        .read(settingsControllerProvider)
                         .setThemeMode(AppThemeMode.system);
                   },
                   isDarkMode: isDarkMode,
@@ -581,7 +579,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                   isSelected: currentThemeMode == AppThemeMode.dark,
                   onTap: () {
                     ref
-                        .read(settingsProvider.notifier)
+                        .read(settingsControllerProvider)
                         .setThemeMode(AppThemeMode.dark);
                   },
                   isDarkMode: isDarkMode,
@@ -831,7 +829,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                   onPressed: () {
                     final url = controller.text.trim();
                     ref
-                        .read(settingsProvider.notifier)
+                        .read(settingsControllerProvider)
                         .setAvatarSearchApiUrl(url);
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -1067,7 +1065,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                 ],
                 onChanged: (newLocale) {
                   if (newLocale != null) {
-                    ref.read(settingsProvider.notifier).setLocale(newLocale);
+                    ref.read(settingsControllerProvider).setLocale(newLocale);
                   }
                 },
               ),
@@ -1197,10 +1195,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
     Color secondaryTextColor,
   ) {
     final settings = ref.watch(settingsProvider);
-    final notifier = ref.read(settingsProvider.notifier);
 
     return FutureBuilder<bool>(
-      future: notifier.isAppIconChangeSupported(),
+      future: ref.read(settingsControllerProvider).isAppIconChangeSupported(),
       builder: (context, snapshot) {
         // ローディング中の表示
         if (!snapshot.hasData) {
@@ -1552,7 +1549,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
     return GestureDetector(
       onTap: () async {
         final success = await ref
-            .read(settingsProvider.notifier)
+            .read(settingsControllerProvider)
             .setAppIcon(iconType);
         if (!success && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -1725,10 +1722,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
 
   // リマインダー設定を切り替え
   void _toggleReminders(WidgetRef ref, bool value) {
+    final controller = ref.read(eventReminderControllerProvider);
     if (!value) {
-      ref.read(eventReminderProvider.notifier).cancelAllNotifications();
+      controller.cancelAllNotifications();
     } else {
-      ref.read(eventReminderProvider.notifier).rescheduleAllNotifications();
+      controller.rescheduleAllNotifications();
     }
   }
 
@@ -1768,14 +1766,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
 
     if (shouldLogout == true) {
       try {
-        // 保存された認証情報をクリア
-        final authStorage = ref.read(authStorageProvider);
-        await authStorage.clearCredentials();
-
-        // ログアウト処理
-        final auth = await ref.read(vrchatAuthProvider.future);
-        await auth.logout();
-        ref.read(authRefreshProvider.notifier).state++;
+        await ref.read(settingsControllerProvider).logout();
 
         if (mounted) {
           context.go('/login');
@@ -1932,13 +1923,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
     );
 
     if (shouldClear == true) {
-      final cacheService = ref.read(cacheServiceProvider);
-      final success = await cacheService.clearCache();
+      final success = await ref.read(settingsControllerProvider).clearCache();
 
       if (mounted) {
-        // キャッシュサイズを再計算するためプロバイダーを更新
-        ref.invalidate(cacheSizeProvider);
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(

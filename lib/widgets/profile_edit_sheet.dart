@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/profile_edit_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
-import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/status_helpers.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
-import 'package:vrchat/utils/app_logger.dart';
 
 class ProfileEditSheet extends ConsumerStatefulWidget {
   const ProfileEditSheet({super.key, required this.user});
@@ -106,31 +105,19 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
     });
 
     try {
-      final bioLinks = _bioLinkControllers
-          .map((controller) => controller.text.trim())
-          .where((link) => link.isNotEmpty)
-          .toList();
-
-      final updateRequest = UpdateUserRequest(
-        status: _selectedStatus,
-        statusDescription: _statusDescriptionController.text,
-        bio: _bioController.text,
-        bioLinks: bioLinks,
-        pronouns: _pronounsController.text,
-      );
-
-      await ref.read(updateUserProvider(updateRequest).future);
-
-      // プロバイダーを無効化して最新データを取得
-      ref.invalidate(currentUserProvider); // これを追加
-
-      // 最新のユーザー情報を確実に取得
-      try {
-        await ref.read(currentUserProvider.future);
-      } catch (e) {
-        appLogger.d('ユーザー情報の再取得中にエラーが発生: $e');
-        // エラーが発生しても保存成功として処理を続行
-      }
+      await ref
+          .read(profileEditControllerProvider)
+          .save(
+            ProfileEditInput(
+              status: _selectedStatus,
+              statusDescription: _statusDescriptionController.text,
+              bio: _bioController.text,
+              bioLinks: _bioLinkControllers.map(
+                (controller) => controller.text,
+              ),
+              pronouns: _pronounsController.text,
+            ),
+          );
 
       if (mounted) {
         // 保存成功アニメーション

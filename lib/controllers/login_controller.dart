@@ -94,6 +94,15 @@ class LoginController {
       appLogger.d('ログイン後のユーザー情報取得でエラー: $e');
     }
   }
+
+  String? extractTwoFactorCode(String? text) {
+    if (text == null || text.isEmpty) return null;
+
+    final digitsOnly = text.replaceAll(RegExp('[^0-9]'), '');
+    if (digitsOnly.isEmpty) return null;
+
+    return digitsOnly.length >= 6 ? digitsOnly.substring(0, 6) : digitsOnly;
+  }
 }
 
 final loginControllerProvider = Provider<LoginController>((ref) {

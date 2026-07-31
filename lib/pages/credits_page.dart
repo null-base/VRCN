@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/external_link_controller.dart';
 import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart';
-import 'package:vrchat/utils/url_launcher_utils.dart';
 
 class CreditsPage extends StatelessWidget {
   const CreditsPage({super.key});
@@ -279,7 +279,7 @@ class CreditsPage extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
-                        UrlLauncherUtils.launchURL(
+                        externalLinkController.launch(
                           'https://booth.pm/ja/items/5020157',
                         );
                       },
@@ -294,7 +294,7 @@ class CreditsPage extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
-                        UrlLauncherUtils.launchURL(
+                        externalLinkController.launch(
                           'https://triples.booth.pm/items/6567379',
                         );
                       },

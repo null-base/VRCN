@@ -5,6 +5,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:vrchat/controllers/event_calendar_controller.dart';
+import 'package:vrchat/controllers/external_link_controller.dart';
+import 'package:vrchat/controllers/event_reminder_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/models/event_calendar_models.dart';
 import 'package:vrchat/provider/event_calendar_provider.dart';
@@ -12,7 +15,6 @@ import 'package:vrchat/provider/event_filter_provider.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
 import 'package:vrchat/provider/settings_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
-import 'package:vrchat/utils/url_launcher_utils.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/event_filter_sheet.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
@@ -55,88 +57,13 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
     // アニメーションを開始
     await _animationController.forward(from: 0);
 
-    final refreshedEvents = ref.refresh(eventDataProvider.future);
-    await refreshedEvents;
+    await ref.read(eventCalendarControllerProvider).refreshEvents();
 
     if (mounted) {
       setState(() {
         _isRefreshing = false;
       });
     }
-  }
-
-  // フィルタリングされたイベントリストを取得するメソッド
-  List<Event> _getFilteredEvents(List<Event> events, EventFilter filter) {
-    return events.where((event) {
-      // 日付フィルター
-      if (filter.startDate != null) {
-        final eventDate = DateTime(
-          event.start.year,
-          event.start.month,
-          event.start.day,
-        );
-        final filterDate = DateTime(
-          filter.startDate!.year,
-          filter.startDate!.month,
-          filter.startDate!.day,
-        );
-        if (eventDate.isBefore(filterDate)) return false;
-      }
-
-      if (filter.endDate != null) {
-        final eventDate = DateTime(
-          event.start.year,
-          event.start.month,
-          event.start.day,
-        );
-        final filterDate = DateTime(
-          filter.endDate!.year,
-          filter.endDate!.month,
-          filter.endDate!.day,
-        );
-        if (eventDate.isAfter(filterDate)) return false;
-      }
-
-      // 時間フィルター
-      if (filter.startTime != null) {
-        final eventTime = TimeOfDay.fromDateTime(event.start);
-        final minutes1 = eventTime.hour * 60 + eventTime.minute;
-        final minutes2 = filter.startTime!.hour * 60 + filter.startTime!.minute;
-        if (minutes1 < minutes2) return false;
-      }
-
-      if (filter.endTime != null) {
-        final eventTime = TimeOfDay.fromDateTime(event.start);
-        final minutes1 = eventTime.hour * 60 + eventTime.minute;
-        final minutes2 = filter.endTime!.hour * 60 + filter.endTime!.minute;
-        if (minutes1 > minutes2) return false;
-      }
-
-      // キーワード検索
-      if (filter.searchQuery.isNotEmpty) {
-        final query = filter.searchQuery.toLowerCase();
-        final title = event.title.toLowerCase();
-        final body = event.body.toLowerCase();
-        final author = event.author.toLowerCase();
-
-        if (!title.contains(query) &&
-            !body.contains(query) &&
-            !author.contains(query)) {
-          return false;
-        }
-      }
-
-      // ジャンルフィルター
-      if (filter.selectedGenres.isNotEmpty) {
-        if (!event.genres.any(
-          (genre) => filter.selectedGenres.contains(genre),
-        )) {
-          return false;
-        }
-      }
-
-      return true;
-    }).toList();
   }
 
   // フィルターUIを表示するダイアログを追加
@@ -295,24 +222,16 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
     // フィルターを取得
     final filter = ref.watch(eventFilterProvider);
     final vrchatEventsAsync = ref.watch(vrchatCalendarEventsProvider);
+    final eventCalendarController = ref.read(eventCalendarControllerProvider);
 
     // イベントにフィルターを適用
-    final filteredEvents = _getFilteredEvents(eventData.events, filter);
-
-    // 日付ごとにグループ化
-    final eventsByDate = <String, List<Event>>{};
-    final dateFormat = DateFormat('yyyy-MM-dd');
-
-    for (final event in filteredEvents) {
-      final dateKey = dateFormat.format(event.start);
-      if (!eventsByDate.containsKey(dateKey)) {
-        eventsByDate[dateKey] = [];
-      }
-      eventsByDate[dateKey]!.add(event);
-    }
-
-    // 日付でソート
-    final sortedDates = eventsByDate.keys.toList()..sort();
+    final filteredEvents = eventCalendarController.filterEvents(
+      eventData.events,
+      filter,
+    );
+    final groupedEvents = eventCalendarController.groupByDate(filteredEvents);
+    final eventsByDate = groupedEvents.byDate;
+    final sortedDates = groupedEvents.sortedDates;
 
     // フィルターが適用されているかのステータス表示
     final hasActiveFilter =
@@ -359,7 +278,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 ),
                 TextButton(
                   onPressed: () =>
-                      ref.read(eventFilterProvider.notifier).clearAll(),
+                      ref.read(eventFilterActionsProvider).clearAll(),
                   child: Text(
                     t.eventCalendar.clear,
                     style: GoogleFonts.notoSans(
@@ -395,7 +314,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                   const SizedBox(height: 8),
                   OutlinedButton.icon(
                     onPressed: () =>
-                        ref.read(eventFilterProvider.notifier).clearAll(),
+                        ref.read(eventFilterActionsProvider).clearAll(),
                     icon: const Icon(Icons.filter_list_off),
                     label: Text(t.eventCalendar.clearFilter),
                   ),
@@ -412,9 +331,6 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
               itemBuilder: (context, index) {
                 final dateKey = sortedDates[index];
                 final events = eventsByDate[dateKey]!;
-
-                // 日付ごとのイベントを時間順にソート
-                events.sort((a, b) => a.start.compareTo(b.start));
 
                 return _buildDateSection(
                   context,
@@ -1029,7 +945,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
             color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
             onPressed: () {
               ref
-                  .read(eventReminderProvider.notifier)
+                  .read(eventReminderControllerProvider)
                   .removeReminder(reminder.eventId, reminder.reminderTime);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -1128,11 +1044,8 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
     bool isDarkMode,
     Color accentColor,
   ) {
-    // URLを検出する正規表現
-    final urlRegExp = RegExp(r'https?://[^\s]+', caseSensitive: false);
-
-    final matches = urlRegExp.allMatches(content);
-    if (matches.isEmpty) {
+    final url = ref.read(eventCalendarControllerProvider).firstUrl(content);
+    if (url == null) {
       return _buildInfoSection(title, content, icon, isDarkMode, accentColor);
     }
 
@@ -1163,10 +1076,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
           padding: const EdgeInsets.only(left: 24),
           child: GestureDetector(
             onTap: () {
-              final url = matches.first.group(0);
-              if (url != null) {
-                UrlLauncherUtils.launchExternalURL(url);
-              }
+              externalLinkController.launchExternal(url);
             },
             child: Text(
               content,

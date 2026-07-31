@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:vrchat/controllers/notification_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/models/notification_view_models.dart';
 import 'package:vrchat/provider/friends_provider.dart';
 import 'package:vrchat/provider/notification_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
@@ -22,7 +24,7 @@ class NotificationsPage extends ConsumerStatefulWidget {
 }
 
 class _NotificationsPageState extends ConsumerState<NotificationsPage> {
-  _NotificationFilter _selectedFilter = _NotificationFilter.all;
+  NotificationFilter _selectedFilter = NotificationFilter.all;
 
   @override
   Widget build(BuildContext context) {
@@ -31,17 +33,18 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
 
     return notificationsAsync.when(
       data: (notifications) {
-        final entries = _mergeNotifications(
+        final notificationController = ref.read(notificationControllerProvider);
+        final entries = notificationController.mergeNotifications(
           apiNotifications: notifications,
           activityNotifications: activityNotifications,
         );
-        final filtered = _filterNotifications(entries);
+        final filtered = notificationController.filterNotifications(
+          entries,
+          _selectedFilter,
+        );
 
         return RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(vrchatNotificationsProvider);
-            await ref.read(vrchatNotificationsProvider.future);
-          },
+          onRefresh: () => ref.read(notificationControllerProvider).refresh(),
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
@@ -78,35 +81,9 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
       loading: () => LoadingIndicator(message: t.notifications.emptyTitle),
       error: (error, _) => ErrorContainer(
         message: t.common.error(error: error.toString()),
-        onRetry: () => ref.invalidate(vrchatNotificationsProvider),
+        onRetry: () => ref.read(notificationControllerProvider).refresh(),
       ),
     );
-  }
-
-  List<_NotificationEntry> _mergeNotifications({
-    required List<NotificationV2> apiNotifications,
-    required List<NotificationItem> activityNotifications,
-  }) {
-    final entries = <_NotificationEntry>[
-      for (final notification in apiNotifications)
-        _NotificationEntry.api(notification),
-      for (var index = 0; index < activityNotifications.length; index++)
-        _NotificationEntry.activity(activityNotifications[index], index),
-    ];
-
-    return entries..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-  }
-
-  List<_NotificationEntry> _filterNotifications(
-    List<_NotificationEntry> entries,
-  ) {
-    return switch (_selectedFilter) {
-      _NotificationFilter.unread =>
-        entries.where((notification) => !notification.isRead).toList(),
-      _NotificationFilter.read =>
-        entries.where((notification) => notification.isRead).toList(),
-      _NotificationFilter.all => entries,
-    };
   }
 
   Future<void> _showFriendOnlineAlertDialog() async {
@@ -119,35 +96,6 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
   }
 }
 
-enum _NotificationFilter { all, unread, read }
-
-enum _NotificationEntrySource { api, activity }
-
-class _NotificationEntry {
-  const _NotificationEntry.api(this.apiNotification)
-    : activityNotification = null,
-      activityIndex = null,
-      source = _NotificationEntrySource.api;
-
-  const _NotificationEntry.activity(
-    this.activityNotification,
-    this.activityIndex,
-  ) : apiNotification = null,
-      source = _NotificationEntrySource.activity;
-
-  final NotificationV2? apiNotification;
-  final NotificationItem? activityNotification;
-  final int? activityIndex;
-  final _NotificationEntrySource source;
-
-  bool get isActivity => source == _NotificationEntrySource.activity;
-  bool get isRead => apiNotification?.seen ?? activityNotification!.isRead;
-  bool get canDelete => apiNotification?.canDelete ?? true;
-  DateTime get createdAt =>
-      apiNotification?.createdAt ?? activityNotification!.timestamp;
-  String get keyValue => apiNotification?.id ?? 'activity-$activityIndex';
-}
-
 class _NotificationToolbar extends StatelessWidget {
   const _NotificationToolbar({
     required this.selectedFilter,
@@ -156,9 +104,9 @@ class _NotificationToolbar extends StatelessWidget {
     required this.onManageOnlineAlerts,
   });
 
-  final _NotificationFilter selectedFilter;
-  final List<_NotificationEntry> entries;
-  final ValueChanged<_NotificationFilter> onFilterChanged;
+  final NotificationFilter selectedFilter;
+  final List<NotificationEntry> entries;
+  final ValueChanged<NotificationFilter> onFilterChanged;
   final VoidCallback onManageOnlineAlerts;
 
   @override
@@ -195,9 +143,9 @@ class _SegmentedFilter extends StatelessWidget {
     required this.onChanged,
   });
 
-  final _NotificationFilter selectedFilter;
+  final NotificationFilter selectedFilter;
   final int unreadCount;
-  final ValueChanged<_NotificationFilter> onChanged;
+  final ValueChanged<NotificationFilter> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -216,18 +164,18 @@ class _SegmentedFilter extends StatelessWidget {
         children: [
           _SegmentButton(
             label: t.notifications.all,
-            selected: selectedFilter == _NotificationFilter.all,
-            onPressed: () => onChanged(_NotificationFilter.all),
+            selected: selectedFilter == NotificationFilter.all,
+            onPressed: () => onChanged(NotificationFilter.all),
           ),
           _SegmentButton(
             label: t.notifications.unread(count: unreadCount.toString()),
-            selected: selectedFilter == _NotificationFilter.unread,
-            onPressed: () => onChanged(_NotificationFilter.unread),
+            selected: selectedFilter == NotificationFilter.unread,
+            onPressed: () => onChanged(NotificationFilter.unread),
           ),
           _SegmentButton(
             label: t.notifications.read,
-            selected: selectedFilter == _NotificationFilter.read,
-            onPressed: () => onChanged(_NotificationFilter.read),
+            selected: selectedFilter == NotificationFilter.read,
+            onPressed: () => onChanged(NotificationFilter.read),
           ),
         ],
       ),
@@ -327,7 +275,7 @@ class _IconPillButton extends StatelessWidget {
 class _NotificationTile extends ConsumerWidget {
   const _NotificationTile({required this.entry});
 
-  final _NotificationEntry entry;
+  final NotificationEntry entry;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -484,31 +432,25 @@ class _NotificationTile extends ConsumerWidget {
     );
   }
 
-  Future<void> _markEntryAsRead(WidgetRef ref, _NotificationEntry entry) async {
+  Future<void> _markEntryAsRead(WidgetRef ref, NotificationEntry entry) async {
     if (entry.isRead) return;
+    final controller = ref.read(notificationControllerProvider);
     if (entry.isActivity) {
-      ref
-          .read(localActivityNotificationsProvider.notifier)
-          .markAsRead(entry.activityIndex!);
+      controller.markActivityAsRead(entry.activityIndex!);
       return;
     }
 
-    await ref
-        .read(notificationActionsProvider)
-        .markAsRead(entry.apiNotification!.id);
+    await controller.markApiAsRead(entry.apiNotification!.id);
   }
 
-  Future<void> _deleteEntry(WidgetRef ref, _NotificationEntry entry) async {
+  Future<void> _deleteEntry(WidgetRef ref, NotificationEntry entry) async {
+    final controller = ref.read(notificationControllerProvider);
     if (entry.isActivity) {
-      ref
-          .read(localActivityNotificationsProvider.notifier)
-          .removeAt(entry.activityIndex!);
+      controller.deleteActivity(entry.activityIndex!);
       return;
     }
 
-    await ref
-        .read(notificationActionsProvider)
-        .delete(entry.apiNotification!.id);
+    await controller.deleteApi(entry.apiNotification!.id);
   }
 
   Future<bool> _confirmDelete(BuildContext context) async {
@@ -682,15 +624,15 @@ class _DismissBackground extends StatelessWidget {
 class _EmptyNotifications extends StatelessWidget {
   const _EmptyNotifications({required this.filter});
 
-  final _NotificationFilter filter;
+  final NotificationFilter filter;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final title = switch (filter) {
-      _NotificationFilter.unread => t.notifications.emptyUnread,
-      _NotificationFilter.read => t.notifications.emptyRead,
-      _NotificationFilter.all => t.notifications.emptyTitle,
+      NotificationFilter.unread => t.notifications.emptyUnread,
+      NotificationFilter.read => t.notifications.emptyRead,
+      NotificationFilter.all => t.notifications.emptyTitle,
     };
 
     return Center(
@@ -808,8 +750,8 @@ class _FriendOnlineAlertSheet extends ConsumerWidget {
                         selected: selected,
                         onTap: () {
                           ref
-                              .read(watchedFriendIdsProvider.notifier)
-                              .toggle(friend.id);
+                              .read(notificationControllerProvider)
+                              .toggleFriendAlert(friend.id);
                         },
                       );
                     },
@@ -821,7 +763,8 @@ class _FriendOnlineAlertSheet extends ConsumerWidget {
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, _) => ErrorContainer(
             message: t.common.error(error: error.toString()),
-            onRetry: () => ref.invalidate(friendsProvider),
+            onRetry: () =>
+                ref.read(notificationControllerProvider).refreshFriends(),
           ),
         ),
       ),

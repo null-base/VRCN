@@ -1,0 +1,11 @@
+for_platform :ios do
+  app_identifier(ENV.fetch("IOS_BUNDLE_ID", "com.null-base.vrchat"))
+
+  team_id(ENV["APPLE_TEAM_ID"])
+  itc_team_id(ENV["APP_STORE_CONNECT_TEAM_ID"])
+end
+
+for_platform :android do
+  package_name(ENV["ANDROID_PACKAGE_NAME"])
+  json_key_file(ENV["SUPPLY_JSON_KEY"])
+end

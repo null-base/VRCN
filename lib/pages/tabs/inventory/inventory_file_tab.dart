@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:vrchat/controllers/inventory_upload_controller.dart';
 import 'package:vrchat/provider/files_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
@@ -60,7 +61,7 @@ class _InventoryFileTabState extends ConsumerState<InventoryFileTab>
   bool get wantKeepAlive => true;
 
   Future<void> _refreshFiles() async {
-    ref.invalidate(getFilesByTagProvider(widget.tag));
+    await ref.read(inventoryUploadControllerProvider).refreshFiles(widget.tag);
   }
 
   @override

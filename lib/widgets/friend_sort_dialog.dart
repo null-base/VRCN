@@ -12,6 +12,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
   var localSortType = ref.read(friendSortTypeProvider);
   var localDirection = ref.read(friendSortDirectionProvider);
   var localFilter = ref.read(friendFilterProvider);
+  final actions = ref.read(friendSortActionsProvider);
 
   final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -84,8 +85,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                             setState(() {
                               localFilter = FriendFilter.all;
                             });
-                            ref.read(friendFilterProvider.notifier).state =
-                                FriendFilter.all;
+                            actions.setFilter(FriendFilter.all);
                           },
                         ),
 
@@ -99,8 +99,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                             setState(() {
                               localFilter = FriendFilter.online;
                             });
-                            ref.read(friendFilterProvider.notifier).state =
-                                FriendFilter.online;
+                            actions.setFilter(FriendFilter.online);
                           },
                         ),
 
@@ -114,8 +113,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                             setState(() {
                               localFilter = FriendFilter.offline;
                             });
-                            ref.read(friendFilterProvider.notifier).state =
-                                FriendFilter.offline;
+                            actions.setFilter(FriendFilter.offline);
                           },
                         ),
                         _buildFilterOption(
@@ -128,8 +126,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                             setState(() {
                               localFilter = FriendFilter.favorite;
                             });
-                            ref.read(friendFilterProvider.notifier).state =
-                                FriendFilter.favorite;
+                            actions.setFilter(FriendFilter.favorite);
                           },
                         ),
                         const Divider(height: 32, thickness: 1),
@@ -167,11 +164,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                               ? const Icon(Icons.check)
                               : null,
                           onTap: () {
-                            // プロバイダーを更新
-                            ref
-                                .read(friendSortTypeProvider.notifier)
-                                .setSortType(FriendSortType.status);
-                            // ローカル変数も更新
+                            actions.setSortType(FriendSortType.status);
                             setState(() {
                               localSortType = FriendSortType.status;
                             });
@@ -188,9 +181,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                               ? const Icon(Icons.check)
                               : null,
                           onTap: () {
-                            ref
-                                .read(friendSortTypeProvider.notifier)
-                                .setSortType(FriendSortType.name);
+                            actions.setSortType(FriendSortType.name);
                             setState(() {
                               localSortType = FriendSortType.name;
                             });
@@ -207,9 +198,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                               ? const Icon(Icons.check)
                               : null,
                           onTap: () {
-                            ref
-                                .read(friendSortTypeProvider.notifier)
-                                .setSortType(FriendSortType.lastLogin);
+                            actions.setSortType(FriendSortType.lastLogin);
                             setState(() {
                               localSortType = FriendSortType.lastLogin;
                             });
@@ -236,9 +225,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                                 localDirection == SortDirection.ascending
                                 ? SortDirection.descending
                                 : SortDirection.ascending;
-                            ref
-                                .read(friendSortDirectionProvider.notifier)
-                                .setDirection(newDirection);
+                            actions.setDirection(newDirection);
                             setState(() {
                               localDirection = newDirection;
                             });

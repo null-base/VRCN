@@ -1,18 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:favicon/favicon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/external_link_controller.dart';
+import 'package:vrchat/controllers/profile_controller.dart';
 import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/avatar_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
+import 'package:vrchat/utils/bio_link_utils.dart';
 import 'package:vrchat/utils/cache_manager.dart';
+import 'package:vrchat/utils/release_status_utils.dart';
 import 'package:vrchat/utils/status_helpers.dart';
-import 'package:vrchat/utils/url_launcher_utils.dart';
 import 'package:vrchat/utils/user_type_helpers.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/info_card.dart';
@@ -58,15 +60,16 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
       _refreshKey = UniqueKey();
     });
 
-    // プロバイダの再取得を実行
-    ref.invalidate(currentUserProvider);
+    final reloadedUser = ref
+        .read(profileControllerProvider)
+        .reloadCurrentUser();
 
     // アニメーションをリセットして再生
     _animationController.reset();
     await _animationController.forward();
 
     // 明示的に新しいデータを待機
-    await ref.read(currentUserProvider.future);
+    await reloadedUser;
   }
 
   @override
@@ -94,7 +97,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
             data: (user) => IconButton(
               icon: const Icon(Icons.edit_outlined),
               onPressed: () async {
-                ref.invalidate(currentUserProvider);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -103,9 +105,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                     ),
                   );
                 }
-                final updatedUser = await ref.read(
-                  currentUserProvider.future,
-                );
+                final updatedUser = await ref
+                    .read(profileControllerProvider)
+                    .reloadCurrentUser();
                 if (!context.mounted) return;
                 final result = await showModalBottomSheet<bool>(
                   context: context,
@@ -1092,8 +1094,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              _getReleaseStatusColor(avatar.releaseStatus),
-                              _getReleaseStatusColor(
+                              ReleaseStatusUtils.color(avatar.releaseStatus),
+                              ReleaseStatusUtils.color(
                                 avatar.releaseStatus,
                               ).withValues(alpha: 0.7),
                             ],
@@ -1399,20 +1401,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
     return '${date.year}/${date.month}/${date.day}';
   }
 
-  // リリースステータスの色
-  Color _getReleaseStatusColor(ReleaseStatus status) {
-    switch (status) {
-      case ReleaseStatus.public:
-        return Colors.green;
-      case ReleaseStatus.private:
-        return Colors.orange;
-      case ReleaseStatus.hidden:
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
-  }
-
   // リリースステータスのテキスト
   String _getReleaseStatusText(ReleaseStatus status) {
     switch (status) {
@@ -1433,38 +1421,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
     bool isDarkMode,
   ) {
     return FutureBuilder(
-      future: Future.wait(
-        bioLinks.map((link) async {
-          try {
-            final uri = Uri.parse(_ensureHttpPrefix(link));
-
-            // ファビコン取得を強化
-            Favicon? favicon;
-            try {
-              favicon = await FaviconFinder.getBest(link);
-            } catch (e) {
-              // ファビコンが取得できなくても代替手段があるので無視
-            }
-
-            String? faviconUrl;
-            if (favicon != null && favicon.url.isNotEmpty) {
-              faviconUrl = favicon.url;
-            } else {
-              faviconUrl = '${uri.scheme}://${uri.host}/favicon.ico';
-            }
-
-            return {'url': link, 'favicon': faviconUrl, 'domain': uri.host};
-          } catch (e) {
-            return {
-              'url': link,
-              'favicon': null,
-              'domain': _extractDomain(link),
-            };
-          }
-        }).toList(),
-      ),
+      future: BioLinkUtils.loadAll(bioLinks),
       builder: (context, snapshot) {
-        final linkData = snapshot.data as List<Map<String, dynamic>>? ?? [];
+        final linkData = snapshot.data ?? <BioLinkData>[];
 
         return InfoCard(
           title: t.profile.links,
@@ -1483,15 +1442,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
 
   Widget _buildLinkItem(
     BuildContext context,
-    Map<String, dynamic> linkData,
+    BioLinkData linkData,
     bool isDarkMode,
   ) {
-    final url = linkData['url'] as String;
-    final faviconUrl = linkData['favicon'] as String?;
-    final domain = linkData['domain'] as String;
-
     return InkWell(
-      onTap: () => UrlLauncherUtils.launchURL(url),
+      onTap: () => externalLinkController.launch(linkData.url),
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -1512,11 +1467,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: faviconUrl != null
+              child: linkData.faviconUrl != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(4),
                       child: CachedNetworkImage(
-                        imageUrl: faviconUrl,
+                        imageUrl: linkData.faviconUrl!,
                         cacheManager: JsonCacheManager(),
                         width: 16,
                         height: 16,
@@ -1542,14 +1497,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    domain,
+                    linkData.domain,
                     style: GoogleFonts.notoSans(
                       fontWeight: FontWeight.w500,
                       color: Colors.teal,
                     ),
                   ),
                   Text(
-                    _truncateUrl(url),
+                    BioLinkUtils.truncateUrl(linkData.url),
                     style: GoogleFonts.notoSans(
                       fontSize: 14,
                       color: isDarkMode ? Colors.grey[300] : Colors.grey[800],
@@ -1591,24 +1546,5 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
         ],
       ),
     );
-  }
-
-  String _ensureHttpPrefix(String url) {
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      return url;
-    }
-    return 'https://$url';
-  }
-
-  String _extractDomain(String url) {
-    var processedUrl = url.replaceAll(RegExp('https?://'), '');
-    processedUrl = processedUrl.split('/')[0];
-    processedUrl = processedUrl.split('?')[0].split('#')[0];
-    return processedUrl;
-  }
-
-  String _truncateUrl(String url) {
-    const maxLength = 40;
-    return url.length > maxLength ? '${url.substring(0, maxLength)}...' : url;
   }
 }

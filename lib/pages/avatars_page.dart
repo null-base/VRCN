@@ -6,15 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/avatar_list_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/avatar_provider.dart';
+import 'package:vrchat/provider/local_avatar_database_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/cache_manager.dart';
+import 'package:vrchat/utils/release_status_utils.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
-import 'package:vrchat/utils/app_logger.dart';
 
 class AvatarsPage extends ConsumerStatefulWidget {
   const AvatarsPage({super.key});
@@ -35,6 +37,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
   var _searchQuery = '';
 
   AvatarViewMode _viewMode = AvatarViewMode.grid;
+  var _showLocalDatabase = false;
 
   SortOption _sortOption = SortOption.updated;
   final OrderOption _orderOption = OrderOption.descending;
@@ -67,6 +70,8 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
   }
 
   void _scrollListener() {
+    if (_showLocalDatabase) return;
+
     if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent - 200 &&
         !_isLoadingMore) {
@@ -75,7 +80,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
   }
 
   Future<void> _loadMoreAvatars() async {
-    if (_isLoadingMore) return;
+    if (_isLoadingMore || _showLocalDatabase) return;
 
     setState(() {
       _isLoadingMore = true;
@@ -83,12 +88,17 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
     });
 
     try {
-      final params = _getSearchParams();
-      var newAvatars = await ref.read(avatarSearchProvider(params).future);
+      var newAvatars = await ref
+          .read(avatarListControllerProvider)
+          .fetch(
+            AvatarListRequest(params: _getSearchParams(), sortByName: false),
+          );
 
       if (_sortByName) {
         final allAvatars = [..._avatarList, ...newAvatars];
-        final sortedAvatars = _sortAvatarsByName(allAvatars);
+        final sortedAvatars = ref
+            .read(avatarListControllerProvider)
+            .sortByName(allAvatars);
 
         newAvatars = sortedAvatars.sublist(_avatarList.length);
       }
@@ -120,6 +130,14 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
 
   // リストを更新
   Future<void> _refreshAvatars() async {
+    if (_showLocalDatabase) {
+      setState(() {
+        _isInitialized = true;
+        _loadError = null;
+      });
+      return;
+    }
+
     setState(() {
       _currentOffset = 0;
       _avatarList = [];
@@ -128,12 +146,14 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
     });
 
     try {
-      final params = _getSearchParams();
-      var avatars = await ref.read(avatarSearchProvider(params).future);
-
-      if (_sortByName) {
-        avatars = _sortAvatarsByName(avatars);
-      }
+      final avatars = await ref
+          .read(avatarListControllerProvider)
+          .fetch(
+            AvatarListRequest(
+              params: _getSearchParams(),
+              sortByName: _sortByName,
+            ),
+          );
 
       if (mounted) {
         setState(() {
@@ -148,15 +168,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
           _loadError = e.toString();
         });
       }
-      appLogger.d('アバターの更新に失敗: $e');
     }
-  }
-
-  // 名前順でソートするヘルパーメソッド
-  List<Avatar> _sortAvatarsByName(List<Avatar> avatars) {
-    final sortedList = List<Avatar>.from(avatars);
-    sortedList.sort((a, b) => a.name.compareTo(b.name));
-    return sortedList;
   }
 
   // 検索クエリが変わったときの処理
@@ -176,6 +188,17 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
       return avatar.name.toLowerCase().contains(_searchQuery) ||
           avatar.authorName.toLowerCase().contains(_searchQuery) ||
           (avatar.description.toLowerCase().contains(_searchQuery));
+    }).toList();
+  }
+
+  List<LocalAvatarRecord> _displayLocalAvatarList(
+    List<LocalAvatarRecord> avatars,
+  ) {
+    if (!_isSearching || _searchQuery.isEmpty) return avatars;
+
+    return avatars.where((avatar) {
+      return avatar.name.toLowerCase().contains(_searchQuery) ||
+          avatar.authorName.toLowerCase().contains(_searchQuery);
     }).toList();
   }
 
@@ -199,6 +222,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
         ? const Color(0xFF121212)
         : const Color(0xFFF8F8F8);
     final vrchatApi = ref.watch(vrchatProvider).value;
+    final localAvatars = ref.watch(localAvatarDatabaseProvider);
 
     final headers = {'User-Agent': vrchatApi?.userAgent.toString() ?? 'VRCN'};
 
@@ -216,15 +240,42 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                 onRefresh: _refreshAvatars,
                 child: Builder(
                   builder: (context) {
-                    if (!_isInitialized) {
+                    if (!_showLocalDatabase && !_isInitialized) {
                       return LoadingIndicator(message: t.avatars.loading);
                     }
 
-                    if (_loadError case final error? when _avatarList.isEmpty) {
-                      return ErrorContainer(
-                        message: t.avatars.error(error: error),
-                        onRetry: _refreshAvatars,
+                    if (!_showLocalDatabase) {
+                      if (_loadError case final error?
+                          when _avatarList.isEmpty) {
+                        return ErrorContainer(
+                          message: t.avatars.error(error: error),
+                          onRetry: _refreshAvatars,
+                        );
+                      }
+                    }
+
+                    if (_showLocalDatabase) {
+                      final displayList = _displayLocalAvatarList(
+                        localAvatars,
                       );
+
+                      if (displayList.isEmpty) {
+                        return _buildLocalEmptyState(isDarkMode);
+                      }
+
+                      return _viewMode == AvatarViewMode.grid
+                          ? _buildLocalMasonryGrid(
+                              isDarkMode,
+                              headers,
+                              t,
+                              displayList,
+                            )
+                          : _buildLocalListView(
+                              isDarkMode,
+                              headers,
+                              t,
+                              displayList,
+                            );
                     }
 
                     final displayList = _displayAvatarList;
@@ -361,6 +412,22 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
       ),
       centerTitle: true,
       actions: [
+        IconButton(
+          icon: Icon(
+            _showLocalDatabase
+                ? Icons.cloud_queue_rounded
+                : Icons.storage_rounded,
+            color: AppTheme.primaryColor,
+          ),
+          onPressed: () {
+            setState(() {
+              _showLocalDatabase = !_showLocalDatabase;
+              _isInitialized = true;
+              _isLoadingMore = false;
+            });
+          },
+          tooltip: _showLocalDatabase ? 'VRChat avatars' : 'Local avatar DB',
+        ),
         // 検索アイコンを追加
         IconButton(
           icon: Icon(
@@ -411,6 +478,84 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildLocalEmptyState(bool isDarkMode) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.storage_rounded,
+            size: 80,
+            color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'No local avatars',
+            style: GoogleFonts.notoSans(
+              fontSize: 18,
+              color: isDarkMode ? Colors.grey[400] : Colors.grey[700],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Viewed and searched avatars will appear here.',
+            style: GoogleFonts.notoSans(
+              fontSize: 14,
+              color: isDarkMode ? Colors.grey[500] : Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocalMasonryGrid(
+    bool isDarkMode,
+    Map<String, String> headers,
+    Translations t,
+    List<LocalAvatarRecord> avatars,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: MasonryGridView.count(
+        controller: _scrollController,
+        crossAxisCount: 2,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        itemCount: avatars.length,
+        itemBuilder: (context, index) {
+          final avatar = avatars[index];
+          final heightFactor = 0.9 + ((avatar.id.hashCode % 30) / 100);
+
+          return _buildLocalAvatarCard(
+            avatar: avatar,
+            isDarkMode: isDarkMode,
+            headers: headers,
+            heightFactor: heightFactor,
+            t: t,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildLocalListView(
+    bool isDarkMode,
+    Map<String, String> headers,
+    Translations t,
+    List<LocalAvatarRecord> avatars,
+  ) {
+    return ListView.builder(
+      controller: _scrollController,
+      padding: const EdgeInsets.all(12),
+      itemCount: avatars.length,
+      itemBuilder: (context, index) {
+        return _buildLocalListItem(avatars[index], isDarkMode, headers, t);
+      },
     );
   }
 
@@ -605,7 +750,9 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: _getStatusColor(avatar.releaseStatus),
+                            color: ReleaseStatusUtils.color(
+                              avatar.releaseStatus,
+                            ),
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: const [
                               BoxShadow(color: Colors.black26, blurRadius: 4),
@@ -681,6 +828,130 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLocalAvatarCard({
+    required LocalAvatarRecord avatar,
+    required bool isDarkMode,
+    required Map<String, String> headers,
+    required double heightFactor,
+    required Translations t,
+  }) {
+    return GestureDetector(
+      onTap: () => context.push('/avatar/${avatar.id}'),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: ColoredBox(
+          color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+          child: AspectRatio(
+            aspectRatio: 1.0 * heightFactor,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                CachedNetworkImage(
+                  imageUrl: avatar.thumbnailImageUrl,
+                  httpHeaders: headers,
+                  cacheManager: JsonCacheManager(),
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: isDarkMode ? Colors.grey[850] : Colors.grey[200],
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: isDarkMode ? Colors.grey[850] : Colors.grey[200],
+                    child: const Icon(Icons.broken_image),
+                  ),
+                ),
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withAlpha(179),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: _buildReleaseBadge(avatar.releaseStatus, t),
+                ),
+                Positioned(
+                  bottom: 8,
+                  left: 10,
+                  right: 10,
+                  child: _buildLocalAvatarText(avatar),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLocalAvatarText(LocalAvatarRecord avatar) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          avatar.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: GoogleFonts.notoSans(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            shadows: const [Shadow(offset: Offset(0, 1), blurRadius: 3)],
+          ),
+        ),
+        const SizedBox(height: 2),
+        Row(
+          children: [
+            const Icon(Icons.person, color: Colors.white70, size: 12),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                avatar.authorName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.notoSans(
+                  color: Colors.white70,
+                  fontSize: 12,
+                  shadows: const [Shadow(offset: Offset(0, 1), blurRadius: 2)],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildReleaseBadge(ReleaseStatus status, Translations t) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: ReleaseStatusUtils.color(status),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4)],
+      ),
+      child: Text(
+        _getReleaseStatusText(status, t),
+        style: GoogleFonts.notoSans(
+          color: Colors.white,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
@@ -818,7 +1089,9 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: _getStatusColor(avatar.releaseStatus),
+                            color: ReleaseStatusUtils.color(
+                              avatar.releaseStatus,
+                            ),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -846,17 +1119,75 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
     );
   }
 
-  Color _getStatusColor(ReleaseStatus status) {
-    switch (status) {
-      case ReleaseStatus.public:
-        return const Color(0xFF4CAF50);
-      case ReleaseStatus.private:
-        return const Color(0xFFF9A825);
-      case ReleaseStatus.hidden:
-        return const Color(0xFF9E9E9E);
-      default:
-        return const Color(0xFF607D8B);
-    }
+  Widget _buildLocalListItem(
+    LocalAvatarRecord avatar,
+    bool isDarkMode,
+    Map<String, String> headers,
+    Translations t,
+  ) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 4,
+      shadowColor: isDarkMode ? Colors.black : Colors.black26,
+      child: InkWell(
+        onTap: () => context.push('/avatar/${avatar.id}'),
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  imageUrl: avatar.thumbnailImageUrl,
+                  httpHeaders: headers,
+                  cacheManager: JsonCacheManager(),
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.broken_image),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      avatar.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.notoSans(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      avatar.authorName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.notoSans(
+                        fontSize: 14,
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _buildReleaseBadge(avatar.releaseStatus, t),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right,
+                color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   String _getReleaseStatusText(ReleaseStatus status, Translations t) {

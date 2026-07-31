@@ -28,57 +28,6 @@ final groupSearchResultsProvider = StateProvider<List<LimitedGroup>>(
 
 const searchPageSize = 60;
 
-bool advanceSearchOffset(WidgetRef ref, StateProvider<int> offsetProvider) {
-  if (ref.read(searchingProvider)) return false;
-
-  final currentOffset = ref.read(offsetProvider);
-  ref.read(offsetProvider.notifier).state = currentOffset + searchPageSize;
-  return true;
-}
-
-void handlePagedSearchResults<T>({
-  required WidgetRef ref,
-  required AsyncValue<List<T>> state,
-  required int offset,
-  required List<T> cachedResults,
-  required StateProvider<List<T>> resultsProvider,
-  required Object? Function(T item) idOf,
-}) {
-  if (state.isLoading) {
-    ref.read(searchingProvider.notifier).state = true;
-    return;
-  }
-
-  ref.read(searchingProvider.notifier).state = false;
-  if (!state.hasValue) return;
-
-  final newResults = state.value ?? [];
-  final nextResults = offset == 0
-      ? newResults
-      : _appendUniqueSearchResults(cachedResults, newResults, idOf);
-
-  if (!identical(nextResults, cachedResults)) {
-    ref.read(resultsProvider.notifier).state = nextResults;
-  }
-}
-
-List<T> _appendUniqueSearchResults<T>(
-  List<T> cachedResults,
-  List<T> newResults,
-  Object? Function(T item) idOf,
-) {
-  if (newResults.isEmpty) return cachedResults;
-
-  final existingIds = cachedResults.map(idOf).toSet();
-  final mergedResults = <T>[...cachedResults];
-  for (final item in newResults) {
-    if (existingIds.add(idOf(item))) {
-      mergedResults.add(item);
-    }
-  }
-  return mergedResults;
-}
-
 // 検索ページの状態にアクセスするためのGlobalKey
 final Provider<GlobalKey<State<StatefulWidget>>> searchPageKeyProvider =
     Provider((ref) => GlobalKey());

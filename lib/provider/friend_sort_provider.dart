@@ -32,6 +32,28 @@ final friendSortDirectionProvider =
       return FriendSortDirectionNotifier(prefs);
     });
 
+final friendSortActionsProvider = Provider<FriendSortActions>(
+  FriendSortActions.new,
+);
+
+class FriendSortActions {
+  const FriendSortActions(this._ref);
+
+  final Ref _ref;
+
+  void setFilter(FriendFilter filter) {
+    _ref.read(friendFilterProvider.notifier).state = filter;
+  }
+
+  void setSortType(FriendSortType type) {
+    _ref.read(friendSortTypeProvider.notifier).setSortType(type);
+  }
+
+  void setDirection(SortDirection direction) {
+    _ref.read(friendSortDirectionProvider.notifier).setDirection(direction);
+  }
+}
+
 /// 並び替え済みフレンドリストのプロバイダー
 final sortedFriendsProvider = Provider<AsyncValue<List<LimitedUser>>>((ref) {
   final friendsAsync = ref.watch(friendsProvider);

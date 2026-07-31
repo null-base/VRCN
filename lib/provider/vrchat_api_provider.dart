@@ -42,13 +42,6 @@ final autoLoginProvider = FutureProvider<bool>((ref) async {
     // API初期化待機
     final api = await ref.watch(vrchatAuthProvider.future);
 
-    // 既にログイン済みかチェック
-    if (api.currentUser != null) {
-      // 既にログイン済みなら認証状態更新
-      ref.read(authRefreshProvider.notifier).state++;
-      return true;
-    }
-
     // 保存されたセッションを使ってログインを試みる
     final (loginSuccess, _) = await api.login();
 

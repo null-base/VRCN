@@ -2,13 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/avatar_detail_controller.dart';
+import 'package:vrchat/controllers/favorite_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/avatar_provider.dart';
 import 'package:vrchat/provider/favorite_provider.dart' as favorites;
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/cache_manager.dart';
-import 'package:vrchat/utils/share_utils.dart';
+import 'package:vrchat/utils/release_status_utils.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
@@ -36,7 +38,8 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
         loading: () => LoadingIndicator(message: t.avatarDetail.loading),
         error: (error, stackTrace) => ErrorContainer(
           message: t.avatarDetail.error(error: error.toString()),
-          onRetry: () => ref.refresh(avatarDetailProvider(widget.avatarId)),
+          onRetry: () =>
+              ref.read(avatarDetailControllerProvider).refresh(widget.avatarId),
         ),
       ),
     );
@@ -52,7 +55,7 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
 
     return RefreshIndicator(
       onRefresh: () async {
-        ref.invalidate(avatarDetailProvider(widget.avatarId));
+        await ref.read(avatarDetailControllerProvider).refresh(widget.avatarId);
       },
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -100,7 +103,9 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
           child: IconButton(
             icon: const Icon(Icons.share_outlined, color: Colors.white),
             color: Colors.white,
-            onPressed: () => _shareAvatarProfile(avatar),
+            onPressed: () => ref
+                .read(avatarDetailControllerProvider)
+                .shareAvatarProfile(avatar),
           ),
         ),
       ],
@@ -230,7 +235,7 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: _getReleaseStatusColor(avatar.releaseStatus),
+            color: ReleaseStatusUtils.color(avatar.releaseStatus),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -362,9 +367,9 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
                           _isLoading = true;
                         });
 
-                        await ref.read(
-                          selectAvatarProvider(avatar.id).future,
-                        );
+                        await ref
+                            .read(avatarDetailControllerProvider)
+                            .selectAvatar(avatar.id);
 
                         if (mounted) {
                           setState(() {
@@ -380,9 +385,6 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
                               ),
                               backgroundColor: Colors.green,
                             ),
-                          );
-                          ref.invalidate(
-                            avatarDetailProvider(widget.avatarId),
                           );
                         }
                       } catch (e) {
@@ -478,28 +480,9 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
     });
 
     try {
-      final favoriteGroups = await ref.read(
-        favorites
-            .typedFavoriteGroupsProvider(favorites.FavoriteType.avatar)
-            .future,
-      );
-      if (favoriteGroups.isEmpty) {
-        throw Exception(t.favorites.emptyFolderDescription);
-      }
-
       await ref
-          .read(favorites.favoriteActionProvider.notifier)
-          .addFavorite(
-            favoriteId: avatar.id,
-            type: favorites.FavoriteType.avatar,
-            tags: [favoriteGroups.first.name],
-          );
-
-      ref
-        ..invalidate(favorites.favoriteAvatarsProvider)
-        ..invalidate(
-          favorites.allFavoritesProvider(favorites.FavoriteType.avatar),
-        );
+          .read(avatarDetailControllerProvider)
+          .addAvatarToFavorites(avatar.id);
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -510,7 +493,11 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(t.favorites.removeFailed(error: error.toString())),
+            content: Text(
+              error is FavoriteFolderMissingException
+                  ? t.favorites.emptyFolderDescription
+                  : t.favorites.removeFailed(error: error.toString()),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -540,19 +527,6 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
         return t.avatarDetail.unknown;
     }
   }
-
-  Color _getReleaseStatusColor(ReleaseStatus status) {
-    switch (status) {
-      case ReleaseStatus.public:
-        return Colors.green;
-      case ReleaseStatus.private:
-        return Colors.orange;
-      case ReleaseStatus.hidden:
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
-  }
 }
 
 class AppBackButton extends StatelessWidget {
@@ -573,11 +547,4 @@ class AppBackButton extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<void> _shareAvatarProfile(Avatar avatar) async {
-  await ShareUtils.shareUrl(
-    'https://vrchat.com/home/avatar/${avatar.id}',
-    subject: avatar.name,
-  );
 }

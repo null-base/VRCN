@@ -78,11 +78,11 @@ git clone https://github.com/null-base/vrcn.git
 flutter pub get
 
 # デバッグモードで実行
-flutter run --flavor debug
+flutter run
 
 # リリースビルド
-flutter build ios --flavor release
-flutter build apk --flavor release
+flutter build ios --release
+flutter build apk --release
 ```
 
 ## 👨‍👩‍👧‍👦 クレジット

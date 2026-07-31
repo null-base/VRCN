@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:vrchat/controllers/event_reminder_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
@@ -253,7 +254,7 @@ class ReminderManagementDialog extends ConsumerWidget {
         color: Colors.red,
         onPressed: () {
           ref
-              .read(eventReminderProvider.notifier)
+              .read(eventReminderControllerProvider)
               .removeReminder(reminder.eventId, reminder.reminderTime);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -286,7 +287,9 @@ class ReminderManagementDialog extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () {
-              ref.read(eventReminderProvider.notifier).cancelAllNotifications();
+              ref
+                  .read(eventReminderControllerProvider)
+                  .cancelAllNotifications();
               Navigator.pop(context); // 確認ダイアログを閉じる
               Navigator.pop(context); // 管理ダイアログも閉じる
               ScaffoldMessenger.of(context).showSnackBar(

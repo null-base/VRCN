@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/feedback_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
-import 'package:vrchat/services/feedback_service.dart';
 import 'package:vrchat/theme/app_theme.dart';
 
 class FeedbackDialog extends ConsumerStatefulWidget {
@@ -247,75 +247,65 @@ class _FeedbackDialogState extends ConsumerState<FeedbackDialog> {
   }
 
   Future<void> _sendFeedback() async {
-    if (_titleController.text.trim().isEmpty ||
-        _descriptionController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(t.feedback.required),
-          backgroundColor: Colors.red,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-      );
-      return;
-    }
-
     setState(() {
       _isLoading = true;
     });
 
-    try {
-      final success = await ref
-          .read(feedbackServiceProvider)
-          .sendFeedback(
+    final result = await ref
+        .read(feedbackControllerProvider)
+        .submit(
+          FeedbackSubmitRequest(
             type: _selectedType,
-            title: _titleController.text.trim(),
-            description: _descriptionController.text.trim(),
-          );
+            title: _titleController.text,
+            description: _descriptionController.text,
+          ),
+        );
 
-      if (mounted) {
-        if (success) {
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(t.feedback.success),
-              backgroundColor: Colors.green,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(t.feedback.fail),
-              backgroundColor: Colors.red,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
+    if (!mounted) return;
+
+    switch (result.status) {
+      case FeedbackSubmitStatus.success:
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(t.common.error(error: e.toString())),
+            content: Text(t.feedback.success),
+            backgroundColor: Colors.green,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        );
+        return;
+      case FeedbackSubmitStatus.invalidInput:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(t.feedback.required),
             backgroundColor: Colors.red,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
           ),
         );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      case FeedbackSubmitStatus.failure:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              result.error == null
+                  ? t.feedback.fail
+                  : t.common.error(error: result.error.toString()),
+            ),
+            backgroundColor: Colors.red,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        );
+    }
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vrchat/controllers/notification_controller.dart';
+import 'package:vrchat/controllers/search_state_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/pages/search_page.dart';
 import 'package:vrchat/provider/navigation_provider.dart';
@@ -70,12 +72,7 @@ class Navigation extends ConsumerWidget {
             if (searchPageController != null) {
               searchPageController.onSearchChanged(query);
             } else {
-              // すべてのタブのオフセットをリセット
-              ref.read(userSearchOffsetProvider.notifier).state = 0;
-              ref.read(worldSearchOffsetProvider.notifier).state = 0;
-              ref.read(groupSearchOffsetProvider.notifier).state = 0;
-              // 検索クエリを更新
-              ref.read(searchQueryProvider.notifier).state = query;
+              ref.read(searchStateControllerProvider).updateQuery(query);
             }
           },
           onAvatarPressed: () => scaffoldKey.currentState?.openDrawer(),
@@ -98,7 +95,9 @@ class Navigation extends ConsumerWidget {
               icon: const Icon(Icons.done_all),
               tooltip: t.notifications.markAllRead,
               onPressed: () async {
-                await ref.read(notificationActionsProvider).markAllAsRead();
+                await ref
+                    .read(notificationControllerProvider)
+                    .markAllApiAsRead();
                 if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -142,11 +141,6 @@ class Navigation extends ConsumerWidget {
           icon: Icons.search_outlined,
           activeIcon: Icons.search,
         ),
-      const NavigationTabInfo(
-        index: 2,
-        icon: Icons.notifications_none_outlined,
-        activeIcon: Icons.notifications,
-      ),
     ];
 
     return DecoratedBox(
@@ -197,8 +191,7 @@ class Navigation extends ConsumerWidget {
       onTap: () {
         if (currentIndex == index) return;
 
-        // インデックスを更新
-        ref.read(navigationIndexProvider.notifier).state = index;
+        ref.read(navigationActionsProvider).setIndex(index);
 
         final router = GoRouter.of(context);
 

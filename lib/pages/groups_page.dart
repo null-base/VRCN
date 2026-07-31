@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/group_list_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
@@ -39,7 +40,8 @@ class GroupsPage extends ConsumerWidget {
         loading: () => LoadingIndicator(message: t.groups.loadingUser),
         error: (error, _) => ErrorContainer(
           message: t.groups.errorUser(error: error.toString()),
-          onRetry: () => ref.refresh(currentUserProvider),
+          onRetry: () =>
+              ref.read(groupListControllerProvider).refreshCurrentUser(),
         ),
       ),
     );
@@ -56,10 +58,8 @@ class GroupsPage extends ConsumerWidget {
     final userGroupsAsync = ref.watch(userGroupsProvider(userId));
 
     return RefreshIndicator(
-      onRefresh: () {
-        ref.invalidate(userGroupsProvider(userId));
-        return Future<void>.value();
-      },
+      onRefresh: () =>
+          ref.read(groupListControllerProvider).refreshUserGroups(userId),
       child: userGroupsAsync.when(
         data: (groups) {
           if (groups.isEmpty) {
@@ -112,7 +112,8 @@ class GroupsPage extends ConsumerWidget {
         loading: () => LoadingIndicator(message: t.groups.loadingGroups),
         error: (error, _) => ErrorContainer(
           message: t.groups.errorGroups(error: error.toString()),
-          onRetry: () => ref.refresh(userGroupsProvider(userId)),
+          onRetry: () =>
+              ref.read(groupListControllerProvider).refreshUserGroups(userId),
         ),
       ),
     );

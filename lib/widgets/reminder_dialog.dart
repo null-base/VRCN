@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:vrchat/controllers/event_reminder_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/models/event_calendar_models.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
@@ -198,7 +199,7 @@ class _ReminderDialogState extends ConsumerState<ReminderDialog> {
     );
 
     // リマインダーを追加
-    ref.read(eventReminderProvider.notifier).addReminder(reminder);
+    ref.read(eventReminderControllerProvider).addReminder(reminder);
 
     // 成功メッセージを表示
     ScaffoldMessenger.of(context).showSnackBar(

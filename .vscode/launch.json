@@ -8,7 +8,7 @@
       "request": "launch",
       "program": "lib/main.dart",
       "flutterMode": "debug",
-      "toolArgs": ["--flavor", "dev"],
+      // "toolArgs": ["--flavor", "dev"],
       "presentation": {
         "group": "iOS",
         "order": 1

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/search_state_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/group_provider.dart' as gp;
 import 'package:vrchat/provider/search_providers.dart';
@@ -49,7 +50,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
   }
 
   void _loadMoreResults() {
-    advanceSearchOffset(ref, groupSearchOffsetProvider);
+    ref.read(searchStateControllerProvider).loadMore(groupSearchOffsetProvider);
   }
 
   void _toggleViewMode() {
@@ -82,14 +83,15 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
     ref.listen<AsyncValue<List<LimitedGroup>>>(
       searchProvider,
       (previous, current) {
-        handlePagedSearchResults(
-          ref: ref,
-          state: current,
-          offset: offset,
-          cachedResults: cachedResults,
-          resultsProvider: groupSearchResultsProvider,
-          idOf: (group) => group.id,
-        );
+        ref
+            .read(searchStateControllerProvider)
+            .handlePagedResults(
+              state: current,
+              offset: offset,
+              cachedResults: cachedResults,
+              resultsProvider: groupSearchResultsProvider,
+              idOf: (group) => group.id,
+            );
       },
     );
 

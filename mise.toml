@@ -1,2 +1,57 @@
 [tools]
-flutter = { version = "3.44.4", platforms = { linux-arm64 = { url = 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_arm64_{{ version | replace(from="-stable", to="") }}-stable.tar.xz' }, linux-x64 = { url = 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_{{ version | replace(from="-stable", to="") }}-stable.tar.xz' } }, url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_{{ version }}-stable.zip", version_expr = 'fromJSON(body).releases | filter({ #.channel == "stable"}) | map({ #.version}) | sortVersions()', version_list_url = "https://storage.googleapis.com/flutter_infra_release/releases/releases_linux.json" }
+flutter = { version = "3.44.1", platforms = { linux-arm64 = { url = 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_arm64_{{ version | replace(from="-stable", to="") }}-stable.tar.xz' }, linux-x64 = { url = 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_{{ version | replace(from="-stable", to="") }}-stable.tar.xz' } }, url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_{{ version }}-stable.zip", version_expr = 'fromJSON(body).releases | filter({ #.channel == "stable"}) | map({ #.version}) | sortVersions()', version_list_url = "https://storage.googleapis.com/flutter_infra_release/releases/releases_linux.json" }
+ruby = "3.2.9"
+
+[tasks.get]
+alias = "pub-get"
+description = "Install Flutter dependencies"
+run = "flutter pub get"
+
+[tasks.format]
+description = "Format Dart sources"
+run = "dart format lib"
+
+[tasks.format-check]
+description = "Check Dart formatting"
+run = "dart format --output=none --set-exit-if-changed lib"
+
+[tasks.analyze]
+description = "Run Flutter analyzer"
+run = "flutter analyze --fatal-infos --fatal-warnings"
+
+[tasks.test]
+description = "Run Flutter tests"
+run = "if [ -d test ]; then flutter test; else echo 'No test directory; skipping flutter test'; fi"
+
+[tasks.check]
+description = "Run local verification"
+depends = ["get", "format-check", "analyze"]
+
+[tasks.generate]
+description = "Run code generation"
+run = "dart run build_runner build --delete-conflicting-outputs"
+
+[tasks.translations]
+description = "Generate translations"
+run = "dart run slang"
+
+[tasks.pod-install]
+description = "Install iOS pods"
+dir = "ios"
+run = "bundle exec pod install"
+
+[tasks.ios-build]
+description = "Build iOS app"
+run = "flutter build ios --release"
+
+[tasks.android-build]
+description = "Build Android app bundle"
+run = "flutter build appbundle --release"
+
+[tasks.upload-ios]
+description = "Upload iOS build to App Store Connect with fastlane"
+run = "bundle exec fastlane ios release"
+
+[tasks.upload-android]
+description = "Upload Android bundle to Google Play with fastlane"
+run = "bundle exec fastlane android release"

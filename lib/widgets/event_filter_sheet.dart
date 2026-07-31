@@ -93,7 +93,7 @@ class FilterBottomSheet extends ConsumerWidget {
                 ),
                 TextButton.icon(
                   onPressed: () =>
-                      ref.read(eventFilterProvider.notifier).clearAll(),
+                      ref.read(eventFilterActionsProvider).clearAll(),
                   icon: const Icon(Icons.refresh, size: 18),
                   label: Text(
                     'クリア',
@@ -159,8 +159,10 @@ class FilterBottomSheet extends ConsumerWidget {
                     ),
                     cursorColor: primaryColor,
                     onChanged: (value) => ref
-                        .read(eventFilterProvider.notifier)
-                        .setSearchQuery(value),
+                        .read(eventFilterActionsProvider)
+                        .setSearchQuery(
+                          value,
+                        ),
                   ),
                   isDarkMode: isDarkMode,
                   backgroundColor: sectionColor,
@@ -229,12 +231,12 @@ class FilterBottomSheet extends ConsumerWidget {
                               labelText: '開始日',
                               onSelect: (date) {
                                 ref
-                                    .read(eventFilterProvider.notifier)
+                                    .read(eventFilterActionsProvider)
                                     .setDateRange(date, filter.endDate);
                               },
                               onClear: () {
                                 ref
-                                    .read(eventFilterProvider.notifier)
+                                    .read(eventFilterActionsProvider)
                                     .setDateRange(null, filter.endDate);
                               },
                               dateFormat: dateFormat,
@@ -262,12 +264,12 @@ class FilterBottomSheet extends ConsumerWidget {
                               labelText: '終了日',
                               onSelect: (date) {
                                 ref
-                                    .read(eventFilterProvider.notifier)
+                                    .read(eventFilterActionsProvider)
                                     .setDateRange(filter.startDate, date);
                               },
                               onClear: () {
                                 ref
-                                    .read(eventFilterProvider.notifier)
+                                    .read(eventFilterActionsProvider)
                                     .setDateRange(filter.startDate, null);
                               },
                               dateFormat: dateFormat,
@@ -346,12 +348,12 @@ class FilterBottomSheet extends ConsumerWidget {
                               labelText: '開始時間',
                               onSelect: (time) {
                                 ref
-                                    .read(eventFilterProvider.notifier)
+                                    .read(eventFilterActionsProvider)
                                     .setTimeRange(time, filter.endTime);
                               },
                               onClear: () {
                                 ref
-                                    .read(eventFilterProvider.notifier)
+                                    .read(eventFilterActionsProvider)
                                     .setTimeRange(null, filter.endTime);
                               },
                               isDarkMode: isDarkMode,
@@ -378,12 +380,12 @@ class FilterBottomSheet extends ConsumerWidget {
                               labelText: '終了時間',
                               onSelect: (time) {
                                 ref
-                                    .read(eventFilterProvider.notifier)
+                                    .read(eventFilterActionsProvider)
                                     .setTimeRange(filter.startTime, time);
                               },
                               onClear: () {
                                 ref
-                                    .read(eventFilterProvider.notifier)
+                                    .read(eventFilterActionsProvider)
                                     .setTimeRange(filter.startTime, null);
                               },
                               isDarkMode: isDarkMode,
@@ -1048,8 +1050,11 @@ class FilterBottomSheet extends ConsumerWidget {
               : null,
         ),
         child: InkWell(
-          onTap: () =>
-              ref.read(eventFilterProvider.notifier).toggleGenre(entry.key),
+          onTap: () => ref
+              .read(eventFilterActionsProvider)
+              .toggleGenre(
+                entry.key,
+              ),
           borderRadius: BorderRadius.circular(20),
           splashColor: baseColor.withValues(alpha: 0.1),
           highlightColor: baseColor.withValues(alpha: 0.05),

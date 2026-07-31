@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 // イベントフィルターの状態を管理するクラス
@@ -47,6 +48,36 @@ final eventFilterProvider =
     StateNotifierProvider<EventFilterNotifier, EventFilter>(
       (ref) => EventFilterNotifier(),
     );
+
+final eventFilterActionsProvider = Provider<EventFilterActions>(
+  EventFilterActions.new,
+);
+
+class EventFilterActions {
+  const EventFilterActions(this._ref);
+
+  final Ref _ref;
+
+  void clearAll() {
+    _ref.read(eventFilterProvider.notifier).clearAll();
+  }
+
+  void setDateRange(DateTime? start, DateTime? end) {
+    _ref.read(eventFilterProvider.notifier).setDateRange(start, end);
+  }
+
+  void setTimeRange(TimeOfDay? start, TimeOfDay? end) {
+    _ref.read(eventFilterProvider.notifier).setTimeRange(start, end);
+  }
+
+  void setSearchQuery(String query) {
+    _ref.read(eventFilterProvider.notifier).setSearchQuery(query);
+  }
+
+  void toggleGenre(String genre) {
+    _ref.read(eventFilterProvider.notifier).toggleGenre(genre);
+  }
+}
 
 class EventFilterNotifier extends StateNotifier<EventFilter> {
   EventFilterNotifier() : super(const EventFilter());

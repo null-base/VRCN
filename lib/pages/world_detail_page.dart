@@ -2,15 +2,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/favorite_controller.dart';
 import 'package:intl/intl.dart';
+import 'package:vrchat/controllers/world_detail_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/favorite_provider.dart' as favorites;
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/provider/world_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
-import 'package:vrchat/utils/share_utils.dart';
-import 'package:vrchat/utils/url_launcher_utils.dart';
+import 'package:vrchat/utils/search_utils.dart';
 import 'package:vrchat/widgets/error_view.dart';
+import 'package:vrchat/widgets/info_card.dart';
+import 'package:vrchat/widgets/info_row.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class WorldDetailPage extends ConsumerWidget {
@@ -46,7 +49,7 @@ class WorldDetailPage extends ConsumerWidget {
   ) {
     return CustomScrollView(
       slivers: [
-        _buildAppBar(context, world, isDarkMode, headers),
+        _buildAppBar(context, world, isDarkMode, headers, ref),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -56,6 +59,8 @@ class WorldDetailPage extends ConsumerWidget {
                 _buildWorldInfo(context, world, isDarkMode),
                 const SizedBox(height: 24),
                 _buildWorldStats(context, world, isDarkMode),
+                const SizedBox(height: 24),
+                _buildWorldMetadata(context, world, isDarkMode),
                 const SizedBox(height: 24),
                 _buildDescription(context, world, isDarkMode),
                 const SizedBox(height: 24),
@@ -75,6 +80,7 @@ class WorldDetailPage extends ConsumerWidget {
     World world,
     bool isDarkMode,
     Map<String, String> headers,
+    WidgetRef ref,
   ) {
     return SliverAppBar(
       expandedHeight: 250,
@@ -127,7 +133,8 @@ class WorldDetailPage extends ConsumerWidget {
         IconButton(
           icon: const Icon(Icons.share, color: Colors.white),
           tooltip: t.worldDetail.share,
-          onPressed: () => _shareWorld(world),
+          onPressed: () =>
+              ref.read(worldDetailControllerProvider).shareWorld(world),
         ),
         PopupMenuButton<String>(
           icon: const Icon(Icons.more_vert, color: Colors.white),
@@ -137,9 +144,13 @@ class WorldDetailPage extends ConsumerWidget {
           onSelected: (value) {
             switch (value) {
               case 'website':
-                _launchVRChatWebsite(world.id);
+                ref
+                    .read(worldDetailControllerProvider)
+                    .openWorldWebsite(world.id);
               case 'report':
-                _launchVRChatWebsite(world.id);
+                ref
+                    .read(worldDetailControllerProvider)
+                    .openWorldWebsite(world.id);
             }
           },
           itemBuilder: (context) => [
@@ -175,12 +186,14 @@ class WorldDetailPage extends ConsumerWidget {
       children: [
         Row(
           children: [
-            Text(
-              world.name,
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: isDarkMode ? Colors.white70 : Colors.black87,
+            Expanded(
+              child: Text(
+                world.name,
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: isDarkMode ? Colors.white70 : Colors.black87,
+                ),
               ),
             ),
           ],
@@ -210,20 +223,31 @@ class WorldDetailPage extends ConsumerWidget {
         const SizedBox(height: 8),
 
         // 作成日と更新日
-        Row(
+        Wrap(
+          spacing: 16,
+          runSpacing: 8,
           children: [
-            const Icon(Icons.calendar_today, size: 16),
-            const SizedBox(width: 8),
-            Text(
-              '${t.worldDetail.created}: ${_formatDate(world.createdAt)}',
-              style: GoogleFonts.notoSans(fontSize: 14),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.calendar_today, size: 16),
+                const SizedBox(width: 8),
+                Text(
+                  '${t.worldDetail.created}: ${_formatDate(world.createdAt)}',
+                  style: GoogleFonts.notoSans(fontSize: 14),
+                ),
+              ],
             ),
-            const SizedBox(width: 16),
-            const Icon(Icons.update, size: 16),
-            const SizedBox(width: 8),
-            Text(
-              '${t.worldDetail.updated}: ${_formatDate(world.updatedAt)}',
-              style: GoogleFonts.notoSans(fontSize: 14),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.update, size: 16),
+                const SizedBox(width: 8),
+                Text(
+                  '${t.worldDetail.updated}: ${_formatDate(world.updatedAt)}',
+                  style: GoogleFonts.notoSans(fontSize: 14),
+                ),
+              ],
             ),
           ],
         ),
@@ -249,21 +273,21 @@ class WorldDetailPage extends ConsumerWidget {
           _buildStatItem(
             context,
             Icons.favorite,
-            _formatNumber(world.favorites),
+            SearchUtils.formatNumber(world.favorites ?? 0),
             t.worldDetail.favorites,
             Colors.red,
           ),
           _buildStatItem(
             context,
             Icons.visibility,
-            _formatNumber(world.visits),
+            SearchUtils.formatNumber(world.visits),
             t.worldDetail.visits,
             Colors.blue,
           ),
           _buildStatItem(
             context,
             Icons.public,
-            _formatNumber(world.occupants),
+            SearchUtils.formatNumber(world.occupants ?? 0),
             t.worldDetail.occupants,
             Colors.green,
           ),
@@ -300,6 +324,106 @@ class WorldDetailPage extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildWorldMetadata(
+    BuildContext context,
+    World world,
+    bool isDarkMode,
+  ) {
+    return InfoCard(
+      title: 'World details',
+      icon: Icons.info_outline,
+      isDarkMode: isDarkMode,
+      customColor: Colors.blue,
+      children: [
+        InfoRow(
+          icon: Icons.group_outlined,
+          label: 'Capacity',
+          value:
+              '${world.recommendedCapacity} recommended / ${world.capacity} max',
+          isDarkMode: isDarkMode,
+        ),
+        InfoRow(
+          icon: Icons.public_outlined,
+          label: 'Release status',
+          value: world.releaseStatus.value,
+          isDarkMode: isDarkMode,
+        ),
+        InfoRow(
+          icon: Icons.meeting_room_outlined,
+          label: 'Public instances',
+          value: '${world.instances?.length ?? 0}',
+          isDarkMode: isDarkMode,
+        ),
+        InfoRow(
+          icon: Icons.people_alt_outlined,
+          label: 'Occupants',
+          value:
+              '${world.publicOccupants ?? 0} public / ${world.privateOccupants ?? 0} private',
+          isDarkMode: isDarkMode,
+        ),
+        InfoRow(
+          icon: Icons.new_releases_outlined,
+          label: 'Publication',
+          value: world.publicationDate.isEmpty
+              ? t.worldDetail.unknown
+              : world.publicationDate,
+          isDarkMode: isDarkMode,
+        ),
+        _buildPlatformChips(world, isDarkMode),
+      ],
+    );
+  }
+
+  Widget _buildPlatformChips(World world, bool isDarkMode) {
+    final platforms =
+        world.unityPackages
+            ?.map((package) => package.platform)
+            .where((platform) => platform.isNotEmpty)
+            .toSet()
+            .toList() ??
+        const <String>[];
+
+    if (platforms.isEmpty) {
+      return InfoRow(
+        icon: Icons.devices_other,
+        label: 'Platforms',
+        value: t.worldDetail.unknown,
+        isDarkMode: isDarkMode,
+      );
+    }
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: platforms.map((platform) {
+        return Chip(
+          avatar: Icon(_platformIcon(platform), size: 16),
+          label: Text(_platformLabel(platform)),
+          backgroundColor: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        );
+      }).toList(),
+    );
+  }
+
+  IconData _platformIcon(String platform) {
+    return switch (platform) {
+      'android' => Icons.android,
+      'ios' => Icons.phone_iphone,
+      'standalonewindows' => Icons.desktop_windows,
+      _ => Icons.devices_other,
+    };
+  }
+
+  String _platformLabel(String platform) {
+    return switch (platform) {
+      'android' => 'Quest / Android',
+      'ios' => 'iOS',
+      'standalonewindows' => 'PC',
+      _ => platform,
+    };
   }
 
   Widget _buildDescription(BuildContext context, World world, bool isDarkMode) {
@@ -396,7 +520,11 @@ class WorldDetailPage extends ConsumerWidget {
       children: [
         Expanded(
           child: ElevatedButton.icon(
-            onPressed: () => _launchVRChatWebsite(world.id),
+            onPressed: () => ref
+                .read(worldDetailControllerProvider)
+                .openWorldWebsite(
+                  world.id,
+                ),
             icon: const Icon(Icons.public),
             label: Text(
               t.worldDetail.openInVRChat,
@@ -446,28 +574,11 @@ class WorldDetailPage extends ConsumerWidget {
     WidgetRef ref,
   ) async {
     try {
-      final favoriteGroups = await ref.read(
-        favorites
-            .typedFavoriteGroupsProvider(favorites.FavoriteType.world)
-            .future,
-      );
-      if (favoriteGroups.isEmpty) {
-        throw Exception(t.favorites.emptyFolderDescription);
-      }
-
       await ref
-          .read(favorites.favoriteActionProvider.notifier)
-          .addFavorite(
-            favoriteId: world.id,
-            type: favorites.FavoriteType.world,
-            tags: [favoriteGroups.first.name],
+          .read(worldDetailControllerProvider)
+          .addWorldToFavorites(
+            world.id,
           );
-
-      ref
-        ..invalidate(favorites.favoriteWorldsProvider)
-        ..invalidate(
-          favorites.allFavoritesProvider(favorites.FavoriteType.world),
-        );
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -476,9 +587,12 @@ class WorldDetailPage extends ConsumerWidget {
       }
     } catch (error) {
       if (context.mounted) {
+        final message = error is FavoriteFolderMissingException
+            ? t.favorites.emptyFolderDescription
+            : t.favorites.removeFailed(error: error.toString());
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(t.favorites.removeFailed(error: error.toString())),
+            content: Text(message),
             backgroundColor: Colors.red,
           ),
         );
@@ -490,29 +604,4 @@ class WorldDetailPage extends ConsumerWidget {
     if (date == null) return t.worldDetail.unknown;
     return DateFormat('yyyy/MM/dd').format(date);
   }
-
-  String _formatNumber(int? number) {
-    if (number == null) return '0';
-    if (number >= 1000000) {
-      return '${(number / 1000000).toStringAsFixed(1)}M';
-    } else if (number >= 1000) {
-      return '${(number / 1000).toStringAsFixed(1)}K';
-    }
-    return number.toString();
-  }
-}
-
-// ブラウザでVRChatウェブサイトを開くメソッド
-Future<void> _launchVRChatWebsite(String worldId) async {
-  await UrlLauncherUtils.launchExternalURL(
-    'https://vrchat.com/home/world/$worldId',
-  );
-}
-
-// ワールド情報を共有するメソッド
-Future<void> _shareWorld(World world) async {
-  await ShareUtils.shareUrl(
-    'https://vrchat.com/home/world/${world.id}',
-    subject: world.name,
-  );
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/favorite_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/avatar_provider.dart';
 import 'package:vrchat/provider/favorite_provider.dart';
@@ -11,6 +12,8 @@ import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/provider/world_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
+import 'package:vrchat/utils/release_status_utils.dart';
+import 'package:vrchat/utils/search_utils.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat_dart/vrchat_dart.dart' hide FavoriteType;
@@ -164,11 +167,13 @@ class _FavoriteFriendsTab extends ConsumerWidget {
               );
             }
 
-            final groupedFavorites = _groupFavoritesByFolder(
-              favorites: favorites,
-              groups: groups,
-              type: FavoriteType.friend,
-            );
+            final groupedFavorites = ref
+                .read(favoriteControllerProvider)
+                .groupByFolder(
+                  favorites: favorites,
+                  groups: groups,
+                  type: FavoriteType.friend,
+                );
 
             for (final group in friendGroups) {
               final displayName = group.displayName;
@@ -241,17 +246,15 @@ class _FavoriteFriendsTab extends ConsumerWidget {
           loading: () => LoadingIndicator(message: t.favorites.loadingFolder),
           error: (_, _) => ErrorContainer(
             message: t.favorites.errorFolder,
-            onRetry: () {
-              ref.invalidate(myFavoriteGroupsProvider);
-              ref.invalidate(favoriteFriendsProvider);
-            },
+            onRetry: () =>
+                ref.read(favoriteControllerProvider).refreshFriendsWithGroups(),
           ),
         );
       },
       loading: () => LoadingIndicator(message: t.favorites.loading),
       error: (error, stack) => ErrorContainer(
         message: t.favorites.error(error: error.toString()),
-        onRetry: () => ref.invalidate(favoriteFriendsProvider),
+        onRetry: () => ref.read(favoriteControllerProvider).refreshFriends(),
       ),
     );
   }
@@ -282,11 +285,13 @@ class _FavoriteWorldsTab extends ConsumerWidget {
 
         return favoriteGroupsAsync.when(
           data: (groups) {
-            final groupedFavorites = _groupFavoritesByFolder(
-              favorites: favorites,
-              groups: groups,
-              type: FavoriteType.world,
-            );
+            final groupedFavorites = ref
+                .read(favoriteControllerProvider)
+                .groupByFolder(
+                  favorites: favorites,
+                  groups: groups,
+                  type: FavoriteType.world,
+                );
 
             return ListView.builder(
               controller: controller,
@@ -359,17 +364,15 @@ class _FavoriteWorldsTab extends ConsumerWidget {
           loading: () => LoadingIndicator(message: t.favorites.loadingFolder),
           error: (_, _) => ErrorContainer(
             message: t.favorites.errorFolder,
-            onRetry: () {
-              ref.invalidate(myFavoriteGroupsProvider);
-              ref.invalidate(favoriteWorldsProvider);
-            },
+            onRetry: () =>
+                ref.read(favoriteControllerProvider).refreshWorldsWithGroups(),
           ),
         );
       },
       loading: () => LoadingIndicator(message: t.favorites.loading),
       error: (error, stack) => ErrorContainer(
         message: t.favorites.error(error: error.toString()),
-        onRetry: () => ref.refresh(favoriteWorldsProvider),
+        onRetry: () => ref.read(favoriteControllerProvider).refreshWorlds(),
       ),
     );
   }
@@ -400,11 +403,13 @@ class _FavoriteAvatarsTab extends ConsumerWidget {
 
         return favoriteGroupsAsync.when(
           data: (groups) {
-            final groupedFavorites = _groupFavoritesByFolder(
-              favorites: favorites,
-              groups: groups,
-              type: FavoriteType.avatar,
-            );
+            final groupedFavorites = ref
+                .read(favoriteControllerProvider)
+                .groupByFolder(
+                  favorites: favorites,
+                  groups: groups,
+                  type: FavoriteType.avatar,
+                );
 
             return ListView.builder(
               controller: controller,
@@ -477,17 +482,15 @@ class _FavoriteAvatarsTab extends ConsumerWidget {
           loading: () => LoadingIndicator(message: t.favorites.loadingFolder),
           error: (_, _) => ErrorContainer(
             message: t.favorites.errorFolder,
-            onRetry: () {
-              ref.invalidate(myFavoriteGroupsProvider);
-              ref.invalidate(favoriteAvatarsProvider);
-            },
+            onRetry: () =>
+                ref.read(favoriteControllerProvider).refreshAvatarsWithGroups(),
           ),
         );
       },
       loading: () => LoadingIndicator(message: t.favorites.loading),
       error: (error, stack) => ErrorContainer(
         message: t.favorites.error(error: error.toString()),
-        onRetry: () => ref.refresh(favoriteAvatarsProvider),
+        onRetry: () => ref.read(favoriteControllerProvider).refreshAvatars(),
       ),
     );
   }
@@ -858,7 +861,7 @@ Widget _buildEnhancedWorldItem(
                     ),
                     const SizedBox(width: 2),
                     Text(
-                      _formatNumber(world.favorites ?? 0),
+                      SearchUtils.formatNumber(world.favorites ?? 0),
                       style: GoogleFonts.notoSans(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -889,16 +892,7 @@ Widget _buildEnhancedAvatarItem(
     'User-Agent': vrchatApi?.userAgent.toString() ?? 'VRCN',
   };
 
-  // リリースステータスに応じた色を取得
-  Color statusColor = Colors.green;
-  switch (avatar.releaseStatus) {
-    case ReleaseStatus.private:
-      statusColor = Colors.orange;
-    case ReleaseStatus.hidden:
-      statusColor = Colors.red;
-    default:
-      statusColor = Colors.green;
-  }
+  final statusColor = ReleaseStatusUtils.color(avatar.releaseStatus);
 
   return Card(
     clipBehavior: Clip.antiAlias,
@@ -1443,16 +1437,6 @@ Widget _buildAvatarErrorItem(String favoriteId, bool isDarkMode) {
   );
 }
 
-// 数値をフォーマットする関数
-String _formatNumber(int number) {
-  if (number >= 1000000) {
-    return '${(number / 1000000).toStringAsFixed(1)}M';
-  } else if (number >= 1000) {
-    return '${(number / 1000).toStringAsFixed(1)}K';
-  }
-  return number.toString();
-}
-
 // リリースステータスのテキストを取得
 String _getReleaseStatusText(ReleaseStatus status) {
   switch (status) {
@@ -1465,48 +1449,6 @@ String _getReleaseStatusText(ReleaseStatus status) {
     default:
       return t.favorites.unknown;
   }
-}
-
-// お気に入りをフォルダ別にグループ化する関数
-Map<String, List<Favorite>> _groupFavoritesByFolder({
-  required List<Favorite> favorites,
-  required List<FavoriteGroup> groups,
-  required FavoriteType type,
-}) {
-  // タイプでフィルタリングしたグループを取得
-  final typeGroups = groups
-      .where((group) => group.type.toString() == type.value)
-      .toList();
-
-  // 結果を格納するMap（キー：表示名、値：お気に入りリスト）
-  final result = <String, List<Favorite>>{};
-
-  final groupTagToNameMap = <String, String>{};
-
-  // まずすべてのフォルダを初期化する
-  for (final group in typeGroups) {
-    // displayNameがある場合はそれを使い、なければnameを使用
-    final displayName = group.displayName;
-
-    // 空のリストでフォルダ初期化
-    result[displayName] = [];
-
-    // 名前 → 表示名のマッピングも作成（タグとの照合用）
-    groupTagToNameMap[group.name] = displayName;
-  }
-
-  // 各お気に入りを適切なフォルダに振り分け
-  for (final favorite in favorites) {
-    for (final tag in favorite.tags) {
-      if (groupTagToNameMap.containsKey(tag)) {
-        final displayName = groupTagToNameMap[tag]!;
-        result[displayName]!.add(favorite);
-        break;
-      }
-    }
-  }
-
-  return result;
 }
 
 Widget _buildEmptyState(
@@ -1559,10 +1501,7 @@ Future<void> _removeFavorite(
   String name,
 ) async {
   try {
-    await ref.read(favoriteActionProvider.notifier).removeFavorite(favoriteId);
-    ref.invalidate(favoriteFriendsProvider);
-    ref.invalidate(favoriteWorldsProvider);
-    ref.invalidate(favoriteAvatarsProvider);
+    await ref.read(favoriteControllerProvider).removeFavorite(favoriteId);
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

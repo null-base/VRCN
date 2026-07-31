@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vrchat/controllers/search_state_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/search_providers.dart';
 import 'package:vrchat/provider/user_provider.dart';
@@ -43,7 +44,7 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
   }
 
   void _loadMoreResults() {
-    advanceSearchOffset(ref, userSearchOffsetProvider);
+    ref.read(searchStateControllerProvider).loadMore(userSearchOffsetProvider);
   }
 
   @override
@@ -64,14 +65,15 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
     ref.listen<AsyncValue<List<LimitedUser>>>(
       searchProvider,
       (previous, current) {
-        handlePagedSearchResults(
-          ref: ref,
-          state: current,
-          offset: offset,
-          cachedResults: cachedResults,
-          resultsProvider: userSearchResultsProvider,
-          idOf: (user) => user.id,
-        );
+        ref
+            .read(searchStateControllerProvider)
+            .handlePagedResults(
+              state: current,
+              offset: offset,
+              cachedResults: cachedResults,
+              resultsProvider: userSearchResultsProvider,
+              idOf: (user) => user.id,
+            );
       },
     );
 

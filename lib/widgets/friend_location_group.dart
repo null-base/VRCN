@@ -118,6 +118,8 @@ class FriendLocationGroup extends ConsumerWidget {
     String? instanceName;
     String? instanceRegion;
     String? instanceType;
+    var supportsQuest = false;
+    int? questOccupantCount;
 
     instanceAsync?.whenData((instance) {
       displayName = instance.world.name;
@@ -128,6 +130,10 @@ class FriendLocationGroup extends ConsumerWidget {
       instanceName = instance.name;
       instanceRegion = instance.region.value;
       instanceType = instance.type.value;
+      questOccupantCount = instance.platforms.android;
+      supportsQuest =
+          questOccupantCount! > 0 ||
+          _worldSupportsQuest(instance.world.unityPackages);
     });
 
     // サムネイル画像のパレットを取得
@@ -189,6 +195,8 @@ class FriendLocationGroup extends ConsumerWidget {
               instanceName,
               instanceRegion,
               instanceType,
+              supportsQuest,
+              questOccupantCount,
             ),
             _buildFriendList(isDarkMode),
           ],
@@ -214,6 +222,8 @@ class FriendLocationGroup extends ConsumerWidget {
     String? instanceName,
     String? instanceRegion,
     String? instanceType,
+    bool supportsQuest,
+    int? questOccupantCount,
   ) {
     // サムネイルからカラーパレットを取得
     final dominantColor =
@@ -309,6 +319,16 @@ class FriendLocationGroup extends ConsumerWidget {
                               isDarkMode,
                               Icons.group,
                             ),
+                          if (supportsQuest && !isPrivate && !isOffline)
+                            _buildFriendsAndOccupantsBadge(
+                              questOccupantCount != null &&
+                                      questOccupantCount > 0
+                                  ? 'Quest $questOccupantCount'
+                                  : 'Quest',
+                              Colors.green,
+                              isDarkMode,
+                              Icons.android,
+                            ),
                           if (instanceName != null)
                             _buildFriendsAndOccupantsBadge(
                               '$instanceName ${InstanceHelper.getInstanceTypeText(instanceType)} ${InstanceHelper.regionEmoji(instanceRegion ?? '')}',
@@ -333,6 +353,11 @@ class FriendLocationGroup extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  bool _worldSupportsQuest(List<UnityPackage>? unityPackages) {
+    return unityPackages?.any((package) => package.platform == 'android') ??
+        false;
   }
 
   Widget _buildBackgroundImage(
