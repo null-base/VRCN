@@ -76,9 +76,9 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 data: (currentUser) => GestureDetector(
                   onTap: onAvatarPressed ?? openDrawer,
                   child: _HeaderAvatar(
-                    imageProvider: currentUser.userIcon.isNotEmpty
+                    imageProvider: (currentUser.iconUrl ?? '').isNotEmpty
                         ? CachedNetworkImageProvider(
-                            currentUser.userIcon,
+                            currentUser.iconUrl!,
                             headers: headers,
                             cacheManager: JsonCacheManager(),
                           )

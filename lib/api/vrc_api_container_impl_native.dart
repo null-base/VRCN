@@ -10,7 +10,7 @@ class VrcApiContainerImpl extends VrcApiContainerImplBase {
     final appDocDir = await getApplicationDocumentsDirectory();
     final appDocPath = appDocDir.path;
 
-    return VrchatDart(
+    final api = VrchatDart(
       userAgent: VrchatUserAgent(
         applicationName: 'VRCN',
         version: packageInfo.version,
@@ -18,5 +18,7 @@ class VrcApiContainerImpl extends VrcApiContainerImplBase {
       ),
       cookiePath: appDocPath,
     );
+
+    return api;
   }
 }

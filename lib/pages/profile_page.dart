@@ -74,7 +74,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
 
   @override
   Widget build(BuildContext context) {
-    final currentUserAsync = ref.watch(currentUserProvider);
+    final currentUserAsync = ref.watch(currentUserProfileProvider);
     final vrchatApi = ref.watch(vrchatProvider).value;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -94,7 +94,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
             tooltip: t.profile.engageCard,
           ),
           currentUserAsync.when(
-            data: (user) => IconButton(
+            data: (userProfile) => IconButton(
               icon: const Icon(Icons.edit_outlined),
               onPressed: () async {
                 if (context.mounted) {
@@ -108,13 +108,19 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 final updatedUser = await ref
                     .read(profileControllerProvider)
                     .reloadCurrentUser();
+                final updatedProfile = await ref.read(
+                  currentUserProfileProvider.future,
+                );
                 if (!context.mounted) return;
                 final result = await showModalBottomSheet<bool>(
                   context: context,
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
                   builder: (context) {
-                    return ProfileEditSheet(user: updatedUser);
+                    return ProfileEditSheet(
+                      user: updatedUser,
+                      profile: updatedProfile.profile,
+                    );
                   },
                 );
                 if (result == true && context.mounted) {
@@ -129,12 +135,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
         ],
       ),
       body: currentUserAsync.when(
-        data: (user) => FadeTransition(
+        data: (userProfile) => FadeTransition(
           opacity: _fadeInAnimation,
           child: _buildProfileContent(
             context,
             ref,
-            user,
+            userProfile.user,
+            userProfile.profile,
             headers,
             isDarkMode,
           ),
@@ -155,10 +162,16 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
     BuildContext context,
     WidgetRef ref,
     CurrentUser user,
+    PublicProfile profile,
     Map<String, String> headers,
     bool isDarkMode,
   ) {
     final statusColor = StatusHelper.getStatusColor(user.status);
+    final profileIcon =
+        profile.userIcon ?? profile.iconUrl ?? user.iconUrl ?? '';
+    final avatarThumbnail =
+        profile.currentAvatarThumbnailImageUrl ??
+        user.currentAvatarThumbnailImageUrl;
     final userRepresentedGroupAsync = ref.watch(
       userRepresentedGroupProvider(user.id),
     );
@@ -407,23 +420,21 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                             child: CircleAvatar(
                               radius: 50,
                               backgroundColor: Colors.grey[300],
-                              backgroundImage: user.userIcon.isNotEmpty
+                              backgroundImage: profileIcon.isNotEmpty
                                   ? CachedNetworkImageProvider(
-                                      user.userIcon,
+                                      profileIcon,
                                       headers: headers,
                                       cacheManager: JsonCacheManager(),
                                     )
-                                  : user
-                                        .currentAvatarThumbnailImageUrl
-                                        .isNotEmpty
+                                  : avatarThumbnail.isNotEmpty
                                   ? CachedNetworkImageProvider(
-                                      user.currentAvatarThumbnailImageUrl,
+                                      avatarThumbnail,
                                       headers: headers,
                                       cacheManager: JsonCacheManager(),
                                     )
                                   : AssetImage(Assets.icons.icon.path)
                                         as ImageProvider,
-                              child: user.currentAvatarThumbnailImageUrl.isEmpty
+                              child: avatarThumbnail.isEmpty
                                   ? const Icon(
                                       Icons.person,
                                       size: 30,
@@ -446,16 +457,15 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                           error: (_, _) => CircleAvatar(
                             radius: 50,
                             backgroundColor: Colors.grey[300],
-                            backgroundImage:
-                                user.currentAvatarThumbnailImageUrl.isNotEmpty
+                            backgroundImage: avatarThumbnail.isNotEmpty
                                 ? CachedNetworkImageProvider(
-                                    user.currentAvatarThumbnailImageUrl,
+                                    avatarThumbnail,
                                     headers: headers,
                                     cacheManager: JsonCacheManager(),
                                   )
                                 : AssetImage(Assets.icons.icon.path)
                                       as ImageProvider,
-                            child: user.currentAvatarThumbnailImageUrl.isEmpty
+                            child: avatarThumbnail.isEmpty
                                 ? const Icon(
                                     Icons.person,
                                     size: 30,
@@ -595,7 +605,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 ],
 
                 // 自己紹介（存在する場合）
-                if (user.bio.isNotEmpty) ...[
+                if (profile.bio?.isNotEmpty ?? false) ...[
                   const SizedBox(height: 24),
                   _buildModernInfoCard(
                     context: context,
@@ -626,7 +636,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                           ),
                         ),
                         child: Text(
-                          user.bio,
+                          profile.bio!,
                           style: GoogleFonts.notoSans(
                             fontSize: 16,
                             height: 1.5,
@@ -641,9 +651,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 ],
 
                 // リンク
-                if (user.bioLinks.isNotEmpty) ...[
+                if (profile.bioLinks?.isNotEmpty ?? false) ...[
                   const SizedBox(height: 24),
-                  _buildBioLinksCard(context, user.bioLinks, isDarkMode),
+                  _buildBioLinksCard(context, profile.bioLinks!, isDarkMode),
                 ],
 
                 // グループ情報

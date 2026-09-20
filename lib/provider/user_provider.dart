@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
-import 'package:vrchat/provider/auth_provider.dart';
+import 'package:vrchat/provider/vrchat_extended_api_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
@@ -73,19 +73,19 @@ class UserSearchParams {
 // LimitedUserSearchをLimitedUserに変換するヘルパー関数
 LimitedUser _convertSearchUserToLimitedUser(LimitedUserSearch searchUser) {
   return LimitedUser(
-    bio: searchUser.bio,
-    currentAvatarImageUrl: searchUser.currentAvatarImageUrl,
-    currentAvatarThumbnailImageUrl: searchUser.currentAvatarThumbnailImageUrl,
+    currentAvatarImageUrl: null,
+    currentAvatarThumbnailImageUrl: null,
     developerType: searchUser.developerType,
     displayName: searchUser.displayName,
     id: searchUser.id,
     isFriend: searchUser.isFriend,
     lastPlatform: searchUser.lastPlatform,
-    profilePicOverride: searchUser.profilePicOverride,
+    profilePicOverride: null,
     status: searchUser.status,
     statusDescription: searchUser.statusDescription,
     tags: searchUser.tags,
-    userIcon: searchUser.userIcon,
+    userIcon: searchUser.iconUrl,
+    pronouns: searchUser.pronouns,
   );
 }
 
@@ -119,21 +119,13 @@ userSearchProvider = FutureProvider.family<List<LimitedUser>, UserSearchParams>(
 
 // 現在のユーザー（自分自身）の情報を取得するプロバイダー
 final currentUserProvider = FutureProvider<CurrentUser>((ref) async {
-  final auth = await ref.watch(vrchatAuthProvider.future);
-
   try {
-    // 現在のユーザーを取得（認証情報からキャッシュされたユーザー）
-    final currentUser = auth.currentUser;
+    final rawApi = await ref.watch(vrchatRawApiProvider);
+    final response = await rawApi.getAuthenticationApi().getCurrentUser();
+    final currentUser = response.data;
 
-    // 認証情報があるが、ユーザー情報がない場合は再取得を試みる
     if (currentUser == null) {
-      // 認証状態を確認
-      final isLoggedIn = await ref.watch(sessionAuthStateProvider.future);
-      if (!isLoggedIn) {
-        throw Exception('ログインしていません');
-      }
-
-      throw Exception('ユーザー情報を取得できませんでした');
+      throw Exception('ログインしていません');
     }
 
     return currentUser;
@@ -142,6 +134,44 @@ final currentUserProvider = FutureProvider<CurrentUser>((ref) async {
   }
 });
 
+@immutable
+class UserProfileData {
+  const UserProfileData({required this.user, required this.profile});
+
+  final User user;
+  final PublicProfile profile;
+}
+
+@immutable
+class CurrentUserProfileData {
+  const CurrentUserProfileData({required this.user, required this.profile});
+
+  final CurrentUser user;
+  final PublicProfile profile;
+}
+
+final FutureProvider<PublicProfile> currentUserPublicProfileProvider =
+    FutureProvider<PublicProfile>((ref) async {
+      final user = await ref.watch(currentUserProvider.future);
+      final profileApi = await ref.watch(vrchatProfileApiProvider.future);
+      return profileApi.getPublicProfile(user.id, asSelf: true);
+    });
+
+final FutureProvider<CurrentUserProfileData> currentUserProfileProvider =
+    FutureProvider<CurrentUserProfileData>((ref) async {
+      final user = await ref.watch(currentUserProvider.future);
+      final profile = await ref.watch(currentUserPublicProfileProvider.future);
+      return CurrentUserProfileData(user: user, profile: profile);
+    });
+
+final FutureProviderFamily<UserProfileData, String> userProfileProvider =
+    FutureProvider.family<UserProfileData, String>((ref, userId) async {
+      final user = await ref.watch(userDetailProvider(userId).future);
+      final profileApi = await ref.watch(vrchatProfileApiProvider.future);
+      final profile = await profileApi.getPublicProfile(userId);
+      return UserProfileData(user: user, profile: profile);
+    });
+
 // ユーザー情報を更新するプロバイダー
 final FutureProviderFamily<CurrentUser, UpdateUserRequest> updateUserProvider =
     FutureProvider.family<CurrentUser, UpdateUserRequest>((
@@ -149,11 +179,11 @@ final FutureProviderFamily<CurrentUser, UpdateUserRequest> updateUserProvider =
       updateUserRequest,
     ) async {
       final usersApi = await ref.watch(vrchatUserProvider.future);
-      final userId = ref.watch(currentUserProvider).value?.id;
+      final currentUser = await ref.watch(currentUserProvider.future);
 
       try {
         final response = await usersApi.updateUser(
-          userId: userId.toString(),
+          userId: currentUser.id,
           updateUserRequest: updateUserRequest,
         );
 

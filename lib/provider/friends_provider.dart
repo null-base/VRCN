@@ -161,22 +161,24 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
   // LimitedUserFriend を LimitedUser に変換するヘルパーメソッド
   LimitedUser _convertToLimitedUser(LimitedUserFriend friend) {
     return LimitedUser(
-      bio: friend.bio,
-      currentAvatarImageUrl: friend.currentAvatarImageUrl,
-      currentAvatarThumbnailImageUrl: friend.currentAvatarThumbnailImageUrl,
+      currentAvatarImageUrl: null,
+      currentAvatarThumbnailImageUrl: null,
       developerType: friend.developerType,
       displayName: friend.displayName,
       id: friend.id,
       isFriend: friend.isFriend,
       lastPlatform: friend.lastPlatform,
-      profilePicOverride: friend.profilePicOverride,
+      profilePicOverride: null,
       status: friend.status,
       statusDescription: friend.statusDescription,
       tags: friend.tags,
-      userIcon: friend.userIcon,
+      userIcon: friend.iconUrl,
       location: friend.location,
       friendKey: friend.friendKey,
       lastLogin: friend.lastLogin,
+      lastActivity: friend.lastActivity,
+      lastMobile: friend.lastMobile,
+      platform: friend.platform,
     );
   }
 

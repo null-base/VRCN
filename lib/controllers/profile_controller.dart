@@ -9,6 +9,8 @@ class ProfileController {
 
   Future<CurrentUser> reloadCurrentUser() async {
     ref.invalidate(currentUserProvider);
+    ref.invalidate(currentUserPublicProfileProvider);
+    ref.invalidate(currentUserProfileProvider);
     return ref.read(currentUserProvider.future);
   }
 }

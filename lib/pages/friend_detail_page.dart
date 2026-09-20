@@ -29,12 +29,18 @@ class FriendDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final friendDetailAsync = ref.watch(userDetailProvider(userId));
+    final friendDetailAsync = ref.watch(userProfileProvider(userId));
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: friendDetailAsync.when(
-        data: (user) => _buildUserDetail(context, user, ref, isDarkMode),
+        data: (userProfile) => _buildUserDetail(
+          context,
+          userProfile.user,
+          userProfile.profile,
+          ref,
+          isDarkMode,
+        ),
         loading: () => LoadingIndicator(message: t.friendDetail.loading),
         error: (error, stackTrace) => ErrorContainer(
           message: t.friendDetail.error(error: error.toString()),
@@ -51,6 +57,7 @@ class FriendDetailPage extends ConsumerWidget {
   Widget _buildUserDetail(
     BuildContext context,
     User user,
+    PublicProfile profile,
     WidgetRef ref,
     bool isDarkMode,
   ) {
@@ -113,12 +120,12 @@ class FriendDetailPage extends ConsumerWidget {
                               bottom: 16,
                               child: _buildUserTypeContainer(user, isDarkMode),
                             ),
-                            if (user.badges != null && user.badges!.isNotEmpty)
+                            if (profile.badges?.isNotEmpty ?? false)
                               Positioned(
                                 right: 16,
                                 bottom: 16,
                                 child: UserBadgesView(
-                                  user: user,
+                                  badges: profile.badges!,
                                   isDarkMode: isDarkMode,
                                 ),
                               ),
@@ -134,12 +141,12 @@ class FriendDetailPage extends ConsumerWidget {
                               bottom: 16,
                               child: _buildUserTypeContainer(user, isDarkMode),
                             ),
-                            if (user.badges != null && user.badges!.isNotEmpty)
+                            if (profile.badges?.isNotEmpty ?? false)
                               Positioned(
                                 right: 16,
                                 bottom: 16,
                                 child: UserBadgesView(
-                                  user: user,
+                                  badges: profile.badges!,
                                   isDarkMode: isDarkMode,
                                 ),
                               ),
@@ -170,7 +177,7 @@ class FriendDetailPage extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  _buildUserHeader(user, statusColor, ref),
+                  _buildUserHeader(user, profile, statusColor, ref),
                 ],
               ),
             ),
@@ -227,10 +234,10 @@ class FriendDetailPage extends ConsumerWidget {
                   const SizedBox(height: 16),
                   _buildUserNoteCard(context, ref, user, isDarkMode),
                   const SizedBox(height: 16),
-                  _buildUserBioCard(user, isDarkMode),
+                  _buildUserBioCard(profile, isDarkMode),
                   const SizedBox(height: 16),
-                  if (user.bioLinks.isNotEmpty)
-                    _buildBioLinksCard(context, user.bioLinks, isDarkMode),
+                  if (profile.bioLinks?.isNotEmpty ?? false)
+                    _buildBioLinksCard(context, profile.bioLinks!, isDarkMode),
                   const SizedBox(height: 16),
                   _buildUserGroupCard(
                     context,
@@ -367,7 +374,12 @@ class FriendDetailPage extends ConsumerWidget {
     }
   }
 
-  Widget _buildUserHeader(User user, Color statusColor, WidgetRef ref) {
+  Widget _buildUserHeader(
+    User user,
+    PublicProfile profile,
+    Color statusColor,
+    WidgetRef ref,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -385,7 +397,7 @@ class FriendDetailPage extends ConsumerWidget {
               ),
             ],
           ),
-          child: ClipOval(child: _buildUserAvatar(user, ref)),
+          child: ClipOval(child: _buildUserAvatar(user, profile, ref)),
         ),
         const SizedBox(height: 16),
         Text(
@@ -415,13 +427,15 @@ class FriendDetailPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildUserAvatar(User user, WidgetRef ref) {
+  Widget _buildUserAvatar(User user, PublicProfile profile, WidgetRef ref) {
     final vrchatApi = ref.watch(vrchatProvider).value;
     final headers = {'User-Agent': vrchatApi?.userAgent.toString() ?? 'VRCN'};
+    final userIcon = profile.userIcon ?? profile.iconUrl ?? user.iconUrl ?? '';
+    final avatarThumbnail = profile.currentAvatarThumbnailImageUrl ?? '';
 
-    if (user.userIcon.isNotEmpty) {
+    if (userIcon.isNotEmpty) {
       return CachedNetworkImage(
-        imageUrl: user.userIcon,
+        imageUrl: userIcon,
         fit: BoxFit.cover,
         httpHeaders: headers,
         cacheManager: JsonCacheManager(),
@@ -429,9 +443,9 @@ class FriendDetailPage extends ConsumerWidget {
         errorWidget: (context, url, error) =>
             const Icon(Icons.person, size: 80, color: Colors.white70),
       );
-    } else if (user.currentAvatarThumbnailImageUrl.isNotEmpty) {
+    } else if (avatarThumbnail.isNotEmpty) {
       return CachedNetworkImage(
-        imageUrl: user.currentAvatarThumbnailImageUrl,
+        imageUrl: avatarThumbnail,
         fit: BoxFit.cover,
         httpHeaders: headers,
         cacheManager: JsonCacheManager(),
@@ -566,8 +580,9 @@ class FriendDetailPage extends ConsumerWidget {
     }
   }
 
-  Widget _buildUserBioCard(User user, bool isDarkMode) {
-    if (user.bio.isEmpty) return const SizedBox.shrink();
+  Widget _buildUserBioCard(PublicProfile profile, bool isDarkMode) {
+    final bio = profile.bio ?? '';
+    if (bio.isEmpty) return const SizedBox.shrink();
 
     return InfoCard(
       title: t.friendDetail.bio,
@@ -586,7 +601,7 @@ class FriendDetailPage extends ConsumerWidget {
           ),
           child: SelectionArea(
             child: Text(
-              user.bio,
+              bio,
               style: GoogleFonts.notoSans(
                 fontSize: 16,
                 color: isDarkMode ? Colors.grey[300] : Colors.grey[800],

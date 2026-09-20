@@ -216,13 +216,14 @@ class _FavoriteFriendsTab extends ConsumerWidget {
                         itemBuilder: (context, itemIndex) {
                           final favorite = folderFavorites[itemIndex];
                           final userAsync = ref.watch(
-                            userDetailProvider(favorite.favoriteId),
+                            userProfileProvider(favorite.favoriteId),
                           );
 
                           return userAsync.when(
-                            data: (user) => _buildEnhancedFriendItem(
+                            data: (userProfile) => _buildEnhancedFriendItem(
                               context,
-                              user,
+                              userProfile.user,
+                              userProfile.profile,
                               favorite.id,
                               ref,
                               isDarkMode,
@@ -571,6 +572,7 @@ int _favoriteGridCrossAxisCount(BuildContext context) {
 Widget _buildEnhancedFriendItem(
   BuildContext context,
   User friend,
+  PublicProfile profile,
   String favoriteId,
   WidgetRef ref,
   bool isDarkMode,
@@ -579,6 +581,8 @@ Widget _buildEnhancedFriendItem(
   final headers = <String, String>{
     'User-Agent': vrchatApi?.userAgent.toString() ?? 'VRCN',
   };
+  final userIcon = profile.userIcon ?? profile.iconUrl ?? friend.iconUrl ?? '';
+  final avatarThumbnail = profile.currentAvatarThumbnailImageUrl ?? '';
 
   return Card(
     margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -611,27 +615,23 @@ Widget _buildEnhancedFriendItem(
                     ],
                   ),
                   child: CircleAvatar(
-                    backgroundImage: friend.userIcon.isNotEmpty
+                    backgroundImage: userIcon.isNotEmpty
                         ? CachedNetworkImageProvider(
-                            friend.userIcon,
+                            userIcon,
                             headers: headers,
                             cacheManager: JsonCacheManager(),
                           )
-                        : (friend.currentAvatarThumbnailImageUrl.isNotEmpty
+                        : (avatarThumbnail.isNotEmpty
                               ? CachedNetworkImageProvider(
-                                  friend.currentAvatarThumbnailImageUrl,
+                                  avatarThumbnail,
                                   headers: headers,
                                   cacheManager: JsonCacheManager(),
                                 )
                               : null),
-                    backgroundColor:
-                        (friend.userIcon.isEmpty) &&
-                            friend.currentAvatarThumbnailImageUrl.isEmpty
+                    backgroundColor: userIcon.isEmpty && avatarThumbnail.isEmpty
                         ? Colors.grey[300]
                         : null,
-                    child:
-                        (friend.userIcon.isEmpty) &&
-                            friend.currentAvatarThumbnailImageUrl.isEmpty
+                    child: userIcon.isEmpty && avatarThumbnail.isEmpty
                         ? const Icon(Icons.person, color: Colors.grey)
                         : null,
                   ),

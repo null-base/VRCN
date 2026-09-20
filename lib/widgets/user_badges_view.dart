@@ -9,16 +9,15 @@ import 'package:vrchat_dart/vrchat_dart.dart';
 class UserBadgesView extends ConsumerWidget {
   const UserBadgesView({
     super.key,
-    required this.user,
+    required this.badges,
     required this.isDarkMode,
   });
-  final User user;
+  final List<Badge> badges;
   final bool isDarkMode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final badges = user.badges;
-    if (badges == null || badges.isEmpty) {
+    if (badges.isEmpty) {
       return const SizedBox.shrink();
     }
 

@@ -265,9 +265,9 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage> {
                       if (_showAvatar)
                         CircleAvatar(
                           radius: 32,
-                          backgroundImage: user.userIcon.isNotEmpty
+                          backgroundImage: (user.iconUrl ?? '').isNotEmpty
                               ? CachedNetworkImageProvider(
-                                  user.userIcon,
+                                  user.iconUrl!,
                                   headers: headers,
                                   cacheManager: JsonCacheManager(),
                                 )

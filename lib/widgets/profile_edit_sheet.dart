@@ -8,8 +8,13 @@ import 'package:vrchat/utils/status_helpers.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 class ProfileEditSheet extends ConsumerStatefulWidget {
-  const ProfileEditSheet({super.key, required this.user});
+  const ProfileEditSheet({
+    super.key,
+    required this.user,
+    required this.profile,
+  });
   final CurrentUser user;
+  final PublicProfile profile;
 
   @override
   ConsumerState<ProfileEditSheet> createState() => _ProfileEditSheetState();
@@ -71,8 +76,8 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
     _statusDescriptionController = TextEditingController(
       text: widget.user.statusDescription,
     );
-    _bioController = TextEditingController(text: widget.user.bio);
-    _bioLinkControllers = widget.user.bioLinks
+    _bioController = TextEditingController(text: widget.profile.bio ?? '');
+    _bioLinkControllers = (widget.profile.bioLinks ?? const <String>[])
         .map((link) => TextEditingController(text: link))
         .toList();
     if (_bioLinkControllers.isEmpty) {
@@ -929,7 +934,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
     if (_statusDescriptionController.text != widget.user.statusDescription) {
       return true;
     }
-    if (_bioController.text != widget.user.bio) {
+    if (_bioController.text != (widget.profile.bio ?? '')) {
       return true;
     }
     if (_pronounsController.text != widget.user.pronouns) {
@@ -940,14 +945,15 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
     }
 
     // リンク数が変わっていれば変更あり
-    if (_bioLinkControllers.length != widget.user.bioLinks.length) {
+    final originalBioLinks = widget.profile.bioLinks ?? const <String>[];
+    if (_bioLinkControllers.length != originalBioLinks.length) {
       return true;
     }
 
     // リンクの中身を比較
     for (var i = 0; i < _bioLinkControllers.length; i++) {
-      if (i >= widget.user.bioLinks.length ||
-          _bioLinkControllers[i].text.trim() != widget.user.bioLinks[i]) {
+      if (i >= originalBioLinks.length ||
+          _bioLinkControllers[i].text.trim() != originalBioLinks[i]) {
         return true;
       }
     }

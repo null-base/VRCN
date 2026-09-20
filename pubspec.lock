@@ -1686,18 +1686,18 @@ packages:
     dependency: "direct main"
     description:
       name: vrchat_dart
-      sha256: "45adab0fc774fa0fc92721ecf1465ab9f148c1836e79bbcb9105b7790bcc5299"
+      sha256: fb04f7d45f7c3129a2b605e1069ccda079eb515540af025d7653d86a9d276dfe
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.4"
   vrchat_dart_generated:
     dependency: transitive
     description:
       name: vrchat_dart_generated
-      sha256: "8d8e584374cbb5eba35c1ebde6472080464cf795ba8f529f3680d2d6c2be2137"
+      sha256: fdbf58d224742cb0cc68b872bd2d45431bea67c61feb184a3521a28c85dadb93
       url: "https://pub.dev"
     source: hosted
-    version: "1.20.7"
+    version: "1.21.0"
   watcher:
     dependency: transitive
     description:

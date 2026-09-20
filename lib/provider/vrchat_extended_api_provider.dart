@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrchat/api/vrchat_profile_api.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart_generated/vrchat_dart_generated.dart';
 
@@ -34,3 +35,9 @@ final FutureProvider<PrintsApi> vrchatPrintsApiProvider = FutureProvider((
   final rawApi = await ref.watch(vrchatRawApiProvider);
   return rawApi.getPrintsApi();
 });
+
+final FutureProvider<VrchatProfileApi> vrchatProfileApiProvider =
+    FutureProvider((ref) async {
+      final rawApi = await ref.watch(vrchatRawApiProvider);
+      return VrchatProfileApi(rawApi.getUsersApi());
+    });

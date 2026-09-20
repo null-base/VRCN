@@ -429,9 +429,9 @@ class AppDrawer extends ConsumerWidget {
                       backgroundColor: isDarkMode
                           ? Colors.grey[800]
                           : Colors.grey[200],
-                      backgroundImage: user.userIcon.isNotEmpty
+                      backgroundImage: (user.iconUrl ?? '').isNotEmpty
                           ? CachedNetworkImageProvider(
-                              user.userIcon,
+                              user.iconUrl!,
                               headers: headers,
                               cacheManager: JsonCacheManager(),
                             )
@@ -444,7 +444,7 @@ class AppDrawer extends ConsumerWidget {
                           : AssetImage(Assets.icons.icon.path) as ImageProvider,
                       child:
                           user.currentAvatarThumbnailImageUrl.isEmpty &&
-                              user.userIcon.isEmpty
+                              (user.iconUrl ?? '').isEmpty
                           ? Icon(
                               Icons.person,
                               size: 36,

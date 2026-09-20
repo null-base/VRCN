@@ -38,11 +38,13 @@ class FriendActionController {
   }
 
   Future<User> refreshUserDetailById(String userId) {
+    ref.invalidate(userProfileProvider(userId));
     return ref.refresh(userDetailProvider(userId).future);
   }
 
   void refreshUserDetail(User user) {
     ref.invalidate(userDetailProvider(user.id));
+    ref.invalidate(userProfileProvider(user.id));
     if (user.worldId != null) {
       ref.invalidate(worldDetailProvider(user.worldId!));
     }
