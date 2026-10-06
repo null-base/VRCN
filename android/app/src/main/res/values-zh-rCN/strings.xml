@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="widget_title">VRCN</string>
+  <string name="widget_name">好友状态</string>
+  <string name="widget_empty">在通知页面选择好友</string>
+  <string name="widget_updated">更新于 %1$s</string>
+  <string name="widget_updated_unknown">已更新</string>
+  <string name="widget_status_offline">离线</string>
+  <string name="friend_status_widget_description">显示所选 VRChat 好友的状态</string>
+</resources>

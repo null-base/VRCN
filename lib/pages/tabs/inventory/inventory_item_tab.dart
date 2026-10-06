@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -82,7 +83,7 @@ class _InventoryItemTile extends ConsumerWidget {
                 child: item.imageUrl.isEmpty
                     ? ColoredBox(
                         color: theme.colorScheme.surfaceContainerHighest,
-                        child: const Icon(Icons.inventory_2_outlined),
+                        child: const Icon(AppIcons.inventory_2_outlined),
                       )
                     : CachedNetworkImage(
                         imageUrl: item.imageUrl,
@@ -90,7 +91,7 @@ class _InventoryItemTile extends ConsumerWidget {
                         cacheManager: JsonCacheManager(),
                         fit: BoxFit.cover,
                         errorWidget: (_, _, _) =>
-                            const Icon(Icons.broken_image_outlined),
+                            const Icon(AppIcons.broken_image_outlined),
                       ),
               ),
             ),
@@ -149,7 +150,7 @@ class _InventoryItemTile extends ConsumerWidget {
                             ),
                           );
                         },
-                        icon: Icons.play_arrow,
+                        icon: AppIcons.play_arrow,
                       ),
                       if (item.equipSlot != null &&
                           item.equipSlot!.value.isNotEmpty)
@@ -158,7 +159,7 @@ class _InventoryItemTile extends ConsumerWidget {
                           onPressed: () async {
                             await actions.unequipSlot(item.equipSlot!);
                           },
-                          icon: Icons.remove_circle_outline,
+                          icon: AppIcons.remove_circle_outline,
                         ),
                     ],
                   ),
@@ -248,7 +249,7 @@ class _EmptyInventoryItems extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.inventory_2_outlined,
+              AppIcons.inventory_2_outlined,
               size: 64,
               color: theme.colorScheme.onSurfaceVariant,
             ),

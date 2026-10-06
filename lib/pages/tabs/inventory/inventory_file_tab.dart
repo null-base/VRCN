@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +25,7 @@ class InventoryFileTab extends ConsumerStatefulWidget {
     required this.emptyDescription,
     required this.zoomHint,
     required this.emptyIcon,
-    this.errorIcon = Icons.broken_image,
+    this.errorIcon = AppIcons.broken_image,
     required this.crossAxisCount,
     this.cardImageFit = BoxFit.cover,
     this.showCardDate = false,
@@ -309,7 +310,7 @@ class _InventoryFileDate extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            Icons.access_time,
+            AppIcons.access_time,
             size: 14,
             color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
           ),
@@ -487,10 +488,10 @@ class _InventoryFullScreenFileViewerState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _ViewerActionButton(
-                  icon: Icons.close,
+                  icon: AppIcons.close,
                   onTap: () => Navigator.of(context).pop(),
                 ),
-                _ViewerActionButton(icon: Icons.share, onTap: _shareFile),
+                _ViewerActionButton(icon: AppIcons.share, onTap: _shareFile),
               ],
             ),
           ),
@@ -511,7 +512,7 @@ class _InventoryFullScreenFileViewerState
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          Icons.access_time,
+                          AppIcons.access_time,
                           size: 16,
                           color: Colors.grey[300],
                         ),

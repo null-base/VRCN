@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +7,6 @@ import 'package:vrchat/controllers/friend_list_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/friend_sort_provider.dart';
 import 'package:vrchat/provider/friends_provider.dart';
-import 'package:vrchat/widgets/app_drawer.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/friend_location_group.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
@@ -19,15 +19,12 @@ class FriendsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final friendsAsync = ref.watch(sortedFriendsProvider);
 
-    return Scaffold(
-      drawer: const AppDrawer(),
-      body: friendsAsync.when(
-        data: (friends) => _buildFriendsList(context, friends, ref),
-        loading: () => LoadingIndicator(message: t.friends.loading),
-        error: (error, stackTrace) => ErrorContainer(
-          message: t.friends.error(error: error.toString()),
-          onRetry: () => ref.read(friendsActionsProvider).refreshFriends(),
-        ),
+    return friendsAsync.when(
+      data: (friends) => _buildFriendsList(context, friends, ref),
+      loading: () => LoadingIndicator(message: t.friends.loading),
+      error: (error, stackTrace) => ErrorContainer(
+        message: t.friends.error(error: error.toString()),
+        onRetry: () => ref.read(friendsActionsProvider).refreshFriends(),
       ),
     );
   }
@@ -68,11 +65,25 @@ class FriendsPage extends ConsumerWidget {
       groupWidgets.add(
         FriendLocationGroup(
           locationName: location,
-          locationIcon: Icons.public,
+          locationIcon: AppIcons.public,
           friends: locationFriends,
           onTapFriend: (friend) => context.push('/user/${friend.id}'),
           iconColor: Colors.green,
           location: location,
+        ),
+      );
+    }
+
+    // 移動中のフレンドはワールドIDを持たないため、インスタンスAPIを呼ばない。
+    if (groupedFriends.travelingFriends.isNotEmpty) {
+      groupWidgets.add(
+        FriendLocationGroup(
+          locationName: t.location.traveling,
+          locationIcon: AppIcons.travel_explore,
+          friends: groupedFriends.travelingFriends,
+          onTapFriend: (friend) => context.push('/user/${friend.id}'),
+          iconColor: Colors.blue,
+          isTraveling: true,
         ),
       );
     }
@@ -82,7 +93,7 @@ class FriendsPage extends ConsumerWidget {
       groupWidgets.add(
         FriendLocationGroup(
           locationName: t.friends.private,
-          locationIcon: Icons.lock_outline,
+          locationIcon: AppIcons.lock_outline,
           friends: groupedFriends.privateFriends,
           onTapFriend: (friend) => context.push('/user/${friend.id}'),
           iconColor: Colors.redAccent,
@@ -96,7 +107,7 @@ class FriendsPage extends ConsumerWidget {
       groupWidgets.add(
         FriendLocationGroup(
           locationName: t.friends.active,
-          locationIcon: Icons.circle,
+          locationIcon: AppIcons.circle,
           friends: groupedFriends.activeOfflineFriends,
           onTapFriend: (friend) => context.push('/user/${friend.id}'),
           iconColor: Colors.green,
@@ -111,7 +122,7 @@ class FriendsPage extends ConsumerWidget {
       groupWidgets.add(
         FriendLocationGroup(
           locationName: t.friends.offline,
-          locationIcon: Icons.offline_bolt,
+          locationIcon: AppIcons.offline_bolt,
           friends: groupedFriends.offlineFriends,
           onTapFriend: (friend) => context.push('/user/${friend.id}'),
           iconColor: Colors.grey,

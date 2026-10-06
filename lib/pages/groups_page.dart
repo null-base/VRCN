@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -264,7 +265,7 @@ class GroupsPage extends ConsumerWidget {
                                                           alpha: 0.1,
                                                         ),
                                                   child: Icon(
-                                                    Icons.group,
+                                                    AppIcons.group,
                                                     color: colorSet[0]
                                                         .withValues(
                                                           alpha: 0.6,
@@ -281,7 +282,7 @@ class GroupsPage extends ConsumerWidget {
                                                     alpha: 0.1,
                                                   ),
                                             child: Icon(
-                                              Icons.group,
+                                              AppIcons.group,
                                               color: colorSet[0].withValues(
                                                 alpha: 0.6,
                                               ),
@@ -384,7 +385,7 @@ class GroupsPage extends ConsumerWidget {
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
-                                  Icons.people,
+                                  AppIcons.people,
                                   size: 16,
                                   color: isDarkMode ? colorSet[1] : colorSet[0],
                                 ),
@@ -441,7 +442,7 @@ class GroupsPage extends ConsumerWidget {
                           ),
                           const SizedBox(width: 4),
                           Icon(
-                            Icons.arrow_forward_ios,
+                            AppIcons.arrow_forward_ios,
                             size: 14,
                             color: colorSet[0],
                           ),
@@ -477,7 +478,7 @@ class GroupsPage extends ConsumerWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              Icons.group_rounded,
+              AppIcons.group_rounded,
               size: 60,
               color: Colors.blue.shade400,
             ),
@@ -505,7 +506,7 @@ class GroupsPage extends ConsumerWidget {
           ),
           const SizedBox(height: 32),
           ElevatedButton.icon(
-            icon: const Icon(Icons.search),
+            icon: const Icon(AppIcons.search),
             label: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
               child: Text(

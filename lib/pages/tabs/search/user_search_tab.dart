@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,7 +81,7 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
     if (query.isEmpty) {
       return buildEmptySearchState(
         t.search.tabs.userSearch.emptyTitle,
-        Icons.people,
+        AppIcons.people,
         isDarkMode,
       );
     }
@@ -173,7 +174,7 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
                   child:
                       (user.userIcon == null || user.userIcon!.isEmpty) &&
                           user.currentAvatarThumbnailImageUrl == null
-                      ? const Icon(Icons.person, color: Colors.grey)
+                      ? const Icon(AppIcons.person, color: Colors.grey)
                       : null,
                 ),
               ),
@@ -214,7 +215,7 @@ class _UserSearchTabState extends ConsumerState<UserSearchTab> {
               ),
               // 右端のアイコン
               Icon(
-                Icons.chevron_right,
+                AppIcons.chevron_right,
                 color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                 size: 20,
               ),

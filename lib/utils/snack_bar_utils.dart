@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,7 +9,7 @@ class SnackBarUtils {
     _show(
       context,
       message,
-      icon: Icons.check_circle,
+      icon: AppIcons.check_circle,
       backgroundColor: Colors.green.shade600,
     );
   }
@@ -21,7 +22,7 @@ class SnackBarUtils {
     _show(
       context,
       message,
-      icon: Icons.error,
+      icon: AppIcons.error,
       backgroundColor: Colors.red.shade600,
       duration: duration,
       expandText: true,

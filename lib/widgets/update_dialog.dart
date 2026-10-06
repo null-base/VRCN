@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vrchat/controllers/external_link_controller.dart';
@@ -28,7 +29,7 @@ class UpdateDialog extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(
-                Icons.system_update,
+                AppIcons.system_update,
                 color: AppTheme.primaryColor,
                 size: 24,
               ),
@@ -150,7 +151,7 @@ class UpdateDialog extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.download, size: 18),
+                const Icon(AppIcons.download, size: 18),
                 const SizedBox(width: 8),
                 Text(
                   'アップデート',

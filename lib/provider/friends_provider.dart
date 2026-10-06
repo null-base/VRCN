@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:vrchat/provider/auth_provider.dart' as auth_provider;
-import 'package:vrchat/provider/favorite_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrchat/utils/app_logger.dart';
@@ -66,22 +65,11 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
         return [];
       }
 
-      final filter = ref.watch(friendFilterProvider);
-      final allFriends = switch (filter) {
-        FriendFilter.online => await _tryLoadFriendGroup(
-          rawApi,
-          offline: false,
-        ),
-        FriendFilter.offline => await _tryLoadFriendGroup(
-          rawApi,
-          offline: true,
-        ),
-        FriendFilter.all => (await Future.wait([
-          _tryLoadFriendGroup(rawApi, offline: false),
-          _tryLoadFriendGroup(rawApi, offline: true),
-        ])).expand((friends) => friends).toList(),
-        FriendFilter.favorite => await _loadFavoriteFriends(rawApi),
-      };
+      final groups = await Future.wait([
+        _tryLoadFriendGroup(rawApi, offline: false),
+        _tryLoadFriendGroup(rawApi, offline: true),
+      ]);
+      final allFriends = groups.expand((friends) => friends).toList();
 
       appLogger.d('フレンド取得完了: 合計${allFriends.length}人');
       return allFriends;
@@ -90,29 +78,6 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
       appLogger.d('スタックトレース: $stack');
       rethrow;
     }
-  }
-
-  Future<List<LimitedUser>> _loadFavoriteFriends(
-    VrchatDartGenerated rawApi,
-  ) async {
-    final allFriendsFuture = Future.wait([
-      _tryLoadFriendGroup(rawApi, offline: false),
-      _tryLoadFriendGroup(rawApi, offline: true),
-    ]);
-    final favoriteFriendsFuture = ref.watch(favoriteFriendsProvider.future);
-
-    final allFriends = (await allFriendsFuture)
-        .expand((friends) => friends)
-        .toList();
-    final favoriteIds = (await favoriteFriendsFuture)
-        .map((favorite) => favorite.favoriteId)
-        .toSet();
-    final filtered = allFriends
-        .where((friend) => favoriteIds.contains(friend.id))
-        .toList();
-
-    appLogger.d('お気に入りフレンド: ${filtered.length}人');
-    return filtered;
   }
 
   Future<List<LimitedUser>> _tryLoadFriendGroup(
@@ -150,7 +115,11 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
       }
 
       final batch = friendsSuccess.data;
-      friends.addAll(batch.map(_convertToLimitedUser));
+      friends.addAll(
+        batch.map(
+          (friend) => _convertToLimitedUser(friend, isOffline: offline),
+        ),
+      );
       if (batch.length < 100) break;
       offset += 100;
     }
@@ -159,7 +128,10 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
   }
 
   // LimitedUserFriend を LimitedUser に変換するヘルパーメソッド
-  LimitedUser _convertToLimitedUser(LimitedUserFriend friend) {
+  LimitedUser _convertToLimitedUser(
+    LimitedUserFriend friend, {
+    required bool isOffline,
+  }) {
     return LimitedUser(
       currentAvatarImageUrl: null,
       currentAvatarThumbnailImageUrl: null,
@@ -173,13 +145,87 @@ class FriendsNotifier extends AsyncNotifier<List<LimitedUser>> {
       statusDescription: friend.statusDescription,
       tags: friend.tags,
       userIcon: friend.iconUrl,
-      location: friend.location,
+      location: isOffline
+          ? 'offline'
+          : friend.location == 'offline'
+          ? 'private'
+          : friend.location,
       friendKey: friend.friendKey,
       lastLogin: friend.lastLogin,
       lastActivity: friend.lastActivity,
       lastMobile: friend.lastMobile,
       platform: friend.platform,
     );
+  }
+
+  /// Applies the existing online-status poll to selected friends in one update.
+  void updateWatchedFriendPresence(
+    Set<String> watchedIds,
+    List<LimitedUserFriend> onlineFriends,
+  ) {
+    if (watchedIds.isEmpty) return;
+
+    final onlineById = {
+      for (final friend in onlineFriends)
+        if (watchedIds.contains(friend.id)) friend.id: friend,
+    };
+
+    state.whenData((friends) {
+      var changed = false;
+      final updatedFriends = friends
+          .map((friend) {
+            if (!watchedIds.contains(friend.id)) return friend;
+
+            final presence = onlineById[friend.id];
+            final location = presence == null
+                ? 'offline'
+                : presence.location == 'offline'
+                ? 'private'
+                : presence.location;
+            final status = presence?.status ?? UserStatus.offline;
+            if (friend.location == location && friend.status == status) {
+              return friend;
+            }
+
+            changed = true;
+            return LimitedUser(
+              ageVerificationStatus: friend.ageVerificationStatus,
+              ageVerified: friend.ageVerified,
+              allowAvatarCopying: friend.allowAvatarCopying,
+              bio: friend.bio,
+              bioLinks: friend.bioLinks,
+              currentAvatarImageUrl: friend.currentAvatarImageUrl,
+              currentAvatarTags: friend.currentAvatarTags,
+              currentAvatarThumbnailImageUrl:
+                  friend.currentAvatarThumbnailImageUrl,
+              dateJoined: friend.dateJoined,
+              developerType: friend.developerType,
+              displayName: friend.displayName,
+              friendKey: friend.friendKey,
+              id: friend.id,
+              imageUrl: friend.imageUrl,
+              isFriend: friend.isFriend,
+              lastActivity: friend.lastActivity,
+              lastLogin: friend.lastLogin,
+              lastMobile: friend.lastMobile,
+              lastPlatform: friend.lastPlatform,
+              location: location,
+              platform: friend.platform,
+              profilePicOverride: friend.profilePicOverride,
+              profilePicOverrideThumbnail: friend.profilePicOverrideThumbnail,
+              pronouns: friend.pronouns,
+              state: friend.state,
+              status: status,
+              statusDescription:
+                  presence?.statusDescription ?? friend.statusDescription,
+              tags: friend.tags,
+              userIcon: friend.userIcon,
+            );
+          })
+          .toList(growable: false);
+
+      if (changed) state = AsyncData(updatedFriends);
+    });
   }
 
   // フレンド情報を更新するメソッド

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">ぶいあ～るし～えぬ</string>
+  <string name="widget_title">VRCN</string>
+  <string name="widget_name">フレンドの状況</string>
+  <string name="widget_empty">通知画面でフレンドを選択</string>
+  <string name="widget_updated">%1$s更新</string>
+  <string name="widget_updated_unknown">更新済み</string>
+  <string name="widget_status_offline">オフライン</string>
+  <string name="friend_status_widget_description">選択したVRChatフレンドの状態を表示します</string>
 </resources>

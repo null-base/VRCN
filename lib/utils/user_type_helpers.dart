@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vrchat/gen/strings.g.dart';
 
 /// VRChatのユーザータイプに関するヘルパー関数を提供するクラス
 class UserTypeHelper {
@@ -6,16 +7,28 @@ class UserTypeHelper {
   UserTypeHelper._();
 
   /// ユーザータグからユーザータイプを判定
-  static String getUserTypeText(List<String>? tags) {
-    if (tags == null) return 'Visitor';
+  static String getUserTypeText(
+    List<String>? tags, [
+    Translations? translations,
+  ]) {
+    final strings = translations ?? t;
+    if (tags == null) return strings.profile.userTypes.visitor;
 
-    if (tags.contains('admin')) return 'Admin';
-    if (tags.contains('system_trust_veteran')) return 'Trusted';
-    if (tags.contains('system_trust_trusted')) return 'Known';
-    if (tags.contains('system_trust_known')) return 'User';
-    if (tags.contains('system_trust_basic')) return 'New User';
+    if (tags.contains('admin')) return strings.profile.userTypes.admin;
+    if (tags.contains('system_trust_veteran')) {
+      return strings.profile.userTypes.trusted;
+    }
+    if (tags.contains('system_trust_trusted')) {
+      return strings.profile.userTypes.known;
+    }
+    if (tags.contains('system_trust_known')) {
+      return strings.profile.userTypes.user;
+    }
+    if (tags.contains('system_trust_basic')) {
+      return strings.profile.userTypes.newUser;
+    }
 
-    return 'Visitor';
+    return strings.profile.userTypes.visitor;
   }
 
   /// ユーザータグに基づいて色を返す

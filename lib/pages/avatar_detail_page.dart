@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -101,7 +102,7 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
             shape: BoxShape.circle,
           ),
           child: IconButton(
-            icon: const Icon(Icons.share_outlined, color: Colors.white),
+            icon: const Icon(AppIcons.share_outlined, color: Colors.white),
             color: Colors.white,
             onPressed: () => ref
                 .read(avatarDetailControllerProvider)
@@ -134,7 +135,7 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
                 errorWidget: (context, url, error) => Container(
                   color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
                   child: const Icon(
-                    Icons.image_not_supported,
+                    AppIcons.image_not_supported,
                     color: Colors.green,
                     size: 40,
                   ),
@@ -203,7 +204,7 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
         Row(
           children: [
             Icon(
-              Icons.calendar_today,
+              AppIcons.calendar_today,
               size: 14,
               color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
             ),
@@ -217,7 +218,7 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
             ),
             const SizedBox(width: 16),
             Icon(
-              Icons.update,
+              AppIcons.update,
               size: 14,
               color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
             ),
@@ -412,7 +413,7 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
                       height: 20,
                       child: CircularProgressIndicator(color: Colors.white),
                     )
-                  : const Icon(Icons.person),
+                  : const Icon(AppIcons.person),
               label: Text(
                 _isLoading
                     ? t.avatarDetail.changing
@@ -445,7 +446,9 @@ class _AvatarDetailPageState extends ConsumerState<AvatarDetailPage> {
                     height: 20,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : Icon(isFavorited ? Icons.favorite : Icons.favorite_border),
+                : Icon(
+                    isFavorited ? AppIcons.favorite : AppIcons.favorite_border,
+                  ),
             label: Text(
               isFavorited
                   ? t.worldDetail.favoriteAdded
@@ -541,7 +544,7 @@ class AppBackButton extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: IconButton(
-        icon: const Icon(Icons.arrow_back),
+        icon: const Icon(AppIcons.arrow_back),
         color: Colors.white,
         onPressed: () => Navigator.of(context).pop(),
       ),

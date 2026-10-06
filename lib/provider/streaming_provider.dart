@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:vrchat/provider/friends_provider.dart';
 import 'package:vrchat/provider/instance_provider.dart';
 import 'package:vrchat/provider/notification_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
+import 'package:vrchat/provider/app_features_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart' as vrc;
 import 'package:vrchat/utils/app_logger.dart';
@@ -76,7 +79,7 @@ class StreamingController {
 }
 
 // ストリーミングイベントハンドラー
-Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
+Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, Ref ref) async {
   // イベント受信のログ
   appLogger.d('======= VRC EVENT RECEIVED: ${event.type} =======');
 
@@ -101,6 +104,15 @@ Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
               isRead: false,
             ),
           );
+      unawaited(
+        ref
+            .read(activityHistoryProvider.notifier)
+            .record(
+              kind: 'friendOnline',
+              userId: friendOnlineEvent.userId,
+              userName: friendOnlineEvent.user.displayName,
+            ),
+      );
 
     case vrc.VrcStreamingEventType.friendOffline:
       final friendOfflineEvent = event as vrc.FriendOfflineEvent;
@@ -121,11 +133,20 @@ Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
           .addNotification(
             NotificationItem(
               type: NotificationType.friendOffline,
-              userName: friend.displayName.toString(),
+              userName: friend.displayName,
               timestamp: DateTime.timestamp(),
               isRead: false,
             ),
           );
+      unawaited(
+        ref
+            .read(activityHistoryProvider.notifier)
+            .record(
+              kind: 'friendOffline',
+              userId: friendOfflineEvent.userId,
+              userName: friend.displayName,
+            ),
+      );
 
     case vrc.VrcStreamingEventType.friendActive:
       final friendActiveEvent = event as vrc.FriendActiveEvent;
@@ -142,6 +163,15 @@ Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
               isRead: false,
             ),
           );
+      unawaited(
+        ref
+            .read(activityHistoryProvider.notifier)
+            .record(
+              kind: 'friendActive',
+              userId: friendActiveEvent.userId,
+              userName: friendActiveEvent.user.displayName,
+            ),
+      );
 
     case vrc.VrcStreamingEventType.friendAdd:
       final friendAddEvent = event as vrc.FriendAddEvent;
@@ -160,6 +190,15 @@ Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
               isRead: false,
             ),
           );
+      unawaited(
+        ref
+            .read(activityHistoryProvider.notifier)
+            .record(
+              kind: 'friendAdd',
+              userId: friendAddEvent.userId,
+              userName: friendAddEvent.user.displayName,
+            ),
+      );
 
     case vrc.VrcStreamingEventType.friendDelete:
       final friendDeleteEvent = event as vrc.FriendDeleteEvent;
@@ -172,16 +211,25 @@ Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
       );
 
       //通知の追加
-      await ref
+      ref
           .read(notificationsProvider.notifier)
           .addNotification(
             NotificationItem(
               type: NotificationType.friendRemove,
-              userName: friend.displayName.toString(),
+              userName: friend.displayName,
               timestamp: DateTime.timestamp(),
               isRead: false,
             ),
           );
+      unawaited(
+        ref
+            .read(activityHistoryProvider.notifier)
+            .record(
+              kind: 'friendRemove',
+              userId: friendDeleteEvent.userId,
+              userName: friend.displayName,
+            ),
+      );
 
     case vrc.VrcStreamingEventType.friendUpdate:
       final friendUpdateEvent = event as vrc.FriendUpdateEvent;
@@ -206,6 +254,16 @@ Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
               extraData: friendUpdateEvent.user.status.toString(),
             ),
           );
+      unawaited(
+        ref
+            .read(activityHistoryProvider.notifier)
+            .record(
+              kind: 'statusUpdate',
+              userId: friendUpdateEvent.userId,
+              userName: friendUpdateEvent.user.displayName,
+              detail: friendUpdateEvent.user.statusDescription,
+            ),
+      );
 
     case vrc.VrcStreamingEventType.friendLocation:
       final friendLocationEvent = event as vrc.FriendLocationEvent;
@@ -220,26 +278,24 @@ Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
 
       String? worldName;
 
-      if (friendLocationEvent.location != null &&
-          friendLocationEvent.location != 'private' &&
-          friendLocationEvent.location != 'traveling') {
+      if (isInstanceLocation(friendLocationEvent.location)) {
         try {
           final location = await ref.read(
             instanceDetailProvider(
               friendLocationEvent.location.toString(),
             ).future,
           );
-          worldName = location.world.name.toString();
+          worldName = location.world.name;
         } catch (e) {
           appLogger.d('ワールド情報の取得に失敗: $e');
-          worldName = 'Unknown World';
+          worldName = t.worldDetail.unknown;
         }
       } else {
         worldName = friendLocationEvent.location.toString();
       }
 
       // フレンド位置変更通知
-      await ref
+      ref
           .read(notificationsProvider.notifier)
           .addNotification(
             NotificationItem(
@@ -250,6 +306,17 @@ Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
               isRead: false,
             ),
           );
+      unawaited(
+        ref
+            .read(activityHistoryProvider.notifier)
+            .record(
+              kind: 'locationChange',
+              userId: friendLocationEvent.userId,
+              userName: friendLocationEvent.user.displayName,
+              location: friendLocationEvent.location,
+              worldName: worldName,
+            ),
+      );
 
     case vrc.VrcStreamingEventType.userUpdate:
       appLogger.d('詳細: ${jsonEncode(event)}');
@@ -257,7 +324,7 @@ Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
         final userUpdateEvent = event as vrc.UserUpdateEvent;
         appLogger.d('ユーザー更新イベント: ${userUpdateEvent.user.displayName}');
 
-        ref.refresh(currentUserProvider);
+        ref.invalidate(currentUserProvider);
 
         // ユーザーのステータス情報を取得
         final status = userUpdateEvent.user.status;
@@ -315,12 +382,25 @@ Future<void> _handleVrcEvent(vrc.VrcStreamingEvent event, ref) async {
               type: notificationType,
               userName:
                   // ignore: deprecated_member_use
-                  notificationEvent.notification.senderUsername ?? 'Unknown',
+                  notificationEvent.notification.senderUsername ??
+                  t.profile.unknown,
               worldName: notificationEvent.notification.message,
               timestamp: DateTime.timestamp(),
               isRead: false,
             ),
           );
+      unawaited(
+        ref
+            .read(activityHistoryProvider.notifier)
+            .record(
+              kind: notificationType.name,
+              userId: notificationEvent.notification.senderUserId,
+              userName:
+                  notificationEvent.notification.senderUsername ??
+                  t.profile.unknown,
+              detail: notificationEvent.notification.message,
+            ),
+      );
 
     case vrc.VrcStreamingEventType.notificationSeen:
       event as vrc.NotificationSeenEvent;

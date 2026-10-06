@@ -1,9 +1,11 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vrchat/controllers/osc_controller.dart';
+import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/models/osc_models.dart';
 import 'package:vrchat/provider/osc_settings_provider.dart';
 import 'package:vrchat/theme/app_theme.dart';
@@ -130,7 +132,7 @@ class _OscPageState extends ConsumerState<OscPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddParamDialog(context, isDarkMode),
         backgroundColor: AppTheme.primaryColor,
-        child: const Icon(Icons.add),
+        child: const Icon(AppIcons.add),
       ),
     );
   }
@@ -155,7 +157,7 @@ class _OscPageState extends ConsumerState<OscPage> {
             Row(
               children: [
                 Icon(
-                  _isConnected ? Icons.check_circle : Icons.error_outline,
+                  _isConnected ? AppIcons.check_circle : AppIcons.error_outline,
                   color: _isConnected ? Colors.green : Colors.red,
                 ),
                 const SizedBox(width: 8),
@@ -229,7 +231,7 @@ class _OscPageState extends ConsumerState<OscPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton.icon(
-                  icon: Icon(_isConnected ? Icons.link_off : Icons.link),
+                  icon: Icon(_isConnected ? AppIcons.link_off : AppIcons.link),
                   label: Text(_isConnected ? '切断' : '接続'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isConnected
@@ -262,7 +264,7 @@ class _OscPageState extends ConsumerState<OscPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.control_camera_outlined,
+              AppIcons.control_camera_outlined,
               size: 80,
               color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
             ),
@@ -334,7 +336,7 @@ class _OscPageState extends ConsumerState<OscPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
+                    icon: const Icon(AppIcons.edit, color: Colors.blue),
                     onPressed: () => _showEditParamDialog(
                       context,
                       index,
@@ -344,7 +346,7 @@ class _OscPageState extends ConsumerState<OscPage> {
                     tooltip: '編集',
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
+                    icon: const Icon(AppIcons.delete, color: Colors.red),
                     onPressed: () => _showDeleteParamDialog(
                       context,
                       index,
@@ -368,7 +370,7 @@ class _OscPageState extends ConsumerState<OscPage> {
       case OscParamType.bool:
         final currentValue = _boolValue(index);
         return SwitchListTile(
-          title: Text('${currentValue ? 'ON' : 'OFF'} に設定'),
+          title: Text('${currentValue ? t.osc.on : t.osc.off} に設定'),
           value: currentValue,
           activeThumbColor: AppTheme.primaryColor,
           onChanged: (value) {
@@ -582,7 +584,7 @@ class _OscPageState extends ConsumerState<OscPage> {
                 builder: (context, setState) => Column(
                   children: [
                     RadioListTile<OscParamType>(
-                      title: const Text('Float (0.0～1.0)'),
+                      title: Text(t.osc.floatType),
                       value: OscParamType.float,
                       groupValue: selectedType,
                       onChanged: (value) {
@@ -590,7 +592,7 @@ class _OscPageState extends ConsumerState<OscPage> {
                       },
                     ),
                     RadioListTile<OscParamType>(
-                      title: const Text('Int (整数値)'),
+                      title: Text(t.osc.intType),
                       value: OscParamType.int,
                       groupValue: selectedType,
                       onChanged: (value) {
@@ -598,7 +600,7 @@ class _OscPageState extends ConsumerState<OscPage> {
                       },
                     ),
                     RadioListTile<OscParamType>(
-                      title: const Text('Bool (On/Off)'),
+                      title: Text(t.osc.boolType),
                       value: OscParamType.bool,
                       groupValue: selectedType,
                       onChanged: (value) {
@@ -697,7 +699,7 @@ class _OscPageState extends ConsumerState<OscPage> {
                 builder: (context, setState) => Column(
                   children: [
                     RadioListTile<OscParamType>(
-                      title: const Text('Float (0.0～1.0)'),
+                      title: Text(t.osc.floatType),
                       value: OscParamType.float,
                       groupValue: selectedType,
                       onChanged: (value) {
@@ -705,7 +707,7 @@ class _OscPageState extends ConsumerState<OscPage> {
                       },
                     ),
                     RadioListTile<OscParamType>(
-                      title: const Text('Int (整数値)'),
+                      title: Text(t.osc.intType),
                       value: OscParamType.int,
                       groupValue: selectedType,
                       onChanged: (value) {
@@ -713,7 +715,7 @@ class _OscPageState extends ConsumerState<OscPage> {
                       },
                     ),
                     RadioListTile<OscParamType>(
-                      title: const Text('Bool (On/Off)'),
+                      title: Text(t.osc.boolType),
                       value: OscParamType.bool,
                       groupValue: selectedType,
                       onChanged: (value) {

@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -132,7 +133,7 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
               backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
               foregroundColor: isDarkMode ? Colors.white : Colors.grey[800],
               child: Icon(
-                effectiveIsGridView ? Icons.view_list : Icons.grid_view,
+                effectiveIsGridView ? AppIcons.view_list : AppIcons.grid_view,
               ),
             ),
           )
@@ -156,7 +157,7 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.travel_explore,
+            AppIcons.travel_explore,
             size: 100,
             color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
           ),
@@ -188,7 +189,7 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.search_off_rounded,
+            AppIcons.search_off_rounded,
             size: 80,
             color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
           ),
@@ -311,7 +312,7 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
                                 ? const Color(0xFF262626)
                                 : Colors.grey[200],
                             child: const Icon(
-                              Icons.broken_image,
+                              AppIcons.broken_image,
                               size: 40,
                             ),
                           ),
@@ -321,7 +322,7 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
                           color: isDarkMode
                               ? const Color(0xFF262626)
                               : Colors.grey[200],
-                          child: const Icon(Icons.image, size: 40),
+                          child: const Icon(AppIcons.image, size: 40),
                         ),
                 ),
                 // 人気度バッジ
@@ -340,7 +341,11 @@ class _WorldSearchTabState extends ConsumerState<WorldSearchTab>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.favorite, color: Colors.red[400], size: 16),
+                        Icon(
+                          AppIcons.favorite,
+                          color: Colors.red[400],
+                          size: 16,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           SearchUtils.formatNumber(world.popularity),

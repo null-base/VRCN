@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +26,7 @@ class AvatarSearchTab extends ConsumerWidget {
     if (query.isEmpty) {
       return buildEmptySearchState(
         t.search.tabs.avatarSearch.avatar,
-        Icons.person_outline,
+        AppIcons.person_outline,
         isDarkMode,
       );
     }
@@ -63,7 +64,7 @@ class AvatarSearchTab extends ConsumerWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              Icons.search_off_rounded,
+              AppIcons.search_off_rounded,
               size: 60,
               color: isDarkMode ? Colors.grey[400] : Colors.grey[500],
             ),
@@ -161,7 +162,7 @@ class AvatarSearchTab extends ConsumerWidget {
                       ),
                       errorWidget: (context, url, error) => Container(
                         color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                        child: const Icon(Icons.broken_image),
+                        child: const Icon(AppIcons.broken_image),
                       ),
                     ),
                   ),
@@ -207,7 +208,7 @@ class AvatarSearchTab extends ConsumerWidget {
                     Row(
                       children: [
                         Icon(
-                          Icons.person_outline,
+                          AppIcons.person_outline,
                           size: 14,
                           color: isDarkMode
                               ? Colors.grey[400]

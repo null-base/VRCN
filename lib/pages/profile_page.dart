@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -89,13 +90,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
-            icon: const Icon(Icons.qr_code_2_outlined),
+            icon: const Icon(AppIcons.qr_code_2_outlined),
             onPressed: () => context.push('/engage_card'),
             tooltip: t.profile.engageCard,
           ),
           currentUserAsync.when(
             data: (userProfile) => IconButton(
-              icon: const Icon(Icons.edit_outlined),
+              icon: const Icon(AppIcons.edit_outlined),
               onPressed: () async {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -436,7 +437,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                                         as ImageProvider,
                               child: avatarThumbnail.isEmpty
                                   ? const Icon(
-                                      Icons.person,
+                                      AppIcons.person,
                                       size: 30,
                                       color: Colors.white70,
                                     )
@@ -467,7 +468,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                                       as ImageProvider,
                             child: avatarThumbnail.isEmpty
                                 ? const Icon(
-                                    Icons.person,
+                                    AppIcons.person,
                                     size: 30,
                                     color: Colors.white70,
                                   )
@@ -499,7 +500,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 _buildModernInfoCard(
                   context: context,
                   title: t.profile.title,
-                  icon: Icons.person_outline,
+                  icon: AppIcons.person_outline,
                   backgroundColor: isDarkMode
                       ? HSLColor.fromColor(
                           AppTheme.primaryColor,
@@ -511,14 +512,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                   isDarkMode: isDarkMode,
                   children: [
                     _buildModernInfoRow(
-                      icon: Icons.badge,
+                      icon: AppIcons.badge,
                       label: t.profile.userId,
                       value: user.id,
                       isDarkMode: isDarkMode,
                       iconColor: AppTheme.primaryColor,
                     ),
                     _buildModernInfoRow(
-                      icon: Icons.calendar_today,
+                      icon: AppIcons.calendar_today,
                       label: t.profile.dateJoined,
                       value:
                           user.dateJoined !=
@@ -529,7 +530,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                       iconColor: AppTheme.primaryColor,
                     ),
                     _buildModernInfoRow(
-                      icon: Icons.verified_user,
+                      icon: AppIcons.verified_user,
                       label: t.profile.userType,
                       value: UserTypeHelper.getUserTypeText(user.tags),
                       isDarkMode: isDarkMode,
@@ -564,7 +565,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                   _buildModernInfoCard(
                     context: context,
                     title: t.profile.statusMessage,
-                    icon: Icons.message_outlined,
+                    icon: AppIcons.message_outlined,
                     backgroundColor: isDarkMode
                         ? HSLColor.fromColor(
                             Colors.teal,
@@ -610,7 +611,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                   _buildModernInfoCard(
                     context: context,
                     title: t.profile.bio,
-                    icon: Icons.info_outline,
+                    icon: AppIcons.info_outline,
                     backgroundColor: isDarkMode
                         ? HSLColor.fromColor(
                             Colors.blue,
@@ -753,7 +754,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                     ],
                   ),
                   child: const Icon(
-                    Icons.group_outlined,
+                    AppIcons.group_outlined,
                     color: accentColor,
                     size: 22,
                   ),
@@ -809,7 +810,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                               : Colors.grey[200],
                           child: Center(
                             child: Icon(
-                              Icons.group,
+                              AppIcons.group,
                               color: isDarkMode
                                   ? Colors.grey[600]
                                   : Colors.grey[400],
@@ -823,7 +824,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                               : Colors.grey[200],
                           child: Center(
                             child: Icon(
-                              Icons.group,
+                              AppIcons.group,
                               color: isDarkMode
                                   ? Colors.grey[600]
                                   : Colors.grey[400],
@@ -857,7 +858,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         Row(
                           children: [
                             Icon(
-                              Icons.tag,
+                              AppIcons.tag,
                               size: 14,
                               color: isDarkMode
                                   ? Colors.grey[400]
@@ -885,7 +886,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         Row(
                           children: [
                             Icon(
-                              Icons.people,
+                              AppIcons.people,
                               size: 14,
                               color: isDarkMode
                                   ? Colors.grey[400]
@@ -919,7 +920,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
               onPressed: () {
                 context.push('/group/${group.groupId}');
               },
-              icon: const Icon(Icons.visibility_outlined, size: 18),
+              icon: const Icon(AppIcons.visibility_outlined, size: 18),
               label: Text(t.profile.groupDetail),
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -995,7 +996,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                       ),
                     ],
                   ),
-                  child: Icon(Icons.face, color: accentColor, size: 22),
+                  child: Icon(AppIcons.face, color: accentColor, size: 22),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -1050,7 +1051,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                       errorWidget: (context, url, error) => Container(
                         color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
                         child: Icon(
-                          Icons.broken_image,
+                          AppIcons.broken_image,
                           color: isDarkMode
                               ? Colors.grey[600]
                               : Colors.grey[400],
@@ -1077,7 +1078,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                       Row(
                         children: [
                           Icon(
-                            Icons.person_outline,
+                            AppIcons.person_outline,
                             size: 14,
                             color: isDarkMode
                                 ? Colors.grey[400]
@@ -1135,7 +1136,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
               onPressed: () {
                 context.push('/avatar/${avatar.id}');
               },
-              icon: const Icon(Icons.visibility_outlined, size: 18),
+              icon: const Icon(AppIcons.visibility_outlined, size: 18),
               label: Text(t.profile.avatarDetail),
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -1190,7 +1191,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildStatItem(
-                  icon: Icons.people_alt_rounded,
+                  icon: AppIcons.people_alt_rounded,
                   value: user.friends.length.toString(),
                   label: t.profile.frined,
                   isDarkMode: isDarkMode,
@@ -1437,7 +1438,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
 
         return InfoCard(
           title: t.profile.links,
-          icon: Icons.link,
+          icon: AppIcons.link,
           isDarkMode: isDarkMode,
           customColor: Colors.teal,
           children: linkData.isEmpty
@@ -1487,7 +1488,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         height: 16,
                         fit: BoxFit.contain,
                         errorWidget: (context, error, stackTrace) => Icon(
-                          Icons.language,
+                          AppIcons.language,
                           size: 16,
                           color: isDarkMode
                               ? Colors.grey[400]
@@ -1496,7 +1497,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                       ),
                     )
                   : Icon(
-                      Icons.language,
+                      AppIcons.language,
                       size: 16,
                       color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                     ),
@@ -1526,7 +1527,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
               ),
             ),
             Icon(
-              Icons.open_in_new,
+              AppIcons.open_in_new,
               size: 18,
               color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
             ),

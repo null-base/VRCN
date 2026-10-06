@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -75,6 +76,7 @@ class FriendDetailPage extends ConsumerWidget {
     final userRepresentedGroupAsync = ref.watch(
       userRepresentedGroupProvider(user.id),
     );
+    final friendStatusAsync = ref.watch(friendStatusProvider(user.id));
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -181,7 +183,10 @@ class FriendDetailPage extends ConsumerWidget {
                 ],
               ),
             ),
-            actions: [_buildModerationMenu(context, ref, user, isDarkMode)],
+            actions: [
+              _buildRelationshipAction(context, ref, user, friendStatusAsync),
+              _buildModerationMenu(context, ref, user, isDarkMode),
+            ],
           ),
 
           SliverToBoxAdapter(
@@ -194,7 +199,7 @@ class FriendDetailPage extends ConsumerWidget {
                   if (user.location != 'offline' && user.location != null)
                     InfoCard(
                       title: t.friendDetail.currentLocation,
-                      icon: Icons.location_on_outlined,
+                      icon: AppIcons.location_on_outlined,
                       isDarkMode: isDarkMode,
                       customColor: Colors.green,
                       children: [
@@ -204,17 +209,17 @@ class FriendDetailPage extends ConsumerWidget {
                   const SizedBox(height: 24),
                   InfoCard(
                     title: t.friendDetail.basicInfo,
-                    icon: Icons.person_outline,
+                    icon: AppIcons.person_outline,
                     isDarkMode: isDarkMode,
                     children: [
                       InfoRow(
-                        icon: Icons.badge,
+                        icon: AppIcons.badge,
                         label: t.friendDetail.userId,
                         value: user.id,
                         isDarkMode: isDarkMode,
                       ),
                       InfoRow(
-                        icon: Icons.calendar_today,
+                        icon: AppIcons.calendar_today,
                         label: t.friendDetail.dateJoined,
                         value:
                             user.dateJoined !=
@@ -224,7 +229,7 @@ class FriendDetailPage extends ConsumerWidget {
                         isDarkMode: isDarkMode,
                       ),
                       InfoRow(
-                        icon: Icons.timer,
+                        icon: AppIcons.timer,
                         label: t.friendDetail.lastLogin,
                         value: DateFormatter.formatDate(user.lastLogin),
                         isDarkMode: isDarkMode,
@@ -253,6 +258,69 @@ class FriendDetailPage extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildRelationshipAction(
+    BuildContext context,
+    WidgetRef ref,
+    User user,
+    AsyncValue<FriendStatus> statusAsync,
+  ) {
+    final strings = context.t;
+    final status = statusAsync.value;
+    final label = status?.isFriend == true
+        ? strings.friendDetail.removeFriend
+        : status?.outgoingRequest == true
+        ? strings.friendDetail.cancelFriendRequest
+        : status?.incomingRequest == true
+        ? strings.friendDetail.friendRequestPending
+        : strings.friendDetail.addFriend;
+    return IconButton(
+      tooltip: label,
+      icon: Icon(
+        status?.isFriend == true
+            ? AppIcons.person_remove_outlined
+            : status?.outgoingRequest == true
+            ? AppIcons.close
+            : AppIcons.person_add,
+      ),
+      onPressed: status?.incomingRequest == true
+          ? null
+          : () async {
+              final controller = ref.read(friendActionControllerProvider);
+              try {
+                if (status?.isFriend == true) {
+                  await controller.unfriend(user.id);
+                } else if (status?.outgoingRequest == true) {
+                  await controller.cancelFriendRequest(user.id);
+                } else {
+                  await controller.sendFriendRequest(user.id);
+                }
+                ref.invalidate(friendStatusProvider(user.id));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        strings.friendDetail.relationshipCompleted(
+                          action: label,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              } catch (error) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        strings.common.error(error: error.toString()),
+                      ),
+                    ),
+                  );
+                }
+              }
+            },
     );
   }
 
@@ -441,7 +509,7 @@ class FriendDetailPage extends ConsumerWidget {
         cacheManager: JsonCacheManager(),
         placeholder: (context, url) => Container(color: Colors.grey[300]),
         errorWidget: (context, url, error) =>
-            const Icon(Icons.person, size: 80, color: Colors.white70),
+            const Icon(AppIcons.person, size: 80, color: Colors.white70),
       );
     } else if (avatarThumbnail.isNotEmpty) {
       return CachedNetworkImage(
@@ -451,12 +519,12 @@ class FriendDetailPage extends ConsumerWidget {
         cacheManager: JsonCacheManager(),
         placeholder: (context, url) => Container(color: Colors.grey[300]),
         errorWidget: (context, url, error) =>
-            const Icon(Icons.person, size: 80, color: Colors.white70),
+            const Icon(AppIcons.person, size: 80, color: Colors.white70),
       );
     } else {
       return Container(
         color: Colors.grey[800],
-        child: const Icon(Icons.person, size: 80, color: Colors.white70),
+        child: const Icon(AppIcons.person, size: 80, color: Colors.white70),
       );
     }
   }
@@ -492,10 +560,11 @@ class FriendDetailPage extends ConsumerWidget {
     bool isDarkMode,
   ) {
     final note = ref.watch(userNoteProvider(user.id));
+    final strings = context.t;
 
     return InfoCard(
-      title: 'Note',
-      icon: Icons.sticky_note_2_outlined,
+      title: strings.friendDetail.note,
+      icon: AppIcons.sticky_note_2_outlined,
       isDarkMode: isDarkMode,
       customColor: Colors.amber,
       children: [
@@ -504,7 +573,7 @@ class FriendDetailPage extends ConsumerWidget {
           children: [
             Expanded(
               child: Text(
-                note.isEmpty ? 'No note saved.' : note,
+                note.isEmpty ? strings.friendDetail.noNote : note,
                 style: GoogleFonts.notoSans(
                   fontSize: 15,
                   height: 1.5,
@@ -517,8 +586,8 @@ class FriendDetailPage extends ConsumerWidget {
             const SizedBox(width: 12),
             IconButton.filledTonal(
               onPressed: () => _showNoteDialog(context, ref, user),
-              icon: const Icon(Icons.edit_outlined),
-              tooltip: 'Edit note',
+              icon: const Icon(AppIcons.edit_outlined),
+              tooltip: strings.friendDetail.editNote,
             ),
           ],
         ),
@@ -531,6 +600,7 @@ class FriendDetailPage extends ConsumerWidget {
     WidgetRef ref,
     User user,
   ) async {
+    final strings = context.t;
     final controller = TextEditingController(
       text: ref.read(userNoteProvider(user.id)),
     );
@@ -540,14 +610,16 @@ class FriendDetailPage extends ConsumerWidget {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Note: ${user.displayName}'),
+            title: Text(
+              strings.friendDetail.noteTitle(name: user.displayName),
+            ),
             content: TextField(
               controller: controller,
               autofocus: true,
               maxLines: 6,
-              decoration: const InputDecoration(
-                hintText: 'Write a private local note',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: strings.friendDetail.noteHint,
+                border: const OutlineInputBorder(),
               ),
             ),
             actions: [
@@ -560,7 +632,7 @@ class FriendDetailPage extends ConsumerWidget {
                   await ref.read(userNoteProvider(user.id).notifier).save('');
                   if (context.mounted) Navigator.of(context).pop();
                 },
-                child: const Text('Delete'),
+                child: Text(t.common.delete),
               ),
               FilledButton(
                 onPressed: () async {
@@ -586,7 +658,7 @@ class FriendDetailPage extends ConsumerWidget {
 
     return InfoCard(
       title: t.friendDetail.bio,
-      icon: Icons.info_outline,
+      icon: AppIcons.info_outline,
       isDarkMode: isDarkMode,
       children: [
         Container(
@@ -625,7 +697,7 @@ class FriendDetailPage extends ConsumerWidget {
 
         return InfoCard(
           title: t.friendDetail.links,
-          icon: Icons.link,
+          icon: AppIcons.link,
           isDarkMode: isDarkMode,
           customColor: Colors.teal,
           children: linkData.isEmpty
@@ -675,7 +747,7 @@ class FriendDetailPage extends ConsumerWidget {
                         height: 16,
                         fit: BoxFit.contain,
                         errorWidget: (context, error, stackTrace) => Icon(
-                          Icons.language,
+                          AppIcons.language,
                           size: 16,
                           color: isDarkMode
                               ? Colors.grey[400]
@@ -684,7 +756,7 @@ class FriendDetailPage extends ConsumerWidget {
                       ),
                     )
                   : Icon(
-                      Icons.language,
+                      AppIcons.language,
                       size: 16,
                       color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                     ),
@@ -714,7 +786,7 @@ class FriendDetailPage extends ConsumerWidget {
               ),
             ),
             Icon(
-              Icons.open_in_new,
+              AppIcons.open_in_new,
               size: 18,
               color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
             ),
@@ -758,7 +830,7 @@ class FriendDetailPage extends ConsumerWidget {
         if (group?.groupId != null) {
           return InfoCard(
             title: t.friendDetail.group,
-            icon: Icons.group_outlined,
+            icon: AppIcons.group_outlined,
             isDarkMode: isDarkMode,
             customColor: Colors.indigo,
             children: [
@@ -790,7 +862,7 @@ class FriendDetailPage extends ConsumerWidget {
                                 ? Colors.grey[800]
                                 : Colors.grey[200],
                             child: Icon(
-                              Icons.group,
+                              AppIcons.group,
                               color: isDarkMode
                                   ? Colors.grey[600]
                                   : Colors.grey[400],
@@ -802,7 +874,7 @@ class FriendDetailPage extends ConsumerWidget {
                                 ? Colors.grey[800]
                                 : Colors.grey[200],
                             child: Icon(
-                              Icons.group,
+                              AppIcons.group,
                               color: isDarkMode
                                   ? Colors.grey[600]
                                   : Colors.grey[400],
@@ -859,7 +931,7 @@ class FriendDetailPage extends ConsumerWidget {
                 onPressed: () {
                   context.push('/group/${group?.groupId}');
                 },
-                icon: const Icon(Icons.visibility_outlined),
+                icon: const Icon(AppIcons.visibility_outlined),
                 label: Text(
                   t.friendDetail.groupDetail,
                   style: GoogleFonts.notoSans(),
@@ -910,7 +982,7 @@ class FriendDetailPage extends ConsumerWidget {
     bool isDarkMode,
   ) {
     return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert, color: Colors.white),
+      icon: const Icon(AppIcons.more_vert, color: Colors.white),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: isDarkMode ? Colors.grey[850] : Colors.white,
       onSelected: (value) async {
@@ -955,25 +1027,25 @@ class FriendDetailPage extends ConsumerWidget {
         _buildPopupMenuItem(
           'block',
           t.friendDetail.block,
-          Icons.block,
+          AppIcons.block,
           isDarkMode,
         ),
         _buildPopupMenuItem(
           'mute',
           t.friendDetail.mute,
-          Icons.volume_off,
+          AppIcons.volume_off,
           isDarkMode,
         ),
         _buildPopupMenuItem(
           'website',
           t.friendDetail.openWebsite,
-          Icons.public,
+          AppIcons.public,
           isDarkMode,
         ),
         _buildPopupMenuItem(
           'share',
           t.friendDetail.shareProfile,
-          Icons.share_outlined,
+          AppIcons.share_outlined,
           isDarkMode,
         ),
       ],

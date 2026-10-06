@@ -5,6 +5,15 @@ import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 import 'package:vrchat/utils/app_logger.dart';
 
+bool isInstanceLocation(String? location) {
+  if (location == null || location.isEmpty) return false;
+
+  final separatorIndex = location.indexOf(':');
+  return location.startsWith('wrld_') &&
+      separatorIndex > 'wrld_'.length &&
+      separatorIndex < location.length - 1;
+}
+
 final FutureProvider<InstancesApi> vrchatInstanceProvider = FutureProvider((
   ref,
 ) async {
@@ -28,9 +37,8 @@ class InstanceParams {
       throw Exception('空のインスタンス文字列です');
     }
 
-    // 'private'や'offline'などの特殊な場合をハンドリング
-    if (location == 'private' || location == 'offline') {
-      throw Exception('プライベートまたはオフラインのインスタンスです: $location');
+    if (!isInstanceLocation(location)) {
+      throw Exception('インスタンス情報を持たないロケーションです: $location');
     }
 
     final parts = location.split(':');
@@ -86,9 +94,8 @@ final FutureProviderFamily<Instance, String> instanceDetailProvider =
           throw Exception('インスタンス文字列が空です');
         }
 
-        // 特殊なケースのハンドリング
-        if (location == 'private' || location == 'offline') {
-          throw Exception('プライベートまたはオフラインのインスタンスは取得できません');
+        if (!isInstanceLocation(location)) {
+          throw Exception('インスタンス情報を持たないロケーションです: $location');
         }
 
         // インスタンス文字列をパース
@@ -123,53 +130,34 @@ final FutureProviderFamily<Instance, String> instanceDetailProvider =
 // パラメータクラスを直接使用するバージョン
 final FutureProviderFamily<Instance, InstanceParams>
 instanceDetailWithParamsProvider =
-    FutureProvider.family<Instance, InstanceParams>((ref, params) async {
-      try {
-        // APIを取得（.valueではなく.futureを使用）
-        final instanceApi = await ref.watch(vrchatInstanceProvider.future);
-
-        appLogger.d('インスタンス情報を取得中: ${params.worldId}:${params.instanceId}');
-
-        final response = await instanceApi.getInstance(
-          worldId: params.worldId,
-          instanceId: params.instanceId,
-        );
-
-        if (response.data == null) {
-          throw Exception('インスタンスデータが見つかりません: ${params}');
-        }
-
-        appLogger.d('インスタンス情報取得成功: ${response.data!.name}');
-        return response.data!;
-      } catch (e) {
-        appLogger.d('インスタンス情報取得エラー: $e');
-        if (e is Exception) {
-          rethrow;
-        }
-        throw Exception('インスタンス情報の取得中にエラーが発生しました: $e');
-      }
+    FutureProvider.family<Instance, InstanceParams>((ref, params) {
+      // 文字列版を正規のキャッシュとして共有し、同じインスタンスを
+      // 別のパラメータ型から取得してもAPIを二重に呼ばない。
+      return ref.watch(instanceDetailProvider(params.toString()).future);
     });
 
 // インスタンスの基本情報のみを取得するプロバイダー（軽量版）
-final FutureProviderFamily<String?, String>
-instanceBasicInfoProvider = FutureProvider.family<String?, String>((
-  ref,
-  location,
-) async {
-  try {
-    if (location.isEmpty || location == 'private' || location == 'offline') {
-      return null;
-    }
+final FutureProviderFamily<String?, String> instanceBasicInfoProvider =
+    FutureProvider.family<String?, String>((
+      ref,
+      location,
+    ) async {
+      try {
+        if (!isInstanceLocation(location)) {
+          return null;
+        }
 
-    final instance = await ref.watch(instanceDetailProvider(location).future);
+        final instance = await ref.watch(
+          instanceDetailProvider(location).future,
+        );
 
-    return instance.name;
-  } catch (e) {
-    // エラーの場合はnullを返す（UI側でハンドリング）
-    appLogger.d('インスタンス基本情報取得失敗: $e');
-    return null;
-  }
-});
+        return instance.name;
+      } catch (e) {
+        // エラーの場合はnullを返す（UI側でハンドリング）
+        appLogger.d('インスタンス基本情報取得失敗: $e');
+        return null;
+      }
+    });
 
 // インスタンスが存在するかどうかをチェックするプロバイダー
 final FutureProviderFamily<bool, String> instanceExistsProvider =
@@ -178,9 +166,7 @@ final FutureProviderFamily<bool, String> instanceExistsProvider =
       location,
     ) async {
       try {
-        if (location.isEmpty ||
-            location == 'private' ||
-            location == 'offline') {
+        if (!isInstanceLocation(location)) {
           return false;
         }
 

@@ -22,14 +22,16 @@ import 'package:vrchat/firebase_options.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/auth_refresh_provider.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
+import 'package:vrchat/provider/friends_provider.dart';
 import 'package:vrchat/provider/package_info_provider.dart';
 import 'package:vrchat/provider/settings_provider.dart';
 import 'package:vrchat/provider/streaming_provider.dart';
-import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/version_check_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
+import 'package:vrchat/provider/app_features_provider.dart';
 import 'package:vrchat/router/app_router.dart';
 import 'package:vrchat/services/friend_status_widget_service.dart';
+import 'package:vrchat/services/notification_response_service.dart';
 import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/app_logger.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
@@ -90,21 +92,10 @@ Future<void> main() async {
     // 端末の言語を優先する。未対応言語の場合は slang の baseLocale(en) に戻る。
     await LocaleSettings.useDeviceLocale();
     await prefs.remove('locale');
+    await prefs.remove('localeOverride');
   }
 
-  // 通知の初期化
-  final notifications = await initializeNotifications();
-
-  // 前回表示された通知の履歴を確認
-  final launchDetails = await notifications.getNotificationAppLaunchDetails();
-  if (launchDetails != null && launchDetails.didNotificationLaunchApp) {
-    // 通知によってアプリが起動された場合
-    appLogger.d('通知からアプリが起動されました');
-    if (launchDetails.notificationResponse != null) {
-      _handleNotificationResponse(launchDetails.notificationResponse!);
-    }
-  }
-
+  final notifications = FlutterLocalNotificationsPlugin();
   final container = ProviderContainer(
     overrides: [
       sharedPreferencesProvider.overrideWithValue(prefs),
@@ -112,10 +103,27 @@ Future<void> main() async {
     ],
   );
 
+  // 通知の応答は、アプリと同じ ProviderContainer で処理する。
+  await initializeNotifications(
+    notifications,
+    onDidReceiveNotificationResponse: (details) {
+      unawaited(_handleNotificationResponseSafely(container, details));
+    },
+  );
+
   try {
     await container.read(eventReminderProvider.notifier).cleanupOldReminders();
   } catch (e) {
     appLogger.d('リマインダーのクリーンアップ中にエラーが発生しました: $e');
+  }
+
+  final launchDetails = await notifications.getNotificationAppLaunchDetails();
+  if (launchDetails?.didNotificationLaunchApp ?? false) {
+    appLogger.d('通知からアプリが起動されました');
+    final response = launchDetails?.notificationResponse;
+    if (response != null) {
+      await _handleNotificationResponseSafely(container, response);
+    }
   }
 
   runApp(
@@ -150,9 +158,10 @@ AppLocale _parseStoredLocale(String value) {
 }
 
 /// 通知の初期化
-Future<FlutterLocalNotificationsPlugin> initializeNotifications() async {
-  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
+Future<void> initializeNotifications(
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin, {
+  required void Function(NotificationResponse) onDidReceiveNotificationResponse,
+}) async {
   // Android設定
   const initializationSettingsAndroid = AndroidInitializationSettings(
     '@mipmap/ic_launcher',
@@ -172,24 +181,19 @@ Future<FlutterLocalNotificationsPlugin> initializeNotifications() async {
   // 通知が届いたときやタップされたときの処理を設定
   await flutterLocalNotificationsPlugin.initialize(
     settings: initializationSettings,
-    onDidReceiveNotificationResponse: _handleNotificationResponse,
+    onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
   );
-
-  return flutterLocalNotificationsPlugin;
 }
 
-/// 通知応答ハンドラ
-void _handleNotificationResponse(NotificationResponse details) {
-  final notificationId = details.id ?? -1;
-  if (notificationId != -1) {
-    // プロバイダーコンテナを取得し、リマインダーを削除
-    final container = ProviderContainer();
-    container
-        .read(eventReminderProvider.notifier)
-        .removeReminderByNotificationId(notificationId);
+Future<void> _handleNotificationResponseSafely(
+  ProviderContainer container,
+  NotificationResponse details,
+) async {
+  try {
+    await handleNotificationResponse(container, details);
+  } catch (error) {
+    appLogger.d('通知応答の処理に失敗しました: $error');
   }
-
-  appLogger.d('🔔 通知がタップされました: ${details.payload}');
 }
 
 class VRChatApp extends ConsumerStatefulWidget {
@@ -205,6 +209,12 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
   StreamSubscription<Uri>? _appLinkSubscription;
   ProviderSubscription<AsyncValue<bool>>? _authStateSubscription;
   var _didStartLoggedInTasks = false;
+  var _didEnterBackground = false;
+  Future<void>? _sessionRefreshFuture;
+  DateTime? _lastSessionRefreshAt;
+  DateTime? _lastFriendsRefreshAt;
+
+  static const _sessionRefreshInterval = Duration(minutes: 5);
 
   @override
   void initState() {
@@ -267,9 +277,13 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
     authState.whenData((isLoggedIn) {
       if (isLoggedIn && !_didStartLoggedInTasks) {
         _didStartLoggedInTasks = true;
+        _lastFriendsRefreshAt = DateTime.now();
         ref.read(streamingControllerProvider).startConnection();
         ref.read(friendStatusWidgetSyncProvider);
         ref.read(versionCheckProvider);
+        unawaited(
+          ref.read(statusAutomationProvider.notifier).applyIfEnabled(ref),
+        );
       } else if (!isLoggedIn) {
         _didStartLoggedInTasks = false;
         unawaited(ref.read(friendStatusWidgetServiceProvider).clear());
@@ -289,22 +303,69 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
   // アプリのライフサイクル状態変化を監視
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden) {
+      _didEnterBackground = true;
+      return;
+    }
+
+    if (state == AppLifecycleState.resumed && _didEnterBackground) {
+      _didEnterBackground = false;
       appLogger.d('アプリがフォアグラウンドに戻りました');
-      unawaited(_refreshAuthSession());
+      unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
+      unawaited(_refreshAfterResume());
     }
   }
 
-  Future<void> _refreshAuthSession() async {
+  Future<void> _refreshAfterResume() async {
+    await _refreshAuthSession();
     if (!_didStartLoggedInTasks) return;
 
-    try {
-      ref.invalidate(autoLoginProvider);
-      final isLoggedIn = await ref.read(autoLoginProvider.future);
-      if (!isLoggedIn) return;
+    final now = DateTime.now();
+    final lastRefresh = _lastFriendsRefreshAt;
+    if (lastRefresh != null &&
+        now.difference(lastRefresh) < _sessionRefreshInterval) {
+      return;
+    }
 
-      ref.invalidate(currentUserProvider);
-      ref.read(authRefreshProvider.notifier).state++;
+    _lastFriendsRefreshAt = now;
+    await ref.read(friendsActionsProvider).refreshFriends();
+  }
+
+  Future<void> _refreshAuthSession() {
+    if (!_didStartLoggedInTasks) return Future<void>.value();
+
+    final existingRefresh = _sessionRefreshFuture;
+    if (existingRefresh != null) return existingRefresh;
+
+    final now = DateTime.now();
+    final lastRefresh = _lastSessionRefreshAt;
+    if (lastRefresh != null &&
+        now.difference(lastRefresh) < _sessionRefreshInterval) {
+      return Future<void>.value();
+    }
+
+    _lastSessionRefreshAt = now;
+    final refresh = _performSessionRefresh();
+    _sessionRefreshFuture = refresh;
+    unawaited(
+      refresh.whenComplete(() {
+        _sessionRefreshFuture = null;
+      }),
+    );
+    return refresh;
+  }
+
+  Future<void> _performSessionRefresh() async {
+    try {
+      // 起動時の自動ログインプロバイダーを再実行せず、復帰時は
+      // セッション確認だけを行う。これによりルーターをロード画面へ戻さない。
+      final auth = await ref.read(vrchatAuthProvider.future);
+      final (loginResponse, _) = await auth.login();
+      final authResponse = loginResponse?.data;
+      if (authResponse == null || authResponse.requiresTwoFactorAuth) {
+        ref.read(authRefreshProvider.notifier).state++;
+      }
     } catch (e) {
       appLogger.d('認証セッション再検証でエラー: $e');
     }
@@ -367,7 +428,7 @@ class _VRChatAppState extends ConsumerState<VRChatApp>
         data: MediaQuery.of(
           context,
         ).copyWith(textScaler: const TextScaler.linear(1)),
-        child: child!,
+        child: child ?? const SizedBox.shrink(),
       );
     }
 

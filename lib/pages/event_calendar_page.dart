@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -140,7 +141,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
         actions: [
           // フィルターボタン
           IconButton(
-            icon: const Icon(Icons.filter_list_rounded),
+            icon: const Icon(AppIcons.filter_list_rounded),
             color: _isRefreshing
                 ? Colors.grey
                 : isDarkMode
@@ -164,7 +165,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 angle: _animationController.value * 2 * 3.14159,
                 child: IconButton(
                   icon: Icon(
-                    Icons.refresh_rounded,
+                    AppIcons.refresh_rounded,
                     color: _isRefreshing
                         ? Colors.grey
                         : isDarkMode
@@ -263,7 +264,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
             ),
             child: Row(
               children: [
-                const Icon(Icons.filter_list, size: 18, color: Colors.blue),
+                const Icon(AppIcons.filter_list, size: 18, color: Colors.blue),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -298,7 +299,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.event_busy,
+                    AppIcons.event_busy,
                     size: 64,
                     color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
                   ),
@@ -315,7 +316,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                   OutlinedButton.icon(
                     onPressed: () =>
                         ref.read(eventFilterActionsProvider).clearAll(),
-                    icon: const Icon(Icons.filter_list_off),
+                    icon: const Icon(AppIcons.filter_list_off),
                     label: Text(t.eventCalendar.clearFilter),
                   ),
                 ],
@@ -369,7 +370,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: Row(
                   children: [
-                    const Icon(Icons.public, size: 18),
+                    const Icon(AppIcons.public, size: 18),
                     const SizedBox(width: 8),
                     Text(
                       'VRChat Calendar',
@@ -481,7 +482,9 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 child: Row(
                   children: [
                     Icon(
-                      isToday ? Icons.calendar_today : Icons.calendar_month,
+                      isToday
+                          ? AppIcons.calendar_today
+                          : AppIcons.calendar_month,
                       size: 18,
                       color: isToday
                           ? (isDarkMode ? Colors.white : accentColor)
@@ -615,7 +618,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
           children: [
             // リマインダー設定ボタン
             IconButton(
-              icon: const Icon(Icons.notifications_outlined, size: 20),
+              icon: const Icon(AppIcons.notifications_outlined, size: 20),
               splashRadius: 20,
               tooltip: t.eventCalendar.reminderSet,
               onPressed: () => _showReminderDialog(context, event, isDarkMode),
@@ -628,7 +631,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
             RotatedBox(
               quarterTurns: 1,
               child: Icon(
-                Icons.chevron_right,
+                AppIcons.chevron_right,
                 color: isDarkMode ? Colors.grey[400] : Colors.grey[700],
               ),
             ),
@@ -643,7 +646,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    Icons.access_time_rounded,
+                    AppIcons.access_time_rounded,
                     size: 14,
                     color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                   ),
@@ -662,7 +665,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                     ),
                   ),
                   const SizedBox(width: 8),
-                  if (event.quest) _buildQuestBadge(isDarkMode, t),
+                  if (event.quest) _buildAndroidBadge(isDarkMode, t),
                   Consumer(
                     builder: (context, ref, child) {
                       final reminders = ref
@@ -678,7 +681,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              Icons.notifications_active,
+                              AppIcons.notifications_active,
                               size: 14,
                               color: eventColor.withValues(alpha: 0.7),
                             ),
@@ -753,7 +756,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 _buildInfoSection(
                   t.eventCalendar.eventName,
                   event.title,
-                  Icons.calendar_month,
+                  AppIcons.calendar_month,
                   isDarkMode,
                   eventColor,
                 ),
@@ -762,7 +765,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 _buildInfoSection(
                   t.eventCalendar.organizer,
                   event.author,
-                  Icons.person_outline_rounded,
+                  AppIcons.person_outline_rounded,
                   isDarkMode,
                   eventColor,
                 ),
@@ -771,7 +774,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 _buildInfoSection(
                   t.eventCalendar.description,
                   event.body,
-                  Icons.description_outlined,
+                  AppIcons.description_outlined,
                   isDarkMode,
                   eventColor,
                 ),
@@ -783,7 +786,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 _buildInfoSection(
                   t.eventCalendar.condition,
                   event.condition,
-                  Icons.verified_user_outlined,
+                  AppIcons.verified_user_outlined,
                   isDarkMode,
                   eventColor,
                 ),
@@ -792,7 +795,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                 _buildInfoSection(
                   t.eventCalendar.way,
                   event.way,
-                  Icons.login_rounded,
+                  AppIcons.login_rounded,
                   isDarkMode,
                   eventColor,
                 ),
@@ -801,7 +804,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                   _buildInfoWithLink(
                     t.eventCalendar.note,
                     event.note,
-                    Icons.sticky_note_2_outlined,
+                    AppIcons.sticky_note_2_outlined,
                     isDarkMode,
                     eventColor,
                   ),
@@ -813,7 +816,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
                   child: OutlinedButton.icon(
                     onPressed: () =>
                         _showReminderDialog(context, event, isDarkMode),
-                    icon: const Icon(Icons.notifications_active_outlined),
+                    icon: const Icon(AppIcons.notifications_active_outlined),
                     label: Text(t.eventCalendar.reminderSet),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: eventColor,
@@ -924,7 +927,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
       child: Row(
         children: [
           Icon(
-            Icons.notifications,
+            AppIcons.notifications,
             size: 16,
             color: eventColor.withValues(alpha: isDarkMode ? 0.8 : 1.0),
           ),
@@ -939,7 +942,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.close, size: 16),
+            icon: const Icon(AppIcons.close, size: 16),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
@@ -961,7 +964,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
     );
   }
 
-  Widget _buildQuestBadge(bool isDarkMode, Translations t) {
+  Widget _buildAndroidBadge(bool isDarkMode, Translations t) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
@@ -975,7 +978,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            Icons.headset_rounded,
+            AppIcons.headset_rounded,
             size: 10,
             color: isDarkMode ? Colors.green[300] : Colors.green[700],
           ),
@@ -1105,7 +1108,7 @@ class _EventCalendarPageState extends ConsumerState<EventCalendarPage>
         Row(
           children: [
             Icon(
-              Icons.category_outlined,
+              AppIcons.category_outlined,
               size: 16,
               color: baseColor.withValues(alpha: isDarkMode ? 0.8 : 1.0),
             ),
@@ -1211,7 +1214,7 @@ class _VrchatCalendarEventCard extends StatelessWidget {
               Row(
                 children: [
                   Icon(
-                    Icons.schedule,
+                    AppIcons.schedule,
                     size: 14,
                     color: theme.colorScheme.onSurfaceVariant,
                   ),

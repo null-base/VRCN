@@ -1,0 +1,87 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "widget_description" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Shows the status of selected VRChat friends." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選択したVRChatフレンドの状態を表示します。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "선택한 VRChat 친구의 상태를 표시합니다." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "显示所选 VRChat 好友的状态。" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "顯示所選 VRChat 好友的狀態。" } }
+      }
+    },
+    "widget_empty" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Select friends in Notifications" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "通知画面でフレンドを選択" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "알림에서 친구를 선택하세요" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "在通知页面选择好友" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "請在通知頁面選擇好友" } }
+      }
+    },
+    "widget_empty_edit" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Touch and hold to choose a friend" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "長押ししてフレンドを選択" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "길게 눌러 친구를 선택하세요" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "长按以选择好友" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "長按以選擇好友" } }
+      }
+    },
+    "widget_friend" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Friend" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "フレンド" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "친구" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "好友" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "好友" } }
+      }
+    },
+    "widget_friend_unavailable" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open VRCN to refresh this friend" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "VRCNを開いてフレンド情報を更新" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "VRCN을 열어 친구 정보를 새로고침하세요" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开 VRCN 刷新好友信息" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "開啟 VRCN 重新整理好友資訊" } }
+      }
+    },
+    "widget_name" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Friend Status" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "フレンドの状況" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "친구 상태" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "好友状态" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "好友狀態" } }
+      }
+    },
+    "widget_status_offline" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Offline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "オフライン" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오프라인" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "离线" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "離線" } }
+      }
+    },
+    "widget_updated_format" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Updated %@" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@更新" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%@ 업데이트" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "更新于 %@" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "更新於 %@" } }
+      }
+    },
+    "widget_updated_unknown" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Updated" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "更新済み" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "업데이트됨" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已更新" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "已更新" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

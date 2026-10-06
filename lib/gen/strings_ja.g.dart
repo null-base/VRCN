@@ -66,6 +66,11 @@ class TranslationsJa with BaseTranslations<AppLocale, Translations> implements T
 	@override late final _Translations$reminder$ja reminder = _Translations$reminder$ja._(_root);
 	@override late final _Translations$friend$ja friend = _Translations$friend$ja._(_root);
 	@override late final _Translations$eventCalendarFilter$ja eventCalendarFilter = _Translations$eventCalendarFilter$ja._(_root);
+	@override late final _Translations$activity$ja activity = _Translations$activity$ja._(_root);
+	@override late final _Translations$insights$ja insights = _Translations$insights$ja._(_root);
+	@override late final _Translations$moderation$ja moderation = _Translations$moderation$ja._(_root);
+	@override late final _Translations$tools$ja tools = _Translations$tools$ja._(_root);
+	@override late final _Translations$osc$ja osc = _Translations$osc$ja._(_root);
 }
 
 // Path: common
@@ -135,6 +140,10 @@ class _Translations$drawer$ja implements Translations$drawer$en {
 	@override String get review => 'レビュー';
 	@override String get feedback => 'フィードバック';
 	@override String get settings => '設定';
+	@override String get activity => 'アクティビティ';
+	@override String get insights => 'インサイト';
+	@override String get moderation => 'モデレーション';
+	@override String get tools => 'ツール';
 	@override String get userLoading => 'ユーザー情報を読み込み中...';
 	@override String get userError => 'ユーザー情報の取得に失敗しました';
 	@override String get retry => '再試行';
@@ -169,6 +178,9 @@ class _Translations$login$ja implements Translations$login$en {
 	@override String get error2faFailed => '二段階認証に失敗しました。コードが正しいか確認してください。';
 	@override String get backToLogin => 'ログイン画面に戻る';
 	@override String get paste => 'ペースト';
+	@override String get biometricLogin => '生体認証でログイン';
+	@override String get biometricReason => '保存したVRChatログイン情報を使うには認証してください。';
+	@override String get savedLoginMissing => '保存されたログイン情報がありません。';
 }
 
 // Path: friends
@@ -224,6 +236,17 @@ class _Translations$friendDetail$ja implements Translations$friendDetail$en {
 	@override String get blockSuccess => 'ブロックしました';
 	@override String get muteSuccess => 'ミュートしました';
 	@override String operationFailed({required Object error}) => '操作に失敗しました: ${error}';
+	@override String get friendStatusEmpty => 'フレンドの状態を取得できませんでした。';
+	@override String get addFriend => 'フレンドに追加';
+	@override String get removeFriend => 'フレンドから削除';
+	@override String get cancelFriendRequest => 'フレンド申請を取り消す';
+	@override String get friendRequestPending => 'フレンド申請中';
+	@override String relationshipCompleted({required Object action}) => '${action}しました';
+	@override String get note => 'メモ';
+	@override String get noNote => 'メモはありません';
+	@override String get editNote => 'メモを編集';
+	@override String noteTitle({required Object name}) => 'メモ: ${name}';
+	@override String get noteHint => '自分だけが見られるメモを書く';
 }
 
 // Path: search
@@ -291,6 +314,7 @@ class _Translations$profile$ja implements Translations$profile$en {
 	@override String get linksHint => 'リンクはプロフィールに表示され、タップすると開くことができます';
 	@override String get statusMessageHint => 'あなたの今の状況やメッセージを入力';
 	@override String get bioHint => 'あなた自身について書いてみましょう';
+	@override late final _Translations$profile$userTypes$ja userTypes = _Translations$profile$userTypes$ja._(_root);
 }
 
 // Path: engageCard
@@ -403,6 +427,13 @@ class _Translations$notifications$ja implements Translations$notifications$en {
 	@override String secondsAgo({required Object seconds}) => '${seconds}秒前';
 	@override String minutesAgo({required Object minutes}) => '${minutes}分前';
 	@override String hoursAgo({required Object hours}) => '${hours}時間前';
+	@override String get searchHint => '通知を検索';
+	@override String get type => '種類';
+	@override String get allTypes => 'すべての種類';
+	@override String get responseSent => '応答を送信しました';
+	@override String responseFailed({required Object error}) => '応答の送信に失敗しました: ${error}';
+	@override String get friendOnlineChannel => 'フレンドのオンライン通知';
+	@override String get friendOnlineChannelDescription => '選択したフレンドがオンラインになったときに通知します。';
 }
 
 // Path: eventCalendar
@@ -432,7 +463,7 @@ class _Translations$eventCalendar$ja implements Translations$eventCalendar$en {
 	@override String get condition => '参加条件';
 	@override String get way => '参加方法';
 	@override String get note => '備考';
-	@override String get quest => 'Quest対応';
+	@override String get quest => 'Android対応';
 	@override String reminderCount({required Object count}) => '${count}件';
 	@override String startToEnd({required Object start, required Object end}) => '${start}〜${end}';
 }
@@ -462,6 +493,10 @@ class _Translations$avatars$ja implements Translations$avatars$en {
 	@override String get sortUpdated => '更新順';
 	@override String get sortName => '名前順';
 	@override String get sortTooltip => '並び替え';
+	@override String get remoteTooltip => 'VRChatのアバター';
+	@override String get localTooltip => 'ローカルアバターデータベース';
+	@override String get localEmptyTitle => 'ローカルアバターはありません';
+	@override String get localEmptyDescription => '閲覧・検索したアバターがここに表示されます。';
 	@override String get viewModeTooltip => '表示モード切替';
 }
 
@@ -474,6 +509,21 @@ class _Translations$worldDetail$ja implements Translations$worldDetail$en {
 	// Translations
 	@override String get loading => 'ワールド情報を読み込み中...';
 	@override String error({required Object error}) => 'ワールド情報の取得に失敗しました: ${error}';
+	@override String get metadataTitle => 'ワールド詳細';
+	@override String get capacity => '定員';
+	@override String capacityValue({required Object recommended, required Object maximum}) => '${recommended} 推奨 / ${maximum} 最大';
+	@override String get releaseStatus => '公開状況';
+	@override String get releaseAll => 'すべて';
+	@override String get releaseHidden => '非表示';
+	@override String get releasePrivate => '非公開';
+	@override String get releasePublic => '公開';
+	@override String get publicInstances => 'パブリックインスタンス';
+	@override String occupantsValue({required Object publicCount, required Object privateCount}) => '${publicCount} パブリック / ${privateCount} プライベート';
+	@override String get publication => '公開日';
+	@override String get platforms => '対応プラットフォーム';
+	@override String get platformAndroid => 'Android';
+	@override String get platformIos => 'iOS';
+	@override String get platformPc => 'PC';
 	@override String get share => 'このワールドを共有';
 	@override String get openInVRChat => 'VRChat公式サイトで開く';
 	@override String get report => 'このワールドを通報';
@@ -741,6 +791,7 @@ class _Translations$location$ja implements Translations$location$en {
 
 	// Translations
 	@override String get private => 'プライベート';
+	@override String get traveling => '移動中';
 	@override String playerCount({required Object userCount, required Object capacity}) => 'プレイヤー数: ${userCount} / ${capacity}';
 	@override String instanceType({required Object type}) => 'インスタンスタイプ: ${type}';
 	@override String get noInfo => 'ロケーション情報はありません';
@@ -800,6 +851,8 @@ class _Translations$friend$ja implements Translations$friend$en {
 	@override String get sortAsc => '昇順';
 	@override String get sortDesc => '降順';
 	@override String get close => '閉じる';
+	@override String get searchTitle => 'フレンドを検索';
+	@override String get searchHint => '名前、ユーザーID、場所';
 }
 
 // Path: eventCalendarFilter
@@ -829,6 +882,157 @@ class _Translations$eventCalendarFilter$ja implements Translations$eventCalendar
 	@override String get filterNone => 'フィルターは設定されていません';
 }
 
+// Path: activity
+class _Translations$activity$ja implements Translations$activity$en {
+	_Translations$activity$ja._(this._root);
+
+	final TranslationsJa _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'アクティビティ';
+	@override String get clearHistory => 'アクティビティ履歴を削除';
+	@override String get feed => 'フィード';
+	@override String get friendLog => 'フレンドログ';
+	@override String get heatmap => 'ヒートマップ';
+	@override String get empty => 'アクティビティはまだありません。';
+	@override String trackedHours({required Object hours, required Object minutes}) => '${hours}時間${minutes}分を記録';
+	@override String trackedMinutes({required Object minutes}) => '${minutes}分を記録';
+	@override String summary({required Object kind, required Object detail}) => '${kind} · ${detail}';
+	@override String get heatmapTitle => '過去6週間のフレンドアクティビティ';
+	@override late final _Translations$activity$kind$ja kind = _Translations$activity$kind$ja._(_root);
+}
+
+// Path: insights
+class _Translations$insights$ja implements Translations$insights$en {
+	_Translations$insights$ja._(this._root);
+
+	final TranslationsJa _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'インサイト';
+	@override String get mutualFriends => '相互フレンド';
+	@override String get hotWorlds => '人気のワールド';
+	@override String get instancePlayers => 'インスタンスの参加者';
+	@override String get userHint => 'ユーザーID (usr_...)';
+	@override String get enterUser => '比較するユーザーIDを入力してください。';
+	@override String get noMutual => '相互フレンドはいません。';
+	@override String get noLocations => 'フレンドの場所がありません。';
+	@override String friendsCount({required Object count}) => '${count}人のフレンド';
+	@override String get locationHint => '場所 (wrld_...:instance)';
+	@override String get enterLocation => 'インスタンスの場所を入力してください。';
+	@override String get noPlayers => '表示できるプレイヤーはいません。';
+	@override String get load => '読み込む';
+}
+
+// Path: moderation
+class _Translations$moderation$ja implements Translations$moderation$en {
+	_Translations$moderation$ja._(this._root);
+
+	final TranslationsJa _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'モデレーション';
+	@override String get clearPlayer => 'プレイヤーのモデレーションを削除';
+	@override String get player => 'プレイヤー';
+	@override String get groupBans => 'グループBAN';
+	@override String get cleared => 'プレイヤーのモデレーションを削除しました';
+	@override String get noPlayer => 'プレイヤーのモデレーションはありません。';
+	@override String get remove => 'モデレーションを削除';
+	@override String get groupHint => 'グループID (grp_...)';
+	@override String get loadBans => 'BANを読み込む';
+	@override String get enterGroup => 'グループIDを入力してください。';
+	@override String get noGroup => 'グループBANはありません。';
+	@override String get unban => 'BANを解除';
+}
+
+// Path: tools
+class _Translations$tools$ja implements Translations$tools$en {
+	_Translations$tools$ja._(this._root);
+
+	final TranslationsJa _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'ツール';
+	@override String get groups => 'グループ';
+	@override String get myAvatars => '所有アバター';
+	@override String get status => 'ステータス';
+	@override String get data => 'データ';
+	@override String get server => 'サーバー';
+	@override String get groupHint => 'グループID (grp_...)';
+	@override String get loadGroup => 'グループを読み込む';
+	@override String get join => '参加';
+	@override String get leave => '退出';
+	@override String get members => 'メンバー';
+	@override String get bans => 'BAN';
+	@override String get calendar => 'カレンダー';
+	@override String get enterGroup => '管理するグループIDを入力してください。';
+	@override String get noMembers => 'メンバーはいません。';
+	@override String get banMember => 'メンバーをBAN';
+	@override String get noGroupBans => 'グループBANはありません。';
+	@override String get unbanMember => 'メンバーのBANを解除';
+	@override String get noCalendar => 'グループのカレンダーイベントはありません。';
+	@override String get followEvent => 'イベントをフォロー';
+	@override String get unfollowEvent => 'イベントのフォローを解除';
+	@override String get ownAvatars => '所有アバター';
+	@override String get noOwnAvatars => '所有アバターが見つかりません。';
+	@override String get editAvatar => 'アバターを編集';
+	@override String get worldMetadata => 'ワールドメタデータ';
+	@override String get worldId => 'ワールドID';
+	@override String get worldHint => 'wrld_...';
+	@override String get loadWorld => 'ワールドIDを読み込む';
+	@override String get editWorldMetadata => 'ワールドメタデータを編集';
+	@override String get worldPermissionHint => 'アカウントに権限があるワールドのみ編集できます。';
+	@override String get statusPresets => 'ステータスプリセット';
+	@override String get addPreset => 'プリセットを追加';
+	@override String get applyPreset => 'プリセットを適用';
+	@override String get deletePreset => 'プリセットを削除';
+	@override String get applyPresetOnLogin => 'ログイン時にプリセットを適用';
+	@override String get restoreStatus => 'ログイン後に選択したソーシャルステータスを復元します。';
+	@override String get automaticPreset => '自動プリセット';
+	@override String get discordNames => 'Discord名';
+	@override String get scanFriendProfiles => 'フレンドのプロフィールをスキャン';
+	@override String get exportDiscordNames => 'Discord名をエクスポート';
+	@override String get noLinkedNames => 'リンクされた名前はまだありません。プロフィールの自己紹介にDiscord名を追加するか、インポート／エクスポートを使用してください。';
+	@override String get dataTransfer => 'データ移行';
+	@override String get dataTransferDescription => 'アクティビティ、メモ、アラート、プリセットを端末間で移行します。';
+	@override String get exportData => 'データをエクスポート';
+	@override String get importData => 'データをインポート';
+	@override String get dataExportHint => 'バージョン付きJSON形式でエクスポートします。APIの内容は自動で上書きされません。インポートではローカルアプリデータのみ復元します。';
+	@override String get apiOnline => 'VRChat APIはオンラインです';
+	@override String get apiDegraded => 'VRChat APIの性能が低下しています';
+	@override String get apiUnavailable => 'APIの状態を取得できません';
+	@override String get serverRefreshHint => '引っ張って最新のサーバー状態を更新します。';
+	@override String get groupActionCompleted => 'グループ操作が完了しました';
+	@override String get editAvatarDialog => 'アバターを編集';
+	@override String get editWorldDialog => 'ワールドメタデータを編集';
+	@override String get newStatusPreset => '新しいステータスプリセット';
+	@override String get name => '名前';
+	@override String get description => '説明';
+	@override String get capacity => '定員';
+	@override String get tags => 'タグ（カンマ区切り）';
+	@override String get pasteExport => 'VRCNのJSONエクスポートを貼り付け';
+	@override String get dataImported => 'データをインポートしました';
+	@override String importFailed({required Object error}) => 'インポートに失敗しました: ${error}';
+	@override String get statusAvailable => 'オンライン';
+	@override String get statusAskMe => '応答を求める';
+	@override String get statusBusy => '取り込み中';
+	@override String get statusJoinMe => '参加してほしい';
+}
+
+// Path: osc
+class _Translations$osc$ja implements Translations$osc$en {
+	_Translations$osc$ja._(this._root);
+
+	final TranslationsJa _root; // ignore: unused_field
+
+	// Translations
+	@override String get floatType => '小数 (0.0～1.0)';
+	@override String get intType => '整数';
+	@override String get boolType => '真偽値 (オン／オフ)';
+	@override String get on => 'オン';
+	@override String get off => 'オフ';
+}
+
 // Path: drawer.section
 class _Translations$drawer$section$ja implements Translations$drawer$section$en {
 	_Translations$drawer$section$ja._(this._root);
@@ -851,6 +1055,21 @@ class _Translations$search$tabs$ja implements Translations$search$tabs$en {
 	@override late final _Translations$search$tabs$worldSearch$ja worldSearch = _Translations$search$tabs$worldSearch$ja._(_root);
 	@override late final _Translations$search$tabs$groupSearch$ja groupSearch = _Translations$search$tabs$groupSearch$ja._(_root);
 	@override late final _Translations$search$tabs$avatarSearch$ja avatarSearch = _Translations$search$tabs$avatarSearch$ja._(_root);
+}
+
+// Path: profile.userTypes
+class _Translations$profile$userTypes$ja implements Translations$profile$userTypes$en {
+	_Translations$profile$userTypes$ja._(this._root);
+
+	final TranslationsJa _root; // ignore: unused_field
+
+	// Translations
+	@override String get admin => '管理者';
+	@override String get trusted => '信頼済み';
+	@override String get known => '既知';
+	@override String get user => 'ユーザー';
+	@override String get newUser => '新規ユーザー';
+	@override String get visitor => 'ビジター';
 }
 
 // Path: groupDetail.privacy
@@ -919,7 +1138,25 @@ class _Translations$instance$type$ja implements Translations$instance$type$en {
 	@override String get hidden => 'フレンド+';
 	@override String get friends => 'フレンド';
 	@override String get private => 'インバイト+';
+	@override String get group => 'グループ';
 	@override String get unknown => '不明';
+}
+
+// Path: activity.kind
+class _Translations$activity$kind$ja implements Translations$activity$kind$en {
+	_Translations$activity$kind$ja._(this._root);
+
+	final TranslationsJa _root; // ignore: unused_field
+
+	// Translations
+	@override String get friendOnline => 'フレンドがオンラインになりました';
+	@override String get friendOffline => 'フレンドがオフラインになりました';
+	@override String get friendActive => 'フレンドがアクティブになりました';
+	@override String get friendAdd => 'フレンドを追加しました';
+	@override String get friendRemove => 'フレンドを削除しました';
+	@override String get locationChange => '場所が変更されました';
+	@override String get statusUpdate => 'ステータスを更新しました';
+	@override String get activity => 'アクティビティ';
 }
 
 // Path: search.tabs.userSearch
@@ -1129,6 +1366,10 @@ extension on TranslationsJa {
 			'drawer.review' => 'レビュー',
 			'drawer.feedback' => 'フィードバック',
 			'drawer.settings' => '設定',
+			'drawer.activity' => 'アクティビティ',
+			'drawer.insights' => 'インサイト',
+			'drawer.moderation' => 'モデレーション',
+			'drawer.tools' => 'ツール',
 			'drawer.userLoading' => 'ユーザー情報を読み込み中...',
 			'drawer.userError' => 'ユーザー情報の取得に失敗しました',
 			'drawer.retry' => '再試行',
@@ -1155,6 +1396,9 @@ extension on TranslationsJa {
 			'login.error2faFailed' => '二段階認証に失敗しました。コードが正しいか確認してください。',
 			'login.backToLogin' => 'ログイン画面に戻る',
 			'login.paste' => 'ペースト',
+			'login.biometricLogin' => '生体認証でログイン',
+			'login.biometricReason' => '保存したVRChatログイン情報を使うには認証してください。',
+			'login.savedLoginMissing' => '保存されたログイン情報がありません。',
 			'friends.loading' => 'フレンド情報を読み込み中...',
 			'friends.error' => ({required Object error}) => 'フレンドの情報の取得に失敗しました: ${error}',
 			'friends.notFound' => 'フレンドが見つかりませんでした',
@@ -1192,6 +1436,17 @@ extension on TranslationsJa {
 			'friendDetail.blockSuccess' => 'ブロックしました',
 			'friendDetail.muteSuccess' => 'ミュートしました',
 			'friendDetail.operationFailed' => ({required Object error}) => '操作に失敗しました: ${error}',
+			'friendDetail.friendStatusEmpty' => 'フレンドの状態を取得できませんでした。',
+			'friendDetail.addFriend' => 'フレンドに追加',
+			'friendDetail.removeFriend' => 'フレンドから削除',
+			'friendDetail.cancelFriendRequest' => 'フレンド申請を取り消す',
+			'friendDetail.friendRequestPending' => 'フレンド申請中',
+			'friendDetail.relationshipCompleted' => ({required Object action}) => '${action}しました',
+			'friendDetail.note' => 'メモ',
+			'friendDetail.noNote' => 'メモはありません',
+			'friendDetail.editNote' => 'メモを編集',
+			'friendDetail.noteTitle' => ({required Object name}) => 'メモ: ${name}',
+			'friendDetail.noteHint' => '自分だけが見られるメモを書く',
 			'search.userTab' => 'ユーザー',
 			'search.worldTab' => 'ワールド',
 			'search.avatarTab' => 'アバター',
@@ -1275,6 +1530,12 @@ extension on TranslationsJa {
 			'profile.linksHint' => 'リンクはプロフィールに表示され、タップすると開くことができます',
 			'profile.statusMessageHint' => 'あなたの今の状況やメッセージを入力',
 			'profile.bioHint' => 'あなた自身について書いてみましょう',
+			'profile.userTypes.admin' => '管理者',
+			'profile.userTypes.trusted' => '信頼済み',
+			'profile.userTypes.known' => '既知',
+			'profile.userTypes.user' => 'ユーザー',
+			'profile.userTypes.newUser' => '新規ユーザー',
+			'profile.userTypes.visitor' => 'ビジター',
 			'engageCard.pickBackground' => '背景画像を選択',
 			'engageCard.removeBackground' => '背景画像を削除',
 			'engageCard.scanQr' => 'QRコードをスキャン',
@@ -1351,6 +1612,13 @@ extension on TranslationsJa {
 			'notifications.secondsAgo' => ({required Object seconds}) => '${seconds}秒前',
 			'notifications.minutesAgo' => ({required Object minutes}) => '${minutes}分前',
 			'notifications.hoursAgo' => ({required Object hours}) => '${hours}時間前',
+			'notifications.searchHint' => '通知を検索',
+			'notifications.type' => '種類',
+			'notifications.allTypes' => 'すべての種類',
+			'notifications.responseSent' => '応答を送信しました',
+			'notifications.responseFailed' => ({required Object error}) => '応答の送信に失敗しました: ${error}',
+			'notifications.friendOnlineChannel' => 'フレンドのオンライン通知',
+			'notifications.friendOnlineChannelDescription' => '選択したフレンドがオンラインになったときに通知します。',
 			'eventCalendar.title' => 'イベントカレンダー',
 			'eventCalendar.filter' => 'イベントを絞り込む',
 			'eventCalendar.refresh' => 'イベント情報を更新',
@@ -1371,7 +1639,7 @@ extension on TranslationsJa {
 			'eventCalendar.condition' => '参加条件',
 			'eventCalendar.way' => '参加方法',
 			'eventCalendar.note' => '備考',
-			'eventCalendar.quest' => 'Quest対応',
+			'eventCalendar.quest' => 'Android対応',
 			'eventCalendar.reminderCount' => ({required Object count}) => '${count}件',
 			'eventCalendar.startToEnd' => ({required Object start, required Object end}) => '${start}〜${end}',
 			'avatars.title' => 'アバター',
@@ -1392,9 +1660,28 @@ extension on TranslationsJa {
 			'avatars.sortUpdated' => '更新順',
 			'avatars.sortName' => '名前順',
 			'avatars.sortTooltip' => '並び替え',
+			'avatars.remoteTooltip' => 'VRChatのアバター',
+			'avatars.localTooltip' => 'ローカルアバターデータベース',
+			'avatars.localEmptyTitle' => 'ローカルアバターはありません',
+			'avatars.localEmptyDescription' => '閲覧・検索したアバターがここに表示されます。',
 			'avatars.viewModeTooltip' => '表示モード切替',
 			'worldDetail.loading' => 'ワールド情報を読み込み中...',
 			'worldDetail.error' => ({required Object error}) => 'ワールド情報の取得に失敗しました: ${error}',
+			'worldDetail.metadataTitle' => 'ワールド詳細',
+			'worldDetail.capacity' => '定員',
+			'worldDetail.capacityValue' => ({required Object recommended, required Object maximum}) => '${recommended} 推奨 / ${maximum} 最大',
+			'worldDetail.releaseStatus' => '公開状況',
+			'worldDetail.releaseAll' => 'すべて',
+			'worldDetail.releaseHidden' => '非表示',
+			'worldDetail.releasePrivate' => '非公開',
+			'worldDetail.releasePublic' => '公開',
+			'worldDetail.publicInstances' => 'パブリックインスタンス',
+			'worldDetail.occupantsValue' => ({required Object publicCount, required Object privateCount}) => '${publicCount} パブリック / ${privateCount} プライベート',
+			'worldDetail.publication' => '公開日',
+			'worldDetail.platforms' => '対応プラットフォーム',
+			'worldDetail.platformAndroid' => 'Android',
+			'worldDetail.platformIos' => 'iOS',
+			'worldDetail.platformPc' => 'PC',
 			'worldDetail.share' => 'このワールドを共有',
 			'worldDetail.openInVRChat' => 'VRChat公式サイトで開く',
 			'worldDetail.report' => 'このワールドを通報',
@@ -1549,6 +1836,8 @@ extension on TranslationsJa {
 			'settings.notifications' => '通知設定',
 			'settings.eventReminder' => 'イベントリマインダー',
 			'settings.eventReminderDescription' => '設定したイベントの開始前に通知を受け取ります',
+			_ => null,
+		} ?? switch (path) {
 			'settings.manageReminders' => '設定済みリマインダーの管理',
 			'settings.manageRemindersDescription' => '通知のキャンセルや確認ができます',
 			'settings.dataStorage' => 'データとストレージ',
@@ -1598,9 +1887,8 @@ extension on TranslationsJa {
 			'instance.type.hidden' => 'フレンド+',
 			'instance.type.friends' => 'フレンド',
 			'instance.type.private' => 'インバイト+',
+			'instance.type.group' => 'グループ',
 			'instance.type.unknown' => '不明',
-			_ => null,
-		} ?? switch (path) {
 			'status.active' => 'オンライン',
 			'status.joinMe' => 'だれでもおいで',
 			'status.askMe' => 'きいてみてね',
@@ -1608,6 +1896,7 @@ extension on TranslationsJa {
 			'status.offline' => 'オフライン',
 			'status.unknown' => 'ステータス不明',
 			'location.private' => 'プライベート',
+			'location.traveling' => '移動中',
 			'location.playerCount' => ({required Object userCount, required Object capacity}) => 'プレイヤー数: ${userCount} / ${capacity}',
 			'location.instanceType' => ({required Object type}) => 'インスタンスタイプ: ${type}',
 			'location.noInfo' => 'ロケーション情報はありません',
@@ -1649,6 +1938,8 @@ extension on TranslationsJa {
 			'friend.sortAsc' => '昇順',
 			'friend.sortDesc' => '降順',
 			'friend.close' => '閉じる',
+			'friend.searchTitle' => 'フレンドを検索',
+			'friend.searchHint' => '名前、ユーザーID、場所',
 			'eventCalendarFilter.filterTitle' => 'イベントを絞り込む',
 			'eventCalendarFilter.clear' => 'クリア',
 			'eventCalendarFilter.keyword' => 'キーワード検索',
@@ -1667,6 +1958,119 @@ extension on TranslationsJa {
 			'eventCalendarFilter.apply' => '適用する',
 			'eventCalendarFilter.filterSummary' => 'フィルター',
 			'eventCalendarFilter.filterNone' => 'フィルターは設定されていません',
+			'activity.title' => 'アクティビティ',
+			'activity.clearHistory' => 'アクティビティ履歴を削除',
+			'activity.feed' => 'フィード',
+			'activity.friendLog' => 'フレンドログ',
+			'activity.heatmap' => 'ヒートマップ',
+			'activity.empty' => 'アクティビティはまだありません。',
+			'activity.trackedHours' => ({required Object hours, required Object minutes}) => '${hours}時間${minutes}分を記録',
+			'activity.trackedMinutes' => ({required Object minutes}) => '${minutes}分を記録',
+			'activity.summary' => ({required Object kind, required Object detail}) => '${kind} · ${detail}',
+			'activity.heatmapTitle' => '過去6週間のフレンドアクティビティ',
+			'activity.kind.friendOnline' => 'フレンドがオンラインになりました',
+			'activity.kind.friendOffline' => 'フレンドがオフラインになりました',
+			'activity.kind.friendActive' => 'フレンドがアクティブになりました',
+			'activity.kind.friendAdd' => 'フレンドを追加しました',
+			'activity.kind.friendRemove' => 'フレンドを削除しました',
+			'activity.kind.locationChange' => '場所が変更されました',
+			'activity.kind.statusUpdate' => 'ステータスを更新しました',
+			'activity.kind.activity' => 'アクティビティ',
+			'insights.title' => 'インサイト',
+			'insights.mutualFriends' => '相互フレンド',
+			'insights.hotWorlds' => '人気のワールド',
+			'insights.instancePlayers' => 'インスタンスの参加者',
+			'insights.userHint' => 'ユーザーID (usr_...)',
+			'insights.enterUser' => '比較するユーザーIDを入力してください。',
+			'insights.noMutual' => '相互フレンドはいません。',
+			'insights.noLocations' => 'フレンドの場所がありません。',
+			'insights.friendsCount' => ({required Object count}) => '${count}人のフレンド',
+			'insights.locationHint' => '場所 (wrld_...:instance)',
+			'insights.enterLocation' => 'インスタンスの場所を入力してください。',
+			'insights.noPlayers' => '表示できるプレイヤーはいません。',
+			'insights.load' => '読み込む',
+			'moderation.title' => 'モデレーション',
+			'moderation.clearPlayer' => 'プレイヤーのモデレーションを削除',
+			'moderation.player' => 'プレイヤー',
+			'moderation.groupBans' => 'グループBAN',
+			'moderation.cleared' => 'プレイヤーのモデレーションを削除しました',
+			'moderation.noPlayer' => 'プレイヤーのモデレーションはありません。',
+			'moderation.remove' => 'モデレーションを削除',
+			'moderation.groupHint' => 'グループID (grp_...)',
+			'moderation.loadBans' => 'BANを読み込む',
+			'moderation.enterGroup' => 'グループIDを入力してください。',
+			'moderation.noGroup' => 'グループBANはありません。',
+			'moderation.unban' => 'BANを解除',
+			'tools.title' => 'ツール',
+			'tools.groups' => 'グループ',
+			'tools.myAvatars' => '所有アバター',
+			'tools.status' => 'ステータス',
+			'tools.data' => 'データ',
+			'tools.server' => 'サーバー',
+			'tools.groupHint' => 'グループID (grp_...)',
+			'tools.loadGroup' => 'グループを読み込む',
+			'tools.join' => '参加',
+			'tools.leave' => '退出',
+			'tools.members' => 'メンバー',
+			'tools.bans' => 'BAN',
+			'tools.calendar' => 'カレンダー',
+			'tools.enterGroup' => '管理するグループIDを入力してください。',
+			'tools.noMembers' => 'メンバーはいません。',
+			'tools.banMember' => 'メンバーをBAN',
+			'tools.noGroupBans' => 'グループBANはありません。',
+			'tools.unbanMember' => 'メンバーのBANを解除',
+			'tools.noCalendar' => 'グループのカレンダーイベントはありません。',
+			'tools.followEvent' => 'イベントをフォロー',
+			'tools.unfollowEvent' => 'イベントのフォローを解除',
+			'tools.ownAvatars' => '所有アバター',
+			'tools.noOwnAvatars' => '所有アバターが見つかりません。',
+			'tools.editAvatar' => 'アバターを編集',
+			'tools.worldMetadata' => 'ワールドメタデータ',
+			'tools.worldId' => 'ワールドID',
+			'tools.worldHint' => 'wrld_...',
+			'tools.loadWorld' => 'ワールドIDを読み込む',
+			'tools.editWorldMetadata' => 'ワールドメタデータを編集',
+			'tools.worldPermissionHint' => 'アカウントに権限があるワールドのみ編集できます。',
+			'tools.statusPresets' => 'ステータスプリセット',
+			'tools.addPreset' => 'プリセットを追加',
+			'tools.applyPreset' => 'プリセットを適用',
+			'tools.deletePreset' => 'プリセットを削除',
+			'tools.applyPresetOnLogin' => 'ログイン時にプリセットを適用',
+			'tools.restoreStatus' => 'ログイン後に選択したソーシャルステータスを復元します。',
+			'tools.automaticPreset' => '自動プリセット',
+			'tools.discordNames' => 'Discord名',
+			'tools.scanFriendProfiles' => 'フレンドのプロフィールをスキャン',
+			'tools.exportDiscordNames' => 'Discord名をエクスポート',
+			'tools.noLinkedNames' => 'リンクされた名前はまだありません。プロフィールの自己紹介にDiscord名を追加するか、インポート／エクスポートを使用してください。',
+			'tools.dataTransfer' => 'データ移行',
+			'tools.dataTransferDescription' => 'アクティビティ、メモ、アラート、プリセットを端末間で移行します。',
+			'tools.exportData' => 'データをエクスポート',
+			'tools.importData' => 'データをインポート',
+			'tools.dataExportHint' => 'バージョン付きJSON形式でエクスポートします。APIの内容は自動で上書きされません。インポートではローカルアプリデータのみ復元します。',
+			'tools.apiOnline' => 'VRChat APIはオンラインです',
+			'tools.apiDegraded' => 'VRChat APIの性能が低下しています',
+			'tools.apiUnavailable' => 'APIの状態を取得できません',
+			'tools.serverRefreshHint' => '引っ張って最新のサーバー状態を更新します。',
+			'tools.groupActionCompleted' => 'グループ操作が完了しました',
+			'tools.editAvatarDialog' => 'アバターを編集',
+			'tools.editWorldDialog' => 'ワールドメタデータを編集',
+			'tools.newStatusPreset' => '新しいステータスプリセット',
+			'tools.name' => '名前',
+			'tools.description' => '説明',
+			'tools.capacity' => '定員',
+			'tools.tags' => 'タグ（カンマ区切り）',
+			'tools.pasteExport' => 'VRCNのJSONエクスポートを貼り付け',
+			'tools.dataImported' => 'データをインポートしました',
+			'tools.importFailed' => ({required Object error}) => 'インポートに失敗しました: ${error}',
+			'tools.statusAvailable' => 'オンライン',
+			'tools.statusAskMe' => '応答を求める',
+			'tools.statusBusy' => '取り込み中',
+			'tools.statusJoinMe' => '参加してほしい',
+			'osc.floatType' => '小数 (0.0～1.0)',
+			'osc.intType' => '整数',
+			'osc.boolType' => '真偽値 (オン／オフ)',
+			'osc.on' => 'オン',
+			'osc.off' => 'オフ',
 			_ => null,
 		};
 	}

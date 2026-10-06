@@ -66,6 +66,11 @@ class TranslationsKo with BaseTranslations<AppLocale, Translations> implements T
 	@override late final _Translations$reminder$ko reminder = _Translations$reminder$ko._(_root);
 	@override late final _Translations$friend$ko friend = _Translations$friend$ko._(_root);
 	@override late final _Translations$eventCalendarFilter$ko eventCalendarFilter = _Translations$eventCalendarFilter$ko._(_root);
+	@override late final _Translations$activity$ko activity = _Translations$activity$ko._(_root);
+	@override late final _Translations$insights$ko insights = _Translations$insights$ko._(_root);
+	@override late final _Translations$moderation$ko moderation = _Translations$moderation$ko._(_root);
+	@override late final _Translations$tools$ko tools = _Translations$tools$ko._(_root);
+	@override late final _Translations$osc$ko osc = _Translations$osc$ko._(_root);
 }
 
 // Path: common
@@ -135,6 +140,10 @@ class _Translations$drawer$ko implements Translations$drawer$en {
 	@override String get review => '리뷰';
 	@override String get feedback => '피드백';
 	@override String get settings => '설정';
+	@override String get activity => '활동';
+	@override String get insights => '인사이트';
+	@override String get moderation => '관리';
+	@override String get tools => '도구';
 	@override String get userLoading => '사용자 정보 로딩 중...';
 	@override String get userError => '사용자 정보 로딩에 실패했습니다';
 	@override String get retry => '재시도';
@@ -169,6 +178,9 @@ class _Translations$login$ko implements Translations$login$en {
 	@override String get error2faFailed => '2단계 인증에 실패했습니다. 코드가 올바른지 확인해 주세요.';
 	@override String get backToLogin => '로그인 화면으로 돌아가기';
 	@override String get paste => '붙여넣기';
+	@override String get biometricLogin => '생체 인증으로 로그인';
+	@override String get biometricReason => '저장된 VRChat 로그인 정보를 사용하려면 인증하세요.';
+	@override String get savedLoginMissing => '저장된 로그인 정보가 없습니다.';
 }
 
 // Path: friends
@@ -224,6 +236,17 @@ class _Translations$friendDetail$ko implements Translations$friendDetail$en {
 	@override String get blockSuccess => '차단했습니다';
 	@override String get muteSuccess => '음소거했습니다';
 	@override String operationFailed({required Object error}) => '작업에 실패했습니다: ${error}';
+	@override String get friendStatusEmpty => '친구 상태가 비어 있습니다.';
+	@override String get addFriend => '친구 추가';
+	@override String get removeFriend => '친구 삭제';
+	@override String get cancelFriendRequest => '친구 요청 취소';
+	@override String get friendRequestPending => '친구 요청 대기 중';
+	@override String relationshipCompleted({required Object action}) => '${action}했습니다';
+	@override String get note => '메모';
+	@override String get noNote => '저장된 메모가 없습니다';
+	@override String get editNote => '메모 편집';
+	@override String noteTitle({required Object name}) => '메모: ${name}';
+	@override String get noteHint => '나만 볼 수 있는 메모를 작성하세요';
 }
 
 // Path: search
@@ -291,6 +314,7 @@ class _Translations$profile$ko implements Translations$profile$en {
 	@override String get linksHint => '링크는 프로필에 표시되며, 탭하여 열 수 있습니다';
 	@override String get statusMessageHint => '현재 상황이나 메시지를 입력하세요';
 	@override String get bioHint => '자신에 대해 작성해 보세요';
+	@override late final _Translations$profile$userTypes$ko userTypes = _Translations$profile$userTypes$ko._(_root);
 }
 
 // Path: engageCard
@@ -403,6 +427,13 @@ class _Translations$notifications$ko implements Translations$notifications$en {
 	@override String secondsAgo({required Object seconds}) => '${seconds}초 전';
 	@override String minutesAgo({required Object minutes}) => '${minutes}분 전';
 	@override String hoursAgo({required Object hours}) => '${hours}시간 전';
+	@override String get searchHint => '알림 검색';
+	@override String get type => '유형';
+	@override String get allTypes => '모든 유형';
+	@override String get responseSent => '응답을 보냈습니다';
+	@override String responseFailed({required Object error}) => '응답 전송에 실패했습니다: ${error}';
+	@override String get friendOnlineChannel => '친구 온라인';
+	@override String get friendOnlineChannelDescription => '선택한 친구가 온라인 상태가 되면 알림을 보냅니다.';
 }
 
 // Path: eventCalendar
@@ -432,7 +463,7 @@ class _Translations$eventCalendar$ko implements Translations$eventCalendar$en {
 	@override String get condition => '참가 조건';
 	@override String get way => '참가 방법';
 	@override String get note => '비고';
-	@override String get quest => 'Quest 대응';
+	@override String get quest => 'Android 대응';
 	@override String reminderCount({required Object count}) => '${count}건';
 	@override String startToEnd({required Object start, required Object end}) => '${start} ~ ${end}';
 }
@@ -462,6 +493,10 @@ class _Translations$avatars$ko implements Translations$avatars$en {
 	@override String get sortUpdated => '업데이트 순';
 	@override String get sortName => '이름 순';
 	@override String get sortTooltip => '정렬';
+	@override String get remoteTooltip => 'VRChat 아바타';
+	@override String get localTooltip => '로컬 아바타 데이터베이스';
+	@override String get localEmptyTitle => '로컬 아바타가 없습니다';
+	@override String get localEmptyDescription => '조회하고 검색한 아바타가 여기에 표시됩니다.';
 	@override String get viewModeTooltip => '보기 모드 전환';
 }
 
@@ -474,6 +509,21 @@ class _Translations$worldDetail$ko implements Translations$worldDetail$en {
 	// Translations
 	@override String get loading => '월드 정보 로딩 중...';
 	@override String error({required Object error}) => '월드 정보 로딩에 실패했습니다: ${error}';
+	@override String get metadataTitle => '월드 상세';
+	@override String get capacity => '정원';
+	@override String capacityValue({required Object recommended, required Object maximum}) => '${recommended} 권장 / ${maximum} 최대';
+	@override String get releaseStatus => '공개 상태';
+	@override String get releaseAll => '전체';
+	@override String get releaseHidden => '숨김';
+	@override String get releasePrivate => '비공개';
+	@override String get releasePublic => '공개';
+	@override String get publicInstances => '퍼블릭 인스턴스';
+	@override String occupantsValue({required Object publicCount, required Object privateCount}) => '퍼블릭 ${publicCount} / 프라이빗 ${privateCount}';
+	@override String get publication => '게시일';
+	@override String get platforms => '지원 플랫폼';
+	@override String get platformAndroid => 'Android';
+	@override String get platformIos => 'iOS';
+	@override String get platformPc => 'PC';
 	@override String get share => '이 월드 공유하기';
 	@override String get openInVRChat => 'VRChat 공식 웹사이트에서 열기';
 	@override String get report => '이 월드 신고하기';
@@ -741,6 +791,7 @@ class _Translations$location$ko implements Translations$location$en {
 
 	// Translations
 	@override String get private => '프라이빗';
+	@override String get traveling => '이동 중';
 	@override String playerCount({required Object userCount, required Object capacity}) => '플레이어 수: ${userCount} / ${capacity}';
 	@override String instanceType({required Object type}) => '인스턴스 타입: ${type}';
 	@override String get noInfo => '위치 정보가 없습니다';
@@ -800,6 +851,8 @@ class _Translations$friend$ko implements Translations$friend$en {
 	@override String get sortAsc => '오름차순';
 	@override String get sortDesc => '내림차순';
 	@override String get close => '닫기';
+	@override String get searchTitle => '친구 검색';
+	@override String get searchHint => '이름, 사용자 ID 또는 위치';
 }
 
 // Path: eventCalendarFilter
@@ -829,6 +882,157 @@ class _Translations$eventCalendarFilter$ko implements Translations$eventCalendar
 	@override String get filterNone => '필터가 설정되지 않았습니다';
 }
 
+// Path: activity
+class _Translations$activity$ko implements Translations$activity$en {
+	_Translations$activity$ko._(this._root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '활동';
+	@override String get clearHistory => '활동 기록 삭제';
+	@override String get feed => '피드';
+	@override String get friendLog => '친구 로그';
+	@override String get heatmap => '히트맵';
+	@override String get empty => '기록된 활동이 없습니다.';
+	@override String trackedHours({required Object hours, required Object minutes}) => '${hours}시간 ${minutes}분 기록됨';
+	@override String trackedMinutes({required Object minutes}) => '${minutes}분 기록됨';
+	@override String summary({required Object kind, required Object detail}) => '${kind} · ${detail}';
+	@override String get heatmapTitle => '지난 6주간 친구 활동';
+	@override late final _Translations$activity$kind$ko kind = _Translations$activity$kind$ko._(_root);
+}
+
+// Path: insights
+class _Translations$insights$ko implements Translations$insights$en {
+	_Translations$insights$ko._(this._root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '인사이트';
+	@override String get mutualFriends => '공통 친구';
+	@override String get hotWorlds => '인기 월드';
+	@override String get instancePlayers => '인스턴스 플레이어';
+	@override String get userHint => '사용자 ID (usr_...)';
+	@override String get enterUser => '친구를 비교할 사용자 ID를 입력하세요.';
+	@override String get noMutual => '공통 친구가 없습니다.';
+	@override String get noLocations => '친구 위치를 확인할 수 없습니다.';
+	@override String friendsCount({required Object count}) => '친구 ${count}명';
+	@override String get locationHint => '위치 (wrld_...:instance)';
+	@override String get enterLocation => '인스턴스 위치를 입력하세요.';
+	@override String get noPlayers => '표시할 플레이어가 없습니다.';
+	@override String get load => '불러오기';
+}
+
+// Path: moderation
+class _Translations$moderation$ko implements Translations$moderation$en {
+	_Translations$moderation$ko._(this._root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '관리';
+	@override String get clearPlayer => '플레이어 관리 기록 삭제';
+	@override String get player => '플레이어';
+	@override String get groupBans => '그룹 차단';
+	@override String get cleared => '플레이어 관리 기록을 삭제했습니다';
+	@override String get noPlayer => '플레이어 관리 기록이 없습니다.';
+	@override String get remove => '관리 기록 삭제';
+	@override String get groupHint => '그룹 ID (grp_...)';
+	@override String get loadBans => '차단 목록 불러오기';
+	@override String get enterGroup => '그룹 ID를 입력하세요.';
+	@override String get noGroup => '그룹 차단이 없습니다.';
+	@override String get unban => '차단 해제';
+}
+
+// Path: tools
+class _Translations$tools$ko implements Translations$tools$en {
+	_Translations$tools$ko._(this._root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '도구';
+	@override String get groups => '그룹';
+	@override String get myAvatars => '내 아바타';
+	@override String get status => '상태';
+	@override String get data => '데이터';
+	@override String get server => '서버';
+	@override String get groupHint => '그룹 ID (grp_...)';
+	@override String get loadGroup => '그룹 불러오기';
+	@override String get join => '가입';
+	@override String get leave => '나가기';
+	@override String get members => '멤버';
+	@override String get bans => '차단';
+	@override String get calendar => '캘린더';
+	@override String get enterGroup => '관리할 그룹 ID를 입력하세요.';
+	@override String get noMembers => '멤버가 없습니다.';
+	@override String get banMember => '멤버 차단';
+	@override String get noGroupBans => '그룹 차단이 없습니다.';
+	@override String get unbanMember => '멤버 차단 해제';
+	@override String get noCalendar => '그룹 캘린더 이벤트가 없습니다.';
+	@override String get followEvent => '이벤트 팔로우';
+	@override String get unfollowEvent => '이벤트 팔로우 취소';
+	@override String get ownAvatars => '내 아바타';
+	@override String get noOwnAvatars => '내 아바타를 찾을 수 없습니다.';
+	@override String get editAvatar => '아바타 편집';
+	@override String get worldMetadata => '월드 메타데이터';
+	@override String get worldId => '월드 ID';
+	@override String get worldHint => 'wrld_...';
+	@override String get loadWorld => '월드 ID 불러오기';
+	@override String get editWorldMetadata => '월드 메타데이터 편집';
+	@override String get worldPermissionHint => '계정에 권한이 있는 월드만 편집할 수 있습니다.';
+	@override String get statusPresets => '상태 프리셋';
+	@override String get addPreset => '프리셋 추가';
+	@override String get applyPreset => '프리셋 적용';
+	@override String get deletePreset => '프리셋 삭제';
+	@override String get applyPresetOnLogin => '로그인 시 프리셋 적용';
+	@override String get restoreStatus => '로그인 후 선택한 소셜 상태를 복원합니다.';
+	@override String get automaticPreset => '자동 프리셋';
+	@override String get discordNames => 'Discord 이름';
+	@override String get scanFriendProfiles => '친구 프로필 검색';
+	@override String get exportDiscordNames => 'Discord 이름 내보내기';
+	@override String get noLinkedNames => '연결된 이름이 없습니다. 프로필 소개에 Discord를 추가하거나 가져오기/내보내기를 사용하세요.';
+	@override String get dataTransfer => '데이터 전송';
+	@override String get dataTransferDescription => '기기 간에 활동, 메모, 알림 및 프리셋을 이동합니다.';
+	@override String get exportData => '데이터 내보내기';
+	@override String get importData => '데이터 가져오기';
+	@override String get dataExportHint => '버전이 지정된 JSON 형식으로 내보냅니다. API 콘텐츠는 자동으로 덮어쓰지 않으며, 가져오기는 로컬 앱 데이터만 복원합니다.';
+	@override String get apiOnline => 'VRChat API 온라인';
+	@override String get apiDegraded => 'VRChat API 성능 저하';
+	@override String get apiUnavailable => 'API 상태를 확인할 수 없습니다';
+	@override String get serverRefreshHint => '당겨서 최신 서버 상태를 새로 고칩니다.';
+	@override String get groupActionCompleted => '그룹 작업이 완료되었습니다';
+	@override String get editAvatarDialog => '아바타 편집';
+	@override String get editWorldDialog => '월드 메타데이터 편집';
+	@override String get newStatusPreset => '새 상태 프리셋';
+	@override String get name => '이름';
+	@override String get description => '설명';
+	@override String get capacity => '수용 인원';
+	@override String get tags => '태그 (쉼표로 구분)';
+	@override String get pasteExport => 'VRCN JSON 내보내기 붙여넣기';
+	@override String get dataImported => '데이터를 가져왔습니다';
+	@override String importFailed({required Object error}) => '가져오기에 실패했습니다: ${error}';
+	@override String get statusAvailable => '온라인';
+	@override String get statusAskMe => '상태 확인';
+	@override String get statusBusy => '바쁨';
+	@override String get statusJoinMe => '참여 가능';
+}
+
+// Path: osc
+class _Translations$osc$ko implements Translations$osc$en {
+	_Translations$osc$ko._(this._root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get floatType => '실수 (0.0～1.0)';
+	@override String get intType => '정수';
+	@override String get boolType => '부울 (켜기/끄기)';
+	@override String get on => '켜기';
+	@override String get off => '끄기';
+}
+
 // Path: drawer.section
 class _Translations$drawer$section$ko implements Translations$drawer$section$en {
 	_Translations$drawer$section$ko._(this._root);
@@ -851,6 +1055,21 @@ class _Translations$search$tabs$ko implements Translations$search$tabs$en {
 	@override late final _Translations$search$tabs$worldSearch$ko worldSearch = _Translations$search$tabs$worldSearch$ko._(_root);
 	@override late final _Translations$search$tabs$groupSearch$ko groupSearch = _Translations$search$tabs$groupSearch$ko._(_root);
 	@override late final _Translations$search$tabs$avatarSearch$ko avatarSearch = _Translations$search$tabs$avatarSearch$ko._(_root);
+}
+
+// Path: profile.userTypes
+class _Translations$profile$userTypes$ko implements Translations$profile$userTypes$en {
+	_Translations$profile$userTypes$ko._(this._root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get admin => '관리자';
+	@override String get trusted => '신뢰 사용자';
+	@override String get known => '알려진 사용자';
+	@override String get user => '사용자';
+	@override String get newUser => '신규 사용자';
+	@override String get visitor => '방문자';
 }
 
 // Path: groupDetail.privacy
@@ -919,7 +1138,25 @@ class _Translations$instance$type$ko implements Translations$instance$type$en {
 	@override String get hidden => '프렌드+';
 	@override String get friends => '프렌드';
 	@override String get private => '인바이트+';
+	@override String get group => '그룹';
 	@override String get unknown => '알 수 없음';
+}
+
+// Path: activity.kind
+class _Translations$activity$kind$ko implements Translations$activity$kind$en {
+	_Translations$activity$kind$ko._(this._root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get friendOnline => '친구 온라인';
+	@override String get friendOffline => '친구 오프라인';
+	@override String get friendActive => '친구 활동 중';
+	@override String get friendAdd => '친구 추가됨';
+	@override String get friendRemove => '친구 삭제됨';
+	@override String get locationChange => '위치 변경됨';
+	@override String get statusUpdate => '상태 업데이트됨';
+	@override String get activity => '활동';
 }
 
 // Path: search.tabs.userSearch
@@ -1129,6 +1366,10 @@ extension on TranslationsKo {
 			'drawer.review' => '리뷰',
 			'drawer.feedback' => '피드백',
 			'drawer.settings' => '설정',
+			'drawer.activity' => '활동',
+			'drawer.insights' => '인사이트',
+			'drawer.moderation' => '관리',
+			'drawer.tools' => '도구',
 			'drawer.userLoading' => '사용자 정보 로딩 중...',
 			'drawer.userError' => '사용자 정보 로딩에 실패했습니다',
 			'drawer.retry' => '재시도',
@@ -1155,6 +1396,9 @@ extension on TranslationsKo {
 			'login.error2faFailed' => '2단계 인증에 실패했습니다. 코드가 올바른지 확인해 주세요.',
 			'login.backToLogin' => '로그인 화면으로 돌아가기',
 			'login.paste' => '붙여넣기',
+			'login.biometricLogin' => '생체 인증으로 로그인',
+			'login.biometricReason' => '저장된 VRChat 로그인 정보를 사용하려면 인증하세요.',
+			'login.savedLoginMissing' => '저장된 로그인 정보가 없습니다.',
 			'friends.loading' => '친구 정보 로딩 중...',
 			'friends.error' => ({required Object error}) => '친구 정보 로딩에 실패했습니다: ${error}',
 			'friends.notFound' => '친구를 찾을 수 없습니다',
@@ -1192,6 +1436,17 @@ extension on TranslationsKo {
 			'friendDetail.blockSuccess' => '차단했습니다',
 			'friendDetail.muteSuccess' => '음소거했습니다',
 			'friendDetail.operationFailed' => ({required Object error}) => '작업에 실패했습니다: ${error}',
+			'friendDetail.friendStatusEmpty' => '친구 상태가 비어 있습니다.',
+			'friendDetail.addFriend' => '친구 추가',
+			'friendDetail.removeFriend' => '친구 삭제',
+			'friendDetail.cancelFriendRequest' => '친구 요청 취소',
+			'friendDetail.friendRequestPending' => '친구 요청 대기 중',
+			'friendDetail.relationshipCompleted' => ({required Object action}) => '${action}했습니다',
+			'friendDetail.note' => '메모',
+			'friendDetail.noNote' => '저장된 메모가 없습니다',
+			'friendDetail.editNote' => '메모 편집',
+			'friendDetail.noteTitle' => ({required Object name}) => '메모: ${name}',
+			'friendDetail.noteHint' => '나만 볼 수 있는 메모를 작성하세요',
 			'search.userTab' => '사용자',
 			'search.worldTab' => '월드',
 			'search.avatarTab' => '아바타',
@@ -1275,6 +1530,12 @@ extension on TranslationsKo {
 			'profile.linksHint' => '링크는 프로필에 표시되며, 탭하여 열 수 있습니다',
 			'profile.statusMessageHint' => '현재 상황이나 메시지를 입력하세요',
 			'profile.bioHint' => '자신에 대해 작성해 보세요',
+			'profile.userTypes.admin' => '관리자',
+			'profile.userTypes.trusted' => '신뢰 사용자',
+			'profile.userTypes.known' => '알려진 사용자',
+			'profile.userTypes.user' => '사용자',
+			'profile.userTypes.newUser' => '신규 사용자',
+			'profile.userTypes.visitor' => '방문자',
 			'engageCard.pickBackground' => '배경 이미지 선택',
 			'engageCard.removeBackground' => '배경 이미지 삭제',
 			'engageCard.scanQr' => 'QR 코드 스캔',
@@ -1351,6 +1612,13 @@ extension on TranslationsKo {
 			'notifications.secondsAgo' => ({required Object seconds}) => '${seconds}초 전',
 			'notifications.minutesAgo' => ({required Object minutes}) => '${minutes}분 전',
 			'notifications.hoursAgo' => ({required Object hours}) => '${hours}시간 전',
+			'notifications.searchHint' => '알림 검색',
+			'notifications.type' => '유형',
+			'notifications.allTypes' => '모든 유형',
+			'notifications.responseSent' => '응답을 보냈습니다',
+			'notifications.responseFailed' => ({required Object error}) => '응답 전송에 실패했습니다: ${error}',
+			'notifications.friendOnlineChannel' => '친구 온라인',
+			'notifications.friendOnlineChannelDescription' => '선택한 친구가 온라인 상태가 되면 알림을 보냅니다.',
 			'eventCalendar.title' => '이벤트 캘린더',
 			'eventCalendar.filter' => '이벤트 필터링',
 			'eventCalendar.refresh' => '이벤트 정보 새로고침',
@@ -1371,7 +1639,7 @@ extension on TranslationsKo {
 			'eventCalendar.condition' => '참가 조건',
 			'eventCalendar.way' => '참가 방법',
 			'eventCalendar.note' => '비고',
-			'eventCalendar.quest' => 'Quest 대응',
+			'eventCalendar.quest' => 'Android 대응',
 			'eventCalendar.reminderCount' => ({required Object count}) => '${count}건',
 			'eventCalendar.startToEnd' => ({required Object start, required Object end}) => '${start} ~ ${end}',
 			'avatars.title' => '아바타',
@@ -1392,9 +1660,28 @@ extension on TranslationsKo {
 			'avatars.sortUpdated' => '업데이트 순',
 			'avatars.sortName' => '이름 순',
 			'avatars.sortTooltip' => '정렬',
+			'avatars.remoteTooltip' => 'VRChat 아바타',
+			'avatars.localTooltip' => '로컬 아바타 데이터베이스',
+			'avatars.localEmptyTitle' => '로컬 아바타가 없습니다',
+			'avatars.localEmptyDescription' => '조회하고 검색한 아바타가 여기에 표시됩니다.',
 			'avatars.viewModeTooltip' => '보기 모드 전환',
 			'worldDetail.loading' => '월드 정보 로딩 중...',
 			'worldDetail.error' => ({required Object error}) => '월드 정보 로딩에 실패했습니다: ${error}',
+			'worldDetail.metadataTitle' => '월드 상세',
+			'worldDetail.capacity' => '정원',
+			'worldDetail.capacityValue' => ({required Object recommended, required Object maximum}) => '${recommended} 권장 / ${maximum} 최대',
+			'worldDetail.releaseStatus' => '공개 상태',
+			'worldDetail.releaseAll' => '전체',
+			'worldDetail.releaseHidden' => '숨김',
+			'worldDetail.releasePrivate' => '비공개',
+			'worldDetail.releasePublic' => '공개',
+			'worldDetail.publicInstances' => '퍼블릭 인스턴스',
+			'worldDetail.occupantsValue' => ({required Object publicCount, required Object privateCount}) => '퍼블릭 ${publicCount} / 프라이빗 ${privateCount}',
+			'worldDetail.publication' => '게시일',
+			'worldDetail.platforms' => '지원 플랫폼',
+			'worldDetail.platformAndroid' => 'Android',
+			'worldDetail.platformIos' => 'iOS',
+			'worldDetail.platformPc' => 'PC',
 			'worldDetail.share' => '이 월드 공유하기',
 			'worldDetail.openInVRChat' => 'VRChat 공식 웹사이트에서 열기',
 			'worldDetail.report' => '이 월드 신고하기',
@@ -1549,6 +1836,8 @@ extension on TranslationsKo {
 			'settings.notifications' => '알림 설정',
 			'settings.eventReminder' => '이벤트 리마인더',
 			'settings.eventReminderDescription' => '설정한 이벤트 시작 전에 알림을 받습니다',
+			_ => null,
+		} ?? switch (path) {
 			'settings.manageReminders' => '설정된 리마인더 관리',
 			'settings.manageRemindersDescription' => '알림 취소 및 확인이 가능합니다',
 			'settings.dataStorage' => '데이터 및 저장 공간',
@@ -1598,9 +1887,8 @@ extension on TranslationsKo {
 			'instance.type.hidden' => '프렌드+',
 			'instance.type.friends' => '프렌드',
 			'instance.type.private' => '인바이트+',
+			'instance.type.group' => '그룹',
 			'instance.type.unknown' => '알 수 없음',
-			_ => null,
-		} ?? switch (path) {
 			'status.active' => '온라인',
 			'status.joinMe' => '누구나 와요',
 			'status.askMe' => '물어보세요',
@@ -1608,6 +1896,7 @@ extension on TranslationsKo {
 			'status.offline' => '오프라인',
 			'status.unknown' => '상태 알 수 없음',
 			'location.private' => '프라이빗',
+			'location.traveling' => '이동 중',
 			'location.playerCount' => ({required Object userCount, required Object capacity}) => '플레이어 수: ${userCount} / ${capacity}',
 			'location.instanceType' => ({required Object type}) => '인스턴스 타입: ${type}',
 			'location.noInfo' => '위치 정보가 없습니다',
@@ -1649,6 +1938,8 @@ extension on TranslationsKo {
 			'friend.sortAsc' => '오름차순',
 			'friend.sortDesc' => '내림차순',
 			'friend.close' => '닫기',
+			'friend.searchTitle' => '친구 검색',
+			'friend.searchHint' => '이름, 사용자 ID 또는 위치',
 			'eventCalendarFilter.filterTitle' => '이벤트 필터링',
 			'eventCalendarFilter.clear' => '초기화',
 			'eventCalendarFilter.keyword' => '키워드 검색',
@@ -1667,6 +1958,119 @@ extension on TranslationsKo {
 			'eventCalendarFilter.apply' => '적용하기',
 			'eventCalendarFilter.filterSummary' => '필터',
 			'eventCalendarFilter.filterNone' => '필터가 설정되지 않았습니다',
+			'activity.title' => '활동',
+			'activity.clearHistory' => '활동 기록 삭제',
+			'activity.feed' => '피드',
+			'activity.friendLog' => '친구 로그',
+			'activity.heatmap' => '히트맵',
+			'activity.empty' => '기록된 활동이 없습니다.',
+			'activity.trackedHours' => ({required Object hours, required Object minutes}) => '${hours}시간 ${minutes}분 기록됨',
+			'activity.trackedMinutes' => ({required Object minutes}) => '${minutes}분 기록됨',
+			'activity.summary' => ({required Object kind, required Object detail}) => '${kind} · ${detail}',
+			'activity.heatmapTitle' => '지난 6주간 친구 활동',
+			'activity.kind.friendOnline' => '친구 온라인',
+			'activity.kind.friendOffline' => '친구 오프라인',
+			'activity.kind.friendActive' => '친구 활동 중',
+			'activity.kind.friendAdd' => '친구 추가됨',
+			'activity.kind.friendRemove' => '친구 삭제됨',
+			'activity.kind.locationChange' => '위치 변경됨',
+			'activity.kind.statusUpdate' => '상태 업데이트됨',
+			'activity.kind.activity' => '활동',
+			'insights.title' => '인사이트',
+			'insights.mutualFriends' => '공통 친구',
+			'insights.hotWorlds' => '인기 월드',
+			'insights.instancePlayers' => '인스턴스 플레이어',
+			'insights.userHint' => '사용자 ID (usr_...)',
+			'insights.enterUser' => '친구를 비교할 사용자 ID를 입력하세요.',
+			'insights.noMutual' => '공통 친구가 없습니다.',
+			'insights.noLocations' => '친구 위치를 확인할 수 없습니다.',
+			'insights.friendsCount' => ({required Object count}) => '친구 ${count}명',
+			'insights.locationHint' => '위치 (wrld_...:instance)',
+			'insights.enterLocation' => '인스턴스 위치를 입력하세요.',
+			'insights.noPlayers' => '표시할 플레이어가 없습니다.',
+			'insights.load' => '불러오기',
+			'moderation.title' => '관리',
+			'moderation.clearPlayer' => '플레이어 관리 기록 삭제',
+			'moderation.player' => '플레이어',
+			'moderation.groupBans' => '그룹 차단',
+			'moderation.cleared' => '플레이어 관리 기록을 삭제했습니다',
+			'moderation.noPlayer' => '플레이어 관리 기록이 없습니다.',
+			'moderation.remove' => '관리 기록 삭제',
+			'moderation.groupHint' => '그룹 ID (grp_...)',
+			'moderation.loadBans' => '차단 목록 불러오기',
+			'moderation.enterGroup' => '그룹 ID를 입력하세요.',
+			'moderation.noGroup' => '그룹 차단이 없습니다.',
+			'moderation.unban' => '차단 해제',
+			'tools.title' => '도구',
+			'tools.groups' => '그룹',
+			'tools.myAvatars' => '내 아바타',
+			'tools.status' => '상태',
+			'tools.data' => '데이터',
+			'tools.server' => '서버',
+			'tools.groupHint' => '그룹 ID (grp_...)',
+			'tools.loadGroup' => '그룹 불러오기',
+			'tools.join' => '가입',
+			'tools.leave' => '나가기',
+			'tools.members' => '멤버',
+			'tools.bans' => '차단',
+			'tools.calendar' => '캘린더',
+			'tools.enterGroup' => '관리할 그룹 ID를 입력하세요.',
+			'tools.noMembers' => '멤버가 없습니다.',
+			'tools.banMember' => '멤버 차단',
+			'tools.noGroupBans' => '그룹 차단이 없습니다.',
+			'tools.unbanMember' => '멤버 차단 해제',
+			'tools.noCalendar' => '그룹 캘린더 이벤트가 없습니다.',
+			'tools.followEvent' => '이벤트 팔로우',
+			'tools.unfollowEvent' => '이벤트 팔로우 취소',
+			'tools.ownAvatars' => '내 아바타',
+			'tools.noOwnAvatars' => '내 아바타를 찾을 수 없습니다.',
+			'tools.editAvatar' => '아바타 편집',
+			'tools.worldMetadata' => '월드 메타데이터',
+			'tools.worldId' => '월드 ID',
+			'tools.worldHint' => 'wrld_...',
+			'tools.loadWorld' => '월드 ID 불러오기',
+			'tools.editWorldMetadata' => '월드 메타데이터 편집',
+			'tools.worldPermissionHint' => '계정에 권한이 있는 월드만 편집할 수 있습니다.',
+			'tools.statusPresets' => '상태 프리셋',
+			'tools.addPreset' => '프리셋 추가',
+			'tools.applyPreset' => '프리셋 적용',
+			'tools.deletePreset' => '프리셋 삭제',
+			'tools.applyPresetOnLogin' => '로그인 시 프리셋 적용',
+			'tools.restoreStatus' => '로그인 후 선택한 소셜 상태를 복원합니다.',
+			'tools.automaticPreset' => '자동 프리셋',
+			'tools.discordNames' => 'Discord 이름',
+			'tools.scanFriendProfiles' => '친구 프로필 검색',
+			'tools.exportDiscordNames' => 'Discord 이름 내보내기',
+			'tools.noLinkedNames' => '연결된 이름이 없습니다. 프로필 소개에 Discord를 추가하거나 가져오기/내보내기를 사용하세요.',
+			'tools.dataTransfer' => '데이터 전송',
+			'tools.dataTransferDescription' => '기기 간에 활동, 메모, 알림 및 프리셋을 이동합니다.',
+			'tools.exportData' => '데이터 내보내기',
+			'tools.importData' => '데이터 가져오기',
+			'tools.dataExportHint' => '버전이 지정된 JSON 형식으로 내보냅니다. API 콘텐츠는 자동으로 덮어쓰지 않으며, 가져오기는 로컬 앱 데이터만 복원합니다.',
+			'tools.apiOnline' => 'VRChat API 온라인',
+			'tools.apiDegraded' => 'VRChat API 성능 저하',
+			'tools.apiUnavailable' => 'API 상태를 확인할 수 없습니다',
+			'tools.serverRefreshHint' => '당겨서 최신 서버 상태를 새로 고칩니다.',
+			'tools.groupActionCompleted' => '그룹 작업이 완료되었습니다',
+			'tools.editAvatarDialog' => '아바타 편집',
+			'tools.editWorldDialog' => '월드 메타데이터 편집',
+			'tools.newStatusPreset' => '새 상태 프리셋',
+			'tools.name' => '이름',
+			'tools.description' => '설명',
+			'tools.capacity' => '수용 인원',
+			'tools.tags' => '태그 (쉼표로 구분)',
+			'tools.pasteExport' => 'VRCN JSON 내보내기 붙여넣기',
+			'tools.dataImported' => '데이터를 가져왔습니다',
+			'tools.importFailed' => ({required Object error}) => '가져오기에 실패했습니다: ${error}',
+			'tools.statusAvailable' => '온라인',
+			'tools.statusAskMe' => '상태 확인',
+			'tools.statusBusy' => '바쁨',
+			'tools.statusJoinMe' => '참여 가능',
+			'osc.floatType' => '실수 (0.0～1.0)',
+			'osc.intType' => '정수',
+			'osc.boolType' => '부울 (켜기/끄기)',
+			'osc.on' => '켜기',
+			'osc.off' => '끄기',
 			_ => null,
 		};
 	}

@@ -1,22 +1,23 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:vrchat/gen/strings.g.dart';
 
 class InstanceHelper {
   static IconData getInstanceTypeIcon(String? type) {
-    if (type == null) return Icons.question_mark;
+    if (type == null) return AppIcons.question_mark;
 
     if (type.contains('public')) {
-      return Icons.public;
+      return AppIcons.public;
     } else if (type.contains('hidden') || type.contains('friends+')) {
-      return Icons.people;
+      return AppIcons.people;
     } else if (type.contains('friends')) {
-      return Icons.person_add;
+      return AppIcons.person_add;
     } else if (type.contains('invite+')) {
-      return Icons.lock_open;
+      return AppIcons.lock_open;
     } else if (type.contains('invite') || type.contains('private')) {
-      return Icons.lock;
+      return AppIcons.lock;
     } else {
-      return Icons.question_mark;
+      return AppIcons.question_mark;
     }
   }
 
@@ -46,7 +47,7 @@ class InstanceHelper {
     final normalizedType = rawType.toLowerCase();
 
     if (normalizedType.startsWith('group')) {
-      return 'Group';
+      return t.instance.type.group;
     }
 
     switch (normalizedType) {

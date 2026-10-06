@@ -37,6 +37,9 @@ class EventReminder {
   factory EventReminder.fromJson(Map<String, dynamic> json) {
     final eventTime = json['eventTime'] as int? ?? 0;
     final reminderTime = json['reminderTime'] as int? ?? 0;
+    if (reminderTime < 0 || reminderTime >= ReminderTime.values.length) {
+      throw const FormatException('Invalid reminder time');
+    }
 
     return EventReminder(
       eventId: json['eventId'] as String? ?? '',
@@ -69,50 +72,24 @@ class EventReminder {
 
 // イベントリマインダー管理クラス
 class EventReminderNotifier extends StateNotifier<List<EventReminder>> {
-  EventReminderNotifier(this.prefs, this.notifications) : super([]) {
-    _loadReminders();
-  }
+  EventReminderNotifier(this.prefs, this.notifications)
+    : super(_readReminders(prefs));
   final SharedPreferences prefs;
   final FlutterLocalNotificationsPlugin notifications;
 
-  // リマインダーをロード
-  Future<void> _loadReminders() async {
-    final reminderJson = prefs.getStringList('event_reminders') ?? [];
-    final reminders = reminderJson
-        .map((json) {
-          final decoded = jsonDecode(json);
-          return decoded is Map<String, dynamic>
-              ? EventReminder.fromJson(decoded)
-              : null;
-        })
-        .whereType<EventReminder>()
-        .toList();
-
-    // 過去の通知をフィルタリング
-    final now = DateTime.timestamp();
-    final validReminders = reminders
-        .where((reminder) => reminder.eventTime.isAfter(now))
-        .toList();
-
-    // 過去の通知（すでに表示された通知）は削除
-    for (final reminder in reminders) {
-      if (reminder.notificationTime.isBefore(now)) {
-        appLogger.d(
-          '過去の通知を削除: 「${reminder.eventTitle}」${reminder.reminderTime.label}',
-        );
-        await notifications.cancel(id: reminder.notificationId);
+  static List<EventReminder> _readReminders(SharedPreferences prefs) {
+    final reminders = <EventReminder>[];
+    for (final raw in prefs.getStringList('event_reminders') ?? <String>[]) {
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is Map<String, dynamic>) {
+          reminders.add(EventReminder.fromJson(decoded));
+        }
+      } catch (error) {
+        appLogger.d('保存済みリマインダーを読み込めませんでした: $error');
       }
     }
-
-    // 無効になった通知を削除
-    if (validReminders.length != reminders.length) {
-      appLogger.d(
-        '${reminders.length - validReminders.length}件の過去のリマインダーを削除しました',
-      );
-      await _saveReminders(validReminders);
-    }
-
-    state = validReminders;
+    return reminders;
   }
 
   // リマインダーを保存
@@ -187,16 +164,13 @@ class EventReminderNotifier extends StateNotifier<List<EventReminder>> {
 
     for (final reminder in reminderToRemove) {
       appLogger.d('通知表示: 「${reminder.eventTitle}」のリマインダーを削除します');
-      // 通知のキャンセルは不要（すでに表示されているため）
-
-      // 状態を更新
-      final newState = state
-          .where((r) => r.notificationId != notificationId)
-          .toList();
-
-      state = newState;
-      await _saveReminders(newState);
     }
+    // 通知のキャンセルは不要（すでに表示されているため）
+    final newState = state
+        .where((reminder) => reminder.notificationId != notificationId)
+        .toList();
+    state = newState;
+    await _saveReminders(newState);
   }
 
   // イベントの通知をスケジュール

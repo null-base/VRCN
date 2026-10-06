@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,12 +9,14 @@ import 'package:vrchat/controllers/favorite_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/avatar_provider.dart';
 import 'package:vrchat/provider/favorite_provider.dart';
+import 'package:vrchat/provider/friends_provider.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/provider/world_provider.dart';
 import 'package:vrchat/utils/cache_manager.dart';
 import 'package:vrchat/utils/release_status_utils.dart';
 import 'package:vrchat/utils/search_utils.dart';
+import 'package:vrchat/utils/status_helpers.dart';
 import 'package:vrchat/widgets/error_container.dart';
 import 'package:vrchat/widgets/loading_indicator.dart';
 import 'package:vrchat_dart/vrchat_dart.dart' hide FavoriteType;
@@ -93,7 +96,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.people, size: 20),
+                      const Icon(AppIcons.people, size: 20),
                       const SizedBox(width: 6),
                       Text(t.favorites.friendsTab),
                     ],
@@ -103,7 +106,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.public, size: 20),
+                      const Icon(AppIcons.public, size: 20),
                       const SizedBox(width: 6),
                       Text(t.favorites.worldsTab),
                     ],
@@ -113,7 +116,7 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.face, size: 20),
+                      const Icon(AppIcons.face, size: 20),
                       const SizedBox(width: 6),
                       Text(t.favorites.avatarsTab),
                     ],
@@ -145,6 +148,14 @@ class _FavoriteFriendsTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final favoriteFriendsAsync = ref.watch(favoriteFriendsProvider);
     final favoriteGroupsAsync = ref.watch(myFavoriteGroupsProvider);
+    final liveFriends = ref
+        .watch(friendsProvider)
+        .maybeWhen(
+          data: (friends) => <String, LimitedUser>{
+            for (final friend in friends) friend.id: friend,
+          },
+          orElse: () => const <String, LimitedUser>{},
+        );
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return favoriteFriendsAsync.when(
@@ -162,7 +173,7 @@ class _FavoriteFriendsTab extends ConsumerWidget {
                 context,
                 t.favorites.emptyFolderTitle,
                 t.favorites.emptyFolderDescription,
-                Icons.folder_outlined,
+                AppIcons.folder_outlined,
                 isDarkMode,
               );
             }
@@ -205,7 +216,7 @@ class _FavoriteFriendsTab extends ConsumerWidget {
                       _buildEmptyFolderMessage(
                         context,
                         t.favorites.emptyFriends,
-                        Icons.people_outline,
+                        AppIcons.people_outline,
                         isDarkMode,
                       )
                     else
@@ -227,6 +238,7 @@ class _FavoriteFriendsTab extends ConsumerWidget {
                               favorite.id,
                               ref,
                               isDarkMode,
+                              liveFriends[favorite.favoriteId],
                             ),
                             loading: () => _buildLoadingItem(isDarkMode),
                             error: (_, _) => _buildErrorItem(
@@ -279,7 +291,7 @@ class _FavoriteWorldsTab extends ConsumerWidget {
             context,
             t.favorites.emptyWorldsTabTitle,
             t.favorites.emptyWorldsTabDescription,
-            Icons.public,
+            AppIcons.public,
             isDarkMode,
           );
         }
@@ -317,7 +329,7 @@ class _FavoriteWorldsTab extends ConsumerWidget {
                       _buildEmptyFolderMessage(
                         context,
                         t.favorites.emptyWorlds,
-                        Icons.public,
+                        AppIcons.public,
                         isDarkMode,
                       )
                     else
@@ -397,7 +409,7 @@ class _FavoriteAvatarsTab extends ConsumerWidget {
             context,
             t.favorites.emptyAvatarsTabTitle,
             t.favorites.emptyAvatarsTabDescription,
-            Icons.face,
+            AppIcons.face,
             isDarkMode,
           );
         }
@@ -435,7 +447,7 @@ class _FavoriteAvatarsTab extends ConsumerWidget {
                       _buildEmptyFolderMessage(
                         context,
                         t.favorites.emptyAvatars,
-                        Icons.face,
+                        AppIcons.face,
                         isDarkMode,
                       )
                     else
@@ -515,18 +527,10 @@ class _StylishFolderHeader extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 16, 4, 10),
+      padding: const EdgeInsets.fromLTRB(4, 18, 4, 10),
       child: Row(
         children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: isDarkMode ? 0.24 : 0.14),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(Icons.folder_rounded, size: 18, color: color),
-          ),
+          Icon(AppIcons.folder_rounded, size: 19, color: color),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -540,19 +544,11 @@ class _StylishFolderHeader extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(999),
-            ),
-            child: Text(
-              t.favorites.itemsCount(count: itemCount.toString()),
-              style: GoogleFonts.notoSans(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+          Text(
+            t.favorites.itemsCount(count: itemCount.toString()),
+            style: GoogleFonts.notoSans(
+              fontSize: 12,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -576,44 +572,36 @@ Widget _buildEnhancedFriendItem(
   String favoriteId,
   WidgetRef ref,
   bool isDarkMode,
+  LimitedUser? liveFriend,
 ) {
   final vrchatApi = ref.watch(vrchatProvider).value;
   final headers = <String, String>{
     'User-Agent': vrchatApi?.userAgent.toString() ?? 'VRCN',
   };
+  final presenceStatus = liveFriend?.status ?? friend.status;
+  final presenceColor = StatusHelper.getStatusColor(presenceStatus);
+  final statusDescription =
+      liveFriend?.statusDescription ?? friend.statusDescription;
   final userIcon = profile.userIcon ?? profile.iconUrl ?? friend.iconUrl ?? '';
   final avatarThumbnail = profile.currentAvatarThumbnailImageUrl ?? '';
 
-  return Card(
-    margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-    color: isDarkMode ? const Color(0xFF222222) : Colors.white,
+  return DecoratedBox(
+    decoration: BoxDecoration(
+      border: Border(
+        bottom: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+      ),
+    ),
     child: InkWell(
-      borderRadius: BorderRadius.circular(12),
       onTap: () => context.push('/user/${friend.id}'),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Row(
           children: [
             Stack(
               children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isDarkMode ? Colors.grey[800]! : Colors.grey[200]!,
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(25),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
+                SizedBox(
+                  width: 52,
+                  height: 52,
                   child: CircleAvatar(
                     backgroundImage: userIcon.isNotEmpty
                         ? CachedNetworkImageProvider(
@@ -632,8 +620,24 @@ Widget _buildEnhancedFriendItem(
                         ? Colors.grey[300]
                         : null,
                     child: userIcon.isEmpty && avatarThumbnail.isEmpty
-                        ? const Icon(Icons.person, color: Colors.grey)
+                        ? const Icon(AppIcons.person, color: Colors.grey)
                         : null,
+                  ),
+                ),
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: presenceColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.surface,
+                        width: 2,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -653,10 +657,10 @@ Widget _buildEnhancedFriendItem(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  if (friend.statusDescription.isNotEmpty) ...[
+                  if (statusDescription.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(
-                      friend.statusDescription,
+                      statusDescription,
                       style: GoogleFonts.notoSans(
                         fontSize: 14,
                         color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
@@ -666,54 +670,47 @@ Widget _buildEnhancedFriendItem(
                     ),
                   ],
 
-                  // 追加情報エリア
-                  if (friend.location != null &&
-                      friend.location != 'offline') ...[
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.location_on,
-                          size: 12,
-                          color: Colors.blue[400],
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            'オンライン',
-                            style: GoogleFonts.notoSans(
-                              fontSize: 12,
-                              color: Colors.blue[400],
-                              fontWeight: FontWeight.w500,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                  // ストリーミング更新済みのフレンド状態を表示する。
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(
+                        StatusHelper.getStatusIcon(presenceStatus),
+                        size: 14,
+                        color: presenceColor,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          StatusHelper.getStatusText(presenceStatus),
+                          style: GoogleFonts.notoSans(
+                            fontSize: 12,
+                            color: presenceColor,
+                            fontWeight: FontWeight.w600,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
 
             // お気に入り解除ボタン
-            SizedBox(
-              width: 36,
-              height: 36,
-              child: Material(
-                color: isDarkMode ? Colors.grey[800] : Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () => _removeFavorite(
-                    context,
-                    ref,
-                    favoriteId,
-                    friend.displayName,
-                  ),
-                  child: Icon(Icons.favorite, color: Colors.red[400], size: 20),
-                ),
+            IconButton(
+              tooltip: t.favorites.remove,
+              onPressed: () => _removeFavorite(
+                context,
+                ref,
+                favoriteId,
+                friend.displayName,
+              ),
+              icon: Icon(
+                AppIcons.favorite,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                size: 20,
               ),
             ),
           ],
@@ -762,7 +759,7 @@ Widget _buildEnhancedWorldItem(
                   ),
                   errorWidget: (context, url, error) => Container(
                     color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                    child: const Icon(Icons.broken_image),
+                    child: const Icon(AppIcons.broken_image),
                   ),
                 ),
               ),
@@ -823,7 +820,7 @@ Widget _buildEnhancedWorldItem(
                     child: Padding(
                       padding: const EdgeInsets.all(6),
                       child: Icon(
-                        Icons.favorite,
+                        AppIcons.favorite,
                         color: Colors.red[400],
                         size: 16,
                       ),
@@ -855,7 +852,7 @@ Widget _buildEnhancedWorldItem(
                 Row(
                   children: [
                     Icon(
-                      Icons.favorite_border,
+                      AppIcons.favorite_border,
                       size: 14,
                       color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                     ),
@@ -920,7 +917,7 @@ Widget _buildEnhancedAvatarItem(
                   ),
                   errorWidget: (context, url, error) => Container(
                     color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                    child: const Icon(Icons.broken_image),
+                    child: const Icon(AppIcons.broken_image),
                   ),
                 ),
               ),
@@ -981,7 +978,7 @@ Widget _buildEnhancedAvatarItem(
                     child: Padding(
                       padding: const EdgeInsets.all(6),
                       child: Icon(
-                        Icons.favorite,
+                        AppIcons.favorite,
                         color: Colors.red[400],
                         size: 16,
                       ),
@@ -1170,7 +1167,11 @@ Widget _buildErrorItem(
                 width: 2,
               ),
             ),
-            child: Icon(Icons.error_outline, color: Colors.red[300], size: 30),
+            child: Icon(
+              AppIcons.error_outline,
+              color: Colors.red[300],
+              size: 30,
+            ),
           ),
 
           const SizedBox(width: 16),
@@ -1216,7 +1217,7 @@ Widget _buildErrorItem(
                   'エラーアイテム',
                 ),
                 child: Icon(
-                  Icons.delete_outline,
+                  AppIcons.delete_outline,
                   color: Colors.red[400],
                   size: 20,
                 ),
@@ -1343,7 +1344,11 @@ Widget _buildWorldErrorItem(String favoriteId, bool isDarkMode) {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.error_outline, color: Colors.red[300], size: 30),
+                  Icon(
+                    AppIcons.error_outline,
+                    color: Colors.red[300],
+                    size: 30,
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     t.favorites.loadingError,
@@ -1398,7 +1403,11 @@ Widget _buildAvatarErrorItem(String favoriteId, bool isDarkMode) {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.error_outline, color: Colors.red[300], size: 30),
+                  Icon(
+                    AppIcons.error_outline,
+                    color: Colors.red[300],
+                    size: 30,
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     t.favorites.loadingError,
@@ -1519,26 +1528,5 @@ Future<void> _removeFavorite(
 
 // フォルダ名に基づいて色を取得する関数
 Color _getFolderColor(String folderName, bool isDarkMode) {
-  // ハッシュコードを使用して一貫した色を生成
-  final hash = folderName.hashCode.abs();
-
-  // 定義済みの色リスト
-  final colors = <MaterialColor>[
-    Colors.blue,
-    Colors.purple,
-    Colors.teal,
-    Colors.orange,
-    Colors.green,
-    Colors.pink,
-    Colors.indigo,
-    Colors.cyan,
-    Colors.amber,
-    Colors.deepOrange,
-  ];
-
-  // ハッシュコードを使用して色を選択
-  final baseColor = colors[hash % colors.length];
-
-  // ダークモードの場合は明るい色合いを、ライトモードの場合は濃い色合いを返す
-  return isDarkMode ? baseColor[400]! : baseColor[600]!;
+  return isDarkMode ? const Color(0xFFB8B8B8) : const Color(0xFF505050);
 }

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vrchat/analytics_repository.dart';
 import 'package:vrchat/pages/avatar_detail_page.dart';
+import 'package:vrchat/pages/activity_page.dart';
 import 'package:vrchat/pages/avatars_page.dart';
 import 'package:vrchat/pages/credits_page.dart';
 import 'package:vrchat/pages/engage_card_page.dart';
@@ -17,7 +18,10 @@ import 'package:vrchat/pages/friends_page.dart';
 import 'package:vrchat/pages/group_detail_page.dart';
 import 'package:vrchat/pages/groups_page.dart';
 import 'package:vrchat/pages/inventory_page.dart';
+import 'package:vrchat/pages/feature_hub_page.dart';
+import 'package:vrchat/pages/insights_page.dart';
 import 'package:vrchat/pages/login_page.dart';
+import 'package:vrchat/pages/moderation_page.dart';
 import 'package:vrchat/pages/notifications_page.dart';
 import 'package:vrchat/pages/osc_page.dart';
 import 'package:vrchat/pages/profile_page.dart';
@@ -278,6 +282,38 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           _setCurrentScreen(ref, '設定画面');
           return const SettingsPage();
+        },
+      ),
+      GoRoute(
+        path: '/activity',
+        name: 'activity',
+        builder: (context, state) {
+          _setCurrentScreen(ref, 'Activity');
+          return const ActivityPage();
+        },
+      ),
+      GoRoute(
+        path: '/insights',
+        name: 'insights',
+        builder: (context, state) {
+          _setCurrentScreen(ref, 'Insights');
+          return const InsightsPage();
+        },
+      ),
+      GoRoute(
+        path: '/moderation',
+        name: 'moderation',
+        builder: (context, state) {
+          _setCurrentScreen(ref, 'Moderation');
+          return const ModerationPage();
+        },
+      ),
+      GoRoute(
+        path: '/tools',
+        name: 'tools',
+        builder: (context, state) {
+          _setCurrentScreen(ref, 'Tools');
+          return const FeatureHubPage();
         },
       ),
       GoRoute(

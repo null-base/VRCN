@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
@@ -470,7 +471,7 @@ class CreditsPage extends StatelessWidget {
                     ),
                     child: Center(
                       child: Icon(
-                        Icons.arrow_forward_ios,
+                        AppIcons.arrow_forward_ios,
                         size: 16,
                         color: isDarkMode
                             ? Colors.green[300]

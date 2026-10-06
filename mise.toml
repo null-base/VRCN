@@ -35,10 +35,9 @@ run = "dart run build_runner build --delete-conflicting-outputs"
 description = "Generate translations"
 run = "dart run slang"
 
-[tasks.pod-install]
-description = "Install iOS pods"
-dir = "ios"
-run = "bundle exec pod install"
+[tasks.ios-spm-resolve]
+description = "Resolve iOS Swift Packages"
+run = "flutter build ios --config-only"
 
 [tasks.ios-build]
 description = "Build iOS app"

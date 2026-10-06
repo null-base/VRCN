@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">VRCN</string>
-    <string name="friend_status_widget_description">Selected VRChat friend status</string>
+    <string name="widget_title">VRCN</string>
+    <string name="widget_name">Friend Status</string>
+    <string name="widget_empty">Select friends in Notifications</string>
+    <string name="widget_updated">Updated %1$s</string>
+    <string name="widget_updated_unknown">Updated</string>
+    <string name="widget_status_offline">Offline</string>
+    <string name="friend_status_widget_description">Shows selected VRChat friends and their online status</string>
 </resources>

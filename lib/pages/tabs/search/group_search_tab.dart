@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -133,7 +134,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
               backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
               foregroundColor: isDarkMode ? Colors.white : Colors.grey[800],
               child: Icon(
-                effectiveIsGridView ? Icons.view_list : Icons.grid_view,
+                effectiveIsGridView ? AppIcons.view_list : AppIcons.grid_view,
               ),
             ),
           )
@@ -280,7 +281,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                               color: isDarkMode
                                   ? Colors.grey[800]
                                   : Colors.grey[300],
-                              child: const Icon(Icons.group, size: 60),
+                              child: const Icon(AppIcons.group, size: 60),
                             ),
                           )
                         : Container(
@@ -289,7 +290,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                                 : Colors.grey[300],
                             child: Center(
                               child: Icon(
-                                Icons.group,
+                                AppIcons.group,
                                 size: 60,
                                 color: isDarkMode
                                     ? Colors.grey[600]
@@ -334,7 +335,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(
-                            Icons.people,
+                            AppIcons.people,
                             color: Colors.white,
                             size: 16,
                           ),
@@ -377,7 +378,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                       Row(
                         children: [
                           Icon(
-                            Icons.tag,
+                            AppIcons.tag,
                             size: 14,
                             color: isDarkMode
                                 ? Colors.indigo.shade300
@@ -452,7 +453,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                               color: isDarkMode
                                   ? Colors.grey[800]
                                   : Colors.grey[300],
-                              child: const Icon(Icons.group, size: 30),
+                              child: const Icon(AppIcons.group, size: 30),
                             ),
                           )
                         : Container(
@@ -460,7 +461,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                                 ? Colors.grey[800]
                                 : Colors.grey[300],
                             child: Icon(
-                              Icons.group,
+                              AppIcons.group,
                               size: 30,
                               color: isDarkMode
                                   ? Colors.grey[600]
@@ -495,7 +496,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                       Row(
                         children: [
                           Icon(
-                            Icons.tag,
+                            AppIcons.tag,
                             size: 14,
                             color: isDarkMode
                                 ? Colors.indigo.shade300
@@ -521,7 +522,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
                     Row(
                       children: [
                         Icon(
-                          Icons.people,
+                          AppIcons.people,
                           size: 14,
                           color: isDarkMode
                               ? Colors.grey[400]
@@ -547,7 +548,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
 
               // 矢印アイコン
               Icon(
-                Icons.chevron_right,
+                AppIcons.chevron_right,
                 color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
               ),
             ],
@@ -564,7 +565,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.groups,
+            AppIcons.groups,
             size: 100,
             color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
           ),
@@ -597,7 +598,7 @@ class _GroupSearchTabState extends ConsumerState<GroupSearchTab>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.search_off_rounded,
+            AppIcons.search_off_rounded,
             size: 80,
             color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
           ),

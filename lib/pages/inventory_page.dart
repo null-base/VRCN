@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -75,7 +76,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.photo_library),
+              leading: const Icon(AppIcons.photo_library),
               title: Text(
                 t.inventory.selectFromGallery,
                 style: GoogleFonts.notoSans(),
@@ -83,7 +84,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
               onTap: () => Navigator.pop(context, ImageSource.gallery),
             ),
             ListTile(
-              leading: const Icon(Icons.camera_alt),
+              leading: const Icon(AppIcons.camera_alt),
               title: Text(
                 t.inventory.takePhoto,
                 style: GoogleFonts.notoSans(),
@@ -223,7 +224,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.photo_library, size: 18),
+                      const Icon(AppIcons.photo_library, size: 18),
                       const SizedBox(width: 4),
                       Text(t.inventory.gallery),
                     ],
@@ -233,7 +234,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.account_circle, size: 18),
+                      const Icon(AppIcons.account_circle, size: 18),
                       const SizedBox(width: 4),
                       Text(t.inventory.icon),
                     ],
@@ -243,7 +244,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.emoji_emotions, size: 18),
+                      const Icon(AppIcons.emoji_emotions, size: 18),
                       const SizedBox(width: 4),
                       Text(t.inventory.emoji),
                     ],
@@ -253,7 +254,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.sticky_note_2, size: 18),
+                      const Icon(AppIcons.sticky_note_2, size: 18),
                       const SizedBox(width: 4),
                       Text(t.inventory.sticker),
                     ],
@@ -263,7 +264,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.print, size: 18),
+                      const Icon(AppIcons.print, size: 18),
                       const SizedBox(width: 4),
                       Text(t.inventory.print),
                     ],
@@ -273,7 +274,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.inventory_2, size: 18),
+                      const Icon(AppIcons.inventory_2, size: 18),
                       const SizedBox(width: 4),
                       Text(t.inventory.item),
                     ],
@@ -301,7 +302,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage>
               backgroundColor: AppTheme.primaryColor,
               foregroundColor: Colors.white,
               tooltip: t.inventory.upload,
-              child: const Icon(Icons.add),
+              child: const Icon(AppIcons.add),
             )
           : null,
     );

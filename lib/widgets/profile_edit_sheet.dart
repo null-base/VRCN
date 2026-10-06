@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -41,16 +42,16 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
 
   // カテゴリ定義
   final List<Map<String, dynamic>> _categories = [
-    {'title': t.profile.status, 'icon': Icons.mood, 'color': Colors.green},
+    {'title': t.profile.status, 'icon': AppIcons.mood, 'color': Colors.green},
     {
       'title': t.profile.bio,
-      'icon': Icons.person_outline,
+      'icon': AppIcons.person_outline,
       'color': Colors.blue,
     },
-    {'title': t.profile.links, 'icon': Icons.link, 'color': Colors.purple},
+    {'title': t.profile.links, 'icon': AppIcons.link, 'color': Colors.purple},
     {
       'title': t.profile.basic,
-      'icon': Icons.info_outline,
+      'icon': AppIcons.info_outline,
       'color': Colors.orange,
     },
   ];
@@ -135,7 +136,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.check_circle, color: Colors.white),
+                const Icon(AppIcons.check_circle, color: Colors.white),
                 const SizedBox(width: 12),
                 Text(t.profile.saved),
               ],
@@ -165,7 +166,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.error_outline, color: Colors.white),
+                const Icon(AppIcons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -282,7 +283,10 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
                                 color: accentColor.withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.edit, color: accentColor),
+                              child: const Icon(
+                                AppIcons.edit,
+                                color: accentColor,
+                              ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
@@ -419,7 +423,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Icon(Icons.check_circle),
+                                  const Icon(AppIcons.check_circle),
                                   const SizedBox(width: 10),
                                   Text(
                                     t.profile.save,
@@ -470,7 +474,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
       children: [
         _buildSectionHeader(
           t.profile.status,
-          Icons.mood,
+          AppIcons.mood,
           Colors.green,
           isDarkMode,
         ),
@@ -480,7 +484,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
 
         _buildSectionHeader(
           t.profile.statusMessage,
-          Icons.chat_bubble_outline,
+          AppIcons.chat_bubble_outline,
           Colors.green,
           isDarkMode,
         ),
@@ -490,7 +494,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
           focusNode: _statusDescriptionFocusNode,
           hintText: t.profile.statusMessageHint,
           prefix: Icon(
-            Icons.short_text,
+            AppIcons.short_text,
             color: Colors.green.withValues(alpha: 0.7),
             size: 22,
           ),
@@ -508,7 +512,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
       children: [
         _buildSectionHeader(
           t.profile.bio,
-          Icons.person_outline,
+          AppIcons.person_outline,
           Colors.blue,
           isDarkMode,
         ),
@@ -540,13 +544,13 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
           children: [
             _buildSectionHeader(
               t.profile.links,
-              Icons.link,
+              AppIcons.link,
               Colors.purple,
               isDarkMode,
             ),
             TextButton.icon(
               onPressed: _addLinkField,
-              icon: const Icon(Icons.add, size: 18),
+              icon: const Icon(AppIcons.add, size: 18),
               label: Text(t.profile.addLink),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.purple,
@@ -591,7 +595,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
       children: [
         _buildSectionHeader(
           t.profile.pronouns,
-          Icons.label_outline,
+          AppIcons.label_outline,
           Colors.orange,
           isDarkMode,
         ),
@@ -602,7 +606,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
           hintText: 'he/him, she/her, they/them',
           maxLength: 50,
           prefix: Icon(
-            Icons.person_pin,
+            AppIcons.person_pin,
             color: Colors.orange.withValues(alpha: 0.7),
             size: 22,
           ),
@@ -615,7 +619,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
         _buildInfoItem(
           t.profile.username,
           widget.user.username.toString(),
-          Icons.account_circle,
+          AppIcons.account_circle,
           Colors.orange,
           isDarkMode,
         ),
@@ -623,7 +627,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
         _buildInfoItem(
           t.profile.displayName,
           widget.user.displayName,
-          Icons.badge,
+          AppIcons.badge,
           Colors.orange,
           isDarkMode,
         ),
@@ -631,7 +635,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
         _buildInfoItem(
           t.profile.dateJoined,
           _formatDate(widget.user.dateJoined),
-          Icons.calendar_today,
+          AppIcons.calendar_today,
           Colors.orange,
           isDarkMode,
         ),
@@ -870,7 +874,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
           children: [
             const SizedBox(width: 8),
             Icon(
-              Icons.link,
+              AppIcons.link,
               size: 20,
               color: accentColor.withValues(alpha: 0.7),
             ),
@@ -897,7 +901,11 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
               ),
             ),
             IconButton(
-              icon: Icon(Icons.remove_circle, color: Colors.red[400], size: 22),
+              icon: Icon(
+                AppIcons.remove_circle,
+                color: Colors.red[400],
+                size: 22,
+              ),
               onPressed: () => _removeLinkField(index),
               tooltip: t.common.delete,
               style: IconButton.styleFrom(
@@ -972,7 +980,7 @@ class _ProfileEditSheetState extends ConsumerState<ProfileEditSheet>
         // contextではなくdialogContextを使用
         title: Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.amber[700]),
+            Icon(AppIcons.warning_amber_rounded, color: Colors.amber[700]),
             const SizedBox(width: 12),
             Text(t.profile.discardTitle),
           ],

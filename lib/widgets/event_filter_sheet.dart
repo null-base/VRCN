@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -76,7 +77,7 @@ class FilterBottomSheet extends ConsumerWidget {
                 Row(
                   children: [
                     Icon(
-                      Icons.filter_list_rounded,
+                      AppIcons.filter_list_rounded,
                       color: primaryColor,
                       size: 24,
                     ),
@@ -94,7 +95,7 @@ class FilterBottomSheet extends ConsumerWidget {
                 TextButton.icon(
                   onPressed: () =>
                       ref.read(eventFilterActionsProvider).clearAll(),
-                  icon: const Icon(Icons.refresh, size: 18),
+                  icon: const Icon(AppIcons.refresh, size: 18),
                   label: Text(
                     'クリア',
                     style: GoogleFonts.notoSans(fontWeight: FontWeight.w500),
@@ -122,14 +123,14 @@ class FilterBottomSheet extends ConsumerWidget {
               children: [
                 // キーワード検索セクション
                 _buildFilterSection(
-                  icon: Icons.search_rounded,
+                  icon: AppIcons.search_rounded,
                   title: 'キーワード検索',
                   child: TextFormField(
                     initialValue: filter.searchQuery,
                     decoration: InputDecoration(
                       hintText: 'イベント名、説明、主催者など',
                       prefixIcon: Icon(
-                        Icons.search_rounded,
+                        AppIcons.search_rounded,
                         color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                       ),
                       filled: true,
@@ -176,7 +177,7 @@ class FilterBottomSheet extends ConsumerWidget {
 
                 // 日付セクション
                 _buildFilterSection(
-                  icon: Icons.event_rounded,
+                  icon: AppIcons.event_rounded,
                   title: '日付で絞り込み',
                   child: Column(
                     children: [
@@ -201,7 +202,7 @@ class FilterBottomSheet extends ConsumerWidget {
                         child: Row(
                           children: [
                             const Icon(
-                              Icons.info_outline_rounded,
+                              AppIcons.info_outline_rounded,
                               size: 16,
                               color: Colors.blue,
                             ),
@@ -293,7 +294,7 @@ class FilterBottomSheet extends ConsumerWidget {
 
                 // 時間セクション
                 _buildFilterSection(
-                  icon: Icons.schedule_rounded,
+                  icon: AppIcons.schedule_rounded,
                   title: '時間帯で絞り込み',
                   child: Column(
                     children: [
@@ -318,7 +319,7 @@ class FilterBottomSheet extends ConsumerWidget {
                         child: Row(
                           children: [
                             const Icon(
-                              Icons.info_outline_rounded,
+                              AppIcons.info_outline_rounded,
                               size: 16,
                               color: Colors.green,
                             ),
@@ -408,7 +409,7 @@ class FilterBottomSheet extends ConsumerWidget {
 
                 // ジャンルセクション
                 _buildFilterSection(
-                  icon: Icons.category_rounded,
+                  icon: AppIcons.category_rounded,
                   title: 'ジャンルで絞り込み',
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -435,7 +436,7 @@ class FilterBottomSheet extends ConsumerWidget {
                           child: Row(
                             children: [
                               Icon(
-                                Icons.check_circle_outline_rounded,
+                                AppIcons.check_circle_outline_rounded,
                                 size: 16,
                                 color: primaryColor,
                               ),
@@ -681,7 +682,7 @@ class FilterBottomSheet extends ConsumerWidget {
                     GestureDetector(
                       onTap: onClear,
                       child: Icon(
-                        Icons.close_rounded,
+                        AppIcons.close_rounded,
                         size: 16,
                         color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                       ),
@@ -694,8 +695,8 @@ class FilterBottomSheet extends ConsumerWidget {
                 children: [
                   Icon(
                     isStart
-                        ? Icons.calendar_today_rounded
-                        : Icons.event_rounded,
+                        ? AppIcons.calendar_today_rounded
+                        : AppIcons.event_rounded,
                     size: 18,
                     color: hasValue
                         ? primaryColor
@@ -811,7 +812,7 @@ class FilterBottomSheet extends ConsumerWidget {
                     GestureDetector(
                       onTap: onClear,
                       child: Icon(
-                        Icons.close_rounded,
+                        AppIcons.close_rounded,
                         size: 16,
                         color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                       ),
@@ -823,8 +824,8 @@ class FilterBottomSheet extends ConsumerWidget {
                 children: [
                   Icon(
                     isStart
-                        ? Icons.access_time_rounded
-                        : Icons.schedule_rounded,
+                        ? AppIcons.access_time_rounded
+                        : AppIcons.schedule_rounded,
                     size: 18,
                     color: hasValue
                         ? primaryColor
@@ -1064,7 +1065,7 @@ class FilterBottomSheet extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (isSelected) ...[
-                  Icon(Icons.check_rounded, size: 16, color: baseColor),
+                  Icon(AppIcons.check_rounded, size: 16, color: baseColor),
                   const SizedBox(width: 6),
                 ],
                 Flexible(
@@ -1164,7 +1165,7 @@ class FilterBottomSheet extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(
-                    Icons.check_circle_outline_rounded,
+                    AppIcons.check_circle_outline_rounded,
                     color: Colors.white,
                     size: 20,
                   ),

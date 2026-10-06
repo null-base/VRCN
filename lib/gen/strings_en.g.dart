@@ -69,6 +69,11 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$reminder$en reminder = Translations$reminder$en._(_root);
 	late final Translations$friend$en friend = Translations$friend$en._(_root);
 	late final Translations$eventCalendarFilter$en eventCalendarFilter = Translations$eventCalendarFilter$en._(_root);
+	late final Translations$activity$en activity = Translations$activity$en._(_root);
+	late final Translations$insights$en insights = Translations$insights$en._(_root);
+	late final Translations$moderation$en moderation = Translations$moderation$en._(_root);
+	late final Translations$tools$en tools = Translations$tools$en._(_root);
+	late final Translations$osc$en osc = Translations$osc$en._(_root);
 }
 
 // Path: common
@@ -214,6 +219,18 @@ class Translations$drawer$en {
 	/// en: 'Inventory'
 	String get inventory => 'Inventory';
 
+	/// en: 'Activity'
+	String get activity => 'Activity';
+
+	/// en: 'Insights'
+	String get insights => 'Insights';
+
+	/// en: 'Moderation'
+	String get moderation => 'Moderation';
+
+	/// en: 'Tools'
+	String get tools => 'Tools';
+
 	/// en: 'Review'
 	String get review => 'Review';
 
@@ -305,6 +322,15 @@ class Translations$login$en {
 
 	/// en: 'Paste'
 	String get paste => 'Paste';
+
+	/// en: 'Login with biometrics'
+	String get biometricLogin => 'Login with biometrics';
+
+	/// en: 'Authenticate to use your saved VRChat login.'
+	String get biometricReason => 'Authenticate to use your saved VRChat login.';
+
+	/// en: 'Saved login is missing.'
+	String get savedLoginMissing => 'Saved login is missing.';
 }
 
 // Path: friends
@@ -434,6 +460,39 @@ class Translations$friendDetail$en {
 
 	/// en: 'Operation failed: ${error}'
 	String operationFailed({required Object error}) => 'Operation failed: ${error}';
+
+	/// en: 'Friend status was empty.'
+	String get friendStatusEmpty => 'Friend status was empty.';
+
+	/// en: 'Add friend'
+	String get addFriend => 'Add friend';
+
+	/// en: 'Remove friend'
+	String get removeFriend => 'Remove friend';
+
+	/// en: 'Cancel friend request'
+	String get cancelFriendRequest => 'Cancel friend request';
+
+	/// en: 'Friend request pending'
+	String get friendRequestPending => 'Friend request pending';
+
+	/// en: '${action} completed'
+	String relationshipCompleted({required Object action}) => '${action} completed';
+
+	/// en: 'Note'
+	String get note => 'Note';
+
+	/// en: 'No note saved.'
+	String get noNote => 'No note saved.';
+
+	/// en: 'Edit note'
+	String get editNote => 'Edit note';
+
+	/// en: 'Note: ${name}'
+	String noteTitle({required Object name}) => 'Note: ${name}';
+
+	/// en: 'Write a private local note'
+	String get noteHint => 'Write a private local note';
 }
 
 // Path: search
@@ -598,6 +657,8 @@ class Translations$profile$en {
 
 	/// en: 'Write something about yourself.'
 	String get bioHint => 'Write something about yourself.';
+
+	late final Translations$profile$userTypes$en userTypes = Translations$profile$userTypes$en._(_root);
 }
 
 // Path: engageCard
@@ -862,6 +923,27 @@ class Translations$notifications$en {
 
 	/// en: '${hours}h ago'
 	String hoursAgo({required Object hours}) => '${hours}h ago';
+
+	/// en: 'Search notifications'
+	String get searchHint => 'Search notifications';
+
+	/// en: 'Type'
+	String get type => 'Type';
+
+	/// en: 'All types'
+	String get allTypes => 'All types';
+
+	/// en: 'Notification response sent'
+	String get responseSent => 'Notification response sent';
+
+	/// en: 'Failed to respond: ${error}'
+	String responseFailed({required Object error}) => 'Failed to respond: ${error}';
+
+	/// en: 'Friend online'
+	String get friendOnlineChannel => 'Friend online';
+
+	/// en: 'Notifications when selected friends come online.'
+	String get friendOnlineChannelDescription => 'Notifications when selected friends come online.';
 }
 
 // Path: eventCalendar
@@ -932,8 +1014,8 @@ class Translations$eventCalendar$en {
 	/// en: 'Notes'
 	String get note => 'Notes';
 
-	/// en: 'Quest Compatible'
-	String get quest => 'Quest Compatible';
+	/// en: 'Android Compatible'
+	String get quest => 'Android Compatible';
 
 	/// en: '${count}'
 	String reminderCount({required Object count}) => '${count}';
@@ -1006,6 +1088,18 @@ class Translations$avatars$en {
 
 	/// en: 'Toggle View Mode'
 	String get viewModeTooltip => 'Toggle View Mode';
+
+	/// en: 'VRChat avatars'
+	String get remoteTooltip => 'VRChat avatars';
+
+	/// en: 'Local avatar DB'
+	String get localTooltip => 'Local avatar DB';
+
+	/// en: 'No local avatars'
+	String get localEmptyTitle => 'No local avatars';
+
+	/// en: 'Viewed and searched avatars will appear here.'
+	String get localEmptyDescription => 'Viewed and searched avatars will appear here.';
 }
 
 // Path: worldDetail
@@ -1021,6 +1115,51 @@ class Translations$worldDetail$en {
 
 	/// en: 'Failed to load world information: ${error}'
 	String error({required Object error}) => 'Failed to load world information: ${error}';
+
+	/// en: 'World details'
+	String get metadataTitle => 'World details';
+
+	/// en: 'Capacity'
+	String get capacity => 'Capacity';
+
+	/// en: '${recommended} recommended / ${maximum} max'
+	String capacityValue({required Object recommended, required Object maximum}) => '${recommended} recommended / ${maximum} max';
+
+	/// en: 'Release status'
+	String get releaseStatus => 'Release status';
+
+	/// en: 'All'
+	String get releaseAll => 'All';
+
+	/// en: 'Hidden'
+	String get releaseHidden => 'Hidden';
+
+	/// en: 'Private'
+	String get releasePrivate => 'Private';
+
+	/// en: 'Public'
+	String get releasePublic => 'Public';
+
+	/// en: 'Public instances'
+	String get publicInstances => 'Public instances';
+
+	/// en: '${publicCount} public / ${privateCount} private'
+	String occupantsValue({required Object publicCount, required Object privateCount}) => '${publicCount} public / ${privateCount} private';
+
+	/// en: 'Publication'
+	String get publication => 'Publication';
+
+	/// en: 'Platforms'
+	String get platforms => 'Platforms';
+
+	/// en: 'Android'
+	String get platformAndroid => 'Android';
+
+	/// en: 'iOS'
+	String get platformIos => 'iOS';
+
+	/// en: 'PC'
+	String get platformPc => 'PC';
 
 	/// en: 'Share This World'
 	String get share => 'Share This World';
@@ -1607,6 +1746,9 @@ class Translations$location$en {
 	/// en: 'Private'
 	String get private => 'Private';
 
+	/// en: 'Traveling'
+	String get traveling => 'Traveling';
+
 	/// en: 'Players: ${userCount} / ${capacity}'
 	String playerCount({required Object userCount, required Object capacity}) => 'Players: ${userCount} / ${capacity}';
 
@@ -1747,6 +1889,12 @@ class Translations$friend$en {
 
 	/// en: 'Close'
 	String get close => 'Close';
+
+	/// en: 'Search friends'
+	String get searchTitle => 'Search friends';
+
+	/// en: 'Name, user ID or location'
+	String get searchHint => 'Name, user ID or location';
 }
 
 // Path: eventCalendarFilter
@@ -1812,6 +1960,368 @@ class Translations$eventCalendarFilter$en {
 	String get filterNone => 'No filters are set.';
 }
 
+// Path: activity
+class Translations$activity$en {
+	Translations$activity$en._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Activity'
+	String get title => 'Activity';
+
+	/// en: 'Clear activity history'
+	String get clearHistory => 'Clear activity history';
+
+	/// en: 'Feed'
+	String get feed => 'Feed';
+
+	/// en: 'Friend log'
+	String get friendLog => 'Friend log';
+
+	/// en: 'Heatmap'
+	String get heatmap => 'Heatmap';
+
+	/// en: 'No activity recorded yet.'
+	String get empty => 'No activity recorded yet.';
+
+	/// en: '${hours}h ${minutes}m tracked'
+	String trackedHours({required Object hours, required Object minutes}) => '${hours}h ${minutes}m tracked';
+
+	/// en: '${minutes}m tracked'
+	String trackedMinutes({required Object minutes}) => '${minutes}m tracked';
+
+	/// en: '${kind} · ${detail}'
+	String summary({required Object kind, required Object detail}) => '${kind} · ${detail}';
+
+	/// en: 'Friend activity over the last six weeks'
+	String get heatmapTitle => 'Friend activity over the last six weeks';
+
+	late final Translations$activity$kind$en kind = Translations$activity$kind$en._(_root);
+}
+
+// Path: insights
+class Translations$insights$en {
+	Translations$insights$en._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Insights'
+	String get title => 'Insights';
+
+	/// en: 'Mutual friends'
+	String get mutualFriends => 'Mutual friends';
+
+	/// en: 'Hot worlds'
+	String get hotWorlds => 'Hot worlds';
+
+	/// en: 'Instance players'
+	String get instancePlayers => 'Instance players';
+
+	/// en: 'User ID (usr_...)'
+	String get userHint => 'User ID (usr_...)';
+
+	/// en: 'Enter a user ID to compare friends.'
+	String get enterUser => 'Enter a user ID to compare friends.';
+
+	/// en: 'No mutual friends.'
+	String get noMutual => 'No mutual friends.';
+
+	/// en: 'No friend locations available.'
+	String get noLocations => 'No friend locations available.';
+
+	/// en: '${count} friends'
+	String friendsCount({required Object count}) => '${count} friends';
+
+	/// en: 'Location (wrld_...:instance)'
+	String get locationHint => 'Location (wrld_...:instance)';
+
+	/// en: 'Enter an instance location.'
+	String get enterLocation => 'Enter an instance location.';
+
+	/// en: 'No visible players.'
+	String get noPlayers => 'No visible players.';
+
+	/// en: 'Load'
+	String get load => 'Load';
+}
+
+// Path: moderation
+class Translations$moderation$en {
+	Translations$moderation$en._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Moderation'
+	String get title => 'Moderation';
+
+	/// en: 'Clear player moderations'
+	String get clearPlayer => 'Clear player moderations';
+
+	/// en: 'Player'
+	String get player => 'Player';
+
+	/// en: 'Group bans'
+	String get groupBans => 'Group bans';
+
+	/// en: 'Player moderations cleared'
+	String get cleared => 'Player moderations cleared';
+
+	/// en: 'No player moderations.'
+	String get noPlayer => 'No player moderations.';
+
+	/// en: 'Remove moderation'
+	String get remove => 'Remove moderation';
+
+	/// en: 'Group ID (grp_...)'
+	String get groupHint => 'Group ID (grp_...)';
+
+	/// en: 'Load bans'
+	String get loadBans => 'Load bans';
+
+	/// en: 'Enter a group ID.'
+	String get enterGroup => 'Enter a group ID.';
+
+	/// en: 'No group bans.'
+	String get noGroup => 'No group bans.';
+
+	/// en: 'Unban'
+	String get unban => 'Unban';
+}
+
+// Path: tools
+class Translations$tools$en {
+	Translations$tools$en._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Tools'
+	String get title => 'Tools';
+
+	/// en: 'Groups'
+	String get groups => 'Groups';
+
+	/// en: 'My avatars'
+	String get myAvatars => 'My avatars';
+
+	/// en: 'Status'
+	String get status => 'Status';
+
+	/// en: 'Data'
+	String get data => 'Data';
+
+	/// en: 'Server'
+	String get server => 'Server';
+
+	/// en: 'Group ID (grp_...)'
+	String get groupHint => 'Group ID (grp_...)';
+
+	/// en: 'Load group'
+	String get loadGroup => 'Load group';
+
+	/// en: 'Join'
+	String get join => 'Join';
+
+	/// en: 'Leave'
+	String get leave => 'Leave';
+
+	/// en: 'Members'
+	String get members => 'Members';
+
+	/// en: 'Bans'
+	String get bans => 'Bans';
+
+	/// en: 'Calendar'
+	String get calendar => 'Calendar';
+
+	/// en: 'Enter a group ID to manage it.'
+	String get enterGroup => 'Enter a group ID to manage it.';
+
+	/// en: 'No members.'
+	String get noMembers => 'No members.';
+
+	/// en: 'Ban member'
+	String get banMember => 'Ban member';
+
+	/// en: 'No group bans.'
+	String get noGroupBans => 'No group bans.';
+
+	/// en: 'Unban member'
+	String get unbanMember => 'Unban member';
+
+	/// en: 'No group calendar events.'
+	String get noCalendar => 'No group calendar events.';
+
+	/// en: 'Follow event'
+	String get followEvent => 'Follow event';
+
+	/// en: 'Unfollow event'
+	String get unfollowEvent => 'Unfollow event';
+
+	/// en: 'Own avatars'
+	String get ownAvatars => 'Own avatars';
+
+	/// en: 'No own avatars found.'
+	String get noOwnAvatars => 'No own avatars found.';
+
+	/// en: 'Edit avatar'
+	String get editAvatar => 'Edit avatar';
+
+	/// en: 'World metadata'
+	String get worldMetadata => 'World metadata';
+
+	/// en: 'World ID'
+	String get worldId => 'World ID';
+
+	/// en: 'wrld_...'
+	String get worldHint => 'wrld_...';
+
+	/// en: 'Load world ID'
+	String get loadWorld => 'Load world ID';
+
+	/// en: 'Edit world metadata'
+	String get editWorldMetadata => 'Edit world metadata';
+
+	/// en: 'Editing is available for worlds where your account has permission.'
+	String get worldPermissionHint => 'Editing is available for worlds where your account has permission.';
+
+	/// en: 'Status presets'
+	String get statusPresets => 'Status presets';
+
+	/// en: 'Add preset'
+	String get addPreset => 'Add preset';
+
+	/// en: 'Apply preset'
+	String get applyPreset => 'Apply preset';
+
+	/// en: 'Delete preset'
+	String get deletePreset => 'Delete preset';
+
+	/// en: 'Apply preset on login'
+	String get applyPresetOnLogin => 'Apply preset on login';
+
+	/// en: 'Restore a selected social status after login.'
+	String get restoreStatus => 'Restore a selected social status after login.';
+
+	/// en: 'Automatic preset'
+	String get automaticPreset => 'Automatic preset';
+
+	/// en: 'Discord names'
+	String get discordNames => 'Discord names';
+
+	/// en: 'Scan friend profiles'
+	String get scanFriendProfiles => 'Scan friend profiles';
+
+	/// en: 'Export Discord names'
+	String get exportDiscordNames => 'Export Discord names';
+
+	/// en: 'No linked names yet. Add Discord in a profile bio or use export/import.'
+	String get noLinkedNames => 'No linked names yet. Add Discord in a profile bio or use export/import.';
+
+	/// en: 'Data transfer'
+	String get dataTransfer => 'Data transfer';
+
+	/// en: 'Move local activity, notes, alerts and presets between devices.'
+	String get dataTransferDescription => 'Move local activity, notes, alerts and presets between devices.';
+
+	/// en: 'Export data'
+	String get exportData => 'Export data';
+
+	/// en: 'Import data'
+	String get importData => 'Import data';
+
+	/// en: 'Exports use a versioned JSON format. API content is never overwritten automatically; import only restores local app data.'
+	String get dataExportHint => 'Exports use a versioned JSON format. API content is never overwritten automatically; import only restores local app data.';
+
+	/// en: 'VRChat API online'
+	String get apiOnline => 'VRChat API online';
+
+	/// en: 'VRChat API degraded'
+	String get apiDegraded => 'VRChat API degraded';
+
+	/// en: 'API status unavailable'
+	String get apiUnavailable => 'API status unavailable';
+
+	/// en: 'Pull to refresh the latest server health response.'
+	String get serverRefreshHint => 'Pull to refresh the latest server health response.';
+
+	/// en: 'Group action completed'
+	String get groupActionCompleted => 'Group action completed';
+
+	/// en: 'Edit avatar'
+	String get editAvatarDialog => 'Edit avatar';
+
+	/// en: 'Edit world metadata'
+	String get editWorldDialog => 'Edit world metadata';
+
+	/// en: 'New status preset'
+	String get newStatusPreset => 'New status preset';
+
+	/// en: 'Name'
+	String get name => 'Name';
+
+	/// en: 'Description'
+	String get description => 'Description';
+
+	/// en: 'Capacity'
+	String get capacity => 'Capacity';
+
+	/// en: 'Tags (comma separated)'
+	String get tags => 'Tags (comma separated)';
+
+	/// en: 'Paste a VRCN JSON export'
+	String get pasteExport => 'Paste a VRCN JSON export';
+
+	/// en: 'Data imported'
+	String get dataImported => 'Data imported';
+
+	/// en: 'Import failed: ${error}'
+	String importFailed({required Object error}) => 'Import failed: ${error}';
+
+	/// en: 'Available'
+	String get statusAvailable => 'Available';
+
+	/// en: 'Ask me'
+	String get statusAskMe => 'Ask me';
+
+	/// en: 'Busy'
+	String get statusBusy => 'Busy';
+
+	/// en: 'Join me'
+	String get statusJoinMe => 'Join me';
+}
+
+// Path: osc
+class Translations$osc$en {
+	Translations$osc$en._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Float (0.0–1.0)'
+	String get floatType => 'Float (0.0–1.0)';
+
+	/// en: 'Integer'
+	String get intType => 'Integer';
+
+	/// en: 'Boolean (On/Off)'
+	String get boolType => 'Boolean (On/Off)';
+
+	/// en: 'On'
+	String get on => 'On';
+
+	/// en: 'Off'
+	String get off => 'Off';
+}
+
 // Path: drawer.section
 class Translations$drawer$section$en {
 	Translations$drawer$section$en._(this._root);
@@ -1838,6 +2348,33 @@ class Translations$search$tabs$en {
 	late final Translations$search$tabs$worldSearch$en worldSearch = Translations$search$tabs$worldSearch$en._(_root);
 	late final Translations$search$tabs$groupSearch$en groupSearch = Translations$search$tabs$groupSearch$en._(_root);
 	late final Translations$search$tabs$avatarSearch$en avatarSearch = Translations$search$tabs$avatarSearch$en._(_root);
+}
+
+// Path: profile.userTypes
+class Translations$profile$userTypes$en {
+	Translations$profile$userTypes$en._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Admin'
+	String get admin => 'Admin';
+
+	/// en: 'Trusted'
+	String get trusted => 'Trusted';
+
+	/// en: 'Known'
+	String get known => 'Known';
+
+	/// en: 'User'
+	String get user => 'User';
+
+	/// en: 'New User'
+	String get newUser => 'New User';
+
+	/// en: 'Visitor'
+	String get visitor => 'Visitor';
 }
 
 // Path: groupDetail.privacy
@@ -1941,8 +2478,44 @@ class Translations$instance$type$en {
 	/// en: 'Invite+'
 	String get private => 'Invite+';
 
+	/// en: 'Group'
+	String get group => 'Group';
+
 	/// en: 'Unknown'
 	String get unknown => 'Unknown';
+}
+
+// Path: activity.kind
+class Translations$activity$kind$en {
+	Translations$activity$kind$en._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Friend online'
+	String get friendOnline => 'Friend online';
+
+	/// en: 'Friend offline'
+	String get friendOffline => 'Friend offline';
+
+	/// en: 'Friend active'
+	String get friendActive => 'Friend active';
+
+	/// en: 'Friend added'
+	String get friendAdd => 'Friend added';
+
+	/// en: 'Friend removed'
+	String get friendRemove => 'Friend removed';
+
+	/// en: 'Location changed'
+	String get locationChange => 'Location changed';
+
+	/// en: 'Status updated'
+	String get statusUpdate => 'Status updated';
+
+	/// en: 'Activity'
+	String get activity => 'Activity';
 }
 
 // Path: search.tabs.userSearch
@@ -2283,6 +2856,10 @@ extension on Translations {
 			'drawer.avatar' => 'Avatars',
 			'drawer.group' => 'Groups',
 			'drawer.inventory' => 'Inventory',
+			'drawer.activity' => 'Activity',
+			'drawer.insights' => 'Insights',
+			'drawer.moderation' => 'Moderation',
+			'drawer.tools' => 'Tools',
 			'drawer.review' => 'Review',
 			'drawer.feedback' => 'Feedback',
 			'drawer.settings' => 'Settings',
@@ -2312,6 +2889,9 @@ extension on Translations {
 			'login.error2faFailed' => 'Two-factor authentication failed. Please check if the code is correct.',
 			'login.backToLogin' => 'Back to login',
 			'login.paste' => 'Paste',
+			'login.biometricLogin' => 'Login with biometrics',
+			'login.biometricReason' => 'Authenticate to use your saved VRChat login.',
+			'login.savedLoginMissing' => 'Saved login is missing.',
 			'friends.loading' => 'Loading friends list...',
 			'friends.error' => ({required Object error}) => 'Failed to load friends list: ${error}',
 			'friends.notFound' => 'No friends found.',
@@ -2349,6 +2929,17 @@ extension on Translations {
 			'friendDetail.blockSuccess' => 'Blocked',
 			'friendDetail.muteSuccess' => 'Muted',
 			'friendDetail.operationFailed' => ({required Object error}) => 'Operation failed: ${error}',
+			'friendDetail.friendStatusEmpty' => 'Friend status was empty.',
+			'friendDetail.addFriend' => 'Add friend',
+			'friendDetail.removeFriend' => 'Remove friend',
+			'friendDetail.cancelFriendRequest' => 'Cancel friend request',
+			'friendDetail.friendRequestPending' => 'Friend request pending',
+			'friendDetail.relationshipCompleted' => ({required Object action}) => '${action} completed',
+			'friendDetail.note' => 'Note',
+			'friendDetail.noNote' => 'No note saved.',
+			'friendDetail.editNote' => 'Edit note',
+			'friendDetail.noteTitle' => ({required Object name}) => 'Note: ${name}',
+			'friendDetail.noteHint' => 'Write a private local note',
 			'search.userTab' => 'Users',
 			'search.worldTab' => 'Worlds',
 			'search.avatarTab' => 'Avatars',
@@ -2432,6 +3023,12 @@ extension on Translations {
 			'profile.linksHint' => 'Links will be displayed on your profile and can be opened by tapping.',
 			'profile.statusMessageHint' => 'Enter your current situation or a message.',
 			'profile.bioHint' => 'Write something about yourself.',
+			'profile.userTypes.admin' => 'Admin',
+			'profile.userTypes.trusted' => 'Trusted',
+			'profile.userTypes.known' => 'Known',
+			'profile.userTypes.user' => 'User',
+			'profile.userTypes.newUser' => 'New User',
+			'profile.userTypes.visitor' => 'Visitor',
 			'engageCard.pickBackground' => 'Select Background Image',
 			'engageCard.removeBackground' => 'Remove Background Image',
 			'engageCard.scanQr' => 'Scan QR Code',
@@ -2508,6 +3105,13 @@ extension on Translations {
 			'notifications.secondsAgo' => ({required Object seconds}) => '${seconds}s ago',
 			'notifications.minutesAgo' => ({required Object minutes}) => '${minutes}m ago',
 			'notifications.hoursAgo' => ({required Object hours}) => '${hours}h ago',
+			'notifications.searchHint' => 'Search notifications',
+			'notifications.type' => 'Type',
+			'notifications.allTypes' => 'All types',
+			'notifications.responseSent' => 'Notification response sent',
+			'notifications.responseFailed' => ({required Object error}) => 'Failed to respond: ${error}',
+			'notifications.friendOnlineChannel' => 'Friend online',
+			'notifications.friendOnlineChannelDescription' => 'Notifications when selected friends come online.',
 			'eventCalendar.title' => 'Event Calendar',
 			'eventCalendar.filter' => 'Filter Events',
 			'eventCalendar.refresh' => 'Refresh Events',
@@ -2528,7 +3132,7 @@ extension on Translations {
 			'eventCalendar.condition' => 'Participation Conditions',
 			'eventCalendar.way' => 'How to Join',
 			'eventCalendar.note' => 'Notes',
-			'eventCalendar.quest' => 'Quest Compatible',
+			'eventCalendar.quest' => 'Android Compatible',
 			'eventCalendar.reminderCount' => ({required Object count}) => '${count}',
 			'eventCalendar.startToEnd' => ({required Object start, required Object end}) => '${start} - ${end}',
 			'avatars.title' => 'Avatars',
@@ -2550,8 +3154,27 @@ extension on Translations {
 			'avatars.sortName' => 'By Name',
 			'avatars.sortTooltip' => 'Sort',
 			'avatars.viewModeTooltip' => 'Toggle View Mode',
+			'avatars.remoteTooltip' => 'VRChat avatars',
+			'avatars.localTooltip' => 'Local avatar DB',
+			'avatars.localEmptyTitle' => 'No local avatars',
+			'avatars.localEmptyDescription' => 'Viewed and searched avatars will appear here.',
 			'worldDetail.loading' => 'Loading world information...',
 			'worldDetail.error' => ({required Object error}) => 'Failed to load world information: ${error}',
+			'worldDetail.metadataTitle' => 'World details',
+			'worldDetail.capacity' => 'Capacity',
+			'worldDetail.capacityValue' => ({required Object recommended, required Object maximum}) => '${recommended} recommended / ${maximum} max',
+			'worldDetail.releaseStatus' => 'Release status',
+			'worldDetail.releaseAll' => 'All',
+			'worldDetail.releaseHidden' => 'Hidden',
+			'worldDetail.releasePrivate' => 'Private',
+			'worldDetail.releasePublic' => 'Public',
+			'worldDetail.publicInstances' => 'Public instances',
+			'worldDetail.occupantsValue' => ({required Object publicCount, required Object privateCount}) => '${publicCount} public / ${privateCount} private',
+			'worldDetail.publication' => 'Publication',
+			'worldDetail.platforms' => 'Platforms',
+			'worldDetail.platformAndroid' => 'Android',
+			'worldDetail.platformIos' => 'iOS',
+			'worldDetail.platformPc' => 'PC',
 			'worldDetail.share' => 'Share This World',
 			'worldDetail.openInVRChat' => 'Open on VRChat Official Website',
 			'worldDetail.report' => 'Report This World',
@@ -2706,6 +3329,8 @@ extension on Translations {
 			'settings.notifications' => 'Notification Settings',
 			'settings.eventReminder' => 'Event Reminders',
 			'settings.eventReminderDescription' => 'Receive notifications before your scheduled events start.',
+			_ => null,
+		} ?? switch (path) {
 			'settings.manageReminders' => 'Manage Set Reminders',
 			'settings.manageRemindersDescription' => 'Cancel or check your notifications.',
 			'settings.dataStorage' => 'Data and Storage',
@@ -2755,9 +3380,8 @@ extension on Translations {
 			'instance.type.hidden' => 'Friend+',
 			'instance.type.friends' => 'Friends',
 			'instance.type.private' => 'Invite+',
+			'instance.type.group' => 'Group',
 			'instance.type.unknown' => 'Unknown',
-			_ => null,
-		} ?? switch (path) {
 			'status.active' => 'Online',
 			'status.joinMe' => 'Join Me',
 			'status.askMe' => 'Ask Me',
@@ -2765,6 +3389,7 @@ extension on Translations {
 			'status.offline' => 'Offline',
 			'status.unknown' => 'Unknown Status',
 			'location.private' => 'Private',
+			'location.traveling' => 'Traveling',
 			'location.playerCount' => ({required Object userCount, required Object capacity}) => 'Players: ${userCount} / ${capacity}',
 			'location.instanceType' => ({required Object type}) => 'Instance Type: ${type}',
 			'location.noInfo' => 'No location information available.',
@@ -2806,6 +3431,8 @@ extension on Translations {
 			'friend.sortAsc' => 'Ascending',
 			'friend.sortDesc' => 'Descending',
 			'friend.close' => 'Close',
+			'friend.searchTitle' => 'Search friends',
+			'friend.searchHint' => 'Name, user ID or location',
 			'eventCalendarFilter.filterTitle' => 'Filter Events',
 			'eventCalendarFilter.clear' => 'Clear',
 			'eventCalendarFilter.keyword' => 'Keyword Search',
@@ -2824,6 +3451,119 @@ extension on Translations {
 			'eventCalendarFilter.apply' => 'Apply',
 			'eventCalendarFilter.filterSummary' => 'Filters',
 			'eventCalendarFilter.filterNone' => 'No filters are set.',
+			'activity.title' => 'Activity',
+			'activity.clearHistory' => 'Clear activity history',
+			'activity.feed' => 'Feed',
+			'activity.friendLog' => 'Friend log',
+			'activity.heatmap' => 'Heatmap',
+			'activity.empty' => 'No activity recorded yet.',
+			'activity.trackedHours' => ({required Object hours, required Object minutes}) => '${hours}h ${minutes}m tracked',
+			'activity.trackedMinutes' => ({required Object minutes}) => '${minutes}m tracked',
+			'activity.summary' => ({required Object kind, required Object detail}) => '${kind} · ${detail}',
+			'activity.heatmapTitle' => 'Friend activity over the last six weeks',
+			'activity.kind.friendOnline' => 'Friend online',
+			'activity.kind.friendOffline' => 'Friend offline',
+			'activity.kind.friendActive' => 'Friend active',
+			'activity.kind.friendAdd' => 'Friend added',
+			'activity.kind.friendRemove' => 'Friend removed',
+			'activity.kind.locationChange' => 'Location changed',
+			'activity.kind.statusUpdate' => 'Status updated',
+			'activity.kind.activity' => 'Activity',
+			'insights.title' => 'Insights',
+			'insights.mutualFriends' => 'Mutual friends',
+			'insights.hotWorlds' => 'Hot worlds',
+			'insights.instancePlayers' => 'Instance players',
+			'insights.userHint' => 'User ID (usr_...)',
+			'insights.enterUser' => 'Enter a user ID to compare friends.',
+			'insights.noMutual' => 'No mutual friends.',
+			'insights.noLocations' => 'No friend locations available.',
+			'insights.friendsCount' => ({required Object count}) => '${count} friends',
+			'insights.locationHint' => 'Location (wrld_...:instance)',
+			'insights.enterLocation' => 'Enter an instance location.',
+			'insights.noPlayers' => 'No visible players.',
+			'insights.load' => 'Load',
+			'moderation.title' => 'Moderation',
+			'moderation.clearPlayer' => 'Clear player moderations',
+			'moderation.player' => 'Player',
+			'moderation.groupBans' => 'Group bans',
+			'moderation.cleared' => 'Player moderations cleared',
+			'moderation.noPlayer' => 'No player moderations.',
+			'moderation.remove' => 'Remove moderation',
+			'moderation.groupHint' => 'Group ID (grp_...)',
+			'moderation.loadBans' => 'Load bans',
+			'moderation.enterGroup' => 'Enter a group ID.',
+			'moderation.noGroup' => 'No group bans.',
+			'moderation.unban' => 'Unban',
+			'tools.title' => 'Tools',
+			'tools.groups' => 'Groups',
+			'tools.myAvatars' => 'My avatars',
+			'tools.status' => 'Status',
+			'tools.data' => 'Data',
+			'tools.server' => 'Server',
+			'tools.groupHint' => 'Group ID (grp_...)',
+			'tools.loadGroup' => 'Load group',
+			'tools.join' => 'Join',
+			'tools.leave' => 'Leave',
+			'tools.members' => 'Members',
+			'tools.bans' => 'Bans',
+			'tools.calendar' => 'Calendar',
+			'tools.enterGroup' => 'Enter a group ID to manage it.',
+			'tools.noMembers' => 'No members.',
+			'tools.banMember' => 'Ban member',
+			'tools.noGroupBans' => 'No group bans.',
+			'tools.unbanMember' => 'Unban member',
+			'tools.noCalendar' => 'No group calendar events.',
+			'tools.followEvent' => 'Follow event',
+			'tools.unfollowEvent' => 'Unfollow event',
+			'tools.ownAvatars' => 'Own avatars',
+			'tools.noOwnAvatars' => 'No own avatars found.',
+			'tools.editAvatar' => 'Edit avatar',
+			'tools.worldMetadata' => 'World metadata',
+			'tools.worldId' => 'World ID',
+			'tools.worldHint' => 'wrld_...',
+			'tools.loadWorld' => 'Load world ID',
+			'tools.editWorldMetadata' => 'Edit world metadata',
+			'tools.worldPermissionHint' => 'Editing is available for worlds where your account has permission.',
+			'tools.statusPresets' => 'Status presets',
+			'tools.addPreset' => 'Add preset',
+			'tools.applyPreset' => 'Apply preset',
+			'tools.deletePreset' => 'Delete preset',
+			'tools.applyPresetOnLogin' => 'Apply preset on login',
+			'tools.restoreStatus' => 'Restore a selected social status after login.',
+			'tools.automaticPreset' => 'Automatic preset',
+			'tools.discordNames' => 'Discord names',
+			'tools.scanFriendProfiles' => 'Scan friend profiles',
+			'tools.exportDiscordNames' => 'Export Discord names',
+			'tools.noLinkedNames' => 'No linked names yet. Add Discord in a profile bio or use export/import.',
+			'tools.dataTransfer' => 'Data transfer',
+			'tools.dataTransferDescription' => 'Move local activity, notes, alerts and presets between devices.',
+			'tools.exportData' => 'Export data',
+			'tools.importData' => 'Import data',
+			'tools.dataExportHint' => 'Exports use a versioned JSON format. API content is never overwritten automatically; import only restores local app data.',
+			'tools.apiOnline' => 'VRChat API online',
+			'tools.apiDegraded' => 'VRChat API degraded',
+			'tools.apiUnavailable' => 'API status unavailable',
+			'tools.serverRefreshHint' => 'Pull to refresh the latest server health response.',
+			'tools.groupActionCompleted' => 'Group action completed',
+			'tools.editAvatarDialog' => 'Edit avatar',
+			'tools.editWorldDialog' => 'Edit world metadata',
+			'tools.newStatusPreset' => 'New status preset',
+			'tools.name' => 'Name',
+			'tools.description' => 'Description',
+			'tools.capacity' => 'Capacity',
+			'tools.tags' => 'Tags (comma separated)',
+			'tools.pasteExport' => 'Paste a VRCN JSON export',
+			'tools.dataImported' => 'Data imported',
+			'tools.importFailed' => ({required Object error}) => 'Import failed: ${error}',
+			'tools.statusAvailable' => 'Available',
+			'tools.statusAskMe' => 'Ask me',
+			'tools.statusBusy' => 'Busy',
+			'tools.statusJoinMe' => 'Join me',
+			'osc.floatType' => 'Float (0.0–1.0)',
+			'osc.intType' => 'Integer',
+			'osc.boolType' => 'Boolean (On/Off)',
+			'osc.on' => 'On',
+			'osc.off' => 'Off',
 			_ => null,
 		};
 	}

@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -48,7 +49,7 @@ class ReminderManagementDialog extends ConsumerWidget {
               child: Row(
                 children: [
                   const Icon(
-                    Icons.notifications_active,
+                    AppIcons.notifications_active,
                     color: AppTheme.primaryColor,
                     size: 24,
                   ),
@@ -63,7 +64,7 @@ class ReminderManagementDialog extends ConsumerWidget {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(AppIcons.close),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
@@ -81,7 +82,7 @@ class ReminderManagementDialog extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.notifications_off_outlined,
+                        AppIcons.notifications_off_outlined,
                         size: 48,
                         color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
                       ),
@@ -170,7 +171,7 @@ class ReminderManagementDialog extends ConsumerWidget {
                     onPressed: () {
                       _showClearAllDialog(context, ref);
                     },
-                    icon: const Icon(Icons.delete_outline),
+                    icon: const Icon(AppIcons.delete_outline),
                     label: Text(
                       t.reminder.deleteAll,
                       style: GoogleFonts.notoSans(),
@@ -210,7 +211,7 @@ class ReminderManagementDialog extends ConsumerWidget {
       subtitle: Row(
         children: [
           Icon(
-            Icons.access_time,
+            AppIcons.access_time,
             size: 12,
             color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
           ),
@@ -233,7 +234,11 @@ class ReminderManagementDialog extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.notifications, size: 10, color: Colors.blue),
+                const Icon(
+                  AppIcons.notifications,
+                  size: 10,
+                  color: Colors.blue,
+                ),
                 const SizedBox(width: 2),
                 Text(
                   '$notificationTime (${reminder.reminderTime.label})',
@@ -249,7 +254,7 @@ class ReminderManagementDialog extends ConsumerWidget {
         ],
       ),
       trailing: IconButton(
-        icon: const Icon(Icons.delete_outline, size: 20),
+        icon: const Icon(AppIcons.delete_outline, size: 20),
         splashRadius: 20,
         color: Colors.red,
         onPressed: () {

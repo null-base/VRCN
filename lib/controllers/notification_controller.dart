@@ -30,15 +30,39 @@ class NotificationController {
 
   List<NotificationEntry> filterNotifications(
     List<NotificationEntry> entries,
-    NotificationFilter filter,
-  ) {
-    return switch (filter) {
+    NotificationFilter filter, {
+    String query = '',
+    String? category,
+  }) {
+    final filtered = switch (filter) {
       NotificationFilter.unread =>
         entries.where((notification) => !notification.isRead).toList(),
       NotificationFilter.read =>
         entries.where((notification) => notification.isRead).toList(),
       NotificationFilter.all => entries,
     };
+    final normalizedQuery = query.trim().toLowerCase();
+    return filtered
+        .where((entry) {
+          final notification = entry.apiNotification;
+          if (category != null &&
+              (notification == null || notification.category != category)) {
+            return false;
+          }
+          if (normalizedQuery.isEmpty) return true;
+          final values = [
+            notification?.title,
+            notification?.message,
+            notification?.senderUsername,
+            notification?.category,
+            entry.activityNotification?.userName,
+            entry.activityNotification?.worldName,
+          ];
+          return values.whereType<String>().any(
+            (value) => value.toLowerCase().contains(normalizedQuery),
+          );
+        })
+        .toList(growable: false);
   }
 
   Future<void> markApiAsRead(String notificationId) {

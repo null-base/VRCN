@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'dart:async';
 import 'dart:ui';
 
@@ -115,27 +116,29 @@ class _EngageCardPageState extends ConsumerState<EngageCardPage> {
                 iconTheme: const IconThemeData(color: Colors.white),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.photo_library_outlined),
+                    icon: const Icon(AppIcons.photo_library_outlined),
                     onPressed: _pickImage,
                     tooltip: t.engageCard.pickBackground,
                   ),
                   if (backgroundImage != null)
                     IconButton(
                       icon: const Icon(
-                        Icons.delete_outline,
+                        AppIcons.delete_outline,
                         color: Colors.redAccent,
                       ),
                       onPressed: _removeBackgroundImage,
                       tooltip: t.engageCard.removeBackground,
                     ),
                   IconButton(
-                    icon: const Icon(Icons.qr_code_scanner),
+                    icon: const Icon(AppIcons.qr_code_scanner),
                     onPressed: () => context.push('/qr_scanner'),
                     tooltip: t.engageCard.scanQr,
                   ),
                   IconButton(
                     icon: Icon(
-                      _showAvatar ? Icons.visibility : Icons.visibility_off,
+                      _showAvatar
+                          ? AppIcons.visibility
+                          : AppIcons.visibility_off,
                       color: Colors.white,
                     ),
                     tooltip: _showAvatar

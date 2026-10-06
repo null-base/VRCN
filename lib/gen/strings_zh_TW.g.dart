@@ -66,6 +66,11 @@ class TranslationsZhTw with BaseTranslations<AppLocale, Translations> implements
 	@override late final Translations$reminder$zh_TW reminder = Translations$reminder$zh_TW.internal(_root);
 	@override late final Translations$friend$zh_TW friend = Translations$friend$zh_TW.internal(_root);
 	@override late final Translations$eventCalendarFilter$zh_TW eventCalendarFilter = Translations$eventCalendarFilter$zh_TW.internal(_root);
+	@override late final Translations$activity$zh_TW activity = Translations$activity$zh_TW.internal(_root);
+	@override late final Translations$insights$zh_TW insights = Translations$insights$zh_TW.internal(_root);
+	@override late final Translations$moderation$zh_TW moderation = Translations$moderation$zh_TW.internal(_root);
+	@override late final Translations$tools$zh_TW tools = Translations$tools$zh_TW.internal(_root);
+	@override late final Translations$osc$zh_TW osc = Translations$osc$zh_TW.internal(_root);
 }
 
 // Path: common
@@ -135,6 +140,10 @@ class Translations$drawer$zh_TW implements Translations$drawer$en {
 	@override String get review => '評價';
 	@override String get feedback => '意見回饋';
 	@override String get settings => '設定';
+	@override String get activity => '動態';
+	@override String get insights => '洞察';
+	@override String get moderation => '管理';
+	@override String get tools => '工具';
 	@override String get userLoading => '正在載入使用者資訊...';
 	@override String get userError => '獲取使用者資訊失敗';
 	@override String get retry => '重試';
@@ -169,6 +178,9 @@ class Translations$login$zh_TW implements Translations$login$en {
 	@override String get error2faFailed => '兩步驟驗證失敗。請確認驗證碼是否正確。';
 	@override String get backToLogin => '返回登入畫面';
 	@override String get paste => '貼上';
+	@override String get biometricLogin => '使用生物辨識登入';
+	@override String get biometricReason => '請進行身分驗證以使用已儲存的 VRChat 登入資訊。';
+	@override String get savedLoginMissing => '沒有已儲存的登入資訊。';
 }
 
 // Path: friends
@@ -224,6 +236,17 @@ class Translations$friendDetail$zh_TW implements Translations$friendDetail$en {
 	@override String get blockSuccess => '已封鎖';
 	@override String get muteSuccess => '已靜音';
 	@override String operationFailed({required Object error}) => '操作失敗：${error}';
+	@override String get friendStatusEmpty => '好友狀態為空。';
+	@override String get addFriend => '加為好友';
+	@override String get removeFriend => '移除好友';
+	@override String get cancelFriendRequest => '取消好友邀請';
+	@override String get friendRequestPending => '好友邀請處理中';
+	@override String relationshipCompleted({required Object action}) => '已${action}';
+	@override String get note => '備註';
+	@override String get noNote => '沒有已儲存的備註';
+	@override String get editNote => '編輯備註';
+	@override String noteTitle({required Object name}) => '備註：${name}';
+	@override String get noteHint => '撰寫只有自己看得到的備註';
 }
 
 // Path: search
@@ -291,6 +314,7 @@ class Translations$profile$zh_TW implements Translations$profile$en {
 	@override String get linksHint => '連結將顯示在您的個人資料上，點擊即可開啟';
 	@override String get statusMessageHint => '輸入您目前的狀況或訊息';
 	@override String get bioHint => '寫一些關於您自己的事吧';
+	@override late final Translations$profile$userTypes$zh_TW userTypes = Translations$profile$userTypes$zh_TW.internal(_root);
 }
 
 // Path: engageCard
@@ -403,6 +427,13 @@ class Translations$notifications$zh_TW implements Translations$notifications$en 
 	@override String secondsAgo({required Object seconds}) => '${seconds}秒前';
 	@override String minutesAgo({required Object minutes}) => '${minutes}分鐘前';
 	@override String hoursAgo({required Object hours}) => '${hours}小時前';
+	@override String get searchHint => '搜尋通知';
+	@override String get type => '類型';
+	@override String get allTypes => '所有類型';
+	@override String get responseSent => '已傳送回應';
+	@override String responseFailed({required Object error}) => '傳送回應失敗：${error}';
+	@override String get friendOnlineChannel => '好友上線';
+	@override String get friendOnlineChannelDescription => '選取的好友上線時傳送通知。';
 }
 
 // Path: eventCalendar
@@ -432,7 +463,7 @@ class Translations$eventCalendar$zh_TW implements Translations$eventCalendar$en 
 	@override String get condition => '參加條件';
 	@override String get way => '參加方法';
 	@override String get note => '備註';
-	@override String get quest => '支援 Quest';
+	@override String get quest => '支援 Android';
 	@override String reminderCount({required Object count}) => '${count}筆';
 	@override String startToEnd({required Object start, required Object end}) => '${start}～${end}';
 }
@@ -462,6 +493,10 @@ class Translations$avatars$zh_TW implements Translations$avatars$en {
 	@override String get sortUpdated => '按更新時間';
 	@override String get sortName => '按名稱';
 	@override String get sortTooltip => '排序';
+	@override String get remoteTooltip => 'VRChat 虛擬化身';
+	@override String get localTooltip => '本機虛擬化身資料庫';
+	@override String get localEmptyTitle => '沒有本機虛擬化身';
+	@override String get localEmptyDescription => '檢視和搜尋過的虛擬化身會顯示在這裡。';
 	@override String get viewModeTooltip => '切換顯示模式';
 }
 
@@ -474,6 +509,21 @@ class Translations$worldDetail$zh_TW implements Translations$worldDetail$en {
 	// Translations
 	@override String get loading => '正在載入世界資訊...';
 	@override String error({required Object error}) => '獲取世界資訊失敗：${error}';
+	@override String get metadataTitle => '世界詳細資訊';
+	@override String get capacity => '容量';
+	@override String capacityValue({required Object recommended, required Object maximum}) => '${recommended} 建議 / ${maximum} 最大';
+	@override String get releaseStatus => '發布狀態';
+	@override String get releaseAll => '全部';
+	@override String get releaseHidden => '隱藏';
+	@override String get releasePrivate => '私人';
+	@override String get releasePublic => '公開';
+	@override String get publicInstances => '公開實例';
+	@override String occupantsValue({required Object publicCount, required Object privateCount}) => '公開 ${publicCount} / 私人 ${privateCount}';
+	@override String get publication => '發布日期';
+	@override String get platforms => '支援平台';
+	@override String get platformAndroid => 'Android';
+	@override String get platformIos => 'iOS';
+	@override String get platformPc => 'PC';
 	@override String get share => '分享這個世界';
 	@override String get openInVRChat => '在 VRChat 官網開啟';
 	@override String get report => '檢舉這個世界';
@@ -741,6 +791,7 @@ class Translations$location$zh_TW implements Translations$location$en {
 
 	// Translations
 	@override String get private => '私人';
+	@override String get traveling => '移動中';
 	@override String playerCount({required Object userCount, required Object capacity}) => '玩家數：${userCount} / ${capacity}';
 	@override String instanceType({required Object type}) => '房間類型：${type}';
 	@override String get noInfo => '沒有位置資訊';
@@ -800,6 +851,8 @@ class Translations$friend$zh_TW implements Translations$friend$en {
 	@override String get sortAsc => '遞增';
 	@override String get sortDesc => '遞減';
 	@override String get close => '關閉';
+	@override String get searchTitle => '搜尋好友';
+	@override String get searchHint => '姓名、使用者 ID 或位置';
 }
 
 // Path: eventCalendarFilter
@@ -829,6 +882,157 @@ class Translations$eventCalendarFilter$zh_TW implements Translations$eventCalend
 	@override String get filterNone => '未設定篩選條件';
 }
 
+// Path: activity
+class Translations$activity$zh_TW implements Translations$activity$en {
+	Translations$activity$zh_TW.internal(this._root);
+
+	final TranslationsZhTw _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '動態';
+	@override String get clearHistory => '清除動態記錄';
+	@override String get feed => '動態流';
+	@override String get friendLog => '好友紀錄';
+	@override String get heatmap => '熱點圖';
+	@override String get empty => '尚未記錄任何動態。';
+	@override String trackedHours({required Object hours, required Object minutes}) => '已記錄 ${hours}小時 ${minutes}分鐘';
+	@override String trackedMinutes({required Object minutes}) => '已記錄 ${minutes}分鐘';
+	@override String summary({required Object kind, required Object detail}) => '${kind} · ${detail}';
+	@override String get heatmapTitle => '過去六週的好友動態';
+	@override late final Translations$activity$kind$zh_TW kind = Translations$activity$kind$zh_TW.internal(_root);
+}
+
+// Path: insights
+class Translations$insights$zh_TW implements Translations$insights$en {
+	Translations$insights$zh_TW.internal(this._root);
+
+	final TranslationsZhTw _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '洞察';
+	@override String get mutualFriends => '共同好友';
+	@override String get hotWorlds => '熱門世界';
+	@override String get instancePlayers => '執行個體玩家';
+	@override String get userHint => '使用者 ID (usr_...)';
+	@override String get enterUser => '輸入使用者 ID 以比較好友。';
+	@override String get noMutual => '沒有共同好友。';
+	@override String get noLocations => '沒有可用的好友位置。';
+	@override String friendsCount({required Object count}) => '${count} 位好友';
+	@override String get locationHint => '位置 (wrld_...:instance)';
+	@override String get enterLocation => '輸入執行個體位置。';
+	@override String get noPlayers => '沒有可顯示的玩家。';
+	@override String get load => '載入';
+}
+
+// Path: moderation
+class Translations$moderation$zh_TW implements Translations$moderation$en {
+	Translations$moderation$zh_TW.internal(this._root);
+
+	final TranslationsZhTw _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '管理';
+	@override String get clearPlayer => '清除玩家管理記錄';
+	@override String get player => '玩家';
+	@override String get groupBans => '群組封鎖';
+	@override String get cleared => '已清除玩家管理記錄';
+	@override String get noPlayer => '沒有玩家管理記錄。';
+	@override String get remove => '移除管理記錄';
+	@override String get groupHint => '群組 ID (grp_...)';
+	@override String get loadBans => '載入封鎖清單';
+	@override String get enterGroup => '輸入群組 ID。';
+	@override String get noGroup => '沒有群組封鎖。';
+	@override String get unban => '解除封鎖';
+}
+
+// Path: tools
+class Translations$tools$zh_TW implements Translations$tools$en {
+	Translations$tools$zh_TW.internal(this._root);
+
+	final TranslationsZhTw _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '工具';
+	@override String get groups => '群組';
+	@override String get myAvatars => '我的虛擬化身';
+	@override String get status => '狀態';
+	@override String get data => '資料';
+	@override String get server => '伺服器';
+	@override String get groupHint => '群組 ID (grp_...)';
+	@override String get loadGroup => '載入群組';
+	@override String get join => '加入';
+	@override String get leave => '離開';
+	@override String get members => '成員';
+	@override String get bans => '封鎖';
+	@override String get calendar => '行事曆';
+	@override String get enterGroup => '輸入要管理的群組 ID。';
+	@override String get noMembers => '沒有成員。';
+	@override String get banMember => '封鎖成員';
+	@override String get noGroupBans => '沒有群組封鎖。';
+	@override String get unbanMember => '解除成員封鎖';
+	@override String get noCalendar => '沒有群組行事曆活動。';
+	@override String get followEvent => '追蹤活動';
+	@override String get unfollowEvent => '取消追蹤活動';
+	@override String get ownAvatars => '我的虛擬化身';
+	@override String get noOwnAvatars => '找不到我的虛擬化身。';
+	@override String get editAvatar => '編輯虛擬化身';
+	@override String get worldMetadata => '世界中繼資料';
+	@override String get worldId => '世界 ID';
+	@override String get worldHint => 'wrld_...';
+	@override String get loadWorld => '載入世界 ID';
+	@override String get editWorldMetadata => '編輯世界中繼資料';
+	@override String get worldPermissionHint => '只有帳號擁有權限的世界才能編輯。';
+	@override String get statusPresets => '狀態預設';
+	@override String get addPreset => '新增預設';
+	@override String get applyPreset => '套用預設';
+	@override String get deletePreset => '刪除預設';
+	@override String get applyPresetOnLogin => '登入時套用預設';
+	@override String get restoreStatus => '登入後還原選取的社交狀態。';
+	@override String get automaticPreset => '自動預設';
+	@override String get discordNames => 'Discord 名稱';
+	@override String get scanFriendProfiles => '掃描好友個人資料';
+	@override String get exportDiscordNames => '匯出 Discord 名稱';
+	@override String get noLinkedNames => '尚未有關聯名稱。請在個人簡介中加入 Discord，或使用匯入/匯出功能。';
+	@override String get dataTransfer => '資料移轉';
+	@override String get dataTransferDescription => '在裝置之間移動動態、備註、提醒和預設。';
+	@override String get exportData => '匯出資料';
+	@override String get importData => '匯入資料';
+	@override String get dataExportHint => '使用含版本的 JSON 格式匯出。API 內容不會自動覆寫；匯入只會還原本機應用程式資料。';
+	@override String get apiOnline => 'VRChat API 線上';
+	@override String get apiDegraded => 'VRChat API 效能降低';
+	@override String get apiUnavailable => 'API 狀態無法使用';
+	@override String get serverRefreshHint => '下拉重新整理最新伺服器健康狀態。';
+	@override String get groupActionCompleted => '群組操作已完成';
+	@override String get editAvatarDialog => '編輯虛擬化身';
+	@override String get editWorldDialog => '編輯世界中繼資料';
+	@override String get newStatusPreset => '新增狀態預設';
+	@override String get name => '名稱';
+	@override String get description => '說明';
+	@override String get capacity => '容量';
+	@override String get tags => '標籤（以逗號分隔）';
+	@override String get pasteExport => '貼上 VRCN JSON 匯出內容';
+	@override String get dataImported => '資料已匯入';
+	@override String importFailed({required Object error}) => '匯入失敗：${error}';
+	@override String get statusAvailable => '線上';
+	@override String get statusAskMe => '請詢問';
+	@override String get statusBusy => '忙碌';
+	@override String get statusJoinMe => '可加入';
+}
+
+// Path: osc
+class Translations$osc$zh_TW implements Translations$osc$en {
+	Translations$osc$zh_TW.internal(this._root);
+
+	final TranslationsZhTw _root; // ignore: unused_field
+
+	// Translations
+	@override String get floatType => '浮點數 (0.0～1.0)';
+	@override String get intType => '整數';
+	@override String get boolType => '布林值（開/關）';
+	@override String get on => '開';
+	@override String get off => '關';
+}
+
 // Path: drawer.section
 class Translations$drawer$section$zh_TW implements Translations$drawer$section$en {
 	Translations$drawer$section$zh_TW.internal(this._root);
@@ -851,6 +1055,21 @@ class Translations$search$tabs$zh_TW implements Translations$search$tabs$en {
 	@override late final Translations$search$tabs$worldSearch$zh_TW worldSearch = Translations$search$tabs$worldSearch$zh_TW.internal(_root);
 	@override late final Translations$search$tabs$groupSearch$zh_TW groupSearch = Translations$search$tabs$groupSearch$zh_TW.internal(_root);
 	@override late final Translations$search$tabs$avatarSearch$zh_TW avatarSearch = Translations$search$tabs$avatarSearch$zh_TW.internal(_root);
+}
+
+// Path: profile.userTypes
+class Translations$profile$userTypes$zh_TW implements Translations$profile$userTypes$en {
+	Translations$profile$userTypes$zh_TW.internal(this._root);
+
+	final TranslationsZhTw _root; // ignore: unused_field
+
+	// Translations
+	@override String get admin => '管理員';
+	@override String get trusted => '信任使用者';
+	@override String get known => '已知使用者';
+	@override String get user => '使用者';
+	@override String get newUser => '新使用者';
+	@override String get visitor => '訪客';
 }
 
 // Path: groupDetail.privacy
@@ -919,7 +1138,25 @@ class Translations$instance$type$zh_TW implements Translations$instance$type$en 
 	@override String get hidden => '好友+';
 	@override String get friends => '好友';
 	@override String get private => '邀請+';
+	@override String get group => '群組';
 	@override String get unknown => '未知';
+}
+
+// Path: activity.kind
+class Translations$activity$kind$zh_TW implements Translations$activity$kind$en {
+	Translations$activity$kind$zh_TW.internal(this._root);
+
+	final TranslationsZhTw _root; // ignore: unused_field
+
+	// Translations
+	@override String get friendOnline => '好友上線';
+	@override String get friendOffline => '好友離線';
+	@override String get friendActive => '好友活躍';
+	@override String get friendAdd => '已新增好友';
+	@override String get friendRemove => '已移除好友';
+	@override String get locationChange => '位置已變更';
+	@override String get statusUpdate => '狀態已更新';
+	@override String get activity => '動態';
 }
 
 // Path: search.tabs.userSearch
@@ -1129,6 +1366,10 @@ extension on TranslationsZhTw {
 			'drawer.review' => '評價',
 			'drawer.feedback' => '意見回饋',
 			'drawer.settings' => '設定',
+			'drawer.activity' => '動態',
+			'drawer.insights' => '洞察',
+			'drawer.moderation' => '管理',
+			'drawer.tools' => '工具',
 			'drawer.userLoading' => '正在載入使用者資訊...',
 			'drawer.userError' => '獲取使用者資訊失敗',
 			'drawer.retry' => '重試',
@@ -1155,6 +1396,9 @@ extension on TranslationsZhTw {
 			'login.error2faFailed' => '兩步驟驗證失敗。請確認驗證碼是否正確。',
 			'login.backToLogin' => '返回登入畫面',
 			'login.paste' => '貼上',
+			'login.biometricLogin' => '使用生物辨識登入',
+			'login.biometricReason' => '請進行身分驗證以使用已儲存的 VRChat 登入資訊。',
+			'login.savedLoginMissing' => '沒有已儲存的登入資訊。',
 			'friends.loading' => '正在載入好友資訊...',
 			'friends.error' => ({required Object error}) => '獲取好友資訊失敗：${error}',
 			'friends.notFound' => '找不到好友',
@@ -1192,6 +1436,17 @@ extension on TranslationsZhTw {
 			'friendDetail.blockSuccess' => '已封鎖',
 			'friendDetail.muteSuccess' => '已靜音',
 			'friendDetail.operationFailed' => ({required Object error}) => '操作失敗：${error}',
+			'friendDetail.friendStatusEmpty' => '好友狀態為空。',
+			'friendDetail.addFriend' => '加為好友',
+			'friendDetail.removeFriend' => '移除好友',
+			'friendDetail.cancelFriendRequest' => '取消好友邀請',
+			'friendDetail.friendRequestPending' => '好友邀請處理中',
+			'friendDetail.relationshipCompleted' => ({required Object action}) => '已${action}',
+			'friendDetail.note' => '備註',
+			'friendDetail.noNote' => '沒有已儲存的備註',
+			'friendDetail.editNote' => '編輯備註',
+			'friendDetail.noteTitle' => ({required Object name}) => '備註：${name}',
+			'friendDetail.noteHint' => '撰寫只有自己看得到的備註',
 			'search.userTab' => '使用者',
 			'search.worldTab' => '世界',
 			'search.avatarTab' => '虛擬化身',
@@ -1275,6 +1530,12 @@ extension on TranslationsZhTw {
 			'profile.linksHint' => '連結將顯示在您的個人資料上，點擊即可開啟',
 			'profile.statusMessageHint' => '輸入您目前的狀況或訊息',
 			'profile.bioHint' => '寫一些關於您自己的事吧',
+			'profile.userTypes.admin' => '管理員',
+			'profile.userTypes.trusted' => '信任使用者',
+			'profile.userTypes.known' => '已知使用者',
+			'profile.userTypes.user' => '使用者',
+			'profile.userTypes.newUser' => '新使用者',
+			'profile.userTypes.visitor' => '訪客',
 			'engageCard.pickBackground' => '選擇背景圖片',
 			'engageCard.removeBackground' => '移除背景圖片',
 			'engageCard.scanQr' => '掃描 QR Code',
@@ -1351,6 +1612,13 @@ extension on TranslationsZhTw {
 			'notifications.secondsAgo' => ({required Object seconds}) => '${seconds}秒前',
 			'notifications.minutesAgo' => ({required Object minutes}) => '${minutes}分鐘前',
 			'notifications.hoursAgo' => ({required Object hours}) => '${hours}小時前',
+			'notifications.searchHint' => '搜尋通知',
+			'notifications.type' => '類型',
+			'notifications.allTypes' => '所有類型',
+			'notifications.responseSent' => '已傳送回應',
+			'notifications.responseFailed' => ({required Object error}) => '傳送回應失敗：${error}',
+			'notifications.friendOnlineChannel' => '好友上線',
+			'notifications.friendOnlineChannelDescription' => '選取的好友上線時傳送通知。',
 			'eventCalendar.title' => '活動日曆',
 			'eventCalendar.filter' => '篩選活動',
 			'eventCalendar.refresh' => '更新活動資訊',
@@ -1371,7 +1639,7 @@ extension on TranslationsZhTw {
 			'eventCalendar.condition' => '參加條件',
 			'eventCalendar.way' => '參加方法',
 			'eventCalendar.note' => '備註',
-			'eventCalendar.quest' => '支援 Quest',
+			'eventCalendar.quest' => '支援 Android',
 			'eventCalendar.reminderCount' => ({required Object count}) => '${count}筆',
 			'eventCalendar.startToEnd' => ({required Object start, required Object end}) => '${start}～${end}',
 			'avatars.title' => '虛擬化身',
@@ -1392,9 +1660,28 @@ extension on TranslationsZhTw {
 			'avatars.sortUpdated' => '按更新時間',
 			'avatars.sortName' => '按名稱',
 			'avatars.sortTooltip' => '排序',
+			'avatars.remoteTooltip' => 'VRChat 虛擬化身',
+			'avatars.localTooltip' => '本機虛擬化身資料庫',
+			'avatars.localEmptyTitle' => '沒有本機虛擬化身',
+			'avatars.localEmptyDescription' => '檢視和搜尋過的虛擬化身會顯示在這裡。',
 			'avatars.viewModeTooltip' => '切換顯示模式',
 			'worldDetail.loading' => '正在載入世界資訊...',
 			'worldDetail.error' => ({required Object error}) => '獲取世界資訊失敗：${error}',
+			'worldDetail.metadataTitle' => '世界詳細資訊',
+			'worldDetail.capacity' => '容量',
+			'worldDetail.capacityValue' => ({required Object recommended, required Object maximum}) => '${recommended} 建議 / ${maximum} 最大',
+			'worldDetail.releaseStatus' => '發布狀態',
+			'worldDetail.releaseAll' => '全部',
+			'worldDetail.releaseHidden' => '隱藏',
+			'worldDetail.releasePrivate' => '私人',
+			'worldDetail.releasePublic' => '公開',
+			'worldDetail.publicInstances' => '公開實例',
+			'worldDetail.occupantsValue' => ({required Object publicCount, required Object privateCount}) => '公開 ${publicCount} / 私人 ${privateCount}',
+			'worldDetail.publication' => '發布日期',
+			'worldDetail.platforms' => '支援平台',
+			'worldDetail.platformAndroid' => 'Android',
+			'worldDetail.platformIos' => 'iOS',
+			'worldDetail.platformPc' => 'PC',
 			'worldDetail.share' => '分享這個世界',
 			'worldDetail.openInVRChat' => '在 VRChat 官網開啟',
 			'worldDetail.report' => '檢舉這個世界',
@@ -1549,6 +1836,8 @@ extension on TranslationsZhTw {
 			'settings.notifications' => '通知設定',
 			'settings.eventReminder' => '活動提醒',
 			'settings.eventReminderDescription' => '在設定的活動開始前接收通知',
+			_ => null,
+		} ?? switch (path) {
 			'settings.manageReminders' => '管理已設定的提醒',
 			'settings.manageRemindersDescription' => '可以取消或確認通知',
 			'settings.dataStorage' => '資料與儲存空間',
@@ -1598,9 +1887,8 @@ extension on TranslationsZhTw {
 			'instance.type.hidden' => '好友+',
 			'instance.type.friends' => '好友',
 			'instance.type.private' => '邀請+',
+			'instance.type.group' => '群組',
 			'instance.type.unknown' => '未知',
-			_ => null,
-		} ?? switch (path) {
 			'status.active' => '線上',
 			'status.joinMe' => '歡迎加入',
 			'status.askMe' => '歡迎詢問',
@@ -1608,6 +1896,7 @@ extension on TranslationsZhTw {
 			'status.offline' => '離線',
 			'status.unknown' => '狀態不明',
 			'location.private' => '私人',
+			'location.traveling' => '移動中',
 			'location.playerCount' => ({required Object userCount, required Object capacity}) => '玩家數：${userCount} / ${capacity}',
 			'location.instanceType' => ({required Object type}) => '房間類型：${type}',
 			'location.noInfo' => '沒有位置資訊',
@@ -1649,6 +1938,8 @@ extension on TranslationsZhTw {
 			'friend.sortAsc' => '遞增',
 			'friend.sortDesc' => '遞減',
 			'friend.close' => '關閉',
+			'friend.searchTitle' => '搜尋好友',
+			'friend.searchHint' => '姓名、使用者 ID 或位置',
 			'eventCalendarFilter.filterTitle' => '篩選活動',
 			'eventCalendarFilter.clear' => '清除',
 			'eventCalendarFilter.keyword' => '關鍵字搜尋',
@@ -1667,6 +1958,119 @@ extension on TranslationsZhTw {
 			'eventCalendarFilter.apply' => '套用',
 			'eventCalendarFilter.filterSummary' => '篩選條件',
 			'eventCalendarFilter.filterNone' => '未設定篩選條件',
+			'activity.title' => '動態',
+			'activity.clearHistory' => '清除動態記錄',
+			'activity.feed' => '動態流',
+			'activity.friendLog' => '好友紀錄',
+			'activity.heatmap' => '熱點圖',
+			'activity.empty' => '尚未記錄任何動態。',
+			'activity.trackedHours' => ({required Object hours, required Object minutes}) => '已記錄 ${hours}小時 ${minutes}分鐘',
+			'activity.trackedMinutes' => ({required Object minutes}) => '已記錄 ${minutes}分鐘',
+			'activity.summary' => ({required Object kind, required Object detail}) => '${kind} · ${detail}',
+			'activity.heatmapTitle' => '過去六週的好友動態',
+			'activity.kind.friendOnline' => '好友上線',
+			'activity.kind.friendOffline' => '好友離線',
+			'activity.kind.friendActive' => '好友活躍',
+			'activity.kind.friendAdd' => '已新增好友',
+			'activity.kind.friendRemove' => '已移除好友',
+			'activity.kind.locationChange' => '位置已變更',
+			'activity.kind.statusUpdate' => '狀態已更新',
+			'activity.kind.activity' => '動態',
+			'insights.title' => '洞察',
+			'insights.mutualFriends' => '共同好友',
+			'insights.hotWorlds' => '熱門世界',
+			'insights.instancePlayers' => '執行個體玩家',
+			'insights.userHint' => '使用者 ID (usr_...)',
+			'insights.enterUser' => '輸入使用者 ID 以比較好友。',
+			'insights.noMutual' => '沒有共同好友。',
+			'insights.noLocations' => '沒有可用的好友位置。',
+			'insights.friendsCount' => ({required Object count}) => '${count} 位好友',
+			'insights.locationHint' => '位置 (wrld_...:instance)',
+			'insights.enterLocation' => '輸入執行個體位置。',
+			'insights.noPlayers' => '沒有可顯示的玩家。',
+			'insights.load' => '載入',
+			'moderation.title' => '管理',
+			'moderation.clearPlayer' => '清除玩家管理記錄',
+			'moderation.player' => '玩家',
+			'moderation.groupBans' => '群組封鎖',
+			'moderation.cleared' => '已清除玩家管理記錄',
+			'moderation.noPlayer' => '沒有玩家管理記錄。',
+			'moderation.remove' => '移除管理記錄',
+			'moderation.groupHint' => '群組 ID (grp_...)',
+			'moderation.loadBans' => '載入封鎖清單',
+			'moderation.enterGroup' => '輸入群組 ID。',
+			'moderation.noGroup' => '沒有群組封鎖。',
+			'moderation.unban' => '解除封鎖',
+			'tools.title' => '工具',
+			'tools.groups' => '群組',
+			'tools.myAvatars' => '我的虛擬化身',
+			'tools.status' => '狀態',
+			'tools.data' => '資料',
+			'tools.server' => '伺服器',
+			'tools.groupHint' => '群組 ID (grp_...)',
+			'tools.loadGroup' => '載入群組',
+			'tools.join' => '加入',
+			'tools.leave' => '離開',
+			'tools.members' => '成員',
+			'tools.bans' => '封鎖',
+			'tools.calendar' => '行事曆',
+			'tools.enterGroup' => '輸入要管理的群組 ID。',
+			'tools.noMembers' => '沒有成員。',
+			'tools.banMember' => '封鎖成員',
+			'tools.noGroupBans' => '沒有群組封鎖。',
+			'tools.unbanMember' => '解除成員封鎖',
+			'tools.noCalendar' => '沒有群組行事曆活動。',
+			'tools.followEvent' => '追蹤活動',
+			'tools.unfollowEvent' => '取消追蹤活動',
+			'tools.ownAvatars' => '我的虛擬化身',
+			'tools.noOwnAvatars' => '找不到我的虛擬化身。',
+			'tools.editAvatar' => '編輯虛擬化身',
+			'tools.worldMetadata' => '世界中繼資料',
+			'tools.worldId' => '世界 ID',
+			'tools.worldHint' => 'wrld_...',
+			'tools.loadWorld' => '載入世界 ID',
+			'tools.editWorldMetadata' => '編輯世界中繼資料',
+			'tools.worldPermissionHint' => '只有帳號擁有權限的世界才能編輯。',
+			'tools.statusPresets' => '狀態預設',
+			'tools.addPreset' => '新增預設',
+			'tools.applyPreset' => '套用預設',
+			'tools.deletePreset' => '刪除預設',
+			'tools.applyPresetOnLogin' => '登入時套用預設',
+			'tools.restoreStatus' => '登入後還原選取的社交狀態。',
+			'tools.automaticPreset' => '自動預設',
+			'tools.discordNames' => 'Discord 名稱',
+			'tools.scanFriendProfiles' => '掃描好友個人資料',
+			'tools.exportDiscordNames' => '匯出 Discord 名稱',
+			'tools.noLinkedNames' => '尚未有關聯名稱。請在個人簡介中加入 Discord，或使用匯入/匯出功能。',
+			'tools.dataTransfer' => '資料移轉',
+			'tools.dataTransferDescription' => '在裝置之間移動動態、備註、提醒和預設。',
+			'tools.exportData' => '匯出資料',
+			'tools.importData' => '匯入資料',
+			'tools.dataExportHint' => '使用含版本的 JSON 格式匯出。API 內容不會自動覆寫；匯入只會還原本機應用程式資料。',
+			'tools.apiOnline' => 'VRChat API 線上',
+			'tools.apiDegraded' => 'VRChat API 效能降低',
+			'tools.apiUnavailable' => 'API 狀態無法使用',
+			'tools.serverRefreshHint' => '下拉重新整理最新伺服器健康狀態。',
+			'tools.groupActionCompleted' => '群組操作已完成',
+			'tools.editAvatarDialog' => '編輯虛擬化身',
+			'tools.editWorldDialog' => '編輯世界中繼資料',
+			'tools.newStatusPreset' => '新增狀態預設',
+			'tools.name' => '名稱',
+			'tools.description' => '說明',
+			'tools.capacity' => '容量',
+			'tools.tags' => '標籤（以逗號分隔）',
+			'tools.pasteExport' => '貼上 VRCN JSON 匯出內容',
+			'tools.dataImported' => '資料已匯入',
+			'tools.importFailed' => ({required Object error}) => '匯入失敗：${error}',
+			'tools.statusAvailable' => '線上',
+			'tools.statusAskMe' => '請詢問',
+			'tools.statusBusy' => '忙碌',
+			'tools.statusJoinMe' => '可加入',
+			'osc.floatType' => '浮點數 (0.0～1.0)',
+			'osc.intType' => '整數',
+			'osc.boolType' => '布林值（開/關）',
+			'osc.on' => '開',
+			'osc.off' => '關',
 			_ => null,
 		};
 	}

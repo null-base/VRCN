@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -14,7 +15,7 @@ class QrScannerPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.white, size: 28),
+          icon: const Icon(AppIcons.close, color: Colors.white, size: 28),
           onPressed: () => context.pop(),
           tooltip: t.qrScanner.title,
         ),
@@ -119,7 +120,7 @@ class QrScannerPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(
-                  Icons.qr_code_scanner,
+                  AppIcons.qr_code_scanner,
                   color: Colors.white70,
                   size: 32,
                 ),

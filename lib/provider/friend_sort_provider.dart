@@ -1,8 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vrchat/gen/strings.g.dart';
+import 'package:vrchat/provider/favorite_provider.dart';
 import 'package:vrchat/provider/friends_provider.dart';
 import 'package:vrchat/provider/settings_provider.dart';
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
 /// フレンドの並び替え方法
@@ -32,6 +36,8 @@ final friendSortDirectionProvider =
       return FriendSortDirectionNotifier(prefs);
     });
 
+final friendSearchQueryProvider = StateProvider<String>((ref) => '');
+
 final friendSortActionsProvider = Provider<FriendSortActions>(
   FriendSortActions.new,
 );
@@ -59,11 +65,116 @@ final sortedFriendsProvider = Provider<AsyncValue<List<LimitedUser>>>((ref) {
   final friendsAsync = ref.watch(friendsProvider);
   final sortType = ref.watch(friendSortTypeProvider);
   final sortDirection = ref.watch(friendSortDirectionProvider);
+  final filter = ref.watch(friendFilterProvider);
+  final favoriteFriends = filter == FriendFilter.favorite
+      ? ref.watch(favoriteFriendsProvider)
+      : null;
+  final query = ref.watch(friendSearchQueryProvider).trim().toLowerCase();
 
-  return friendsAsync.whenData(
-    (friends) => _sortFriends(friends, sortType, sortDirection),
+  return friendsAsync.when(
+    data: (friends) {
+      if (filter == FriendFilter.favorite) {
+        return favoriteFriends!.when(
+          data: (favorites) {
+            final favoriteIds = favorites
+                .map((favorite) => favorite.favoriteId)
+                .toSet();
+            return AsyncData(
+              _filterAndSortFriends(
+                friends.where((friend) => favoriteIds.contains(friend.id)),
+                query,
+                sortType,
+                sortDirection,
+              ),
+            );
+          },
+          loading: () => const AsyncLoading<List<LimitedUser>>(),
+          error: AsyncError<List<LimitedUser>>.new,
+        );
+      }
+
+      final filteredFriends = switch (filter) {
+        FriendFilter.all || FriendFilter.favorite => friends,
+        FriendFilter.online => friends.where(
+          (friend) => friend.location != 'offline',
+        ),
+        FriendFilter.offline => friends.where(
+          (friend) => friend.location == 'offline',
+        ),
+      };
+      return AsyncData(
+        _filterAndSortFriends(
+          filteredFriends,
+          query,
+          sortType,
+          sortDirection,
+        ),
+      );
+    },
+    loading: () => const AsyncLoading<List<LimitedUser>>(),
+    error: AsyncError<List<LimitedUser>>.new,
   );
 });
+
+List<LimitedUser> _filterAndSortFriends(
+  Iterable<LimitedUser> friends,
+  String query,
+  FriendSortType sortType,
+  SortDirection sortDirection,
+) {
+  final matchingFriends = query.isEmpty
+      ? friends
+      : friends.where(
+          (friend) =>
+              friend.displayName.toLowerCase().contains(query) ||
+              friend.id.toLowerCase().contains(query) ||
+              (friend.location?.toLowerCase().contains(query) ?? false),
+        );
+  return _sortFriends(matchingFriends.toList(), sortType, sortDirection);
+}
+
+Future<void> showFriendSearchDialog(BuildContext context, WidgetRef ref) async {
+  final strings = context.t;
+  final controller = TextEditingController(
+    text: ref.read(friendSearchQueryProvider),
+  );
+  await showDialog<void>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(strings.friend.searchTitle),
+      content: TextField(
+        controller: controller,
+        autofocus: true,
+        decoration: InputDecoration(
+          hintText: strings.friend.searchHint,
+          prefixIcon: const Icon(AppIcons.search),
+        ),
+        onSubmitted: (_) {
+          ref.read(friendSearchQueryProvider.notifier).state = controller.text;
+          Navigator.pop(context);
+        },
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            ref.read(friendSearchQueryProvider.notifier).state = '';
+            Navigator.pop(context);
+          },
+          child: Text(strings.eventCalendarFilter.clear),
+        ),
+        FilledButton(
+          onPressed: () {
+            ref.read(friendSearchQueryProvider.notifier).state =
+                controller.text;
+            Navigator.pop(context);
+          },
+          child: Text(strings.common.search),
+        ),
+      ],
+    ),
+  );
+  controller.dispose();
+}
 
 /// 並び替え方法の状態管理クラス
 class FriendSortTypeNotifier extends StateNotifier<FriendSortType> {

@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -55,7 +56,7 @@ class _ReminderDialogState extends ConsumerState<ReminderDialog> {
           Row(
             children: [
               Icon(
-                Icons.event,
+                AppIcons.event,
                 size: 14,
                 color: widget.isDarkMode ? Colors.grey[400] : Colors.grey[600],
               ),

@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -43,7 +44,7 @@ class _FeedbackDialogState extends ConsumerState<FeedbackDialog> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
-              Icons.feedback_outlined,
+              AppIcons.feedback_outlined,
               color: AppTheme.primaryColor,
               size: 24,
             ),
@@ -219,15 +220,15 @@ class _FeedbackDialogState extends ConsumerState<FeedbackDialog> {
   IconData _getIconForType(String type) {
     switch (type) {
       case 'bug':
-        return Icons.bug_report;
+        return AppIcons.bug_report;
       case 'feature':
-        return Icons.lightbulb_outline;
+        return AppIcons.lightbulb_outline;
       case 'improvement':
-        return Icons.trending_up;
+        return AppIcons.trending_up;
       case 'other':
-        return Icons.chat_bubble_outline;
+        return AppIcons.chat_bubble_outline;
       default:
-        return Icons.feedback;
+        return AppIcons.feedback;
     }
   }
 

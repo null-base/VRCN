@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,135 +53,79 @@ class WorldInstanceView extends StatelessWidget {
     Instance instanceInfo,
   ) {
     if (worldDetailAsync == null) {
-      return Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.15)
-              : Colors.white.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  InstanceHelper.getInstanceTypeIcon(
-                    instanceInfo.type.toString(),
-                  ),
-                  size: 18,
-                  color: isDarkMode ? Colors.green[200] : Colors.green[700],
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  t.location.instanceType(
-                    type: InstanceHelper.getInstanceTypeText(
-                      instanceInfo.type.toString(),
-                    ),
-                  ),
-                  style: GoogleFonts.notoSans(
-                    fontSize: 15,
-                    color: isDarkMode ? Colors.green[100] : Colors.green[800],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(
-                  Icons.people,
-                  size: 18,
-                  color: isDarkMode ? Colors.green[200] : Colors.green[700],
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  t.location.playerCount(
-                    userCount: instanceInfo.userCount.toString(),
-                    capacity: instanceInfo.capacity.toString(),
-                  ),
-                  style: GoogleFonts.notoSans(
-                    fontSize: 15,
-                    color: isDarkMode ? Colors.green[100] : Colors.green[800],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
+      if (instanceInfo.world.imageUrl.isNotEmpty) {
+        return _buildWorldImageView(context, instanceInfo.world, instanceInfo);
+      }
+
+      return _buildInstanceSummary(instanceInfo);
     }
 
     return worldDetailAsync.when(
-      data: (worldInfo) => Column(
+      data: (worldInfo) => worldInfo.imageUrl.isNotEmpty
+          ? _buildWorldImageView(context, worldInfo, instanceInfo)
+          : _buildInstanceSummary(instanceInfo),
+      loading: _buildLoadingView,
+      error: (_, _) => _buildInstanceSummary(instanceInfo),
+    );
+  }
+
+  Widget _buildInstanceSummary(Instance instanceInfo) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDarkMode
+            ? Colors.black.withValues(alpha: 0.15)
+            : Colors.white.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (worldInfo.imageUrl.isNotEmpty)
-            _buildWorldImageView(context, worldInfo, instanceInfo),
-        ],
-      ),
-      loading: () => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_buildLoadingView()],
-      ),
-      error: (_, _) => Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.15)
-              : Colors.white.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  InstanceHelper.getInstanceTypeIcon(
+          Row(
+            children: [
+              Icon(
+                InstanceHelper.getInstanceTypeIcon(
+                  instanceInfo.type.toString(),
+                ),
+                size: 18,
+                color: isDarkMode ? Colors.green[200] : Colors.green[700],
+              ),
+              const SizedBox(width: 8),
+              Text(
+                t.location.instanceType(
+                  type: InstanceHelper.getInstanceTypeText(
                     instanceInfo.type.toString(),
                   ),
-                  size: 18,
-                  color: isDarkMode ? Colors.green[200] : Colors.green[700],
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  t.location.instanceType(
-                    type: InstanceHelper.getInstanceTypeText(
-                      instanceInfo.type.toString(),
-                    ),
-                  ),
-                  style: GoogleFonts.notoSans(
-                    fontSize: 15,
-                    color: isDarkMode ? Colors.green[100] : Colors.green[800],
-                  ),
+                style: GoogleFonts.notoSans(
+                  fontSize: 15,
+                  color: isDarkMode ? Colors.green[100] : Colors.green[800],
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(
-                  Icons.people,
-                  size: 18,
-                  color: isDarkMode ? Colors.green[200] : Colors.green[700],
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(
+                AppIcons.people,
+                size: 18,
+                color: isDarkMode ? Colors.green[200] : Colors.green[700],
+              ),
+              const SizedBox(width: 8),
+              Text(
+                t.location.playerCount(
+                  userCount: instanceInfo.userCount.toString(),
+                  capacity: instanceInfo.capacity.toString(),
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  t.location.playerCount(
-                    userCount: instanceInfo.userCount.toString(),
-                    capacity: instanceInfo.capacity.toString(),
-                  ),
-                  style: GoogleFonts.notoSans(
-                    fontSize: 15,
-                    color: isDarkMode ? Colors.green[100] : Colors.green[800],
-                  ),
+                style: GoogleFonts.notoSans(
+                  fontSize: 15,
+                  color: isDarkMode ? Colors.green[100] : Colors.green[800],
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -223,7 +168,7 @@ class WorldInstanceView extends StatelessWidget {
                 errorWidget: (context, url, error) => Container(
                   color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
                   child: const Icon(
-                    Icons.image_not_supported,
+                    AppIcons.image_not_supported,
                     color: Colors.green,
                     size: 40,
                   ),
@@ -282,7 +227,7 @@ class WorldInstanceView extends StatelessWidget {
                       Row(
                         children: [
                           Icon(
-                            Icons.people,
+                            AppIcons.people,
                             size: 16,
                             color: Colors.white.withValues(alpha: 0.9),
                           ),
@@ -399,7 +344,9 @@ class WorldInstanceView extends StatelessWidget {
           Row(
             children: [
               Icon(
-                isPrivateLocation ? Icons.lock_outline : Icons.error_outline,
+                isPrivateLocation
+                    ? AppIcons.lock_outline
+                    : AppIcons.error_outline,
                 color: isPrivateLocation ? Colors.blue[300] : Colors.red[300],
                 size: 20,
               ),

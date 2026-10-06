@@ -46,3 +46,4 @@ app.*.map.json
 
 # 環境変数
 .env
+ios/build/.last_build_id

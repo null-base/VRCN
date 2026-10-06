@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,7 +39,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                       ),
                       const Spacer(),
                       IconButton(
-                        icon: const Icon(Icons.close),
+                        icon: const Icon(AppIcons.close),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ],
@@ -57,7 +58,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                           child: Row(
                             children: [
                               const Icon(
-                                Icons.filter_list_rounded,
+                                AppIcons.filter_list_rounded,
                                 color: AppTheme.primaryColor,
                                 size: 20,
                               ),
@@ -77,7 +78,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                         // フィルターオプション
                         _buildFilterOption(
                           context: context,
-                          icon: Icons.people_alt_rounded,
+                          icon: AppIcons.people_alt_rounded,
                           title: t.friend.filterAll,
                           isSelected: localFilter == FriendFilter.all,
                           isDarkMode: isDarkMode,
@@ -91,7 +92,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
 
                         _buildFilterOption(
                           context: context,
-                          icon: Icons.wifi_rounded,
+                          icon: AppIcons.wifi_rounded,
                           title: t.friend.filterOnline,
                           isSelected: localFilter == FriendFilter.online,
                           isDarkMode: isDarkMode,
@@ -105,7 +106,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
 
                         _buildFilterOption(
                           context: context,
-                          icon: Icons.wifi_off_rounded,
+                          icon: AppIcons.wifi_off_rounded,
                           title: t.friend.filterOffline,
                           isSelected: localFilter == FriendFilter.offline,
                           isDarkMode: isDarkMode,
@@ -118,7 +119,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                         ),
                         _buildFilterOption(
                           context: context,
-                          icon: Icons.favorite_rounded,
+                          icon: AppIcons.favorite_rounded,
                           title: t.friend.filterFavorite,
                           isSelected: localFilter == FriendFilter.favorite,
                           isDarkMode: isDarkMode,
@@ -136,7 +137,7 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                           child: Row(
                             children: [
                               const Icon(
-                                Icons.sort,
+                                AppIcons.sort,
                                 color: AppTheme.primaryColor,
                                 size: 20,
                               ),
@@ -155,13 +156,13 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
 
                         // 並び替え種類
                         ListTile(
-                          leading: const Icon(Icons.circle),
+                          leading: const Icon(AppIcons.circle),
                           title: Text(
                             t.friend.sortStatus,
                             style: GoogleFonts.notoSans(),
                           ),
                           trailing: localSortType == FriendSortType.status
-                              ? const Icon(Icons.check)
+                              ? const Icon(AppIcons.check)
                               : null,
                           onTap: () {
                             actions.setSortType(FriendSortType.status);
@@ -172,13 +173,13 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                         ),
 
                         ListTile(
-                          leading: const Icon(Icons.sort_by_alpha),
+                          leading: const Icon(AppIcons.sort_by_alpha),
                           title: Text(
                             t.friend.sortName,
                             style: GoogleFonts.notoSans(),
                           ),
                           trailing: localSortType == FriendSortType.name
-                              ? const Icon(Icons.check)
+                              ? const Icon(AppIcons.check)
                               : null,
                           onTap: () {
                             actions.setSortType(FriendSortType.name);
@@ -189,13 +190,13 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                         ),
 
                         ListTile(
-                          leading: const Icon(Icons.access_time),
+                          leading: const Icon(AppIcons.access_time),
                           title: Text(
                             t.friend.sortLastLogin,
                             style: GoogleFonts.notoSans(),
                           ),
                           trailing: localSortType == FriendSortType.lastLogin
-                              ? const Icon(Icons.check)
+                              ? const Icon(AppIcons.check)
                               : null,
                           onTap: () {
                             actions.setSortType(FriendSortType.lastLogin);
@@ -211,8 +212,8 @@ void showFriendSortOptions(BuildContext context, WidgetRef ref) {
                         ListTile(
                           leading: Icon(
                             localDirection == SortDirection.ascending
-                                ? Icons.arrow_upward
-                                : Icons.arrow_downward,
+                                ? AppIcons.arrow_upward
+                                : AppIcons.arrow_downward,
                           ),
                           title: Text(
                             localDirection == SortDirection.ascending

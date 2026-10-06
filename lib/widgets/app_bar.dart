@@ -1,12 +1,11 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/user_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
-import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/cache_manager.dart';
 
 class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -35,7 +34,6 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUserAsync = ref.watch(currentUserProvider);
     final vrchatApi = ref.watch(vrchatProvider).value;
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final headers = {'User-Agent': vrchatApi?.userAgent.toString() ?? 'VRCN'};
 
     void openDrawer() {
@@ -52,20 +50,16 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
       elevation: 0,
       centerTitle: true,
       title: showSearchBar
-          ? _buildSearchField(context, isDarkMode)
-          : (title != null
-                ? Text(
-                    title!,
-                    style: GoogleFonts.notoSans(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: theme.colorScheme.onSurface,
-                    ),
-                  )
-                : CircleAvatar(
-                    backgroundImage: AssetImage(Assets.icons.icon.path),
-                    backgroundColor: theme.colorScheme.surface,
-                  )),
+          ? _buildSearchField(context)
+          : title == null
+          ? const AppHeaderLogo()
+          : Text(
+              title!,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
       iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       actions: actions,
       leadingWidth: 56,
@@ -130,7 +124,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _buildSearchField(BuildContext context, bool isDarkMode) {
+  Widget _buildSearchField(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -139,14 +133,14 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
         decoration: InputDecoration(
           hintText: t.common.search,
           prefixIcon: Icon(
-            Icons.search,
-            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+            AppIcons.search,
+            color: theme.colorScheme.onSurfaceVariant,
           ),
           suffixIcon: searchController?.text.isNotEmpty ?? false
               ? IconButton(
                   icon: Icon(
-                    Icons.clear,
-                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                    AppIcons.clear,
+                    color: theme.colorScheme.onSurfaceVariant,
                     size: 18,
                   ),
                   onPressed: () {
@@ -169,17 +163,34 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: AppTheme.primaryColor),
+            borderSide: BorderSide(color: theme.colorScheme.primary),
           ),
           contentPadding: const EdgeInsets.symmetric(
             vertical: 10,
             horizontal: 16,
           ),
         ),
-        style: GoogleFonts.notoSans(fontSize: 16),
+        style: theme.textTheme.bodyLarge,
         onChanged: onSearchChanged,
         textInputAction: TextInputAction.search,
         onSubmitted: onSearchChanged,
+      ),
+    );
+  }
+}
+
+class AppHeaderLogo extends StatelessWidget {
+  const AppHeaderLogo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipOval(
+      child: Image.asset(
+        Assets.icons.icon.path,
+        width: 36,
+        height: 36,
+        fit: BoxFit.cover,
+        semanticLabel: 'VRCN',
       ),
     );
   }

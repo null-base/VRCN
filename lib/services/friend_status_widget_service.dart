@@ -19,12 +19,8 @@ final friendStatusWidgetSyncProvider = Provider<void>((ref) {
 
   Future<void> sync() async {
     final watchedIds = ref.read(watchedFriendIdsProvider);
-    final friends = ref
-        .read(friendsProvider)
-        .maybeWhen(
-          data: (friends) => friends,
-          orElse: () => const <LimitedUser>[],
-        );
+    final friends = ref.read(friendsProvider).asData?.value;
+    if (friends == null) return;
     await service.update(friends: friends, watchedIds: watchedIds);
   }
 
@@ -44,21 +40,18 @@ class FriendStatusWidgetService {
     required List<LimitedUser> friends,
     required Set<String> watchedIds,
   }) async {
-    final entries =
-        friends
-            .where((friend) => watchedIds.contains(friend.id))
-            .map(_FriendStatusWidgetEntry.fromFriend)
-            .toList()
-          ..sort((a, b) {
-            final onlineCompare = b.isOnline.toString().compareTo(
-              a.isOnline.toString(),
-            );
-            if (onlineCompare != 0) return onlineCompare;
-            return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-          });
+    final entries = friends.map(_FriendStatusWidgetEntry.fromFriend).toList()
+      ..sort((a, b) {
+        if (a.isOnline != b.isOnline) return a.isOnline ? -1 : 1;
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      });
 
     await _invoke('update', {
-      'friends': entries.map((entry) => entry.toJson()).toList(),
+      'friends': entries
+          .where((entry) => watchedIds.contains(entry.id))
+          .map((entry) => entry.toJson())
+          .toList(),
+      'allFriends': entries.map((entry) => entry.toJson()).toList(),
     });
   }
 
@@ -82,17 +75,25 @@ class _FriendStatusWidgetEntry {
     required this.status,
     required this.statusLabel,
     required this.location,
+    required this.isOnline,
     required this.updatedAt,
   });
 
   factory _FriendStatusWidgetEntry.fromFriend(LimitedUser friend) {
     final location = friend.location ?? 'unknown';
+    final isOnline = location != 'offline';
+    final status = !isOnline
+        ? UserStatus.offline
+        : friend.status == UserStatus.offline
+        ? UserStatus.active
+        : friend.status;
     return _FriendStatusWidgetEntry(
       id: friend.id,
       name: friend.displayName,
-      status: friend.status.name,
-      statusLabel: friend.status.text,
+      status: status.name,
+      statusLabel: status.text,
       location: location,
+      isOnline: isOnline,
       updatedAt: DateTime.timestamp().toIso8601String(),
     );
   }
@@ -102,9 +103,8 @@ class _FriendStatusWidgetEntry {
   final String status;
   final String statusLabel;
   final String location;
+  final bool isOnline;
   final String updatedAt;
-
-  bool get isOnline => status != UserStatus.offline.name;
 
   Map<String, Object> toJson() {
     return {
@@ -113,6 +113,7 @@ class _FriendStatusWidgetEntry {
       'status': status,
       'statusLabel': statusLabel,
       'location': location,
+      'isOnline': isOnline,
       'updatedAt': updatedAt,
     };
   }

@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -85,7 +86,7 @@ class UserBadgesView extends ConsumerWidget {
           errorWidget: (context, url, error) => Container(
             color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
             child: const Icon(
-              Icons.image_not_supported,
+              AppIcons.image_not_supported,
               color: Colors.green,
               size: 40,
             ),

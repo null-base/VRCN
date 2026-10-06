@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vrchat/gen/strings.g.dart';
@@ -17,7 +18,7 @@ class ErrorView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
+            Icon(AppIcons.error_outline, size: 64, color: Colors.red[300]),
             const SizedBox(height: 16),
             Text(
               t.common.errorNomessage,
@@ -39,7 +40,7 @@ class ErrorView extends StatelessWidget {
               const SizedBox(height: 24),
               ElevatedButton.icon(
                 onPressed: onRetry,
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(AppIcons.refresh),
                 label: Text(t.common.retry),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,

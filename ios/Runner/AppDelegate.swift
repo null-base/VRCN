@@ -13,19 +13,17 @@ import WidgetKit
       UNUserNotificationCenter.current().delegate = self
     }
 
-    if let controller = window?.rootViewController as? FlutterViewController {
-      let channel = FlutterMethodChannel(
-        name: "vrcn/friend_status_widget",
-        binaryMessenger: controller.binaryMessenger
-      )
-      channel.setMethodCallHandler(handleFriendStatusWidgetCall)
-    }
-
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+
+    let channel = FlutterMethodChannel(
+      name: "vrcn/friend_status_widget",
+      binaryMessenger: engineBridge.applicationRegistrar.messenger()
+    )
+    channel.setMethodCallHandler(handleFriendStatusWidgetCall)
   }
 
   private func handleFriendStatusWidgetCall(_ call: FlutterMethodCall, result: FlutterResult) {
@@ -37,17 +35,23 @@ import WidgetKit
         let arguments = call.arguments as? [String: Any],
         let friends = arguments["friends"] as? [[String: Any]],
         let data = try? JSONSerialization.data(withJSONObject: friends),
-        let payload = String(data: data, encoding: .utf8)
+        let payload = String(data: data, encoding: .utf8),
+        let allData = try? JSONSerialization.data(
+          withJSONObject: (arguments["allFriends"] as? [[String: Any]]) ?? friends
+        ),
+        let allPayload = String(data: allData, encoding: .utf8)
       else {
         result(FlutterError(code: "invalid_arguments", message: "Invalid widget payload", details: nil))
         return
       }
 
       defaults?.set(payload, forKey: "friendStatusWidgetFriends")
+      defaults?.set(allPayload, forKey: "friendStatusWidgetAllFriends")
       reloadFriendStatusWidget()
       result(nil)
     case "clear":
       defaults?.removeObject(forKey: "friendStatusWidgetFriends")
+      defaults?.removeObject(forKey: "friendStatusWidgetAllFriends")
       reloadFriendStatusWidget()
       result(nil)
     default:

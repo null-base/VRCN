@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vrchat/gen/strings.g.dart';
@@ -24,7 +25,7 @@ class ErrorContainer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(
-                Icons.error_outline,
+                AppIcons.error_outline,
                 size: 32,
                 color: AppTheme.dangerColor,
               ),

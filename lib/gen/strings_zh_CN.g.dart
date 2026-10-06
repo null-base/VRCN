@@ -66,6 +66,11 @@ class TranslationsZhCn with BaseTranslations<AppLocale, Translations> implements
 	@override late final Translations$reminder$zh_CN reminder = Translations$reminder$zh_CN.internal(_root);
 	@override late final Translations$friend$zh_CN friend = Translations$friend$zh_CN.internal(_root);
 	@override late final Translations$eventCalendarFilter$zh_CN eventCalendarFilter = Translations$eventCalendarFilter$zh_CN.internal(_root);
+	@override late final Translations$activity$zh_CN activity = Translations$activity$zh_CN.internal(_root);
+	@override late final Translations$insights$zh_CN insights = Translations$insights$zh_CN.internal(_root);
+	@override late final Translations$moderation$zh_CN moderation = Translations$moderation$zh_CN.internal(_root);
+	@override late final Translations$tools$zh_CN tools = Translations$tools$zh_CN.internal(_root);
+	@override late final Translations$osc$zh_CN osc = Translations$osc$zh_CN.internal(_root);
 }
 
 // Path: common
@@ -135,6 +140,10 @@ class Translations$drawer$zh_CN implements Translations$drawer$en {
 	@override String get review => '评价';
 	@override String get feedback => '反馈';
 	@override String get settings => '设置';
+	@override String get activity => '动态';
+	@override String get insights => '洞察';
+	@override String get moderation => '管理';
+	@override String get tools => '工具';
 	@override String get userLoading => '正在加载用户信息...';
 	@override String get userError => '加载用户信息失败';
 	@override String get retry => '重试';
@@ -169,6 +178,9 @@ class Translations$login$zh_CN implements Translations$login$en {
 	@override String get error2faFailed => '两步验证失败。请检查验证码是否正确。';
 	@override String get backToLogin => '返回登录页面';
 	@override String get paste => '粘贴';
+	@override String get biometricLogin => '使用生物识别登录';
+	@override String get biometricReason => '请进行身份验证以使用已保存的 VRChat 登录信息。';
+	@override String get savedLoginMissing => '没有保存的登录信息。';
 }
 
 // Path: friends
@@ -224,6 +236,17 @@ class Translations$friendDetail$zh_CN implements Translations$friendDetail$en {
 	@override String get blockSuccess => '已屏蔽';
 	@override String get muteSuccess => '已静音';
 	@override String operationFailed({required Object error}) => '操作失败：${error}';
+	@override String get friendStatusEmpty => '好友状态为空。';
+	@override String get addFriend => '添加好友';
+	@override String get removeFriend => '删除好友';
+	@override String get cancelFriendRequest => '取消好友请求';
+	@override String get friendRequestPending => '好友请求待处理';
+	@override String relationshipCompleted({required Object action}) => '已${action}';
+	@override String get note => '备注';
+	@override String get noNote => '没有保存的备注';
+	@override String get editNote => '编辑备注';
+	@override String noteTitle({required Object name}) => '备注：${name}';
+	@override String get noteHint => '写一条仅自己可见的备注';
 }
 
 // Path: search
@@ -291,6 +314,7 @@ class Translations$profile$zh_CN implements Translations$profile$en {
 	@override String get linksHint => '链接将显示在您的个人资料上，点击即可打开';
 	@override String get statusMessageHint => '输入您当前的状态或消息';
 	@override String get bioHint => '写一些关于您自己的介绍吧';
+	@override late final Translations$profile$userTypes$zh_CN userTypes = Translations$profile$userTypes$zh_CN.internal(_root);
 }
 
 // Path: engageCard
@@ -403,6 +427,13 @@ class Translations$notifications$zh_CN implements Translations$notifications$en 
 	@override String secondsAgo({required Object seconds}) => '${seconds}秒前';
 	@override String minutesAgo({required Object minutes}) => '${minutes}分钟前';
 	@override String hoursAgo({required Object hours}) => '${hours}小时前';
+	@override String get searchHint => '搜索通知';
+	@override String get type => '类型';
+	@override String get allTypes => '所有类型';
+	@override String get responseSent => '响应已发送';
+	@override String responseFailed({required Object error}) => '发送响应失败：${error}';
+	@override String get friendOnlineChannel => '好友上线';
+	@override String get friendOnlineChannelDescription => '选定的好友上线时发送通知。';
 }
 
 // Path: eventCalendar
@@ -432,7 +463,7 @@ class Translations$eventCalendar$zh_CN implements Translations$eventCalendar$en 
 	@override String get condition => '参加条件';
 	@override String get way => '参加方法';
 	@override String get note => '备注';
-	@override String get quest => '支持Quest';
+	@override String get quest => '支持Android';
 	@override String reminderCount({required Object count}) => '${count}条';
 	@override String startToEnd({required Object start, required Object end}) => '${start} ~ ${end}';
 }
@@ -462,6 +493,10 @@ class Translations$avatars$zh_CN implements Translations$avatars$en {
 	@override String get sortUpdated => '按更新时间';
 	@override String get sortName => '按名称';
 	@override String get sortTooltip => '排序';
+	@override String get remoteTooltip => 'VRChat 虚拟形象';
+	@override String get localTooltip => '本地虚拟形象数据库';
+	@override String get localEmptyTitle => '没有本地虚拟形象';
+	@override String get localEmptyDescription => '查看和搜索过的虚拟形象会显示在这里。';
 	@override String get viewModeTooltip => '切换视图模式';
 }
 
@@ -474,6 +509,21 @@ class Translations$worldDetail$zh_CN implements Translations$worldDetail$en {
 	// Translations
 	@override String get loading => '正在加载世界信息...';
 	@override String error({required Object error}) => '获取世界信息失败：${error}';
+	@override String get metadataTitle => '世界详情';
+	@override String get capacity => '容量';
+	@override String capacityValue({required Object recommended, required Object maximum}) => '${recommended} 推荐 / ${maximum} 最大';
+	@override String get releaseStatus => '发布状态';
+	@override String get releaseAll => '全部';
+	@override String get releaseHidden => '隐藏';
+	@override String get releasePrivate => '私密';
+	@override String get releasePublic => '公开';
+	@override String get publicInstances => '公开实例';
+	@override String occupantsValue({required Object publicCount, required Object privateCount}) => '公开 ${publicCount} / 私人 ${privateCount}';
+	@override String get publication => '发布日期';
+	@override String get platforms => '支持平台';
+	@override String get platformAndroid => 'Android';
+	@override String get platformIos => 'iOS';
+	@override String get platformPc => 'PC';
 	@override String get share => '分享这个世界';
 	@override String get openInVRChat => '在VRChat官网打开';
 	@override String get report => '举报这个世界';
@@ -741,6 +791,7 @@ class Translations$location$zh_CN implements Translations$location$en {
 
 	// Translations
 	@override String get private => '私密';
+	@override String get traveling => '移动中';
 	@override String playerCount({required Object userCount, required Object capacity}) => '玩家数：${userCount} / ${capacity}';
 	@override String instanceType({required Object type}) => '实例类型：${type}';
 	@override String get noInfo => '没有位置信息';
@@ -800,6 +851,8 @@ class Translations$friend$zh_CN implements Translations$friend$en {
 	@override String get sortAsc => '升序';
 	@override String get sortDesc => '降序';
 	@override String get close => '关闭';
+	@override String get searchTitle => '搜索好友';
+	@override String get searchHint => '姓名、用户 ID 或位置';
 }
 
 // Path: eventCalendarFilter
@@ -829,6 +882,157 @@ class Translations$eventCalendarFilter$zh_CN implements Translations$eventCalend
 	@override String get filterNone => '未设置筛选器';
 }
 
+// Path: activity
+class Translations$activity$zh_CN implements Translations$activity$en {
+	Translations$activity$zh_CN.internal(this._root);
+
+	final TranslationsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '动态';
+	@override String get clearHistory => '清除动态记录';
+	@override String get feed => '动态流';
+	@override String get friendLog => '好友日志';
+	@override String get heatmap => '热力图';
+	@override String get empty => '还没有记录动态。';
+	@override String trackedHours({required Object hours, required Object minutes}) => '已记录 ${hours}小时 ${minutes}分钟';
+	@override String trackedMinutes({required Object minutes}) => '已记录 ${minutes}分钟';
+	@override String summary({required Object kind, required Object detail}) => '${kind} · ${detail}';
+	@override String get heatmapTitle => '过去六周的好友动态';
+	@override late final Translations$activity$kind$zh_CN kind = Translations$activity$kind$zh_CN.internal(_root);
+}
+
+// Path: insights
+class Translations$insights$zh_CN implements Translations$insights$en {
+	Translations$insights$zh_CN.internal(this._root);
+
+	final TranslationsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '洞察';
+	@override String get mutualFriends => '共同好友';
+	@override String get hotWorlds => '热门世界';
+	@override String get instancePlayers => '实例玩家';
+	@override String get userHint => '用户 ID (usr_...)';
+	@override String get enterUser => '输入用户 ID 以比较好友。';
+	@override String get noMutual => '没有共同好友。';
+	@override String get noLocations => '没有可用的好友位置。';
+	@override String friendsCount({required Object count}) => '${count} 位好友';
+	@override String get locationHint => '位置 (wrld_...:instance)';
+	@override String get enterLocation => '输入实例位置。';
+	@override String get noPlayers => '没有可显示的玩家。';
+	@override String get load => '加载';
+}
+
+// Path: moderation
+class Translations$moderation$zh_CN implements Translations$moderation$en {
+	Translations$moderation$zh_CN.internal(this._root);
+
+	final TranslationsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '管理';
+	@override String get clearPlayer => '清除玩家管理记录';
+	@override String get player => '玩家';
+	@override String get groupBans => '群组封禁';
+	@override String get cleared => '已清除玩家管理记录';
+	@override String get noPlayer => '没有玩家管理记录。';
+	@override String get remove => '移除管理记录';
+	@override String get groupHint => '群组 ID (grp_...)';
+	@override String get loadBans => '加载封禁';
+	@override String get enterGroup => '输入群组 ID。';
+	@override String get noGroup => '没有群组封禁。';
+	@override String get unban => '解除封禁';
+}
+
+// Path: tools
+class Translations$tools$zh_CN implements Translations$tools$en {
+	Translations$tools$zh_CN.internal(this._root);
+
+	final TranslationsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '工具';
+	@override String get groups => '群组';
+	@override String get myAvatars => '我的虚拟形象';
+	@override String get status => '状态';
+	@override String get data => '数据';
+	@override String get server => '服务器';
+	@override String get groupHint => '群组 ID (grp_...)';
+	@override String get loadGroup => '加载群组';
+	@override String get join => '加入';
+	@override String get leave => '退出';
+	@override String get members => '成员';
+	@override String get bans => '封禁';
+	@override String get calendar => '日历';
+	@override String get enterGroup => '输入要管理的群组 ID。';
+	@override String get noMembers => '没有成员。';
+	@override String get banMember => '封禁成员';
+	@override String get noGroupBans => '没有群组封禁。';
+	@override String get unbanMember => '解除成员封禁';
+	@override String get noCalendar => '没有群组日历活动。';
+	@override String get followEvent => '关注活动';
+	@override String get unfollowEvent => '取消关注活动';
+	@override String get ownAvatars => '我的虚拟形象';
+	@override String get noOwnAvatars => '没有找到我的虚拟形象。';
+	@override String get editAvatar => '编辑虚拟形象';
+	@override String get worldMetadata => '世界元数据';
+	@override String get worldId => '世界 ID';
+	@override String get worldHint => 'wrld_...';
+	@override String get loadWorld => '加载世界 ID';
+	@override String get editWorldMetadata => '编辑世界元数据';
+	@override String get worldPermissionHint => '只有账户拥有权限的世界才可编辑。';
+	@override String get statusPresets => '状态预设';
+	@override String get addPreset => '添加预设';
+	@override String get applyPreset => '应用预设';
+	@override String get deletePreset => '删除预设';
+	@override String get applyPresetOnLogin => '登录时应用预设';
+	@override String get restoreStatus => '登录后恢复所选社交状态。';
+	@override String get automaticPreset => '自动预设';
+	@override String get discordNames => 'Discord 名称';
+	@override String get scanFriendProfiles => '扫描好友资料';
+	@override String get exportDiscordNames => '导出 Discord 名称';
+	@override String get noLinkedNames => '还没有关联名称。请在个人简介中添加 Discord，或使用导入/导出功能。';
+	@override String get dataTransfer => '数据迁移';
+	@override String get dataTransferDescription => '在设备之间移动动态、备注、提醒和预设。';
+	@override String get exportData => '导出数据';
+	@override String get importData => '导入数据';
+	@override String get dataExportHint => '使用带版本的 JSON 格式导出。API 内容不会自动覆盖；导入只会恢复本地应用数据。';
+	@override String get apiOnline => 'VRChat API 在线';
+	@override String get apiDegraded => 'VRChat API 性能下降';
+	@override String get apiUnavailable => 'API 状态不可用';
+	@override String get serverRefreshHint => '下拉刷新最新服务器健康状态。';
+	@override String get groupActionCompleted => '群组操作已完成';
+	@override String get editAvatarDialog => '编辑虚拟形象';
+	@override String get editWorldDialog => '编辑世界元数据';
+	@override String get newStatusPreset => '新建状态预设';
+	@override String get name => '名称';
+	@override String get description => '说明';
+	@override String get capacity => '容量';
+	@override String get tags => '标签（逗号分隔）';
+	@override String get pasteExport => '粘贴 VRCN JSON 导出内容';
+	@override String get dataImported => '数据已导入';
+	@override String importFailed({required Object error}) => '导入失败：${error}';
+	@override String get statusAvailable => '在线';
+	@override String get statusAskMe => '请询问';
+	@override String get statusBusy => '忙碌';
+	@override String get statusJoinMe => '可加入';
+}
+
+// Path: osc
+class Translations$osc$zh_CN implements Translations$osc$en {
+	Translations$osc$zh_CN.internal(this._root);
+
+	final TranslationsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get floatType => '浮点数 (0.0～1.0)';
+	@override String get intType => '整数';
+	@override String get boolType => '布尔值（开/关）';
+	@override String get on => '开';
+	@override String get off => '关';
+}
+
 // Path: drawer.section
 class Translations$drawer$section$zh_CN implements Translations$drawer$section$en {
 	Translations$drawer$section$zh_CN.internal(this._root);
@@ -851,6 +1055,21 @@ class Translations$search$tabs$zh_CN implements Translations$search$tabs$en {
 	@override late final Translations$search$tabs$worldSearch$zh_CN worldSearch = Translations$search$tabs$worldSearch$zh_CN.internal(_root);
 	@override late final Translations$search$tabs$groupSearch$zh_CN groupSearch = Translations$search$tabs$groupSearch$zh_CN.internal(_root);
 	@override late final Translations$search$tabs$avatarSearch$zh_CN avatarSearch = Translations$search$tabs$avatarSearch$zh_CN.internal(_root);
+}
+
+// Path: profile.userTypes
+class Translations$profile$userTypes$zh_CN implements Translations$profile$userTypes$en {
+	Translations$profile$userTypes$zh_CN.internal(this._root);
+
+	final TranslationsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get admin => '管理员';
+	@override String get trusted => '信赖用户';
+	@override String get known => '已知用户';
+	@override String get user => '用户';
+	@override String get newUser => '新用户';
+	@override String get visitor => '访客';
 }
 
 // Path: groupDetail.privacy
@@ -919,7 +1138,25 @@ class Translations$instance$type$zh_CN implements Translations$instance$type$en 
 	@override String get hidden => '好友+';
 	@override String get friends => '好友';
 	@override String get private => '邀请+';
+	@override String get group => '群组';
 	@override String get unknown => '未知';
+}
+
+// Path: activity.kind
+class Translations$activity$kind$zh_CN implements Translations$activity$kind$en {
+	Translations$activity$kind$zh_CN.internal(this._root);
+
+	final TranslationsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get friendOnline => '好友上线';
+	@override String get friendOffline => '好友离线';
+	@override String get friendActive => '好友活跃';
+	@override String get friendAdd => '已添加好友';
+	@override String get friendRemove => '已删除好友';
+	@override String get locationChange => '位置已变更';
+	@override String get statusUpdate => '状态已更新';
+	@override String get activity => '动态';
 }
 
 // Path: search.tabs.userSearch
@@ -1129,6 +1366,10 @@ extension on TranslationsZhCn {
 			'drawer.review' => '评价',
 			'drawer.feedback' => '反馈',
 			'drawer.settings' => '设置',
+			'drawer.activity' => '动态',
+			'drawer.insights' => '洞察',
+			'drawer.moderation' => '管理',
+			'drawer.tools' => '工具',
 			'drawer.userLoading' => '正在加载用户信息...',
 			'drawer.userError' => '加载用户信息失败',
 			'drawer.retry' => '重试',
@@ -1155,6 +1396,9 @@ extension on TranslationsZhCn {
 			'login.error2faFailed' => '两步验证失败。请检查验证码是否正确。',
 			'login.backToLogin' => '返回登录页面',
 			'login.paste' => '粘贴',
+			'login.biometricLogin' => '使用生物识别登录',
+			'login.biometricReason' => '请进行身份验证以使用已保存的 VRChat 登录信息。',
+			'login.savedLoginMissing' => '没有保存的登录信息。',
 			'friends.loading' => '正在加载好友信息...',
 			'friends.error' => ({required Object error}) => '获取好友信息失败：${error}',
 			'friends.notFound' => '未找到好友',
@@ -1192,6 +1436,17 @@ extension on TranslationsZhCn {
 			'friendDetail.blockSuccess' => '已屏蔽',
 			'friendDetail.muteSuccess' => '已静音',
 			'friendDetail.operationFailed' => ({required Object error}) => '操作失败：${error}',
+			'friendDetail.friendStatusEmpty' => '好友状态为空。',
+			'friendDetail.addFriend' => '添加好友',
+			'friendDetail.removeFriend' => '删除好友',
+			'friendDetail.cancelFriendRequest' => '取消好友请求',
+			'friendDetail.friendRequestPending' => '好友请求待处理',
+			'friendDetail.relationshipCompleted' => ({required Object action}) => '已${action}',
+			'friendDetail.note' => '备注',
+			'friendDetail.noNote' => '没有保存的备注',
+			'friendDetail.editNote' => '编辑备注',
+			'friendDetail.noteTitle' => ({required Object name}) => '备注：${name}',
+			'friendDetail.noteHint' => '写一条仅自己可见的备注',
 			'search.userTab' => '用户',
 			'search.worldTab' => '世界',
 			'search.avatarTab' => '虚拟形象',
@@ -1275,6 +1530,12 @@ extension on TranslationsZhCn {
 			'profile.linksHint' => '链接将显示在您的个人资料上，点击即可打开',
 			'profile.statusMessageHint' => '输入您当前的状态或消息',
 			'profile.bioHint' => '写一些关于您自己的介绍吧',
+			'profile.userTypes.admin' => '管理员',
+			'profile.userTypes.trusted' => '信赖用户',
+			'profile.userTypes.known' => '已知用户',
+			'profile.userTypes.user' => '用户',
+			'profile.userTypes.newUser' => '新用户',
+			'profile.userTypes.visitor' => '访客',
 			'engageCard.pickBackground' => '选择背景图片',
 			'engageCard.removeBackground' => '移除背景图片',
 			'engageCard.scanQr' => '扫描二维码',
@@ -1351,6 +1612,13 @@ extension on TranslationsZhCn {
 			'notifications.secondsAgo' => ({required Object seconds}) => '${seconds}秒前',
 			'notifications.minutesAgo' => ({required Object minutes}) => '${minutes}分钟前',
 			'notifications.hoursAgo' => ({required Object hours}) => '${hours}小时前',
+			'notifications.searchHint' => '搜索通知',
+			'notifications.type' => '类型',
+			'notifications.allTypes' => '所有类型',
+			'notifications.responseSent' => '响应已发送',
+			'notifications.responseFailed' => ({required Object error}) => '发送响应失败：${error}',
+			'notifications.friendOnlineChannel' => '好友上线',
+			'notifications.friendOnlineChannelDescription' => '选定的好友上线时发送通知。',
 			'eventCalendar.title' => '活动日历',
 			'eventCalendar.filter' => '筛选活动',
 			'eventCalendar.refresh' => '刷新活动信息',
@@ -1371,7 +1639,7 @@ extension on TranslationsZhCn {
 			'eventCalendar.condition' => '参加条件',
 			'eventCalendar.way' => '参加方法',
 			'eventCalendar.note' => '备注',
-			'eventCalendar.quest' => '支持Quest',
+			'eventCalendar.quest' => '支持Android',
 			'eventCalendar.reminderCount' => ({required Object count}) => '${count}条',
 			'eventCalendar.startToEnd' => ({required Object start, required Object end}) => '${start} ~ ${end}',
 			'avatars.title' => '虚拟形象',
@@ -1392,9 +1660,28 @@ extension on TranslationsZhCn {
 			'avatars.sortUpdated' => '按更新时间',
 			'avatars.sortName' => '按名称',
 			'avatars.sortTooltip' => '排序',
+			'avatars.remoteTooltip' => 'VRChat 虚拟形象',
+			'avatars.localTooltip' => '本地虚拟形象数据库',
+			'avatars.localEmptyTitle' => '没有本地虚拟形象',
+			'avatars.localEmptyDescription' => '查看和搜索过的虚拟形象会显示在这里。',
 			'avatars.viewModeTooltip' => '切换视图模式',
 			'worldDetail.loading' => '正在加载世界信息...',
 			'worldDetail.error' => ({required Object error}) => '获取世界信息失败：${error}',
+			'worldDetail.metadataTitle' => '世界详情',
+			'worldDetail.capacity' => '容量',
+			'worldDetail.capacityValue' => ({required Object recommended, required Object maximum}) => '${recommended} 推荐 / ${maximum} 最大',
+			'worldDetail.releaseStatus' => '发布状态',
+			'worldDetail.releaseAll' => '全部',
+			'worldDetail.releaseHidden' => '隐藏',
+			'worldDetail.releasePrivate' => '私密',
+			'worldDetail.releasePublic' => '公开',
+			'worldDetail.publicInstances' => '公开实例',
+			'worldDetail.occupantsValue' => ({required Object publicCount, required Object privateCount}) => '公开 ${publicCount} / 私人 ${privateCount}',
+			'worldDetail.publication' => '发布日期',
+			'worldDetail.platforms' => '支持平台',
+			'worldDetail.platformAndroid' => 'Android',
+			'worldDetail.platformIos' => 'iOS',
+			'worldDetail.platformPc' => 'PC',
 			'worldDetail.share' => '分享这个世界',
 			'worldDetail.openInVRChat' => '在VRChat官网打开',
 			'worldDetail.report' => '举报这个世界',
@@ -1549,6 +1836,8 @@ extension on TranslationsZhCn {
 			'settings.notifications' => '通知设置',
 			'settings.eventReminder' => '活动提醒',
 			'settings.eventReminderDescription' => '在您设定的活动开始前接收通知',
+			_ => null,
+		} ?? switch (path) {
 			'settings.manageReminders' => '管理已设置的提醒',
 			'settings.manageRemindersDescription' => '可以取消或确认通知',
 			'settings.dataStorage' => '数据与存储',
@@ -1598,9 +1887,8 @@ extension on TranslationsZhCn {
 			'instance.type.hidden' => '好友+',
 			'instance.type.friends' => '好友',
 			'instance.type.private' => '邀请+',
+			'instance.type.group' => '群组',
 			'instance.type.unknown' => '未知',
-			_ => null,
-		} ?? switch (path) {
 			'status.active' => '在线',
 			'status.joinMe' => '欢迎加入',
 			'status.askMe' => '请问我',
@@ -1608,6 +1896,7 @@ extension on TranslationsZhCn {
 			'status.offline' => '离线',
 			'status.unknown' => '状态未知',
 			'location.private' => '私密',
+			'location.traveling' => '移动中',
 			'location.playerCount' => ({required Object userCount, required Object capacity}) => '玩家数：${userCount} / ${capacity}',
 			'location.instanceType' => ({required Object type}) => '实例类型：${type}',
 			'location.noInfo' => '没有位置信息',
@@ -1649,6 +1938,8 @@ extension on TranslationsZhCn {
 			'friend.sortAsc' => '升序',
 			'friend.sortDesc' => '降序',
 			'friend.close' => '关闭',
+			'friend.searchTitle' => '搜索好友',
+			'friend.searchHint' => '姓名、用户 ID 或位置',
 			'eventCalendarFilter.filterTitle' => '筛选活动',
 			'eventCalendarFilter.clear' => '清除',
 			'eventCalendarFilter.keyword' => '关键词搜索',
@@ -1667,6 +1958,119 @@ extension on TranslationsZhCn {
 			'eventCalendarFilter.apply' => '应用',
 			'eventCalendarFilter.filterSummary' => '筛选器',
 			'eventCalendarFilter.filterNone' => '未设置筛选器',
+			'activity.title' => '动态',
+			'activity.clearHistory' => '清除动态记录',
+			'activity.feed' => '动态流',
+			'activity.friendLog' => '好友日志',
+			'activity.heatmap' => '热力图',
+			'activity.empty' => '还没有记录动态。',
+			'activity.trackedHours' => ({required Object hours, required Object minutes}) => '已记录 ${hours}小时 ${minutes}分钟',
+			'activity.trackedMinutes' => ({required Object minutes}) => '已记录 ${minutes}分钟',
+			'activity.summary' => ({required Object kind, required Object detail}) => '${kind} · ${detail}',
+			'activity.heatmapTitle' => '过去六周的好友动态',
+			'activity.kind.friendOnline' => '好友上线',
+			'activity.kind.friendOffline' => '好友离线',
+			'activity.kind.friendActive' => '好友活跃',
+			'activity.kind.friendAdd' => '已添加好友',
+			'activity.kind.friendRemove' => '已删除好友',
+			'activity.kind.locationChange' => '位置已变更',
+			'activity.kind.statusUpdate' => '状态已更新',
+			'activity.kind.activity' => '动态',
+			'insights.title' => '洞察',
+			'insights.mutualFriends' => '共同好友',
+			'insights.hotWorlds' => '热门世界',
+			'insights.instancePlayers' => '实例玩家',
+			'insights.userHint' => '用户 ID (usr_...)',
+			'insights.enterUser' => '输入用户 ID 以比较好友。',
+			'insights.noMutual' => '没有共同好友。',
+			'insights.noLocations' => '没有可用的好友位置。',
+			'insights.friendsCount' => ({required Object count}) => '${count} 位好友',
+			'insights.locationHint' => '位置 (wrld_...:instance)',
+			'insights.enterLocation' => '输入实例位置。',
+			'insights.noPlayers' => '没有可显示的玩家。',
+			'insights.load' => '加载',
+			'moderation.title' => '管理',
+			'moderation.clearPlayer' => '清除玩家管理记录',
+			'moderation.player' => '玩家',
+			'moderation.groupBans' => '群组封禁',
+			'moderation.cleared' => '已清除玩家管理记录',
+			'moderation.noPlayer' => '没有玩家管理记录。',
+			'moderation.remove' => '移除管理记录',
+			'moderation.groupHint' => '群组 ID (grp_...)',
+			'moderation.loadBans' => '加载封禁',
+			'moderation.enterGroup' => '输入群组 ID。',
+			'moderation.noGroup' => '没有群组封禁。',
+			'moderation.unban' => '解除封禁',
+			'tools.title' => '工具',
+			'tools.groups' => '群组',
+			'tools.myAvatars' => '我的虚拟形象',
+			'tools.status' => '状态',
+			'tools.data' => '数据',
+			'tools.server' => '服务器',
+			'tools.groupHint' => '群组 ID (grp_...)',
+			'tools.loadGroup' => '加载群组',
+			'tools.join' => '加入',
+			'tools.leave' => '退出',
+			'tools.members' => '成员',
+			'tools.bans' => '封禁',
+			'tools.calendar' => '日历',
+			'tools.enterGroup' => '输入要管理的群组 ID。',
+			'tools.noMembers' => '没有成员。',
+			'tools.banMember' => '封禁成员',
+			'tools.noGroupBans' => '没有群组封禁。',
+			'tools.unbanMember' => '解除成员封禁',
+			'tools.noCalendar' => '没有群组日历活动。',
+			'tools.followEvent' => '关注活动',
+			'tools.unfollowEvent' => '取消关注活动',
+			'tools.ownAvatars' => '我的虚拟形象',
+			'tools.noOwnAvatars' => '没有找到我的虚拟形象。',
+			'tools.editAvatar' => '编辑虚拟形象',
+			'tools.worldMetadata' => '世界元数据',
+			'tools.worldId' => '世界 ID',
+			'tools.worldHint' => 'wrld_...',
+			'tools.loadWorld' => '加载世界 ID',
+			'tools.editWorldMetadata' => '编辑世界元数据',
+			'tools.worldPermissionHint' => '只有账户拥有权限的世界才可编辑。',
+			'tools.statusPresets' => '状态预设',
+			'tools.addPreset' => '添加预设',
+			'tools.applyPreset' => '应用预设',
+			'tools.deletePreset' => '删除预设',
+			'tools.applyPresetOnLogin' => '登录时应用预设',
+			'tools.restoreStatus' => '登录后恢复所选社交状态。',
+			'tools.automaticPreset' => '自动预设',
+			'tools.discordNames' => 'Discord 名称',
+			'tools.scanFriendProfiles' => '扫描好友资料',
+			'tools.exportDiscordNames' => '导出 Discord 名称',
+			'tools.noLinkedNames' => '还没有关联名称。请在个人简介中添加 Discord，或使用导入/导出功能。',
+			'tools.dataTransfer' => '数据迁移',
+			'tools.dataTransferDescription' => '在设备之间移动动态、备注、提醒和预设。',
+			'tools.exportData' => '导出数据',
+			'tools.importData' => '导入数据',
+			'tools.dataExportHint' => '使用带版本的 JSON 格式导出。API 内容不会自动覆盖；导入只会恢复本地应用数据。',
+			'tools.apiOnline' => 'VRChat API 在线',
+			'tools.apiDegraded' => 'VRChat API 性能下降',
+			'tools.apiUnavailable' => 'API 状态不可用',
+			'tools.serverRefreshHint' => '下拉刷新最新服务器健康状态。',
+			'tools.groupActionCompleted' => '群组操作已完成',
+			'tools.editAvatarDialog' => '编辑虚拟形象',
+			'tools.editWorldDialog' => '编辑世界元数据',
+			'tools.newStatusPreset' => '新建状态预设',
+			'tools.name' => '名称',
+			'tools.description' => '说明',
+			'tools.capacity' => '容量',
+			'tools.tags' => '标签（逗号分隔）',
+			'tools.pasteExport' => '粘贴 VRCN JSON 导出内容',
+			'tools.dataImported' => '数据已导入',
+			'tools.importFailed' => ({required Object error}) => '导入失败：${error}',
+			'tools.statusAvailable' => '在线',
+			'tools.statusAskMe' => '请询问',
+			'tools.statusBusy' => '忙碌',
+			'tools.statusJoinMe' => '可加入',
+			'osc.floatType' => '浮点数 (0.0～1.0)',
+			'osc.intType' => '整数',
+			'osc.boolType' => '布尔值（开/关）',
+			'osc.on' => '开',
+			'osc.off' => '关',
 			_ => null,
 		};
 	}

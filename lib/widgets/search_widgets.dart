@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vrchat/gen/strings.g.dart';
@@ -49,7 +50,7 @@ Widget buildErrorState(String errorMessage, bool isDarkMode) {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.error_outline, size: 48, color: Colors.red[400]),
+        Icon(AppIcons.error_outline, size: 48, color: Colors.red[400]),
         const SizedBox(height: 16),
         Text(
           t.common.errorNomessage,
@@ -80,7 +81,7 @@ Widget buildNoResultsState(String query, bool isDarkMode) {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
-          Icons.search_off,
+          AppIcons.search_off,
           size: 48,
           color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
         ),

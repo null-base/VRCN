@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/pages/tabs/inventory/inventory_file_tab.dart';
@@ -15,7 +16,7 @@ class GalleryInventoryTab extends StatelessWidget {
       emptyTitle: t.inventory.tabs.galleryInventory.emptyTitle,
       emptyDescription: t.inventory.tabs.galleryInventory.emptyDescription,
       zoomHint: t.inventory.tabs.galleryInventory.zoomHint,
-      emptyIcon: Icons.photo_library_outlined,
+      emptyIcon: AppIcons.photo_library_outlined,
       crossAxisCount: 2,
     );
   }

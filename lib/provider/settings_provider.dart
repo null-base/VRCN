@@ -153,13 +153,14 @@ class AppSettings {
 
 // 設定管理クラス
 class SettingsNotifier extends StateNotifier<AppSettings> {
-  SettingsNotifier(this.prefs) : super(const AppSettings()) {
+  SettingsNotifier(this.prefs)
+    : super(AppSettings(locale: LocaleSettings.currentLocale)) {
     _loadSettings();
   }
   final SharedPreferences prefs;
 
   // 設定の読み込み
-  Future<void> _loadSettings() async {
+  void _loadSettings() {
     try {
       final themeMode = prefs.getInt('themeMode') ?? 2;
       final loadImageOnWifi = prefs.getBool('loadImageOnWifi') ?? true;
@@ -176,20 +177,6 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       final enableEventReminders =
           prefs.getBool('enableEventReminders') ?? true;
 
-      // 言語設定を読み込み
-      final localeString = prefs.getString('locale');
-      final hasLocaleOverride = prefs.getBool('localeOverride') ?? false;
-      AppLocale locale;
-
-      if (hasLocaleOverride && localeString != null) {
-        locale = _parseLocalePreference(localeString);
-        await LocaleSettings.setLocale(locale);
-      } else {
-        locale = await LocaleSettings.useDeviceLocale();
-        await prefs.remove('locale');
-        await prefs.remove('localeOverride');
-      }
-
       state = AppSettings(
         themeMode: AppThemeMode.values[themeMode],
         loadImageOnWifi: loadImageOnWifi,
@@ -200,10 +187,13 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
         avatarSearchApiUrl: avatarSearchApiUrl,
         allowNsfw: allowNsfw,
         enableEventReminders: enableEventReminders,
-        locale: locale,
+        // LocaleSettings is initialized once in main(). Do not set it here;
+        // doing so can overwrite a language selected while this load is in
+        // progress.
+        locale: state.locale,
       );
     } catch (e) {
-      state = const AppSettings();
+      state = AppSettings(locale: state.locale);
     }
   }
 

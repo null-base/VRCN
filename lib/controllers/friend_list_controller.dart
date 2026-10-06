@@ -7,6 +7,7 @@ class FriendLocationGroups {
     required this.onlineByLocation,
     required this.sortedLocations,
     required this.privateFriends,
+    required this.travelingFriends,
     required this.activeOfflineFriends,
     required this.offlineFriends,
   });
@@ -14,6 +15,7 @@ class FriendLocationGroups {
   final Map<String, List<LimitedUser>> onlineByLocation;
   final List<String> sortedLocations;
   final List<LimitedUser> privateFriends;
+  final List<LimitedUser> travelingFriends;
   final List<LimitedUser> activeOfflineFriends;
   final List<LimitedUser> offlineFriends;
 }
@@ -26,6 +28,7 @@ class FriendListController {
     final offlineFriends = <LimitedUser>[];
     final activeOfflineFriends = <LimitedUser>[];
     final privateFriends = <LimitedUser>[];
+    final travelingFriends = <LimitedUser>[];
 
     for (final friend in friends) {
       if (friend.location == 'offline' &&
@@ -36,6 +39,8 @@ class FriendListController {
         offlineFriends.add(friend);
       } else if (friend.location == 'private') {
         privateFriends.add(friend);
+      } else if (friend.location == 'traveling') {
+        travelingFriends.add(friend);
       } else {
         final location = friend.location ?? 'unknown';
         onlineByLocation.putIfAbsent(location, () => []).add(friend);
@@ -51,6 +56,7 @@ class FriendListController {
           ),
         ),
       privateFriends: privateFriends,
+      travelingFriends: travelingFriends,
       activeOfflineFriends: activeOfflineFriends,
       offlineFriends: offlineFriends,
     );

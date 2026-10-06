@@ -50,7 +50,7 @@ class FriendStatusWidgetProvider : AppWidgetProvider() {
             if (friends.isEmpty()) {
                 views.setViewVisibility(R.id.widget_empty, View.VISIBLE)
                 views.setViewVisibility(R.id.widget_rows, View.GONE)
-                views.setTextViewText(R.id.widget_updated_at, "Open VRCN")
+                views.setTextViewText(R.id.widget_updated_at, "")
                 return views
             }
 
@@ -62,12 +62,20 @@ class FriendStatusWidgetProvider : AppWidgetProvider() {
                 } else {
                     val friend = friends[index]
                     views.setViewVisibility(rowId, View.VISIBLE)
-                    views.setTextViewText(rowId, "${friend.indicator} ${friend.name}  ${friend.statusLabel}")
+                    val statusLabel = if (friend.isOnline) {
+                        friend.statusLabel
+                    } else {
+                        context.getString(R.string.widget_status_offline)
+                    }
+                    views.setTextViewText(rowId, "${friend.indicator} ${friend.name}  $statusLabel")
                     views.setTextColor(rowId, friend.color)
                 }
             }
 
-            views.setTextViewText(R.id.widget_updated_at, friends.first().updatedAtLabel)
+            views.setTextViewText(
+                R.id.widget_updated_at,
+                friends.first().updatedAtLabel(context),
+            )
             return views
         }
 
@@ -91,26 +99,34 @@ private data class FriendStatus(
     val name: String,
     val status: String,
     val statusLabel: String,
+    val isOnline: Boolean,
     val updatedAt: String,
 ) {
     val indicator: String
-        get() = if (status == "offline") "○" else "●"
+        get() = if (isOnline) "●" else "○"
 
     val color: Int
-        get() = when (status) {
-            "joinMe" -> Color.rgb(59, 130, 246)
-            "askMe" -> Color.rgb(245, 158, 11)
-            "busy" -> Color.rgb(239, 68, 68)
-            "offline" -> Color.rgb(148, 163, 184)
-            else -> Color.rgb(34, 197, 94)
+        get() = if (!isOnline) {
+            Color.rgb(148, 163, 184)
+        } else {
+            when (status) {
+                "joinMe" -> Color.rgb(59, 130, 246)
+                "askMe" -> Color.rgb(245, 158, 11)
+                "busy" -> Color.rgb(239, 68, 68)
+                else -> Color.rgb(34, 197, 94)
+            }
         }
 
-    val updatedAtLabel: String
-        get() = runCatching {
+    fun updatedAtLabel(context: Context): String {
+        return runCatching {
             val formatter = DateTimeFormatter.ofPattern("HH:mm")
                 .withZone(ZoneId.systemDefault())
-            "Updated ${formatter.format(Instant.parse(updatedAt))}"
-        }.getOrDefault("Updated")
+            context.getString(
+                R.string.widget_updated,
+                formatter.format(Instant.parse(updatedAt)),
+            )
+        }.getOrElse { context.getString(R.string.widget_updated_unknown) }
+    }
 
     companion object {
         fun fromJson(json: JSONObject): FriendStatus {
@@ -118,6 +134,10 @@ private data class FriendStatus(
                 name = json.optString("name", "Friend"),
                 status = json.optString("status", "offline"),
                 statusLabel = json.optString("statusLabel", "Offline"),
+                isOnline = json.optBoolean(
+                    "isOnline",
+                    json.optString("status", "offline") != "offline",
+                ),
                 updatedAt = json.optString("updatedAt", ""),
             )
         }

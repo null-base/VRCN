@@ -5,8 +5,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vrchat/api/notification_response_sanitizer.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/event_reminder_provider.dart';
+import 'package:vrchat/provider/friends_provider.dart';
 import 'package:vrchat/provider/settings_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
 import 'package:vrchat/provider/vrchat_extended_api_provider.dart';
@@ -116,11 +118,39 @@ class NotificationItem {
 final vrchatNotificationsProvider = FutureProvider<List<NotificationV2>>((
   ref,
 ) async {
-  final api = await ref.watch(vrchatNotificationsApiProvider.future);
-  final response = await api.getNotificationV2s(limit: 100);
-  final notifications = response.data ?? const <NotificationV2>[];
+  final rawApi = await ref.watch(vrchatRawApiProvider);
+  final response = await rawApi.dio.get<Object>(
+    '/notifications',
+    queryParameters: {'limit': 100},
+  );
+  final rawData = response.data;
+  NotificationResponseSanitizer.sanitize(
+    response.requestOptions.path,
+    rawData,
+  );
+
+  final notifications = _parseNotificationV2List(rawData);
   return [...notifications]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 });
+
+List<NotificationV2> _parseNotificationV2List(Object? rawData) {
+  if (rawData is! List) return const <NotificationV2>[];
+
+  final notifications = <NotificationV2>[];
+  for (final item in rawData) {
+    if (item is! Map) continue;
+
+    try {
+      notifications.add(
+        NotificationV2.fromJson(Map<String, dynamic>.from(item)),
+      );
+    } catch (error) {
+      // Keep one malformed notification from breaking the whole page.
+      appLogger.d('通知の解析をスキップしました: $error');
+    }
+  }
+  return notifications;
+}
 
 final notificationActionsProvider = Provider<NotificationActions>(
   NotificationActions.new,
@@ -155,6 +185,26 @@ class NotificationActions {
     _ref.invalidate(vrchatNotificationsProvider);
   }
 
+  Future<void> respond(String notificationId, String responseType) async {
+    final api = await _ref.read(vrchatNotificationsApiProvider.future);
+    await api.respondNotificationV2(
+      notificationId: notificationId,
+      respondNotificationV2Request: RespondNotificationV2Request(
+        responseType: responseType,
+      ),
+    );
+    _ref.invalidate(vrchatNotificationsProvider);
+  }
+
+  Future<void> reply(String notificationId, String responseData) async {
+    final api = await _ref.read(vrchatNotificationsApiProvider.future);
+    await api.replyNotificationV2(
+      notificationId: notificationId,
+      body: {'responseData': responseData},
+    );
+    _ref.invalidate(vrchatNotificationsProvider);
+  }
+
   Future<void> deleteAll() async {
     final api = await _ref.read(vrchatNotificationsApiProvider.future);
     await api.deleteAllNotificationV2s();
@@ -183,6 +233,11 @@ class WatchedFriendIdsNotifier extends StateNotifier<Set<String>> {
     }
     state = next;
     await _prefs.setStringList(_storageKey, next.toList()..sort());
+  }
+
+  Future<void> replace(Set<String> userIds) async {
+    state = userIds;
+    await _prefs.setStringList(_storageKey, userIds.toList()..sort());
   }
 }
 
@@ -243,6 +298,10 @@ class FriendOnlineWatcher {
         offset += 100;
       }
 
+      _ref
+          .read(friendsProvider.notifier)
+          .updateWatchedFriendPresence(watchedIds, onlineFriends);
+
       final onlineIds = onlineFriends.map((friend) => friend.id).toSet();
       if (!_hasBaseline) {
         _knownOnlineIds = onlineIds;
@@ -271,16 +330,16 @@ class FriendOnlineWatcher {
   Future<void> _showFriendOnlineNotification(LimitedUserFriend friend) async {
     final notifications = _ref.read(localNotificationsProvider);
 
-    const androidDetails = AndroidNotificationDetails(
+    final androidDetails = AndroidNotificationDetails(
       'friend_online',
-      'Friend online',
-      channelDescription: 'Notifications when selected friends come online.',
+      t.notifications.friendOnlineChannel,
+      channelDescription: t.notifications.friendOnlineChannelDescription,
       importance: Importance.defaultImportance,
       priority: Priority.defaultPriority,
     );
-    const details = NotificationDetails(
+    final details = NotificationDetails(
       android: androidDetails,
-      iOS: DarwinNotificationDetails(
+      iOS: const DarwinNotificationDetails(
         presentAlert: true,
         presentBadge: true,
         presentSound: true,

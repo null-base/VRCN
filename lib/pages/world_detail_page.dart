@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -92,7 +93,7 @@ class WorldDetailPage extends ConsumerWidget {
           shape: BoxShape.circle,
         ),
         child: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(AppIcons.arrow_back),
           color: Colors.white,
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -119,7 +120,7 @@ class WorldDetailPage extends ConsumerWidget {
               errorWidget: (context, url, error) => Container(
                 color: isDarkMode ? Colors.grey[800] : Colors.grey[300],
                 child: const Icon(
-                  Icons.image_not_supported,
+                  AppIcons.image_not_supported,
                   color: Colors.green,
                   size: 40,
                 ),
@@ -131,13 +132,13 @@ class WorldDetailPage extends ConsumerWidget {
       actions: [
         // 共有ボタン
         IconButton(
-          icon: const Icon(Icons.share, color: Colors.white),
+          icon: const Icon(AppIcons.share, color: Colors.white),
           tooltip: t.worldDetail.share,
           onPressed: () =>
               ref.read(worldDetailControllerProvider).shareWorld(world),
         ),
         PopupMenuButton<String>(
-          icon: const Icon(Icons.more_vert, color: Colors.white),
+          icon: const Icon(AppIcons.more_vert, color: Colors.white),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -158,7 +159,7 @@ class WorldDetailPage extends ConsumerWidget {
               value: 'website',
               child: Row(
                 children: [
-                  const Icon(Icons.public, size: 20),
+                  const Icon(AppIcons.public, size: 20),
                   const SizedBox(width: 12),
                   Text(t.worldDetail.openInVRChat),
                 ],
@@ -168,7 +169,7 @@ class WorldDetailPage extends ConsumerWidget {
               value: 'report',
               child: Row(
                 children: [
-                  const Icon(Icons.report_problem, size: 20),
+                  const Icon(AppIcons.report_problem, size: 20),
                   const SizedBox(width: 12),
                   Text(t.worldDetail.report),
                 ],
@@ -230,7 +231,7 @@ class WorldDetailPage extends ConsumerWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.calendar_today, size: 16),
+                const Icon(AppIcons.calendar_today, size: 16),
                 const SizedBox(width: 8),
                 Text(
                   '${t.worldDetail.created}: ${_formatDate(world.createdAt)}',
@@ -241,7 +242,7 @@ class WorldDetailPage extends ConsumerWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.update, size: 16),
+                const Icon(AppIcons.update, size: 16),
                 const SizedBox(width: 8),
                 Text(
                   '${t.worldDetail.updated}: ${_formatDate(world.updatedAt)}',
@@ -272,28 +273,28 @@ class WorldDetailPage extends ConsumerWidget {
         children: [
           _buildStatItem(
             context,
-            Icons.favorite,
+            AppIcons.favorite,
             SearchUtils.formatNumber(world.favorites ?? 0),
             t.worldDetail.favorites,
             Colors.red,
           ),
           _buildStatItem(
             context,
-            Icons.visibility,
+            AppIcons.visibility,
             SearchUtils.formatNumber(world.visits),
             t.worldDetail.visits,
             Colors.blue,
           ),
           _buildStatItem(
             context,
-            Icons.public,
+            AppIcons.public,
             SearchUtils.formatNumber(world.occupants ?? 0),
             t.worldDetail.occupants,
             Colors.green,
           ),
           _buildStatItem(
             context,
-            Icons.favorite,
+            AppIcons.favorite,
             world.popularity.toString(),
             t.worldDetail.popularity,
             Colors.amber,
@@ -332,40 +333,44 @@ class WorldDetailPage extends ConsumerWidget {
     bool isDarkMode,
   ) {
     return InfoCard(
-      title: 'World details',
-      icon: Icons.info_outline,
+      title: t.worldDetail.metadataTitle,
+      icon: AppIcons.info_outline,
       isDarkMode: isDarkMode,
       customColor: Colors.blue,
       children: [
         InfoRow(
-          icon: Icons.group_outlined,
-          label: 'Capacity',
-          value:
-              '${world.recommendedCapacity} recommended / ${world.capacity} max',
+          icon: AppIcons.group_outlined,
+          label: t.worldDetail.capacity,
+          value: t.worldDetail.capacityValue(
+            recommended: world.recommendedCapacity,
+            maximum: world.capacity,
+          ),
           isDarkMode: isDarkMode,
         ),
         InfoRow(
-          icon: Icons.public_outlined,
-          label: 'Release status',
-          value: world.releaseStatus.value,
+          icon: AppIcons.public_outlined,
+          label: t.worldDetail.releaseStatus,
+          value: _releaseStatusLabel(world.releaseStatus),
           isDarkMode: isDarkMode,
         ),
         InfoRow(
-          icon: Icons.meeting_room_outlined,
-          label: 'Public instances',
+          icon: AppIcons.meeting_room_outlined,
+          label: t.worldDetail.publicInstances,
           value: '${world.instances?.length ?? 0}',
           isDarkMode: isDarkMode,
         ),
         InfoRow(
-          icon: Icons.people_alt_outlined,
-          label: 'Occupants',
-          value:
-              '${world.publicOccupants ?? 0} public / ${world.privateOccupants ?? 0} private',
+          icon: AppIcons.people_alt_outlined,
+          label: t.worldDetail.occupants,
+          value: t.worldDetail.occupantsValue(
+            publicCount: world.publicOccupants ?? 0,
+            privateCount: world.privateOccupants ?? 0,
+          ),
           isDarkMode: isDarkMode,
         ),
         InfoRow(
-          icon: Icons.new_releases_outlined,
-          label: 'Publication',
+          icon: AppIcons.new_releases_outlined,
+          label: t.worldDetail.publication,
           value: world.publicationDate.isEmpty
               ? t.worldDetail.unknown
               : world.publicationDate,
@@ -387,8 +392,8 @@ class WorldDetailPage extends ConsumerWidget {
 
     if (platforms.isEmpty) {
       return InfoRow(
-        icon: Icons.devices_other,
-        label: 'Platforms',
+        icon: AppIcons.devices_other,
+        label: t.worldDetail.platforms,
         value: t.worldDetail.unknown,
         isDarkMode: isDarkMode,
       );
@@ -410,19 +415,28 @@ class WorldDetailPage extends ConsumerWidget {
 
   IconData _platformIcon(String platform) {
     return switch (platform) {
-      'android' => Icons.android,
-      'ios' => Icons.phone_iphone,
-      'standalonewindows' => Icons.desktop_windows,
-      _ => Icons.devices_other,
+      'android' => AppIcons.phone_android,
+      'ios' => AppIcons.phone_iphone,
+      'standalonewindows' => AppIcons.desktop_windows,
+      _ => AppIcons.devices_other,
     };
   }
 
   String _platformLabel(String platform) {
     return switch (platform) {
-      'android' => 'Quest / Android',
-      'ios' => 'iOS',
-      'standalonewindows' => 'PC',
+      'android' => t.worldDetail.platformAndroid,
+      'ios' => t.worldDetail.platformIos,
+      'standalonewindows' => t.worldDetail.platformPc,
       _ => platform,
+    };
+  }
+
+  String _releaseStatusLabel(ReleaseStatus status) {
+    return switch (status) {
+      ReleaseStatus.all => t.worldDetail.releaseAll,
+      ReleaseStatus.hidden => t.worldDetail.releaseHidden,
+      ReleaseStatus.private => t.worldDetail.releasePrivate,
+      ReleaseStatus.public => t.worldDetail.releasePublic,
     };
   }
 
@@ -525,7 +539,7 @@ class WorldDetailPage extends ConsumerWidget {
                 .openWorldWebsite(
                   world.id,
                 ),
-            icon: const Icon(Icons.public),
+            icon: const Icon(AppIcons.public),
             label: Text(
               t.worldDetail.openInVRChat,
               style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),
@@ -552,7 +566,9 @@ class WorldDetailPage extends ConsumerWidget {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : Icon(isFavorited ? Icons.favorite : Icons.favorite_border),
+              : Icon(
+                  isFavorited ? AppIcons.favorite : AppIcons.favorite_border,
+                ),
           style: IconButton.styleFrom(
             backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
             foregroundColor: Colors.red,

@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
@@ -46,16 +47,16 @@ class StatusHelper {
   static IconData getStatusIcon(UserStatus? status) {
     switch (status) {
       case UserStatus.active:
-        return Icons.check_circle_outline;
+        return AppIcons.check_circle_outline;
       case UserStatus.joinMe:
-        return Icons.group_add;
+        return AppIcons.group_add;
       case UserStatus.askMe:
-        return Icons.question_answer;
+        return AppIcons.question_answer;
       case UserStatus.busy:
-        return Icons.do_not_disturb_on;
+        return AppIcons.do_not_disturb_on;
       case UserStatus.offline:
       default:
-        return Icons.offline_bolt;
+        return AppIcons.offline_bolt;
     }
   }
 }

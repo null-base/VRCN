@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,7 +65,7 @@ class GroupDetailPage extends ConsumerWidget {
                 : Colors.indigo,
             actions: [
               IconButton(
-                icon: const Icon(Icons.share_outlined, color: Colors.white),
+                icon: const Icon(AppIcons.share_outlined, color: Colors.white),
                 tooltip: t.groupDetail.share,
                 onPressed: () =>
                     ref.read(groupDetailControllerProvider).shareGroup(group),
@@ -91,7 +92,7 @@ class GroupDetailPage extends ConsumerWidget {
                       errorWidget: (context, url, error) => const ColoredBox(
                         color: Colors.indigo,
                         child: Icon(
-                          Icons.image_not_supported,
+                          AppIcons.image_not_supported,
                           color: Colors.white,
                         ),
                       ),
@@ -146,7 +147,7 @@ class GroupDetailPage extends ConsumerWidget {
                                     ? Colors.grey[800]
                                     : Colors.grey[200],
                                 child: const Icon(
-                                  Icons.group,
+                                  AppIcons.group,
                                   color: Colors.grey,
                                   size: 40,
                                 ),
@@ -156,7 +157,7 @@ class GroupDetailPage extends ConsumerWidget {
                                     ? Colors.grey[800]
                                     : Colors.grey[200],
                                 child: const Icon(
-                                  Icons.group,
+                                  AppIcons.group,
                                   color: Colors.grey,
                                   size: 40,
                                 ),
@@ -167,7 +168,7 @@ class GroupDetailPage extends ConsumerWidget {
                                   ? Colors.grey[800]
                                   : Colors.grey[200],
                               child: const Icon(
-                                Icons.group,
+                                AppIcons.group,
                                 color: Colors.grey,
                                 size: 40,
                               ),
@@ -228,7 +229,7 @@ class GroupDetailPage extends ConsumerWidget {
                             ),
                             const SizedBox(width: 8),
                             Icon(
-                              Icons.people,
+                              AppIcons.people,
                               size: 16,
                               color: isDarkMode
                                   ? Colors.grey[400]
@@ -263,7 +264,7 @@ class GroupDetailPage extends ConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
                 child: InfoCard(
                   title: t.groupDetail.description,
-                  icon: Icons.description_outlined,
+                  icon: AppIcons.description_outlined,
                   isDarkMode: isDarkMode,
                   customColor: Colors.indigo,
                   children: [
@@ -300,7 +301,7 @@ class GroupDetailPage extends ConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
                 child: InfoCard(
                   title: t.groupDetail.roles,
-                  icon: Icons.badge_outlined,
+                  icon: AppIcons.badge_outlined,
                   isDarkMode: isDarkMode,
                   customColor: Colors.orange,
                   children: [
@@ -318,12 +319,12 @@ class GroupDetailPage extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 30),
               child: InfoCard(
                 title: t.groupDetail.basicInfo,
-                icon: Icons.info_outline,
+                icon: AppIcons.info_outline,
                 isDarkMode: isDarkMode,
                 children: [
                   // 作成日時
                   _buildInfoRow(
-                    icon: Icons.calendar_today,
+                    icon: AppIcons.calendar_today,
                     label: t.groupDetail.createdAt,
                     value: _formatDate(group.createdAt),
                     isDarkMode: isDarkMode,
@@ -332,7 +333,7 @@ class GroupDetailPage extends ConsumerWidget {
                   // オーナー
                   if (group.ownerId != null)
                     _buildInfoRow(
-                      icon: Icons.person,
+                      icon: AppIcons.person,
                       label: t.groupDetail.owner,
                       value: group.ownerId!,
                       isDarkMode: isDarkMode,
@@ -341,7 +342,7 @@ class GroupDetailPage extends ConsumerWidget {
                   // ルールなど
                   if (group.rules != null && group.rules!.isNotEmpty)
                     _buildInfoRow(
-                      icon: Icons.gavel,
+                      icon: AppIcons.gavel,
                       label: t.groupDetail.rules,
                       value: group.rules!,
                       isDarkMode: isDarkMode,
@@ -350,7 +351,7 @@ class GroupDetailPage extends ConsumerWidget {
                   // 言語
                   if (group.languages != null && group.languages!.isNotEmpty)
                     _buildInfoRow(
-                      icon: Icons.language,
+                      icon: AppIcons.language,
                       label: t.groupDetail.languages,
                       value: group.languages!.join(', '),
                       isDarkMode: isDarkMode,

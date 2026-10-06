@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +26,15 @@ class NotificationsPage extends ConsumerStatefulWidget {
 
 class _NotificationsPageState extends ConsumerState<NotificationsPage> {
   NotificationFilter _selectedFilter = NotificationFilter.all;
+  String _searchQuery = '';
+  String? _selectedCategory;
+  final _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +51,16 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
         final filtered = notificationController.filterNotifications(
           entries,
           _selectedFilter,
+          query: _searchQuery,
+          category: _selectedCategory,
         );
+        final categories =
+            notifications
+                .map((item) => item.category)
+                .where((category) => category.isNotEmpty)
+                .toSet()
+                .toList()
+              ..sort();
 
         return RefreshIndicator(
           onRefresh: () => ref.read(notificationControllerProvider).refresh(),
@@ -56,6 +75,15 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                     setState(() => _selectedFilter = filter);
                   },
                   onManageOnlineAlerts: _showFriendOnlineAlertDialog,
+                  searchController: _searchController,
+                  selectedCategory: _selectedCategory,
+                  categories: categories,
+                  onSearchChanged: (query) {
+                    setState(() => _searchQuery = query);
+                  },
+                  onCategoryChanged: (category) {
+                    setState(() => _selectedCategory = category);
+                  },
                 ),
               ),
               if (filtered.isEmpty)
@@ -102,33 +130,88 @@ class _NotificationToolbar extends StatelessWidget {
     required this.entries,
     required this.onFilterChanged,
     required this.onManageOnlineAlerts,
+    required this.searchController,
+    required this.selectedCategory,
+    required this.categories,
+    required this.onSearchChanged,
+    required this.onCategoryChanged,
   });
 
   final NotificationFilter selectedFilter;
   final List<NotificationEntry> entries;
   final ValueChanged<NotificationFilter> onFilterChanged;
   final VoidCallback onManageOnlineAlerts;
+  final TextEditingController searchController;
+  final String? selectedCategory;
+  final List<String> categories;
+  final ValueChanged<String> onSearchChanged;
+  final ValueChanged<String?> onCategoryChanged;
 
   @override
   Widget build(BuildContext context) {
+    final strings = context.t;
     final unreadCount = entries.where((item) => !item.isRead).length;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: _SegmentedFilter(
-              selectedFilter: selectedFilter,
-              unreadCount: unreadCount,
-              onChanged: onFilterChanged,
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: _SegmentedFilter(
+                  selectedFilter: selectedFilter,
+                  unreadCount: unreadCount,
+                  onChanged: onFilterChanged,
+                ),
+              ),
+              const SizedBox(width: 10),
+              _IconPillButton(
+                icon: AppIcons.person_pin_circle_outlined,
+                label: t.notifications.onlineAlerts,
+                onPressed: onManageOnlineAlerts,
+              ),
+            ],
           ),
-          const SizedBox(width: 10),
-          _IconPillButton(
-            icon: Icons.person_pin_circle_outlined,
-            label: t.notifications.onlineAlerts,
-            onPressed: onManageOnlineAlerts,
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: searchController,
+                  onChanged: onSearchChanged,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(AppIcons.search, size: 18),
+                    hintText: strings.notifications.searchHint,
+                    isDense: true,
+                  ),
+                ),
+              ),
+              if (categories.isNotEmpty) ...[
+                const SizedBox(width: 8),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton<String?>(
+                    value: selectedCategory,
+                    hint: Text(strings.notifications.type),
+                    items: [
+                      DropdownMenuItem<String?>(
+                        child: Text(strings.notifications.allTypes),
+                      ),
+                      ...categories.map(
+                        (category) => DropdownMenuItem<String?>(
+                          value: category,
+                          child: Text(
+                            category,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                    ],
+                    onChanged: onCategoryChanged,
+                  ),
+                ),
+              ],
+            ],
           ),
         ],
       ),
@@ -308,14 +391,14 @@ class _NotificationTile extends ConsumerWidget {
       background: const _DismissBackground(
         alignment: Alignment.centerLeft,
         color: AppTheme.successColor,
-        icon: Icons.done,
+        icon: AppIcons.done,
       ),
       secondaryBackground: _DismissBackground(
         alignment: Alignment.centerRight,
         color: entry.canDelete
             ? AppTheme.dangerColor
             : theme.colorScheme.surfaceContainerHighest,
-        icon: entry.canDelete ? Icons.delete_outline : Icons.lock_outline,
+        icon: entry.canDelete ? AppIcons.delete_outline : AppIcons.lock_outline,
       ),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -401,27 +484,51 @@ class _NotificationTile extends ConsumerWidget {
                       runSpacing: 4,
                       children: [
                         _MetaChip(
-                          icon: Icons.schedule,
+                          icon: AppIcons.schedule,
                           label: _formatRelativeTime(entry.createdAt),
                         ),
                         if (entry.isActivity)
                           _MetaChip(
-                            icon: Icons.bolt_outlined,
+                            icon: AppIcons.bolt_outlined,
                             label: t.notifications.activity,
                           ),
                         if (apiNotification?.senderUsername != null)
                           _MetaChip(
-                            icon: Icons.person_outline,
+                            icon: AppIcons.person_outline,
                             label: apiNotification!.senderUsername!,
                           ),
                         if (apiNotification != null &&
                             apiNotification.category.isNotEmpty)
                           _MetaChip(
-                            icon: Icons.label_outline,
+                            icon: AppIcons.label_outline,
                             label: apiNotification.category,
                           ),
                       ],
                     ),
+                    if (apiNotification != null &&
+                        apiNotification.responses.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        children: [
+                          for (final response in apiNotification.responses)
+                            OutlinedButton(
+                              onPressed: () => _respond(
+                                context,
+                                ref,
+                                apiNotification.id,
+                                response.type,
+                              ),
+                              child: Text(
+                                response.text,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -496,6 +603,34 @@ class _NotificationTile extends ConsumerWidget {
           ),
         ) ??
         false;
+  }
+
+  Future<void> _respond(
+    BuildContext context,
+    WidgetRef ref,
+    String notificationId,
+    String responseType,
+  ) async {
+    try {
+      await ref
+          .read(notificationActionsProvider)
+          .respond(notificationId, responseType);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(t.notifications.responseSent)),
+        );
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              t.notifications.responseFailed(error: error.toString()),
+            ),
+          ),
+        );
+      }
+    }
   }
 }
 
@@ -650,7 +785,7 @@ class _EmptyNotifications extends StatelessWidget {
                 border: Border.all(color: theme.colorScheme.outlineVariant),
               ),
               child: Icon(
-                Icons.notifications_off_outlined,
+                AppIcons.notifications_off_outlined,
                 size: 34,
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -817,7 +952,7 @@ class _FriendAlertRow extends StatelessWidget {
                 color: statusColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(Icons.circle, size: 10, color: statusColor),
+              child: Icon(AppIcons.circle, size: 10, color: statusColor),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -858,7 +993,7 @@ class _FriendAlertRow extends StatelessWidget {
                 ),
               ),
               child: selected
-                  ? const Icon(Icons.check, size: 16, color: Colors.white)
+                  ? const Icon(AppIcons.check, size: 16, color: Colors.white)
                   : null,
             ),
           ],
@@ -882,7 +1017,7 @@ _apiNotificationInfo(NotificationV2 notification) {
 
   if (type.contains('friend') || type.contains('invite')) {
     return (
-      icon: Icons.person_add_alt_1,
+      icon: AppIcons.person_add_alt_1,
       color: AppTheme.infoColor,
       title: title,
       message: message,
@@ -890,7 +1025,7 @@ _apiNotificationInfo(NotificationV2 notification) {
   }
   if (type.contains('group')) {
     return (
-      icon: Icons.groups_outlined,
+      icon: AppIcons.groups_outlined,
       color: AppTheme.accentColor,
       title: title,
       message: message,
@@ -898,7 +1033,7 @@ _apiNotificationInfo(NotificationV2 notification) {
   }
   if (type.contains('event')) {
     return (
-      icon: Icons.event_available_outlined,
+      icon: AppIcons.event_available_outlined,
       color: AppTheme.successColor,
       title: title,
       message: message,
@@ -906,14 +1041,14 @@ _apiNotificationInfo(NotificationV2 notification) {
   }
   if (type.contains('moderation')) {
     return (
-      icon: Icons.gavel_outlined,
+      icon: AppIcons.gavel_outlined,
       color: AppTheme.dangerColor,
       title: title,
       message: message,
     );
   }
   return (
-    icon: Icons.notifications_none_outlined,
+    icon: AppIcons.notifications_none_outlined,
     color: AppTheme.primaryColor,
     title: title,
     message: message,
@@ -927,37 +1062,37 @@ _activityNotificationInfo(NotificationItem notification) {
 
   return switch (notification.type) {
     NotificationType.friendOnline => (
-      icon: Icons.wifi_tethering,
+      icon: AppIcons.wifi_tethering,
       color: AppTheme.successColor,
       title: notification.userName,
       message: t.notifications.friendOnline(userName: notification.userName),
     ),
     NotificationType.friendOffline => (
-      icon: Icons.wifi_off_outlined,
+      icon: AppIcons.wifi_off_outlined,
       color: Colors.grey,
       title: notification.userName,
       message: t.notifications.friendOffline(userName: notification.userName),
     ),
     NotificationType.friendActive => (
-      icon: Icons.bolt_outlined,
+      icon: AppIcons.bolt_outlined,
       color: AppTheme.infoColor,
       title: notification.userName,
       message: t.notifications.friendActive(userName: notification.userName),
     ),
     NotificationType.friendAdd => (
-      icon: Icons.person_add_alt_1,
+      icon: AppIcons.person_add_alt_1,
       color: AppTheme.successColor,
       title: notification.userName,
       message: t.notifications.friendAdd(userName: notification.userName),
     ),
     NotificationType.friendRemove => (
-      icon: Icons.person_remove_outlined,
+      icon: AppIcons.person_remove_outlined,
       color: AppTheme.dangerColor,
       title: notification.userName,
       message: t.notifications.friendRemove(userName: notification.userName),
     ),
     NotificationType.statusUpdate => (
-      icon: Icons.edit_note_outlined,
+      icon: AppIcons.edit_note_outlined,
       color: AppTheme.infoColor,
       title: notification.userName,
       message: t.notifications.statusUpdate(
@@ -967,7 +1102,7 @@ _activityNotificationInfo(NotificationItem notification) {
       ),
     ),
     NotificationType.locationChange => (
-      icon: Icons.travel_explore,
+      icon: AppIcons.travel_explore,
       color: AppTheme.accentColor,
       title: notification.userName,
       message: t.notifications.locationChange(
@@ -976,13 +1111,13 @@ _activityNotificationInfo(NotificationItem notification) {
       ),
     ),
     NotificationType.myLocationChange => (
-      icon: Icons.my_location,
+      icon: AppIcons.my_location,
       color: AppTheme.accentColor,
       title: notification.userName,
       message: t.notifications.myLocationChange(worldName: worldName),
     ),
     NotificationType.invite => (
-      icon: Icons.mail_outline,
+      icon: AppIcons.mail_outline,
       color: AppTheme.primaryColor,
       title: notification.userName,
       message: t.notifications.invite(
@@ -991,25 +1126,25 @@ _activityNotificationInfo(NotificationItem notification) {
       ),
     ),
     NotificationType.friendRequest => (
-      icon: Icons.person_add_alt_1,
+      icon: AppIcons.person_add_alt_1,
       color: AppTheme.primaryColor,
       title: notification.userName,
       message: t.notifications.friendRequest(userName: notification.userName),
     ),
     NotificationType.requestInvite => (
-      icon: Icons.login,
+      icon: AppIcons.login,
       color: AppTheme.primaryColor,
       title: notification.userName,
       message: t.notifications.requestInvite(userName: notification.userName),
     ),
     NotificationType.votekick => (
-      icon: Icons.gavel_outlined,
+      icon: AppIcons.gavel_outlined,
       color: AppTheme.dangerColor,
       title: notification.userName,
       message: t.notifications.votekick(userName: notification.userName),
     ),
     NotificationType.responseReceived => (
-      icon: Icons.mark_email_read_outlined,
+      icon: AppIcons.mark_email_read_outlined,
       color: AppTheme.infoColor,
       title: notification.userName,
       message: t.notifications.responseReceived(
@@ -1017,13 +1152,13 @@ _activityNotificationInfo(NotificationItem notification) {
       ),
     ),
     NotificationType.error => (
-      icon: Icons.error_outline,
+      icon: AppIcons.error_outline,
       color: AppTheme.dangerColor,
       title: notification.userName,
       message: t.notifications.error(worldName: worldName),
     ),
     NotificationType.userUpdate => (
-      icon: Icons.manage_accounts_outlined,
+      icon: AppIcons.manage_accounts_outlined,
       color: AppTheme.infoColor,
       title: notification.userName,
       message: t.notifications.userUpdate(
@@ -1031,7 +1166,7 @@ _activityNotificationInfo(NotificationItem notification) {
       ),
     ),
     NotificationType.system => (
-      icon: Icons.notifications_none_outlined,
+      icon: AppIcons.notifications_none_outlined,
       color: AppTheme.primaryColor,
       title: notification.userName,
       message: t.notifications.system(extraData: extraData),

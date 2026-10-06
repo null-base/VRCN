@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -104,7 +105,7 @@ class _PrintCard extends ConsumerWidget {
                             alignment: Alignment.topRight,
                             child: IconButton.filledTonal(
                               onPressed: () => Navigator.of(context).pop(),
-                              icon: const Icon(Icons.close),
+                              icon: const Icon(AppIcons.close),
                             ),
                           ),
                         ),
@@ -121,7 +122,7 @@ class _PrintCard extends ConsumerWidget {
               child: image == null || image.isEmpty
                   ? ColoredBox(
                       color: theme.colorScheme.surfaceContainerHighest,
-                      child: const Icon(Icons.print_outlined),
+                      child: const Icon(AppIcons.print_outlined),
                     )
                   : CachedNetworkImage(
                       imageUrl: image,
@@ -129,7 +130,7 @@ class _PrintCard extends ConsumerWidget {
                       cacheManager: JsonCacheManager(),
                       fit: BoxFit.cover,
                       errorWidget: (_, _, _) =>
-                          const Icon(Icons.broken_image_outlined),
+                          const Icon(AppIcons.broken_image_outlined),
                     ),
             ),
             Padding(
@@ -182,7 +183,7 @@ class _EmptyPrints extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.print_outlined,
+              AppIcons.print_outlined,
               size: 64,
               color: theme.colorScheme.onSurfaceVariant,
             ),

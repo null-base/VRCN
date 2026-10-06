@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,7 +6,6 @@ import 'package:vrchat/controllers/location_invite_controller.dart';
 import 'package:vrchat/gen/strings.g.dart';
 import 'package:vrchat/provider/instance_provider.dart';
 import 'package:vrchat/provider/vrchat_api_provider.dart';
-import 'package:vrchat/provider/world_provider.dart';
 import 'package:vrchat/widgets/world_instance_view.dart';
 import 'package:vrchat_dart/vrchat_dart.dart';
 
@@ -33,7 +33,7 @@ class LocationInfoCard extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.lock_outline, color: Colors.red[300], size: 20),
+            Icon(AppIcons.lock_outline, color: Colors.red[300], size: 20),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -50,13 +50,10 @@ class LocationInfoCard extends ConsumerWidget {
       );
     }
 
-    // 必要なデータソースの取得
-    final worldDetailAsync = user.worldId != null
-        ? ref.watch(worldDetailProvider(user.worldId!))
-        : null;
-
     final instanceDetailAsync =
-        (user.worldId != null && user.instanceId != null)
+        (user.worldId != null &&
+            user.instanceId != null &&
+            isInstanceLocation(user.location))
         ? ref.watch(instanceDetailProvider(user.location.toString()))
         : null;
 
@@ -82,7 +79,9 @@ class LocationInfoCard extends ConsumerWidget {
         children: [
           // インスタンス情報とワールド情報の表示を統合
           WorldInstanceView(
-            worldDetailAsync: worldDetailAsync,
+            // Instanceレスポンスに含まれるワールド情報を利用するため、
+            // 同じロケーションに対するWorld APIの追加取得は行わない。
+            worldDetailAsync: null,
             instanceDetailAsync: instanceDetailAsync,
             isDarkMode: isDarkMode,
             headers: headers,
@@ -150,7 +149,7 @@ class LocationInfoCard extends ConsumerWidget {
                         }
                       }
                     },
-                    icon: const Icon(Icons.login),
+                    icon: const Icon(AppIcons.login),
                     label: Text(
                       t.location.inviteButton,
                       style: GoogleFonts.notoSans(fontWeight: FontWeight.bold),

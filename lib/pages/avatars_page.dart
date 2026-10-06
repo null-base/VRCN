@@ -1,3 +1,4 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -323,12 +324,12 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
             fontSize: 14,
           ),
           prefixIcon: Icon(
-            Icons.search,
+            AppIcons.search,
             color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
           ),
           suffixIcon: IconButton(
             icon: Icon(
-              Icons.clear,
+              AppIcons.clear,
               color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
             ),
             onPressed: _searchController.clear,
@@ -352,7 +353,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.search_off,
+            AppIcons.search_off,
             size: 80,
             color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
           ),
@@ -415,8 +416,8 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
         IconButton(
           icon: Icon(
             _showLocalDatabase
-                ? Icons.cloud_queue_rounded
-                : Icons.storage_rounded,
+                ? AppIcons.cloud_queue_rounded
+                : AppIcons.storage_rounded,
             color: AppTheme.primaryColor,
           ),
           onPressed: () {
@@ -426,12 +427,14 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
               _isLoadingMore = false;
             });
           },
-          tooltip: _showLocalDatabase ? 'VRChat avatars' : 'Local avatar DB',
+          tooltip: _showLocalDatabase
+              ? t.avatars.remoteTooltip
+              : t.avatars.localTooltip,
         ),
         // 検索アイコンを追加
         IconButton(
           icon: Icon(
-            _isSearching ? Icons.search_off : Icons.search,
+            _isSearching ? AppIcons.search_off : AppIcons.search,
             color: AppTheme.primaryColor,
           ),
           onPressed: _toggleSearch,
@@ -440,8 +443,8 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
         IconButton(
           icon: Icon(
             _viewMode == AvatarViewMode.grid
-                ? Icons.view_list_rounded
-                : Icons.grid_view_rounded,
+                ? AppIcons.view_list_rounded
+                : AppIcons.grid_view_rounded,
             color: AppTheme.primaryColor,
           ),
           onPressed: () {
@@ -454,7 +457,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
           tooltip: t.avatars.viewModeTooltip,
         ),
         PopupMenuButton<String>(
-          icon: const Icon(Icons.sort, color: AppTheme.primaryColor),
+          icon: const Icon(AppIcons.sort, color: AppTheme.primaryColor),
           tooltip: t.avatars.sortTooltip,
           onSelected: (value) {
             setState(() {
@@ -487,13 +490,13 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.storage_rounded,
+            AppIcons.storage_rounded,
             size: 80,
             color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
           ),
           const SizedBox(height: 24),
           Text(
-            'No local avatars',
+            t.avatars.localEmptyTitle,
             style: GoogleFonts.notoSans(
               fontSize: 18,
               color: isDarkMode ? Colors.grey[400] : Colors.grey[700],
@@ -501,7 +504,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Viewed and searched avatars will appear here.',
+            t.avatars.localEmptyDescription,
             style: GoogleFonts.notoSans(
               fontSize: 14,
               color: isDarkMode ? Colors.grey[500] : Colors.grey[600],
@@ -683,7 +686,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                           color: isDarkMode
                               ? Colors.grey[850]
                               : Colors.grey[200],
-                          child: const Icon(Icons.broken_image),
+                          child: const Icon(AppIcons.broken_image),
                         ),
                       ),
                       Positioned(
@@ -724,7 +727,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Icon(
-                                  Icons.check_circle,
+                                  AppIcons.check_circle,
                                   color: Colors.white,
                                   size: 12,
                                 ),
@@ -795,7 +798,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                             Row(
                               children: [
                                 const Icon(
-                                  Icons.person,
+                                  AppIcons.person,
                                   color: Colors.white70,
                                   size: 12,
                                 ),
@@ -864,7 +867,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                   ),
                   errorWidget: (context, url, error) => Container(
                     color: isDarkMode ? Colors.grey[850] : Colors.grey[200],
-                    child: const Icon(Icons.broken_image),
+                    child: const Icon(AppIcons.broken_image),
                   ),
                 ),
                 Positioned.fill(
@@ -918,7 +921,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
         const SizedBox(height: 2),
         Row(
           children: [
-            const Icon(Icons.person, color: Colors.white70, size: 12),
+            const Icon(AppIcons.person, color: Colors.white70, size: 12),
             const SizedBox(width: 4),
             Expanded(
               child: Text(
@@ -1014,7 +1017,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                             color: isDarkMode
                                 ? Colors.grey[850]
                                 : Colors.grey[200],
-                            child: const Icon(Icons.broken_image),
+                            child: const Icon(AppIcons.broken_image),
                           ),
                         ),
                       ),
@@ -1032,7 +1035,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                               ),
                             ),
                             child: const Icon(
-                              Icons.check,
+                              AppIcons.check,
                               color: Colors.white,
                               size: 12,
                             ),
@@ -1058,7 +1061,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                     Row(
                       children: [
                         Icon(
-                          Icons.person,
+                          AppIcons.person,
                           size: 14,
                           color: isDarkMode
                               ? Colors.grey[400]
@@ -1109,7 +1112,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                 ),
               ),
               Icon(
-                Icons.chevron_right,
+                AppIcons.chevron_right,
                 color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
               ),
             ],
@@ -1147,7 +1150,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                   height: 80,
                   fit: BoxFit.cover,
                   errorWidget: (context, url, error) =>
-                      const Icon(Icons.broken_image),
+                      const Icon(AppIcons.broken_image),
                 ),
               ),
               const SizedBox(width: 16),
@@ -1180,7 +1183,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
                 ),
               ),
               Icon(
-                Icons.chevron_right,
+                AppIcons.chevron_right,
                 color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
               ),
             ],
@@ -1210,7 +1213,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.sentiment_dissatisfied,
+            AppIcons.sentiment_dissatisfied,
             size: 80,
             color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
           ),
@@ -1233,7 +1236,7 @@ class _AvatarsPageState extends ConsumerState<AvatarsPage> {
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: _refreshAvatars,
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(AppIcons.refresh),
             label: Text(t.avatars.refresh),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primaryColor,

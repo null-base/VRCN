@@ -1,7 +1,9 @@
+import 'package:vrchat/utils/app_icons.dart';
 import 'dart:io';
 
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,392 +27,318 @@ class SettingsPage extends ConsumerStatefulWidget {
   ConsumerState<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends ConsumerState<SettingsPage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
+class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
     final packageInfo = ref.watch(packageInfoProvider).value;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    // 背景色グラデーション
-    final gradientColors = isDarkMode
-        ? [const Color(0xFF1C1C1E), const Color(0xFF121214)]
-        : [Colors.white, const Color(0xFFF8F9FA)];
-
-    // セクション背景色
-    final sectionBgColor = isDarkMode ? const Color(0xFF252528) : Colors.white;
-
-    // ボタン色
-    final buttonColor = isDarkMode
-        ? const Color(0xFF2E2E36)
-        : const Color(0xFFF0F0F5);
-
-    // テキスト色
-    final textColor = isDarkMode ? Colors.white : const Color(0xFF2A2A2A);
-    final secondaryTextColor = isDarkMode
-        ? Colors.white70
-        : const Color(0xFF6E6E73);
+    final sectionBgColor = Theme.of(context).colorScheme.surface;
+    final buttonColor = Theme.of(context).colorScheme.surfaceContainerLow;
+    final textColor = Theme.of(context).colorScheme.onSurface;
+    final secondaryTextColor = Theme.of(context).colorScheme.onSurfaceVariant;
 
     return Scaffold(
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: gradientColors,
-          ),
-        ),
-        child: SafeArea(
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                floating: true,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                centerTitle: false,
-                expandedHeight: 60,
-                flexibleSpace: FlexibleSpaceBar(
-                  titlePadding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-                  title: Text(
-                    t.common.settings,
-                    style: GoogleFonts.notoSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                    ),
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              floating: true,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              centerTitle: false,
+              expandedHeight: 60,
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                title: Text(
+                  t.common.settings,
+                  style: GoogleFonts.notoSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
                   ),
                 ),
               ),
+            ),
 
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // アプリ外観設定
-                        _buildSettingsSection(
-                              title: t.settings.appearance,
-                              icon: Icons.palette_outlined,
-                              iconColor: const Color(0xFF8E8CD8),
-                              backgroundColor: sectionBgColor,
-                              textColor: textColor,
-                              secondaryTextColor: secondaryTextColor,
-                              buttonColor: buttonColor,
-                              isDarkMode: isDarkMode,
-                              children: [
-                                _buildThemeModeSetting(
-                                  isDarkMode,
-                                  textColor,
-                                  secondaryTextColor,
-                                  buttonColor,
-                                ),
-                                // 言語設定を追加
-                                _buildLanguageSetting(
-                                  isDarkMode,
-                                  textColor,
-                                  secondaryTextColor,
-                                  buttonColor,
-                                ),
-                              ],
-                            )
-                            .animate()
-                            .fadeIn(delay: 100.ms, duration: 600.ms)
-                            .slideY(begin: 0.1, end: 0),
-
-                        const SizedBox(height: 24),
-
-                        if (Platform.isIOS && _isAppIconChangeEnabled) ...[
-                          // アプリアイコン設定 (iOS限定)
-                          _buildSettingsSection(
-                                title: t.settings.appIcon,
-                                icon: Icons.app_settings_alt_outlined,
-                                iconColor: const Color(0xFF52B69A),
-                                backgroundColor: sectionBgColor,
-                                textColor: textColor,
-                                secondaryTextColor: secondaryTextColor,
-                                buttonColor: buttonColor,
-                                isDarkMode: isDarkMode,
-                                children: [
-                                  _buildAppIconSection(
-                                    context,
-                                    ref,
-                                    isDarkMode,
-                                    textColor,
-                                    secondaryTextColor,
-                                  ),
-                                ],
-                              )
-                              .animate()
-                              .fadeIn(delay: 200.ms, duration: 600.ms)
-                              .slideY(begin: 0.1, end: 0),
-
-                          const SizedBox(height: 24),
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // アプリ外観設定
+                      _buildSettingsSection(
+                        title: t.settings.appearance,
+                        icon: AppIcons.palette_outlined,
+                        iconColor: secondaryTextColor,
+                        backgroundColor: sectionBgColor,
+                        textColor: textColor,
+                        secondaryTextColor: secondaryTextColor,
+                        buttonColor: buttonColor,
+                        isDarkMode: isDarkMode,
+                        children: [
+                          _buildThemeModeSetting(
+                            isDarkMode,
+                            textColor,
+                            secondaryTextColor,
+                            buttonColor,
+                          ),
+                          // 言語設定を追加
+                          _buildLanguageSetting(
+                            isDarkMode,
+                            textColor,
+                            secondaryTextColor,
+                            buttonColor,
+                          ),
                         ],
+                      ),
 
-                        // コンテンツ設定
+                      const SizedBox(height: 24),
+
+                      if (Platform.isIOS && _isAppIconChangeEnabled) ...[
+                        // アプリアイコン設定 (iOS限定)
                         _buildSettingsSection(
-                              title: t.settings.contentSettings,
-                              icon: Icons.content_paste_outlined,
-                              iconColor: const Color(0xFFE76F51),
-                              backgroundColor: sectionBgColor,
-                              textColor: textColor,
-                              secondaryTextColor: secondaryTextColor,
-                              buttonColor: buttonColor,
-                              isDarkMode: isDarkMode,
-                              children: [
-                                _buildSwitchSetting(
-                                  icon: Icons.search,
-                                  iconColor: const Color(0xFFE76F51),
-                                  title: t.settings.enableSearch,
-                                  subtitle: t.settings.enableSearchDescription,
-                                  value: settings.allowNsfw,
-                                  onChanged: (value) {
-                                    ref
-                                        .read(settingsControllerProvider)
-                                        .setAllowNsfw(value);
-                                    _showNsfwToast(context, value, t);
-                                  },
-                                  textColor: textColor,
-                                  secondaryTextColor: secondaryTextColor,
-                                  isDarkMode: isDarkMode,
-                                ),
-                                _buildApiSetting(
-                                  context,
-                                  ref,
-                                  isDarkMode,
-                                  textColor,
-                                  secondaryTextColor,
-                                ),
-                              ],
-                            )
-                            .animate()
-                            .fadeIn(delay: 300.ms, duration: 600.ms)
-                            .slideY(begin: 0.1, end: 0),
+                          title: t.settings.appIcon,
+                          icon: AppIcons.app_settings_alt_outlined,
+                          iconColor: secondaryTextColor,
+                          backgroundColor: sectionBgColor,
+                          textColor: textColor,
+                          secondaryTextColor: secondaryTextColor,
+                          buttonColor: buttonColor,
+                          isDarkMode: isDarkMode,
+                          children: [
+                            _buildAppIconSection(
+                              context,
+                              ref,
+                              isDarkMode,
+                              textColor,
+                              secondaryTextColor,
+                            ),
+                          ],
+                        ),
 
                         const SizedBox(height: 24),
+                      ],
 
-                        // 通知設定
-                        _buildSettingsSection(
-                              title: t.settings.notifications,
-                              icon: Icons.notifications_outlined,
-                              iconColor: const Color(0xFF3A86FF),
-                              backgroundColor: sectionBgColor,
-                              textColor: textColor,
-                              secondaryTextColor: secondaryTextColor,
-                              buttonColor: buttonColor,
-                              isDarkMode: isDarkMode,
-                              children: [
-                                _buildSwitchSetting(
-                                  icon: Icons.event_available,
-                                  iconColor: const Color(0xFF3A86FF),
-                                  title: t.settings.eventReminder,
-                                  subtitle: t.settings.eventReminderDescription,
-                                  value: settings.enableEventReminders,
-                                  onChanged: (value) {
-                                    ref
-                                        .read(settingsControllerProvider)
-                                        .setEnableEventReminders(value);
-                                    _toggleReminders(ref, value);
-                                  },
-                                  textColor: textColor,
-                                  secondaryTextColor: secondaryTextColor,
-                                  isDarkMode: isDarkMode,
-                                ),
-                                _buildReminderManagementButton(
-                                  context,
-                                  isDarkMode,
-                                  textColor,
-                                  secondaryTextColor,
-                                  buttonColor,
-                                ),
-                              ],
-                            )
-                            .animate()
-                            .fadeIn(delay: 400.ms, duration: 600.ms)
-                            .slideY(begin: 0.1, end: 0),
-
-                        const SizedBox(height: 24),
-
-                        // データとストレージ
-                        _buildSettingsSection(
-                              title: t.settings.dataStorage,
-                              icon: Icons.storage_outlined,
-                              iconColor: const Color(0xFF2A9D8F),
-                              backgroundColor: sectionBgColor,
-                              textColor: textColor,
-                              secondaryTextColor: secondaryTextColor,
-                              buttonColor: buttonColor,
-                              isDarkMode: isDarkMode,
-                              children: [
-                                _buildCacheClearItem(
-                                  isDarkMode,
-                                  textColor,
-                                  secondaryTextColor,
-                                ),
-                              ],
-                            )
-                            .animate()
-                            .fadeIn(delay: 550.ms, duration: 600.ms)
-                            .slideY(begin: 0.1, end: 0),
-
-                        const SizedBox(height: 24),
-
-                        // アプリ情報
-                        if (packageInfo != null)
-                          _buildSettingsSection(
-                                title: t.settings.appInfo,
-                                icon: Icons.info_outline,
-                                iconColor: const Color(0xFF9381FF),
-                                backgroundColor: sectionBgColor,
-                                textColor: textColor,
-                                secondaryTextColor: secondaryTextColor,
-                                buttonColor: buttonColor,
-                                isDarkMode: isDarkMode,
-                                children: [
-                                  _buildInfoItem(
-                                    icon: Icons.tag,
-                                    iconColor: const Color(0xFF9381FF),
-                                    title: t.settings.version,
-                                    value:
-                                        '${packageInfo.version} (${packageInfo.buildNumber})',
-                                    textColor: textColor,
-                                    secondaryTextColor: secondaryTextColor,
-                                  ),
-                                  _buildInfoItem(
-                                    icon: Icons.code,
-                                    iconColor: const Color(0xFF9381FF),
-                                    title: t.settings.packageName,
-                                    value: packageInfo.packageName,
-                                    textColor: textColor,
-                                    secondaryTextColor: secondaryTextColor,
-                                  ),
-                                  const Divider(height: 1),
-                                  _buildLinkItem(
-                                    icon: Icons.person,
-                                    iconColor: const Color(0xFF9381FF),
-                                    title: t.settings.credit,
-                                    subtitle: t.settings.creditDescription,
-                                    onTap: () => context.push('/credits'),
-                                    textColor: textColor,
-                                    secondaryTextColor: secondaryTextColor,
-                                  ),
-                                  _buildLinkItem(
-                                    icon: Icons.email_outlined,
-                                    iconColor: const Color(0xFF9381FF),
-                                    title: t.settings.contact,
-                                    subtitle: t.settings.contactDescription,
-                                    onTap: () => externalLinkController.launch(
-                                      'https://discord.gg/wNgbkdXq6M',
-                                    ),
-                                    textColor: textColor,
-                                    secondaryTextColor: secondaryTextColor,
-                                  ),
-                                  _buildLinkItem(
-                                    icon: Icons.security_outlined,
-                                    iconColor: const Color(0xFF9381FF),
-                                    title: t.settings.privacyPolicy,
-                                    subtitle:
-                                        t.settings.privacyPolicyDescription,
-                                    onTap: () => externalLinkController.launch(
-                                      'https://null-base.com/vrcn/privacy-policy/',
-                                    ),
-                                    textColor: textColor,
-                                    secondaryTextColor: secondaryTextColor,
-                                  ),
-                                  _buildLinkItem(
-                                    icon: Icons.description_outlined,
-                                    iconColor: const Color(0xFF9381FF),
-                                    title: t.settings.termsOfService,
-                                    subtitle:
-                                        t.settings.termsOfServiceDescription,
-                                    onTap: () => externalLinkController.launch(
-                                      'https://null-base.com/vrcn/terms-of-service',
-                                    ),
-                                    textColor: textColor,
-                                    secondaryTextColor: secondaryTextColor,
-                                  ),
-                                  _buildLinkItem(
-                                    icon: Icons.code_outlined,
-                                    iconColor: const Color(0xFF9381FF),
-                                    title: t.settings.openSource,
-                                    subtitle: t.settings.openSourceDescription,
-                                    onTap: () =>
-                                        _showLicenses(packageInfo.version),
-                                    textColor: textColor,
-                                    secondaryTextColor: secondaryTextColor,
-                                  ),
-                                  _buildLinkItem(
-                                    icon: Icons.code_rounded,
-                                    iconColor: const Color(0xFF9381FF),
-                                    title: t.settings.github,
-                                    subtitle: t.settings.githubDescription,
-                                    onTap: () => externalLinkController.launch(
-                                      'https://github.com/null-base/vrcn',
-                                    ),
-                                    textColor: textColor,
-                                    secondaryTextColor: secondaryTextColor,
-                                  ),
-                                ],
-                              )
-                              .animate()
-                              .fadeIn(delay: 500.ms, duration: 600.ms)
-                              .slideY(begin: 0.1, end: 0),
-
-                        const SizedBox(height: 24),
-
-                        // ログアウトボタン
-                        Center(
-                          child: _buildLogoutButton(
+                      // コンテンツ設定
+                      _buildSettingsSection(
+                        title: t.settings.contentSettings,
+                        icon: AppIcons.content_paste_outlined,
+                        iconColor: secondaryTextColor,
+                        backgroundColor: sectionBgColor,
+                        textColor: textColor,
+                        secondaryTextColor: secondaryTextColor,
+                        buttonColor: buttonColor,
+                        isDarkMode: isDarkMode,
+                        children: [
+                          _buildSwitchSetting(
+                            icon: AppIcons.search,
+                            iconColor: secondaryTextColor,
+                            title: t.settings.enableSearch,
+                            subtitle: t.settings.enableSearchDescription,
+                            value: settings.allowNsfw,
+                            onChanged: (value) {
+                              ref
+                                  .read(settingsControllerProvider)
+                                  .setAllowNsfw(value);
+                              _showNsfwToast(context, value, t);
+                            },
+                            textColor: textColor,
+                            secondaryTextColor: secondaryTextColor,
+                            isDarkMode: isDarkMode,
+                          ),
+                          _buildApiSetting(
+                            context,
+                            ref,
                             isDarkMode,
                             textColor,
                             secondaryTextColor,
                           ),
-                        ).animate().fadeIn(delay: 600.ms, duration: 600.ms),
+                        ],
+                      ),
 
-                        const SizedBox(height: 20),
+                      const SizedBox(height: 24),
 
-                        // フッター
-                        Center(
-                          child: Text(
-                            '© 2025 null_base',
-                            style: GoogleFonts.notoSans(
-                              fontSize: 12,
-                              color: secondaryTextColor,
-                            ),
+                      // 通知設定
+                      _buildSettingsSection(
+                        title: t.settings.notifications,
+                        icon: AppIcons.notifications_outlined,
+                        iconColor: secondaryTextColor,
+                        backgroundColor: sectionBgColor,
+                        textColor: textColor,
+                        secondaryTextColor: secondaryTextColor,
+                        buttonColor: buttonColor,
+                        isDarkMode: isDarkMode,
+                        children: [
+                          _buildSwitchSetting(
+                            icon: AppIcons.event_available,
+                            iconColor: secondaryTextColor,
+                            title: t.settings.eventReminder,
+                            subtitle: t.settings.eventReminderDescription,
+                            value: settings.enableEventReminders,
+                            onChanged: (value) {
+                              ref
+                                  .read(settingsControllerProvider)
+                                  .setEnableEventReminders(value);
+                              _toggleReminders(ref, value);
+                            },
+                            textColor: textColor,
+                            secondaryTextColor: secondaryTextColor,
+                            isDarkMode: isDarkMode,
                           ),
-                        ).animate().fadeIn(delay: 700.ms, duration: 600.ms),
+                          _buildReminderManagementButton(context),
+                        ],
+                      ),
 
-                        const SizedBox(height: 20),
-                      ],
-                    ),
+                      const SizedBox(height: 24),
+
+                      // データとストレージ
+                      _buildSettingsSection(
+                        title: t.settings.dataStorage,
+                        icon: AppIcons.storage_outlined,
+                        iconColor: secondaryTextColor,
+                        backgroundColor: sectionBgColor,
+                        textColor: textColor,
+                        secondaryTextColor: secondaryTextColor,
+                        buttonColor: buttonColor,
+                        isDarkMode: isDarkMode,
+                        children: [
+                          _buildCacheClearItem(
+                            isDarkMode,
+                            textColor,
+                            secondaryTextColor,
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // アプリ情報
+                      if (packageInfo != null)
+                        _buildSettingsSection(
+                          title: t.settings.appInfo,
+                          icon: AppIcons.info_outline,
+                          iconColor: secondaryTextColor,
+                          backgroundColor: sectionBgColor,
+                          textColor: textColor,
+                          secondaryTextColor: secondaryTextColor,
+                          buttonColor: buttonColor,
+                          isDarkMode: isDarkMode,
+                          children: [
+                            _buildInfoItem(
+                              icon: AppIcons.tag,
+                              iconColor: secondaryTextColor,
+                              title: t.settings.version,
+                              value:
+                                  '${packageInfo.version} (${packageInfo.buildNumber})',
+                              textColor: textColor,
+                              secondaryTextColor: secondaryTextColor,
+                            ),
+                            _buildInfoItem(
+                              icon: AppIcons.code,
+                              iconColor: secondaryTextColor,
+                              title: t.settings.packageName,
+                              value: packageInfo.packageName,
+                              textColor: textColor,
+                              secondaryTextColor: secondaryTextColor,
+                            ),
+                            const Divider(height: 1),
+                            _buildLinkItem(
+                              icon: AppIcons.person,
+                              iconColor: secondaryTextColor,
+                              title: t.settings.credit,
+                              subtitle: t.settings.creditDescription,
+                              onTap: () => context.push('/credits'),
+                              textColor: textColor,
+                              secondaryTextColor: secondaryTextColor,
+                            ),
+                            _buildLinkItem(
+                              icon: AppIcons.email_outlined,
+                              iconColor: secondaryTextColor,
+                              title: t.settings.contact,
+                              subtitle: t.settings.contactDescription,
+                              onTap: () => externalLinkController.launch(
+                                'https://discord.gg/wNgbkdXq6M',
+                              ),
+                              textColor: textColor,
+                              secondaryTextColor: secondaryTextColor,
+                            ),
+                            _buildLinkItem(
+                              icon: AppIcons.security_outlined,
+                              iconColor: secondaryTextColor,
+                              title: t.settings.privacyPolicy,
+                              subtitle: t.settings.privacyPolicyDescription,
+                              onTap: () => externalLinkController.launch(
+                                'https://null-base.com/vrcn/privacy-policy/',
+                              ),
+                              textColor: textColor,
+                              secondaryTextColor: secondaryTextColor,
+                            ),
+                            _buildLinkItem(
+                              icon: AppIcons.description_outlined,
+                              iconColor: secondaryTextColor,
+                              title: t.settings.termsOfService,
+                              subtitle: t.settings.termsOfServiceDescription,
+                              onTap: () => externalLinkController.launch(
+                                'https://null-base.com/vrcn/terms-of-service',
+                              ),
+                              textColor: textColor,
+                              secondaryTextColor: secondaryTextColor,
+                            ),
+                            _buildLinkItem(
+                              icon: AppIcons.code_outlined,
+                              iconColor: secondaryTextColor,
+                              title: t.settings.openSource,
+                              subtitle: t.settings.openSourceDescription,
+                              onTap: () => _showLicenses(packageInfo.version),
+                              textColor: textColor,
+                              secondaryTextColor: secondaryTextColor,
+                            ),
+                            _buildLinkItem(
+                              icon: AppIcons.code_rounded,
+                              iconColor: secondaryTextColor,
+                              title: t.settings.github,
+                              subtitle: t.settings.githubDescription,
+                              onTap: () => externalLinkController.launch(
+                                'https://github.com/null-base/vrcn',
+                              ),
+                              textColor: textColor,
+                              secondaryTextColor: secondaryTextColor,
+                            ),
+                          ],
+                        ),
+
+                      const SizedBox(height: 24),
+
+                      // ログアウトボタン
+                      Center(
+                        child: _buildLogoutButton(),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // フッター
+                      Center(
+                        child: Text(
+                          '© 2025 null_base',
+                          style: GoogleFonts.notoSans(
+                            fontSize: 12,
+                            color: secondaryTextColor,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+                    ],
                   ),
-                ]),
-              ),
-            ],
-          ),
+                ),
+              ]),
+            ),
+          ],
         ),
       ),
     );
@@ -428,59 +356,43 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
     required bool isDarkMode,
     required List<Widget> children,
   }) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: isDarkMode
-                ? Colors.black.withValues(alpha: .2)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // セクションヘッダー
-          Container(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: iconColor.withValues(alpha: isDarkMode ? 0.2 : 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(icon, color: iconColor, size: 24),
-                ),
-                const SizedBox(width: 16),
-                Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                color: iconColor.withValues(alpha: isDarkMode ? 0.9 : 0.8),
+                size: 18,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
                   title,
-                  style: GoogleFonts.notoSans(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: textColor,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ],
+              ),
+            ],
+          ),
+        ),
+        Divider(height: 1, color: buttonColor),
+        ColoredBox(
+          color: backgroundColor,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: DefaultTextStyle.merge(
+              style: TextStyle(color: secondaryTextColor),
+              child: Column(children: children),
             ),
           ),
-
-          // セクションの内容
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Column(children: children),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -503,15 +415,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(
-                    0xFF8E8CD8,
-                  ).withValues(alpha: isDarkMode ? 0.2 : 0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  color: buttonColor,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
-                  Icons.brightness_6_outlined,
+                child: Icon(
+                  AppIcons.brightness_6_outlined,
                   size: 20,
-                  color: Color(0xFF8E8CD8),
+                  color: secondaryTextColor,
                 ),
               ),
               const SizedBox(width: 12),
@@ -541,105 +451,31 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
             ],
           ),
           const SizedBox(height: 16),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: buttonColor,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildThemeModeOption(
-                  title: t.settings.themeLight,
-                  icon: Icons.wb_sunny_outlined,
-                  isSelected: currentThemeMode == AppThemeMode.light,
-                  onTap: () {
-                    ref
-                        .read(settingsControllerProvider)
-                        .setThemeMode(AppThemeMode.light);
-                  },
-                  isDarkMode: isDarkMode,
-                  textColor: textColor,
-                ),
-                _buildThemeModeOption(
-                  title: t.settings.themeSystem,
-                  icon: Icons.settings_brightness,
-                  isSelected: currentThemeMode == AppThemeMode.system,
-                  onTap: () {
-                    ref
-                        .read(settingsControllerProvider)
-                        .setThemeMode(AppThemeMode.system);
-                  },
-                  isDarkMode: isDarkMode,
-                  textColor: textColor,
-                ),
-                _buildThemeModeOption(
-                  title: t.settings.themeDark,
-                  icon: Icons.nightlight_round,
-                  isSelected: currentThemeMode == AppThemeMode.dark,
-                  onTap: () {
-                    ref
-                        .read(settingsControllerProvider)
-                        .setThemeMode(AppThemeMode.dark);
-                  },
-                  isDarkMode: isDarkMode,
-                  textColor: textColor,
-                ),
-              ],
-            ),
+          AdaptiveSegmentedControl(
+            labels: [
+              t.settings.themeLight,
+              t.settings.themeSystem,
+              t.settings.themeDark,
+            ],
+            selectedIndex: switch (currentThemeMode) {
+              AppThemeMode.light => 0,
+              AppThemeMode.system => 1,
+              AppThemeMode.dark => 2,
+            },
+            color: Theme.of(context).colorScheme.primary,
+            selectedTextColor: Theme.of(context).colorScheme.onPrimary,
+            height: 40,
+            onValueChanged: (index) {
+              ref.read(settingsControllerProvider).setThemeMode(
+                switch (index) {
+                  0 => AppThemeMode.light,
+                  2 => AppThemeMode.dark,
+                  _ => AppThemeMode.system,
+                },
+              );
+            },
           ),
         ],
-      ),
-    );
-  }
-
-  // テーマモードオプション
-  Widget _buildThemeModeOption({
-    required String title,
-    required IconData icon,
-    required bool isSelected,
-    required VoidCallback onTap,
-    required bool isDarkMode,
-    required Color textColor,
-  }) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? AppTheme.primaryColor.withValues(
-                    alpha: isDarkMode ? 0.3 : 0.2,
-                  )
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                color: isSelected
-                    ? AppTheme.primaryColor
-                    : textColor.withValues(alpha: 0.7),
-                size: 24,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                style: GoogleFonts.notoSans(
-                  fontSize: 12,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  color: isSelected
-                      ? AppTheme.primaryColor
-                      : textColor.withValues(alpha: 0.7),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -694,14 +530,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
             ),
           ),
           const SizedBox(width: 8),
-          Transform.scale(
-            scale: 0.8,
-            child: Switch(
-              value: value,
-              onChanged: onChanged,
-              activeThumbColor: AppTheme.primaryColor,
-              activeTrackColor: AppTheme.primaryColor.withValues(alpha: 0.3),
-            ),
+          AdaptiveSwitch(
+            value: value,
+            onChanged: onChanged,
+            activeColor: Theme.of(context).colorScheme.primary,
           ),
         ],
       ),
@@ -709,77 +541,21 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
   }
 
   // リマインダー管理ボタン
-  Widget _buildReminderManagementButton(
-    BuildContext context,
-    bool isDarkMode,
-    Color textColor,
-    Color secondaryTextColor,
-    Color buttonColor,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
-      child: InkWell(
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (context) => const ReminderManagementDialog(),
-          );
-        },
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: buttonColor,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color(
-                    0xFF3A86FF,
-                  ).withValues(alpha: isDarkMode ? 0.2 : 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.list_alt_rounded,
-                  color: Color(0xFF3A86FF),
-                  size: 22,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      t.settings.manageReminders,
-                      style: GoogleFonts.notoSans(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: textColor,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      t.settings.manageRemindersDescription,
-                      style: GoogleFonts.notoSans(
-                        fontSize: 13,
-                        color: secondaryTextColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 22,
-                color: secondaryTextColor,
-              ),
-            ],
-          ),
-        ),
+  Widget _buildReminderManagementButton(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+      leading: Icon(AppIcons.list_alt_rounded, color: scheme.onSurfaceVariant),
+      title: Text(t.settings.manageReminders),
+      subtitle: Text(t.settings.manageRemindersDescription),
+      trailing: Icon(
+        AppIcons.chevron_right_rounded,
+        size: 18,
+        color: scheme.onSurfaceVariant,
+      ),
+      onTap: () => showDialog<void>(
+        context: context,
+        builder: (context) => const ReminderManagementDialog(),
       ),
     );
   }
@@ -846,7 +622,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    backgroundColor: AppTheme.primaryColor,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                   ),
                   child: Text(t.common.save, style: GoogleFonts.notoSans()),
                 ),
@@ -861,15 +637,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(
-                  0xFFE76F51,
-                ).withValues(alpha: isDarkMode ? 0.2 : 0.1),
+                color: Theme.of(context).colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
-                Icons.link_rounded,
+              child: Icon(
+                AppIcons.link_rounded,
                 size: 20,
-                color: Color(0xFFE76F51),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(width: 12),
@@ -900,7 +674,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                 ],
               ),
             ),
-            Icon(Icons.edit, size: 18, color: secondaryTextColor),
+            Icon(AppIcons.edit, size: 18, color: secondaryTextColor),
           ],
         ),
       ),
@@ -915,6 +689,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
     Color buttonColor,
   ) {
     final currentLocale = ref.watch(settingsProvider).locale;
+    const localeLabels = <AppLocale, String>{
+      AppLocale.ja: '日本語',
+      AppLocale.en: 'English',
+      AppLocale.ko: '한국어',
+      AppLocale.zhCn: '简体中文',
+      AppLocale.zhTw: '繁體中文',
+    };
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -923,15 +704,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(
-                0xFF52B69A,
-              ).withValues(alpha: isDarkMode ? 0.2 : 0.1),
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(
-              Icons.language,
+            child: Icon(
+              AppIcons.language,
               size: 20,
-              color: Color(0xFF52B69A),
+              color: secondaryTextColor,
             ),
           ),
           const SizedBox(width: 12),
@@ -959,118 +738,152 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
             ),
           ),
           const SizedBox(width: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: buttonColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
-              ),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<AppLocale>(
-                value: currentLocale,
-                isDense: true,
-                icon: Icon(
-                  Icons.keyboard_arrow_down,
-                  color: secondaryTextColor,
-                  size: 20,
-                ),
-                style: GoogleFonts.notoSans(
-                  fontSize: 14,
-                  color: textColor,
-                  fontWeight: FontWeight.w500,
-                ),
-                dropdownColor: isDarkMode
-                    ? const Color(0xFF2E2E36)
-                    : Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                items: [
-                  DropdownMenuItem(
-                    value: AppLocale.ja,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '日本語',
-                          style: GoogleFonts.notoSans(
-                            color: textColor,
-                            fontSize: 14,
-                          ),
+          if (Platform.isIOS)
+            CupertinoButton(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              onPressed: () async {
+                final selected = await showCupertinoModalPopup<AppLocale>(
+                  context: context,
+                  builder: (sheetContext) => CupertinoActionSheet(
+                    title: Text(t.settings.language),
+                    actions: [
+                      for (final entry in localeLabels.entries)
+                        CupertinoActionSheetAction(
+                          isDefaultAction: entry.key == currentLocale,
+                          onPressed: () =>
+                              Navigator.pop(sheetContext, entry.key),
+                          child: Text(entry.value),
                         ),
-                      ],
+                    ],
+                    cancelButton: CupertinoActionSheetAction(
+                      onPressed: () => Navigator.pop(sheetContext),
+                      child: Text(t.common.cancel),
                     ),
                   ),
-                  DropdownMenuItem(
-                    value: AppLocale.en,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'English',
-                          style: GoogleFonts.notoSans(
-                            color: textColor,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: AppLocale.ko,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '한국어',
-                          style: GoogleFonts.notoSans(
-                            color: textColor,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: AppLocale.zhCn,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '简体中文',
-                          style: GoogleFonts.notoSans(
-                            color: textColor,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: AppLocale.zhTw,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '繁體中文',
-                          style: GoogleFonts.notoSans(
-                            color: textColor,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                );
+                if (selected != null && mounted) {
+                  ref.read(settingsControllerProvider).setLocale(selected);
+                }
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(localeLabels[currentLocale] ?? 'English'),
+                  const Icon(CupertinoIcons.chevron_down, size: 14),
                 ],
-                onChanged: (newLocale) {
-                  if (newLocale != null) {
-                    ref.read(settingsControllerProvider).setLocale(newLocale);
-                  }
-                },
+              ),
+            )
+          else
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: buttonColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
+                ),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<AppLocale>(
+                  value: currentLocale,
+                  isDense: true,
+                  icon: Icon(
+                    AppIcons.keyboard_arrow_down,
+                    color: secondaryTextColor,
+                    size: 20,
+                  ),
+                  style: GoogleFonts.notoSans(
+                    fontSize: 14,
+                    color: textColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  dropdownColor: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(12),
+                  items: [
+                    DropdownMenuItem(
+                      value: AppLocale.ja,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '日本語',
+                            style: GoogleFonts.notoSans(
+                              color: textColor,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: AppLocale.en,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'English',
+                            style: GoogleFonts.notoSans(
+                              color: textColor,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: AppLocale.ko,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '한국어',
+                            style: GoogleFonts.notoSans(
+                              color: textColor,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: AppLocale.zhCn,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '简体中文',
+                            style: GoogleFonts.notoSans(
+                              color: textColor,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: AppLocale.zhTw,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '繁體中文',
+                            style: GoogleFonts.notoSans(
+                              color: textColor,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  onChanged: (newLocale) {
+                    if (newLocale != null) {
+                      ref.read(settingsControllerProvider).setLocale(newLocale);
+                    }
+                  },
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -1176,7 +989,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
               ),
             ),
             Icon(
-              Icons.chevron_right_rounded,
+              AppIcons.chevron_right_rounded,
               size: 22,
               color: secondaryTextColor,
             ),
@@ -1229,7 +1042,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
               child: Row(
                 children: [
                   Icon(
-                    Icons.info_outline,
+                    AppIcons.info_outline,
                     color: Colors.red.withValues(alpha: 0.8),
                     size: 24,
                   ),
@@ -1266,7 +1079,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(
-                      Icons.app_shortcut,
+                      AppIcons.app_shortcut,
                       size: 20,
                       color: Color(0xFF52B69A),
                     ),
@@ -1616,7 +1429,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.check, size: 10, color: Colors.white),
+                        const Icon(
+                          AppIcons.check,
+                          size: 10,
+                          color: Colors.white,
+                        ),
                         const SizedBox(width: 2),
                         Text(
                           label,
@@ -1649,61 +1466,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
   }
 
   // ログアウトボタン
-  Widget _buildLogoutButton(
-    bool isDarkMode,
-    Color textColor,
-    Color secondaryTextColor,
-  ) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.red.withValues(alpha: isDarkMode ? 0.3 : 0.2),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: _showLogoutConfirmation,
-          borderRadius: BorderRadius.circular(30),
-          child: Ink(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.red.shade500, Colors.red.shade700],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.logout_rounded,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    t.common.logout,
-                    style: GoogleFonts.notoSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+  Widget _buildLogoutButton() {
+    return AdaptiveButton(
+      onPressed: _showLogoutConfirmation,
+      label: t.common.logout,
+      color: Theme.of(context).colorScheme.error,
+      textColor: Theme.of(context).colorScheme.error,
+      style: AdaptiveButtonStyle.tinted,
+      size: AdaptiveButtonSize.large,
     );
   }
 
@@ -1821,15 +1591,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(
-                  0xFF2A9D8F,
-                ).withValues(alpha: isDarkMode ? 0.2 : 0.1),
+                color: Theme.of(context).colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
-                Icons.cleaning_services_outlined,
+              child: Icon(
+                AppIcons.cleaning_services_outlined,
                 size: 20,
-                color: Color(0xFF2A9D8F),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(width: 12),
@@ -1872,7 +1640,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
                 ],
               ),
             ),
-            Icon(Icons.delete_outline, size: 22, color: Colors.red[400]),
+            Icon(AppIcons.delete_outline, size: 22, color: Colors.red[400]),
           ],
         ),
       ),
@@ -1887,7 +1655,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.amber[700]),
+            Icon(AppIcons.warning_amber_rounded, color: Colors.amber[700]),
             const SizedBox(width: 12),
             Text(
               t.settings.clearCache,

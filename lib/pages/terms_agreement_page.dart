@@ -1,11 +1,11 @@
+import 'package:vrchat/utils/app_icons.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vrchat/controllers/external_link_controller.dart';
-import 'package:vrchat/gen/assets.gen.dart';
 import 'package:vrchat/gen/strings.g.dart';
-import 'package:vrchat/theme/app_theme.dart';
 import 'package:vrchat/utils/first_launch_utils.dart';
 
 class TermsAgreementPage extends ConsumerStatefulWidget {
@@ -15,170 +15,77 @@ class TermsAgreementPage extends ConsumerStatefulWidget {
   ConsumerState<TermsAgreementPage> createState() => _TermsAgreementPageState();
 }
 
-class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
-    with TickerProviderStateMixin {
+class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage> {
   var _termsAccepted = false;
   var _privacyAccepted = false;
   var _isLoading = false;
-
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-    );
-
-    _slideAnimation =
-        Tween<Offset>(
-          begin: const Offset(0, 0.1),
-          end: Offset.zero,
-        ).animate(
-          CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-        );
-
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDarkMode
-                ? [Colors.grey[900]!, Colors.black, Colors.grey[850]!]
-                : [
-                    Colors.blue[50]!,
-                    Colors.indigo[50]!,
-                    Colors.purple[50]!,
-                  ],
-          ),
-        ),
-        child: SafeArea(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: SlideTransition(
-              position: _slideAnimation,
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 40),
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 36),
 
-                            // アプリロゴとタイトル
-                            Center(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 80,
-                                    height: 80,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: AppTheme.primaryColor
-                                              .withValues(alpha: 0.3),
-                                          blurRadius: 20,
-                                          spreadRadius: 2,
-                                        ),
-                                      ],
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: Image.asset(
-                                        Assets.icons.icon.path,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (
-                                              context,
-                                              error,
-                                              stackTrace,
-                                            ) {
-                                              return DecoratedBox(
-                                                decoration: BoxDecoration(
-                                                  color: AppTheme.primaryColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                ),
-                                                child: const Icon(
-                                                  Icons.vrpano,
-                                                  color: Colors.white,
-                                                  size: 40,
-                                                ),
-                                              );
-                                            },
-                                      ),
-                                    ),
+                          // アプリロゴとタイトル
+                          Center(
+                            child: Column(
+                              children: [
+                                Text(
+                                  t.termsAgreement.welcomeTitle,
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.black87,
                                   ),
-                                  const SizedBox(height: 24),
-                                  Text(
-                                    t.termsAgreement.welcomeTitle,
-                                    style: TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold,
-                                      color: isDarkMode
-                                          ? Colors.white
-                                          : Colors.black87,
-                                    ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  t.termsAgreement.welcomeMessage,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: isDarkMode
+                                        ? Colors.grey[300]
+                                        : Colors.grey[600],
                                   ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    t.termsAgreement.welcomeMessage,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: isDarkMode
-                                          ? Colors.grey[300]
-                                          : Colors.grey[600],
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
                             ),
+                          ),
 
-                            const SizedBox(height: 48),
+                          const SizedBox(height: 36),
 
-                            // 利用規約とプライバシーポリシーのチェックボックス
-                            _buildAgreementSection(isDarkMode, t),
+                          // 利用規約とプライバシーポリシーのチェックボックス
+                          _buildAgreementSection(isDarkMode, t),
 
-                            const SizedBox(height: 32),
+                          const SizedBox(height: 32),
 
-                            // 注意事項
-                            _buildNoticeSection(isDarkMode, t),
-                          ],
-                        ),
+                          // 注意事項
+                          _buildNoticeSection(isDarkMode, t),
+                        ],
                       ),
                     ),
+                  ),
 
-                    // 同意ボタン
-                    _buildActionButtons(isDarkMode, t),
-                  ],
-                ),
+                  // 同意ボタン
+                  _buildActionButtons(isDarkMode, t),
+                ],
               ),
             ),
           ),
@@ -188,19 +95,8 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
   }
 
   Widget _buildAgreementSection(bool isDarkMode, Translations t) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDarkMode
-            ? Colors.black.withValues(alpha: .3)
-            : Colors.white.withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDarkMode
-              ? Colors.white.withValues(alpha: 0.1)
-              : Colors.black.withValues(alpha: 0.1),
-        ),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         children: [
           // 利用規約
@@ -217,7 +113,7 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
             t: t,
           ),
 
-          const SizedBox(height: 16),
+          Divider(color: Theme.of(context).colorScheme.outlineVariant),
 
           // プライバシーポリシー
           _buildCheckboxTile(
@@ -249,49 +145,53 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Checkbox(
+        AdaptiveCheckbox(
           value: value,
           onChanged: onChanged,
-          activeColor: AppTheme.primaryColor,
+          activeColor: Theme.of(context).colorScheme.primary,
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      t.termsAgreement.agreeTerms(title: title),
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: isDarkMode ? Colors.white : Colors.black87,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => onChanged(!value),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        t.termsAgreement.agreeTerms(title: title),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: isDarkMode ? Colors.white : Colors.black87,
+                        ),
                       ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: onLinkTap,
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppTheme.primaryColor,
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                    TextButton(
+                      onPressed: onLinkTap,
+                      style: TextButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.primary,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                      ),
+                      child: Text(
+                        t.termsAgreement.checkContent,
+                        style: const TextStyle(fontSize: 14),
+                      ),
                     ),
-                    child: Text(
-                      t.termsAgreement.checkContent,
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ),
-                ],
-              ),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                  ],
                 ),
-              ),
-            ],
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -299,23 +199,22 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
   }
 
   Widget _buildNoticeSection(bool isDarkMode, Translations t) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.amber.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: [
-          Icon(Icons.info_outline, color: Colors.amber[700], size: 20),
+          Icon(
+            AppIcons.info_outline,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            size: 20,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               t.termsAgreement.notice,
               style: TextStyle(
                 fontSize: 13,
-                color: isDarkMode ? Colors.amber[200] : Colors.amber[800],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -332,30 +231,29 @@ class _TermsAgreementPageState extends ConsumerState<TermsAgreementPage>
         SizedBox(
           width: double.infinity,
           height: 52,
-          child: ElevatedButton(
+          // iOS 26 のネイティブボタンは onPressed の null 変更だけでは再有効化されない。
+          child: AdaptiveButton.child(
             onPressed: canProceed && !_isLoading ? _handleAccept : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryColor,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(26),
-              ),
-              elevation: canProceed ? 8 : 0,
-            ),
+            useNative: false,
+            color: Theme.of(context).colorScheme.primary,
+            borderRadius: BorderRadius.circular(8),
             child: _isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     width: 24,
                     height: 24,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   )
                 : Text(
                     t.common.agree,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
+                      color: canProceed
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
           ),
