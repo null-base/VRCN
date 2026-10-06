@@ -42,8 +42,8 @@ Future<void> main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  // Google Fontsの設定
-  GoogleFonts.config.allowRuntimeFetching = kDebugMode;
+  // リリースビルドでもGoogle Fontsを実行時に取得する
+  GoogleFonts.config.allowRuntimeFetching = true;
   _configureAndroidPhotoPicker();
 
   // Firebase
