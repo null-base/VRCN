@@ -1,0 +1,34 @@
+{
+  "name": "in_app_review",
+  "version": "2.0.0",
+  "summary": "Flutter plugin for showing the In-App Review/System Rating pop up.",
+  "description": "Flutter plugin for showing the In-App Review/System Rating pop up.",
+  "homepage": "https://pub.dev/packages/in_app_review",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Britannio Jarrett": "oss@britannio.dev"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "in_app_review/Sources/in_app_review/**/*",
+  "dependencies": {
+    "Flutter": []
+  },
+  "platforms": {
+    "ios": "12.0"
+  },
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES",
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "i386"
+  },
+  "swift_versions": "5.0",
+  "resource_bundles": {
+    "in_app_review_privacy": [
+      "in_app_review/Sources/in_app_review/PrivacyInfo.xcprivacy"
+    ]
+  },
+  "swift_version": "5.0"
+}

@@ -1,0 +1,42 @@
+{
+  "name": "mobile_scanner",
+  "version": "7.0.0",
+  "summary": "An universal scanner for Flutter based on the Vision API.",
+  "description": "An universal scanner for Flutter based on the Vision API.",
+  "homepage": "https://github.com/juliansteenbakker/mobile_scanner",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Julian Steenbakker": "juliansteenbakker@outlook.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "mobile_scanner/Sources/mobile_scanner/**/*.swift",
+  "ios": {
+    "dependencies": {
+      "Flutter": []
+    }
+  },
+  "osx": {
+    "dependencies": {
+      "FlutterMacOS": []
+    }
+  },
+  "platforms": {
+    "ios": "12.0",
+    "osx": "10.14"
+  },
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES",
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "i386"
+  },
+  "swift_versions": "5.0",
+  "resource_bundles": {
+    "mobile_scanner_privacy": [
+      "mobile_scanner/Sources/mobile_scanner/Resources/PrivacyInfo.xcprivacy"
+    ]
+  },
+  "swift_version": "5.0"
+}

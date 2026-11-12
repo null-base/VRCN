@@ -1,0 +1,6 @@
+framework module in_app_review {
+  umbrella header "in_app_review-umbrella.h"
+
+  export *
+  module * { export * }
+}

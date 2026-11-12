@@ -1,0 +1,30 @@
+{
+  "name": "flutter_local_notifications",
+  "version": "0.0.1",
+  "summary": "Flutter plugin for displaying local notifications.",
+  "description": "Flutter plugin for displaying local notifications.",
+  "homepage": "https://github.com/MaikuB/flutter_local_notifications/tree/master/flutter_local_notifications",
+  "license": {
+    "type": "BSD",
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Michael Bui": "borromini_eeckhout@simplelogin.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "flutter_local_notifications/Sources/flutter_local_notifications/**/*.{h,m}",
+  "public_header_files": "flutter_local_notifications/Sources/flutter_local_notifications/include/**/*.h",
+  "dependencies": {
+    "Flutter": []
+  },
+  "resource_bundles": {
+    "flutter_local_notifications_privacy": [
+      "flutter_local_notifications/Sources/flutter_local_notifications/PrivacyInfo.xcprivacy"
+    ]
+  },
+  "platforms": {
+    "ios": "13.0"
+  }
+}
